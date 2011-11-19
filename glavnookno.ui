@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GlavnoOkno</class>
+ <widget class="QMainWindow" name="GlavnoOkno">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>816</width>
+    <height>682</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>BenRačun: glavno okno</string>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonTextOnly</enum>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="lbl_pozdrav">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_datum">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="txt_uporabnik">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Pomen se bo pokazal s časom</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="txt_pozicija">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Pomen se bo pokazal s časom</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_clear">
+        <property name="text">
+         <string>Počisti</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_print">
+        <property name="text">
+         <string>Print</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>796</width>
+         <height>541</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>816</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuRa_unovodstvo">
+    <property name="title">
+     <string>Računovodstvo</string>
+    </property>
+    <addaction name="actionPotni_nalogi"/>
+    <addaction name="actionPrejeti_ra_uni"/>
+    <addaction name="actionIzdani_ra_uni"/>
+   </widget>
+   <widget class="QMenu" name="menuIzpisi">
+    <property name="title">
+     <string>Izpisi</string>
+    </property>
+    <addaction name="actionPrihodek"/>
+    <addaction name="actionIzdatek"/>
+    <addaction name="actionPoslovanje"/>
+   </widget>
+   <widget class="QMenu" name="menuPomo">
+    <property name="title">
+     <string>Pomoč</string>
+    </property>
+    <addaction name="actionVizitka"/>
+   </widget>
+   <widget class="QMenu" name="menuDelo">
+    <property name="title">
+     <string>Delo</string>
+    </property>
+    <addaction name="actionStranke"/>
+    <addaction name="actionProjekti"/>
+    <addaction name="separator"/>
+    <addaction name="actionKuponi"/>
+   </widget>
+   <widget class="QMenu" name="menuNastavitve">
+    <property name="title">
+     <string>Nastavitve</string>
+    </property>
+    <addaction name="actionUporabniki"/>
+    <addaction name="actionPodjetje"/>
+   </widget>
+   <addaction name="menuDelo"/>
+   <addaction name="menuRa_unovodstvo"/>
+   <addaction name="menuIzpisi"/>
+   <addaction name="menuNastavitve"/>
+   <addaction name="menuPomo"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionVizitka">
+   <property name="text">
+    <string>Vizitka</string>
+   </property>
+  </action>
+  <action name="actionStranke">
+   <property name="text">
+    <string>Stranke</string>
+   </property>
+  </action>
+  <action name="actionProjekti">
+   <property name="text">
+    <string>Projekti</string>
+   </property>
+  </action>
+  <action name="actionPotni_nalogi">
+   <property name="text">
+    <string>Potni nalogi</string>
+   </property>
+  </action>
+  <action name="actionPrejeti_ra_uni">
+   <property name="text">
+    <string>Prejeti računi</string>
+   </property>
+  </action>
+  <action name="actionIzdani_ra_uni">
+   <property name="text">
+    <string>Izdani računi</string>
+   </property>
+  </action>
+  <action name="actionPrihodek">
+   <property name="text">
+    <string>Prihodek</string>
+   </property>
+  </action>
+  <action name="actionIzdatek">
+   <property name="text">
+    <string>Izdatek</string>
+   </property>
+  </action>
+  <action name="actionPoslovanje">
+   <property name="text">
+    <string>Poslovanje</string>
+   </property>
+  </action>
+  <action name="actionUporabniki">
+   <property name="text">
+    <string>Uporabniki</string>
+   </property>
+  </action>
+  <action name="actionPodjetje">
+   <property name="text">
+    <string>Podjetje</string>
+   </property>
+  </action>
+  <action name="actionKuponi">
+   <property name="text">
+    <string>Kuponi</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
