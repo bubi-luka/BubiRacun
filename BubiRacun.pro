@@ -84,8 +84,8 @@ FORMS += \
 
 QT += sql
 
-OTHER_FILES += \
-    besedilo-potni-nalogi.txt
+OTHER_FILES +=
+
 
 
 

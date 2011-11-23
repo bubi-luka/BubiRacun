@@ -162,28 +162,10 @@ void potninalogi::on_btn_izhod_clicked() {
 
 }
 
-// zacasno printa :)
-void potninalogi::on_btn_brisi_clicked() {
+void potninalogi::on_btn_izvozi_clicked() {
 
-	int i;
-//	int st_nalog = 21; // st stolpcev v tabeli potnih nalogov
-	int st_besedilo = 100; // st vrstic namenjenih potnemu nalogu
-
+	// v string vsebina se shrani celotno besedilo enega potnega naloga
 	QString vsebina;
-//	QString nalog[st_nalog];
-	QString besedilo[st_besedilo];
-
-// napolni array z besedilom na strani
-	QFile datoteka("besedilo-potni-nalogi.txt");
-	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text))
-		return;
-
-	i = 0;
-	QTextStream in(&datoteka);
-	while (!in.atEnd()) {
-		besedilo[i] = in.readLine().replace("\"", "");
-		i++;
-	}
 
 // odpri podatke o potnem nalogu, prejemniku, stroskih...
 	QString app_path = QApplication::applicationDirPath();
@@ -200,274 +182,178 @@ void potninalogi::on_btn_brisi_clicked() {
 		msgbox.exec();
 	}
 	else {
-// zacetek
-		vsebina.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
-		vsebina.append("<html>\n");
-		vsebina.append("<head>\n");
-		vsebina.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n");
-		vsebina.append("<title>" + besedilo[0] + ui->txt_stnaloga->text() + "</title>\n");
-		vsebina.append("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" media=\"screen, print\" />");
-		vsebina.append("</head>\n");
-		vsebina.append("\n");
-		vsebina.append("<body>\n");
-// glava
-		vsebina.append("<table border=1 width=\"100%\">\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"50%\"><strong>" + besedilo[1] + "</strong></td>\n");
-		vsebina.append("<td width=\"50%\"><h1>" + besedilo[2] + "</h1></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td>" + ui->txt_predlagatelj->currentText() + "</td>\n");
-		vsebina.append("<td><strong>" + besedilo[3] + "</strong>" + ui->txt_stnaloga->text() + "<strong>" + besedilo[4] + "</strong>" + ui->txt_datum->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("</table>\n");
-// odredba
-		vsebina.append("<ul>\n");
-		vsebina.append("<li><strong>" + besedilo[5] + "</strong>" + ui->txt_prejemnik->currentText() + " " + ui->txt_prejemnikime->currentText() + "</li>\n");
-		vsebina.append("<li><strong>" + besedilo[6] + "</strong>" + ui->txt_nazivprejemnika->currentText() + "</li>\n");
-		vsebina.append("<li><strong>" + besedilo[7] + "</strong>" + ui->txt_naslovprejemnika->toPlainText().replace("\n", ", ") + "</li>\n");
-		QSqlQuery sql_pot;
-		sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
-		sql_pot.exec();
-		QDateTime dt_datum = QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm");
-		QString datum;
-		QString ura;
-		while ( sql_pot.next() ) {
-			if ( dt_datum == QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm") ) {
-				dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+		// izberi pravilni potni nalog
+		QSqlQuery sql_potni_nalog;
+		sql_potni_nalog.prepare("SELECT * FROM potninalogi WHERE id LIKE '" + ui->txt_id->text() + "'");
+		sql_potni_nalog.exec();
+		if (sql_potni_nalog.next()) {
+		// glava
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("podjetje")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilkanaloga")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum")).toString()) + ";");
+		// odredba
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovnik")).toString()) + " ");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovnikime")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naziv")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslov")).toString()).replace("\n", ", ") + ";");
+
+			// iz tabele "pot" je potrebno dobiti podatke o dejanskem začetku potovanja, kajti potovanje je lahko vnešene tudi v napačnem vrstnem redu
+			QSqlQuery sql_pot;
+			sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilkanaloga")).toString() + "'");
+			sql_pot.exec();
+			QDateTime dt_datum = QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm");
+			QString datum_odhoda;
+			QString ura_odhoda;
+			while ( sql_pot.next() ) {
+				if ( dt_datum == QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm") ) {
+					dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+				}
+				if ( dt_datum.secsTo(QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm")) < 0 ) {
+					dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+				}
 			}
-			if ( dt_datum.secsTo(QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm")) < 0 ) {
-				dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casodhod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+			datum_odhoda = dt_datum.toString("dd'.'MM'.'yyyy' 'hh':'mm");
+			QDateTime dt_trajanje = dt_datum; // za izracunanje dni potovanja nekaj polj nizje
+			ura_odhoda = datum_odhoda.right(5);
+			datum_odhoda = datum_odhoda.left(datum_odhoda.length() - 6);
+			sql_pot.clear();
+
+			vsebina.append(datum_odhoda + ";");
+			vsebina.append(ura_odhoda + ";");
+
+			// vnesejo se vsi kraji, kjer ima nalogoprejemnik mozna opravila
+			sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilkanaloga")).toString() + "'");
+			sql_pot.exec();
+			while ( sql_pot.next() ) {
+				if ( prevedi(sql_pot.value(sql_pot.record().indexOf("naslov")).toString()) != "" ) {
+					vsebina.append(prevedi(sql_pot.value(sql_pot.record().indexOf("naslov")).toString()).replace("\n", ", ") + "\n");
+				}
 			}
+			sql_pot.clear();
+			vsebina = vsebina.remove(vsebina.length() - 2, 2); // zadnji kraj ima tudi prelom v novo vrstico, ki pa tu ni potreben
+			vsebina.append(";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen")).toString()) + ";");
+
+			// izracunamo dolzino potovanja
+			sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilkanaloga")).toString() + "'");
+			sql_pot.exec();
+			QString datum_prihoda;
+			QString ura_prihoda;
+			dt_datum = QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm");
+			while ( sql_pot.next() ) {
+				if ( dt_datum == QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm") ) {
+					dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+				}
+				if ( dt_datum.secsTo(QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm")) > 0 ) {
+					dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+				}
+			}
+			sql_pot.clear();
+			datum_prihoda = dt_datum.toString("dd'.'MM'.'yyyy' 'hh':'mm");
+			ura_prihoda = datum_prihoda.right(5);
+			datum_prihoda = datum_prihoda.left(datum_prihoda.length() - 6);
+			vsebina.append(datum_prihoda + ";");
+			vsebina.append(QString::number(dt_trajanje.daysTo(dt_datum), 10) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prevoznosredstvo")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("tipavtomobila")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("podjetje")).toString()) + ";");
+		// predujem
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovnikime")).toString()) + " ");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovnik")).toString()) + ";");
+		// obracun potnih stroskov - glava
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovpodjetja")).toString()).replace("\n", ", ") + ";");
+		// obracun potnih stroskov - podatki
+			vsebina.append(datum_odhoda + ";");
+			vsebina.append(ura_odhoda + ";");
+			vsebina.append(datum_prihoda + ";");
+			vsebina.append(ura_prihoda + ";");
+			vsebina.append(QString::number(dt_trajanje.daysTo(dt_datum), 10) + ";");
+			int minute;
+			int ure;
+			minute = (dt_trajanje.secsTo(dt_datum) - dt_trajanje.daysTo(dt_datum) * 24 * 60 * 60) / 60;
+			ure = minute / 60;
+			vsebina.append(ure + ";");
+			minute = minute - ure * 60;
+			vsebina.append(minute + ";");
+			vsebina.append("dnevnica;"); // dnevnice
+			vsebina.append("cena dnevnice;"); // cena dnevnice
+			double znesek = 0;
+			double trenutni_znesek = 0;
+			vsebina.append("znesekskupaj;"); // skupaj znesek
+			vsebina.append("sprememba dnevnice;"); // zvisanje/znizanje dnevnice
+			vsebina.append("znesek s spremembami dnevnice;"); // skupaj znesek
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("razdalja")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("kilometrina")).toString()) + ";");
+
+			// izracun relacije
+			sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilkanaloga")).toString() + "'");
+			sql_pot.exec();
+			QString rel_start = "";
+			QString rel_cilj = "";
+			QString relacija = "";
+			while ( sql_pot.next() ) {
+				if ( prevedi(sql_pot.value(sql_pot.record().indexOf("odhod")).toString()) != rel_cilj )
+					rel_start = prevedi(sql_pot.value(sql_pot.record().indexOf("odhod")).toString());
+				rel_cilj = ""; // izpraznimo cilj, da se ne podvaja
+				if ( prevedi(sql_pot.value(sql_pot.record().indexOf("prihod")).toString()) != rel_start )
+					rel_cilj = prevedi(sql_pot.value(sql_pot.record().indexOf("prihod")).toString());
+				if ( rel_start != "" && relacija != "" )
+					rel_start = " - " + rel_start;
+				if ( rel_cilj != "" )
+					rel_cilj = " - " + rel_cilj;
+				if ( relacija != "" )
+					relacija = relacija + rel_cilj;
+				else
+					relacija = rel_start + rel_cilj;
+				rel_start = ""; // izpraznimo start, da se ne podvaja
+			}
+			sql_pot.clear();
+			vsebina.append(relacija + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("registrskastevilka")).toString()) + ";");
+			// izracunamo km * cena/km in to pristejemo ze obstojecemu znesku
+			trenutni_znesek = 0;
+			trenutni_znesek = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("kilometrina")).toString()).toDouble();
+			trenutni_znesek = trenutni_znesek * prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("razdalja")).toString()).toDouble();
+			znesek = znesek + trenutni_znesek;
+			vsebina.append(QString::number(znesek, 'f', 2) + ";");
+			trenutni_znesek = 0; // predujem, ko ga definiramo bo slo v racun
+			znesek = znesek - trenutni_znesek;
+			vsebina.append(QString::number(znesek, 'f', 2) + ";");
+		// noga, podpisi, zigi
+			QString kraj_tiskanja = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovpodjetja")).toString());
+			kraj_tiskanja = kraj_tiskanja.right(kraj_tiskanja.length() - kraj_tiskanja.lastIndexOf(" "));
+			vsebina.append(kraj_tiskanja + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj")).toString()) + ";");
+			vsebina.append(prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("naslovnik")).toString()));
+
 		}
-		datum = dt_datum.toString("dd'.'MM'.'yyyy' 'hh':'mm");
-		ura = datum.right(5);
-		datum = datum.left(datum.length() - 6);
-		vsebina.append("<li><strong>" + besedilo[8] + "</strong>" + datum + "<strong>" + besedilo[9] + "</strong>" + ura + "</li>\n");
-		vsebina.append("<li><strong>" + besedilo[10] + "</strong></li>\n");
-		sql_pot.clear();
-		sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
-		sql_pot.exec();
-		while ( sql_pot.next() ) {
-			if ( prevedi(sql_pot.value(sql_pot.record().indexOf("naslov")).toString()) != "" ) {
-				vsebina.append("<li><strong>" + besedilo[11] + "</strong>" + prevedi(sql_pot.value(sql_pot.record().indexOf("naslov")).toString()).replace("\n", ", ") + "</li>\n");
-			}
-		}
-		vsebina.append("<li><strong>" + besedilo[12] + "</strong>" + ui->txt_namen->currentText() + "</li>\n");
-		sql_pot.clear();
-		sql_pot.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
-		sql_pot.exec();
-		dt_datum = QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm");
-		while ( sql_pot.next() ) {
-			if ( dt_datum == QDateTime::fromString("01.01.1970 01:00", "dd'.'MM'.'yyyy' 'hh':'mm") ) {
-				dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
-			}
-			if ( dt_datum.secsTo(QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm")) > 0 ) {
-				dt_datum = QDateTime::fromString(prevedi(sql_pot.value(sql_pot.record().indexOf("casprihod")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
-			}
-		}
-		datum = dt_datum.toString("dd'.'MM'.'yyyy' 'hh':'mm");
-		datum = datum.left(datum.length() - 6);
-		vsebina.append("<li>&nbsp;</li>\n");
-		vsebina.append("<li><strong>" + besedilo[13] + "</strong>" + datum + "<strong>" + besedilo[14] + "</strong>" + ui->txt_dnevi->text());
-		vsebina.append("<strong>" + besedilo[15] + "</strong></li>\n");
-		vsebina.append("<li><strong>" + besedilo[16] + "</strong>" + ui->txt_prevoz->currentText() + ", " + ui->txt_avtomobil->text() + "</li>\n");
-		vsebina.append("<li>&nbsp;</li>\n");
-		vsebina.append("<li><strong>" + besedilo[17] + "</strong>" + ui->txt_podjetje->currentText() + "</li>\n");
-		vsebina.append("<li><strong>" + besedilo[18] + "</strong></li>\n");
-		vsebina.append("<li><strong>" + besedilo[19] + "</strong></li>\n");
-		vsebina.append("<li><strong>" + besedilo[20] + "</strong></li>\n");
-		vsebina.append("</ul>\n");
-// predujem
-		vsebina.append("<table border=1 width=\"100%\">\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\"></td>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\" rowspan=\"5\"><strong>" + besedilo[23] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\">" + ui->txt_predlagatelj->currentText() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\" rowspan=\"3\"><strong>" + besedilo[21] + "<br />" + besedilo[22] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\"><strong>" + besedilo[24] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\"></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\">" + ui->txt_prejemnik->currentText() + " " + ui->txt_prejemnik->currentText() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\"></td>\n");
-		vsebina.append("<td width=\"33%\" valign=\"middle\"><strong>" + besedilo[25] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("</table>\n");
-// obracun potnih stroskov - glava
-		vsebina.append("<table border=1 width=\"100%\">\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong align=\"right\">" + besedilo[26] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong>" + besedilo[27] + "</strong>" + ui->txt_predlagatelj->currentText() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong>" + besedilo[28] + "</strong>" + ui->txt_naslovpodjetja->toPlainText() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("</table>\n");
-// obracun potnih stroskov - podatki
-		vsebina.append("<table border=1 width=\"100%\">\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"3\"></td>\n");
-		vsebina.append("<td colspan=\"3\"><strong>" + besedilo[29] + "</strong></td>\n");
-		vsebina.append("<td rowspan=\"2\" valign=\"middle\"><strong>" + besedilo[30] + "</strong></td>\n");
-		vsebina.append("<td rowspan=\"2\" valign=\"middle\"><strong>" + besedilo[31] + "</strong></td>\n");
-		vsebina.append("<td rowspan=\"2\" valign=\"middle\"><strong>" + besedilo[32] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong>" + besedilo[33] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td><strong>" + besedilo[34] + "</strong>" + ui->txt_avtomobil->text() + "<strong>" + besedilo[35] + "</strong></td>\n");
-		vsebina.append("<td><strong>" + besedilo[36] + "</strong></td>\n");
-		vsebina.append("<td><strong>" + besedilo[37] + "</strong></td>\n");
-		vsebina.append("<td><strong>" + besedilo[38] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong>" + besedilo[39] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td><strong>" + besedilo[34] + "</strong>" + ui->txt_avtomobil->text() + "<strong>" + besedilo[35] +  "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"8\">" + besedilo[40] + "</td>\n");
-		vsebina.append("<td></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"8\"><strong>" + besedilo[41] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td rowspan=\"3\"><strong>" + besedilo[42] + "</strong></td>\n");
-		vsebina.append("<td colspan=\"7\"><strong>" + besedilo[43] + "</strong>" + ui->txt_avtomobil->text() + "<strong>" + besedilo[44] +
-					   "</strong>" + ui->txt_avtomobil->text() + "<strong>" + besedilo[45] + "</strong></td>\n");
-		vsebina.append("<td rowspan=\"3\"><strong>" + besedilo[42] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"7\"><strong>" + besedilo[46] + "</strong>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"7\"><strong>" + besedilo[47] + "</strong>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td><strong>" + besedilo[48] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td><strong>" + besedilo[49] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"8\"><strong>" + besedilo[50] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"8\"><strong>" + besedilo[51] + "</strong></td>\n");
-		vsebina.append("<td>" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("</table>\n");
-// noga, podpisi, zigi
-		vsebina.append("<table border=1 width=\"100%\">\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"3\">" + besedilo[52] + "</td>\n");
-		vsebina.append("</tr>\n");
-		vsebina.append("<tr>\n");
-		vsebina.append("<td colspan=\"3\"><strong>" + besedilo[53] + "</strong>" + besedilo[54] + "<strong>" + besedilo[55] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[56] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\" rowspan=\"9\"><strong>" + besedilo[23] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\">" + ui->txt_avtomobil->text() +  "</td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"></td>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[57] +  "</strong></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[58] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\"></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"></td>\n");
-		vsebina.append("<td width=\"33%\">" + ui->txt_avtomobil->text() +  "</td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[59] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[60] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[61] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\"></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\">&nbsp;</td>\n");
-		vsebina.append("<td width=\"33%\">&nbsp;</td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\">" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("<td width=\"33%\">" + ui->txt_avtomobil->text() + "</td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("<tr>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[62] + "</strong></td>\n");
-		vsebina.append("<td width=\"33%\"><strong>" + besedilo[63] + "</strong></td>\n");
-		vsebina.append("</tr>\n");
-
-		vsebina.append("</table>\n");
-
-		vsebina.append("</body>\n");
-		vsebina.append("</html>\n");
-
 	}
 	base.close();
 
-	QFile file1("potninalog.html");
+	QFile file1("potninalog.cvs");
 	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
 		return;
 	QTextStream out(&file1);
 	out << vsebina;
 	file1.close();
 
-	QString css;
-	css = "html { margin:0; padding:0; } body { margin:0; padding:0; } table { margin:0; padding:0; border:0; margin-top:10px; margin-bottom:10px;} td ";
-	css = css + "{ margin:0; padding:0; border:0; } tr { margin:0; padding:0; border:0; } ul { margin:0; padding:0; list-style-type:none; }";
+//	QPrinter printer;
 
-	QTextDocument *document = new QTextDocument();
-	document->addResource(QTextDocument::StyleSheetResource, QUrl("style.css"), QVariant(css));
-	document->setHtml(vsebina);
-
-
-	QPrinter printer;
-
-	printer.setOutputFormat(QPrinter::PdfFormat);
-	printer.setOutputFileName("potninalog.pdf");
-	printer.setPaperSize(QPrinter::A4);
-	printer.setResolution(300);
-	printer.setOrientation(QPrinter::Portrait);
+//	printer.setOutputFormat(QPrinter::PdfFormat);
+//	printer.setOutputFileName("potninalog.pdf");
+//	printer.setPaperSize(QPrinter::A4);
+//	printer.setResolution(300);
+//	printer.setOrientation(QPrinter::Portrait);
 
 //	QPrintDialog *dialog = new QPrintDialog(&printer, this);
 //	if (dialog->exec() != QDialog::Accepted)
 //	return;
 
-	document->print(&printer);
+//	document->print(&printer);
 
 //	delete document;
 
@@ -912,7 +798,7 @@ void potninalogi::on_btn_sprejmi_clicked() {
 			sql_vnesi_uporabnika.bindValue(10, pretvori(ui->txt_avtomobil->text()));
 			sql_vnesi_uporabnika.bindValue(11, pretvori(ui->txt_registrska->text()));
 			sql_vnesi_uporabnika.bindValue(12, pretvori(ui->txt_kilometri->text()));
-			sql_vnesi_uporabnika.bindValue(13, pretvori(ui->txt_kilometrina->text().replace(",", ".")));
+			sql_vnesi_uporabnika.bindValue(13, pretvori(ui->txt_kilometrina->text().replace(";", ".")));
 			sql_vnesi_uporabnika.bindValue(14, pretvori(ui->txt_opombe->toPlainText()));
 			sql_vnesi_uporabnika.bindValue(15, pretvori(ui->txt_predlagatelj->currentText()));
 			sql_vnesi_uporabnika.bindValue(16, pretvori(ui->txt_nazivpredlagatelja->currentText()));
@@ -954,19 +840,17 @@ void potninalogi::keyPressEvent(QKeyEvent *event) {
 	{
 		this->on_btn_izhod_clicked();
 	}
-	else if ((event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier))
-	{
-		this->on_btn_brisi_clicked();
-	}
 }
 
 void potninalogi::prejem(QString besedilo) {
 
 	if (besedilo == "Nov nalog") {
 		ui->btn_sprejmi->setText("Vnesi potni nalog");
+		ui->btn_izvozi->setEnabled(false); // nalog je potrebno najprej shraniti, sele nato ga lahko tiskamo
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi potni nalog");
+		ui->btn_izvozi->setEnabled(true);
 		// besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -1140,7 +1024,7 @@ void potninalogi::izracun() {
 		sql_pot.exec();
 		while ( sql_pot.next() ) {
 			QString i = prevedi(sql_pot.value(sql_pot.record().indexOf("kilometri")).toString());
-			double x = i.replace(",", ".").toDouble(ok);
+			double x = i.replace(";", ".").toDouble(ok);
 			kilometri = kilometri + x;
 
 			// fill dates
@@ -1214,7 +1098,7 @@ void potninalogi::izracun() {
 		sql_ostalo.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
 		sql_ostalo.exec();
 		while ( sql_ostalo.next() ) {
-			ostalo = ostalo + prevedi(sql_ostalo.value(sql_ostalo.record().indexOf("cena")).toString()).replace(",", ".").toDouble(ok);
+			ostalo = ostalo + prevedi(sql_ostalo.value(sql_ostalo.record().indexOf("cena")).toString()).replace(";", ".").toDouble(ok);
 		}
 		ui->txt_ostalo->setText(QString::number(ostalo, 'f', 2));
 

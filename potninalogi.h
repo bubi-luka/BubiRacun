@@ -17,7 +17,7 @@ public:
 
 private slots:
 	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
+	void on_btn_izvozi_clicked();
 	void on_txt_podjetje_currentIndexChanged(int index);
 	void on_txt_predlagatelj_currentIndexChanged(int index);
 	void on_txt_prejemnik_currentIndexChanged(int index);

@@ -2,6 +2,7 @@
 #define VARNOST_H
 
 #include <QApplication>
+#define vApp ((varnost *) qApp)
 
 class varnost : public QApplication
 {

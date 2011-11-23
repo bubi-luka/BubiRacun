@@ -602,12 +602,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_brisi">
+      <widget class="QPushButton" name="btn_izvozi">
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>Briši</string>
+        <string>Izvozi CSV</string>
        </property>
       </widget>
      </item>

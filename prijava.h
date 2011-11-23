@@ -14,8 +14,8 @@ class prijava : public QDialog
     Q_OBJECT
 
 public:
-    explicit prijava(QWidget *parent = 0);
-    ~prijava();
+	explicit prijava(QWidget *parent = 0);
+	~prijava();
 
 private slots:
 	void on_btn_izhod_clicked();

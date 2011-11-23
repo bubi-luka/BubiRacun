@@ -702,6 +702,7 @@ void prijava::on_btn_brisi_clicked() {
 	ui->txt_uporabnik->setText("");
 
 	ui->txt_uporabnik->setFocus();
+
 }
 
 void prijava::on_btn_prijavi_clicked() {
@@ -742,8 +743,8 @@ void prijava::on_btn_prijavi_clicked() {
 
 				// show main window
 				GlavnoOkno *glavnookno = new GlavnoOkno;
-			//	glavnookno->showMaximized();
-		//		glavnookno->show();
+				glavnookno->showMaximized();
+				glavnookno->show();
 				this->close();
 			}
 			else {
