@@ -11,6 +11,7 @@
 #include "uporabnik.h"
 #include "podjetje.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 prijava::prijava(QWidget *parent) :
 	QDialog(parent),
@@ -77,7 +78,8 @@ prijava::prijava(QWidget *parent) :
 									   "koneczaposlitve TEXT, "
 									   "pogodba TEXT, "
 									   "avtomobil TEXT, "
-									   "registracija TEXT)"
+										 "registracija TEXT, "
+										 "dovoljenje TEXT)"
 									   );
 		sql_create_table_users.exec();
 
@@ -703,6 +705,7 @@ void prijava::on_btn_brisi_clicked() {
 }
 
 void prijava::on_btn_prijavi_clicked() {
+
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -732,10 +735,15 @@ void prijava::on_btn_prijavi_clicked() {
 			msgbox.exec();
 		}
 		else {
-			if (prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) == ui->txt_geslo->text()) {
+			if ( prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
+				// set user name, permission and programm state
+
+
+
+				// show main window
 				GlavnoOkno *glavnookno = new GlavnoOkno;
 			//	glavnookno->showMaximized();
-				glavnookno->show();
+		//		glavnookno->show();
 				this->close();
 			}
 			else {

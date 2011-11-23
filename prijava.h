@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "varnost.h"
+
 namespace Ui {
     class prijava;
 }

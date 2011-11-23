@@ -24,7 +24,8 @@ HEADERS += \
     stroski.h \
     racun.h \
     wid_racuni.h \
-    vizitka.h
+    vizitka.h \
+    varnost.h
 
 SOURCES += \
     main.cpp \
@@ -52,7 +53,8 @@ SOURCES += \
     stroski.cpp \
     racun.cpp \
     wid_racuni.cpp \
-    vizitka.cpp
+    vizitka.cpp \
+    varnost.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -84,4 +86,6 @@ QT += sql
 
 OTHER_FILES += \
     besedilo-potni-nalogi.txt
+
+
 
