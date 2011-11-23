@@ -4,6 +4,7 @@
 #include <QValidator>
 #include <QFocusEvent>
 #include <QtSql>
+#include <QFile>
 
 #include "prejetiracuni.h"
 #include "ui_prejetiracuni.h"
@@ -119,8 +120,59 @@ void prejetiracuni::on_btn_izhod_clicked() {
 
 }
 
-// prazno, dokler se ne dogovorimo o dejavnosti gumba
-void prejetiracuni::on_btn_brisi_clicked() {
+void prejetiracuni::on_btn_izpisi_clicked() {
+
+	// v string vsebina se shrani celotno besedilo enega prejetega racuna
+	QString vsebina;
+
+// odpri podatke o prejetem racunu
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		QSqlQuery sql_racun;
+		sql_racun.prepare("SELECT * FROM prejetiracuni WHERE id LIKE '" + ui->txt_id->text() + "'");
+		sql_racun.exec();
+		if ( sql_racun.next() ) {
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("id")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("stevilkavnosa")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("stevilkaracuna")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("posiljatelj")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("zadeva")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datumprejema")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datumplacila")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("rokplacila")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("oseba")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("znesek")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("znesekbrezddv")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("znesekddv")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("ddv00")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("ddv85")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("ddv20")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("statusracuna")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("statusplacila")).toString()) + ";");
+			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("statusracunovodstvo")).toString()));
+		}
+	}
+	base.close();
+
+	QFile file1("prejetiracun.cvs");
+	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	QTextStream out(&file1);
+	out << vsebina;
+	file1.close();
 
 }
 
@@ -351,10 +403,6 @@ void prejetiracuni::keyPressEvent(QKeyEvent *event) {
 	else if (event->key() == Qt::Key_Escape)
 	{
 		this->on_btn_izhod_clicked();
-	}
-	else if ((event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier))
-	{
-		this->on_btn_brisi_clicked();
 	}
 }
 

@@ -401,9 +401,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_brisi">
+      <widget class="QPushButton" name="btn_izpisi">
        <property name="text">
-        <string>Briši</string>
+        <string>Izpiši kot CSV</string>
        </property>
       </widget>
      </item>
@@ -442,7 +442,7 @@
   <tabstop>txt_statusplacila</tabstop>
   <tabstop>txt_statusracunovodstva</tabstop>
   <tabstop>btn_sprejmi</tabstop>
-  <tabstop>btn_brisi</tabstop>
+  <tabstop>btn_izpisi</tabstop>
  </tabstops>
  <resources/>
  <connections/>

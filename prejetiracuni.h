@@ -17,7 +17,7 @@ public:
 
 private slots:
 	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
+	void on_btn_izpisi_clicked();
 	void on_btn_sprejmi_clicked();
 	void keyPressEvent(QKeyEvent *event);
 	void on_txt_znesekddv_0_editingFinished();
