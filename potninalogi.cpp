@@ -847,10 +847,14 @@ void potninalogi::prejem(QString besedilo) {
 	if (besedilo == "Nov nalog") {
 		ui->btn_sprejmi->setText("Vnesi potni nalog");
 		ui->btn_izvozi->setEnabled(false); // nalog je potrebno najprej shraniti, sele nato ga lahko tiskamo
+		ui->wid_pot->setEnabled(false);
+		ui->wid_st->setEnabled(false);
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi potni nalog");
 		ui->btn_izvozi->setEnabled(true);
+		ui->wid_pot->setEnabled(true);
+		ui->wid_st->setEnabled(true);
 		// besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";

@@ -117,6 +117,7 @@ void wid_potninalogi::on_tbl_potninalogi_doubleClicked() {
 void wid_potninalogi::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_potninalogi->selectedItems().takeAt(0)->text();
+	QString stnaloga = ui->tbl_potninalogi->selectedItems().takeAt(2)->text();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -133,6 +134,14 @@ void wid_potninalogi::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
+		sql_brisi.prepare("DELETE FROM pot WHERE potninalog LIKE '" + pretvori(stnaloga) + "'");
+		sql_brisi.exec();
+		sql_brisi.clear();
+
+		sql_brisi.prepare("DELETE FROM stroski WHERE potninalog LIKE '" + pretvori(stnaloga) + "'");
+		sql_brisi.exec();
+		sql_brisi.clear();
+
 		sql_brisi.prepare("DELETE FROM potninalogi WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}

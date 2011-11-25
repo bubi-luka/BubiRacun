@@ -163,7 +163,29 @@ void wid_stranke::on_btn_brisi_clicked() {
 		msgbox.exec();
 	}
 	else {
+		QSqlQuery sql_projekt;
 		QSqlQuery sql_brisi;
+		sql_projekt.prepare("SELECT * FROM projekti WHERE stranka LIKE '" + id + "'");
+		sql_projekt.exec();
+		while ( sql_projekt.next() ) {
+			QString stprojekta = sql_projekt.value(sql_projekt.record().indexOf("stprojekta")).toString();
+			QSqlQuery sql_racun;
+			sql_racun.prepare("SELECT * FROM racuni WHERE stprojekta LIKE '" + stprojekta + "'");
+			sql_racun.exec();
+			while ( sql_racun.next() ) {
+				QString stracuna = sql_racun.value(sql_racun.record().indexOf("stracuna")).toString();
+				sql_brisi.prepare("DELETE FROM opravila WHERE racun LIKE '" + stracuna + "'");
+				sql_brisi.exec();
+				sql_brisi.clear();
+			}
+			sql_brisi.prepare("DELETE FROM racuni WHERE stprojekta LIKE '" + stprojekta + "'");
+			sql_brisi.exec();
+			sql_brisi.clear();
+		}
+		sql_brisi.prepare("DELETE FROM projekti WHERE stranka LIKE '" + id + "'");
+		sql_brisi.exec();
+		sql_brisi.clear();
+
 		sql_brisi.prepare("DELETE FROM stranke WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}

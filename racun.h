@@ -16,7 +16,7 @@ public:
     ~racun();
 private slots:
 	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
+	void on_btn_izpisi_clicked();
 	void on_btn_sprejmi_clicked();
 	void on_btn_brisi_opravilo_clicked();
 	void on_btn_opravilo_clicked();

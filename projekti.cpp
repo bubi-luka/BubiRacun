@@ -313,9 +313,11 @@ void projekti::prejem(QString besedilo) {
 	if (besedilo.left(11) == "Nov projekt") {
 		ui->btn_sprejmi->setText("Vnesi projekt");
 		ui->txt_stranka_id->setText(besedilo.right(besedilo.length() - 11));
+		ui->wid_racuni->setEnabled(false);
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi vnos");
+		ui->wid_racuni->setEnabled(true);
 		// besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";

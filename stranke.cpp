@@ -975,9 +975,17 @@ void stranke::prejem(QString besedilo) {
 
 	if (besedilo == "Nova stranka") {
 		ui->btn_vnesi->setText("Vnesi stranko");
+		ui->tbl_kuponi->setEnabled(false);
+		ui->tbl_projekti->setEnabled(false);
+		ui->btn_novprojekt->setEnabled(false);
+		ui->btn_nov->setEnabled(false);
 	}
 	else {
 		ui->btn_vnesi->setText("Popravi vnos");
+		ui->tbl_kuponi->setEnabled(true);
+		ui->tbl_projekti->setEnabled(true);
+		ui->btn_novprojekt->setEnabled(true);
+		ui->btn_nov->setEnabled(true);
 		// besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";

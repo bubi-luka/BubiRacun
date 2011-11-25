@@ -177,6 +177,7 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
 void wid_racuni::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_racuni->selectedItems().takeAt(0)->text();
+	QString stracuna = ui->tbl_racuni->selectedItems().takeAt(1)->text();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -193,6 +194,10 @@ void wid_racuni::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
+		sql_brisi.prepare("DELETE FROM opravila WHERE racun LIKE '" + pretvori(stracuna) + "'");
+		sql_brisi.exec();
+		sql_brisi.clear();
+
 		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}

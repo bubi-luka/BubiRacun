@@ -411,9 +411,11 @@ void prejetiracuni::prejem(QString besedilo) {
 
 	if (besedilo == "Nov racun") {
 		ui->btn_sprejmi->setText("Vnesi racun");
+		ui->btn_izpisi->setEnabled(false);
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi racun");
+		ui->btn_izpisi->setEnabled(true);
 		// besedilo nosi ID ze obstojec racun, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";

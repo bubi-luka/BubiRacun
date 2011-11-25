@@ -29,6 +29,11 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 
 	ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
 	ui->lbl_pozdrav->setText("Pozdravljeni!");
+
+	ui->actionPoslovanje->setEnabled(false);
+	ui->actionPrihodek->setEnabled(false);
+	ui->actionIzdatek->setEnabled(false);
+
 }
 
 GlavnoOkno::~GlavnoOkno()
