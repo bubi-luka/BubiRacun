@@ -31,7 +31,7 @@ void wid_potovanja::napolni() {
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_potovanja");
 	base.setDatabaseName(dbase_path);
 	base.database();
 	base.open();
@@ -127,7 +127,6 @@ void wid_potovanja::on_tbl_potovanja_doubleClicked() {
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
 	prenos(ui->tbl_potovanja->selectedItems().takeAt(0)->text());
-	this->disconnect();
 
 	// receive signal to refresh table
 	QObject::connect(uredi, SIGNAL(poslji(QString)),
@@ -191,7 +190,6 @@ void wid_potovanja::on_btn_nov_clicked() {
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
 	prenos("Nova pot" + ui->txt_stnaloga->text());
-	this->disconnect();
 
 	// receive signal to refresh table
 	QObject::connect(uredi, SIGNAL(poslji(QString)),

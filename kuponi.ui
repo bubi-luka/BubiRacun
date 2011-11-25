@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>kuponi</class>
  <widget class="QDialog" name="kuponi">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -207,6 +210,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izbriši</string>
        </property>
@@ -214,6 +220,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -230,6 +239,19 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_kupon</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_prejemnik_id</tabstop>
+  <tabstop>txt_prejemnik</tabstop>
+  <tabstop>txt_datumpridobitve</tabstop>
+  <tabstop>txt_uporabljen</tabstop>
+  <tabstop>txt_uveljavitelj_id</tabstop>
+  <tabstop>txt_uveljavitelj</tabstop>
+  <tabstop>txt_datumuveljavitve</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

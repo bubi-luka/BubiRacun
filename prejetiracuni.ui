@@ -402,6 +402,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izpisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izpiši kot CSV</string>
        </property>
@@ -431,16 +434,19 @@
  <tabstops>
   <tabstop>txt_stvnosa</tabstop>
   <tabstop>txt_stracuna</tabstop>
+  <tabstop>txt_statusracuna</tabstop>
   <tabstop>txt_izdajatelj</tabstop>
   <tabstop>txt_zadeva</tabstop>
+  <tabstop>txt_podjetje</tabstop>
+  <tabstop>txt_oseba</tabstop>
+  <tabstop>txt_znesekddv_20</tabstop>
+  <tabstop>txt_znesekddv_85</tabstop>
+  <tabstop>txt_znesekddv_0</tabstop>
+  <tabstop>txt_statusplacila</tabstop>
+  <tabstop>txt_statusracunovodstva</tabstop>
   <tabstop>txt_prejem</tabstop>
   <tabstop>txt_placilo</tabstop>
   <tabstop>txt_rok</tabstop>
-  <tabstop>txt_podjetje</tabstop>
-  <tabstop>txt_oseba</tabstop>
-  <tabstop>txt_znesekddv_85</tabstop>
-  <tabstop>txt_statusplacila</tabstop>
-  <tabstop>txt_statusracunovodstva</tabstop>
   <tabstop>btn_sprejmi</tabstop>
   <tabstop>btn_izpisi</tabstop>
  </tabstops>

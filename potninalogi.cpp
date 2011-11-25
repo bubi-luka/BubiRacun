@@ -141,14 +141,6 @@ potninalogi::potninalogi(QWidget *parent) :
 		sql_fill_combo.clear();
 	}
 	base.close();
-
-	// insert widgets
-	wid_stroski *widst = new wid_stroski;
-	ui->wid_st->setWidget(widst);
-
-	wid_potovanja *widpot = new wid_potovanja;
-	ui->wid_pot->setWidget(widpot);
-
 }
 
 potninalogi::~potninalogi()
@@ -965,17 +957,18 @@ void potninalogi::prejem(QString besedilo) {
 	QObject::connect(this, SIGNAL(prenos(QString)),
 				 widst , SLOT(prejem(QString)));
 	prenos(ui->txt_stnaloga->text());
-	this->disconnect();
+//	this->disconnect();
 
 	QObject::connect(widst, SIGNAL(prenesi()),
 					 this, SLOT(sprejmist()));
 
 	wid_potovanja *widpot = new wid_potovanja;
 	ui->wid_pot->setWidget(widpot);
+
 	QObject::connect(this, SIGNAL(prenos(QString)),
 				 widpot , SLOT(prejem(QString)));
 	prenos(ui->txt_stnaloga->text());
-	this->disconnect();
+//	this->disconnect();
 
 	QObject::connect(widpot, SIGNAL(prenesi()),
 					 this, SLOT(sprejmipot()));

@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>BenRačun: glavno okno</string>
   </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextOnly</enum>
   </property>

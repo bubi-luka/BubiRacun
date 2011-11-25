@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>racun</class>
  <widget class="QDialog" name="racun">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -481,6 +484,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izpisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izpiši CSV</string>
        </property>
@@ -488,6 +494,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -504,6 +513,31 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>rb_predracun</tabstop>
+  <tabstop>rb_racun</tabstop>
+  <tabstop>txt_stracuna</tabstop>
+  <tabstop>txt_strankaid</tabstop>
+  <tabstop>txt_stranka</tabstop>
+  <tabstop>txt_projektid</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_pricetek</tabstop>
+  <tabstop>txt_konec</tabstop>
+  <tabstop>txt_stplacila</tabstop>
+  <tabstop>txt_stracunovodstva</tabstop>
+  <tabstop>btn_opravilo</tabstop>
+  <tabstop>btn_brisi_opravilo</tabstop>
+  <tabstop>tbl_opravila</tabstop>
+  <tabstop>txt_z_placano</tabstop>
+  <tabstop>txt_z_seplacati</tabstop>
+  <tabstop>txt_z_popusti</tabstop>
+  <tabstop>txt_z_znesekbrezddv</tabstop>
+  <tabstop>txt_z_ddv</tabstop>
+  <tabstop>txt_z_znesek</tabstop>
+  <tabstop>btn_izracunaj</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

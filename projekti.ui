@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>projekti</class>
  <widget class="QDialog" name="projekti">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -337,6 +340,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Briši</string>
        </property>
@@ -344,6 +350,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -360,6 +369,26 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_naziv</tabstop>
+  <tabstop>txt_stranka_id</tabstop>
+  <tabstop>txt_stranka</tabstop>
+  <tabstop>txt_pricetek</tabstop>
+  <tabstop>txt_konec</tabstop>
+  <tabstop>txt_statusprojekta</tabstop>
+  <tabstop>txt_kupon1</tabstop>
+  <tabstop>txt_kupon2</tabstop>
+  <tabstop>txt_kupon3</tabstop>
+  <tabstop>wid_racuni</tabstop>
+  <tabstop>txt_znesekbrezddv</tabstop>
+  <tabstop>txt_ddv</tabstop>
+  <tabstop>txt_popusti</tabstop>
+  <tabstop>txt_znesek</tabstop>
+  <tabstop>btn_izracunaj</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

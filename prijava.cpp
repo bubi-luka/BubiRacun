@@ -28,17 +28,19 @@ prijava::prijava(QWidget *parent) :
 	f_baza.setFileName(dbase_path);
 
 	QDir direktorij;
-	direktorij.setPath(app_path + "/kopija");
+	direktorij.setPath(QDir::homePath() + "/.BubiRacun");
 	if ( !direktorij.exists() ) {
-		QMessageBox test;
-		test.setText("Kopija obstaja");
-		test.exec();
-
-		direktorij.mkdir(app_path + "/kopija");
+		direktorij.mkdir(QDir::homePath() + "/.BubiRacun");
 	}
 
+	direktorij.setPath(QDir::homePath() + "/.BubiRacun/kopija");
+	if ( !direktorij.exists() ) {
+		direktorij.mkdir(QDir::homePath() + "/.BubiRacun/kopija");
+	}
+
+
 	int i = 1;
-	while ( !f_baza.copy("kopija/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck")) {
+	while ( !f_baza.copy(QDir::homePath() + "/.BubiRacun/kopija/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck")) {
 		i++;
 	}
 

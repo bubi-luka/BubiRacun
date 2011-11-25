@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>potninalogi</class>
  <widget class="QDialog" name="potninalogi">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -649,8 +652,23 @@
   <tabstop>txt_prevoz</tabstop>
   <tabstop>txt_avtomobil</tabstop>
   <tabstop>txt_registrska</tabstop>
+  <tabstop>wid_pot</tabstop>
   <tabstop>txt_kilometri</tabstop>
   <tabstop>txt_kilometrina</tabstop>
+  <tabstop>txt_dnevi</tabstop>
+  <tabstop>txt_ure</tabstop>
+  <tabstop>txt_priznajdnevnico</tabstop>
+  <tabstop>txt_dnevnica1</tabstop>
+  <tabstop>txt_dnevnica2</tabstop>
+  <tabstop>txt_zajtrk2</tabstop>
+  <tabstop>txt_dnevnica3</tabstop>
+  <tabstop>txt_zajtrk3</tabstop>
+  <tabstop>wid_st</tabstop>
+  <tabstop>txt_cenaprevoza</tabstop>
+  <tabstop>txt_cenaodsotnosti</tabstop>
+  <tabstop>txt_ostalo</tabstop>
+  <tabstop>txt_skupaj</tabstop>
+  <tabstop>txt_opombe</tabstop>
   <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>

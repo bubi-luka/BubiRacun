@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>stranke</class>
  <widget class="QDialog" name="stranke">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>993</width>
-    <height>898</height>
+    <height>858</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +26,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-144</y>
+        <y>0</y>
         <width>955</width>
         <height>986</height>
        </rect>
@@ -1044,6 +1047,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izbrisi</string>
        </property>
@@ -1051,6 +1057,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -1096,9 +1105,33 @@
   <tabstop>btn_nov</tabstop>
   <tabstop>tbl_kuponi</tabstop>
   <tabstop>tbl_projekti</tabstop>
+  <tabstop>btn_novprojekt</tabstop>
+  <tabstop>cb_facebook</tabstop>
+  <tabstop>txt_p_facebook</tabstop>
+  <tabstop>cb_twitter</tabstop>
+  <tabstop>txt_p_twitter</tabstop>
+  <tabstop>cb_google</tabstop>
+  <tabstop>txt_p_google</tabstop>
+  <tabstop>cb_blog</tabstop>
+  <tabstop>txt_p_blog</tabstop>
+  <tabstop>cb_forum</tabstop>
+  <tabstop>txt_p_forum</tabstop>
+  <tabstop>cb_sfacebook</tabstop>
+  <tabstop>txt_p_sfacebook</tabstop>
+  <tabstop>cb_stwitter</tabstop>
+  <tabstop>txt_p_stwitter</tabstop>
+  <tabstop>cb_skuponi</tabstop>
+  <tabstop>txt_p_skuponi</tabstop>
+  <tabstop>cb_obrazec</tabstop>
+  <tabstop>txt_p_obrazec</tabstop>
+  <tabstop>cb_kupon</tabstop>
+  <tabstop>txt_p_stranka</tabstop>
+  <tabstop>cb_akcija</tabstop>
+  <tabstop>txt_p_akcija</tabstop>
+  <tabstop>cb_vip</tabstop>
+  <tabstop>txt_p_vip</tabstop>
   <tabstop>btn_vnesi</tabstop>
-  <tabstop>btn_izhod</tabstop>
-  <tabstop>btn_brisi</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections/>

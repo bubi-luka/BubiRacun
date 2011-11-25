@@ -536,10 +536,13 @@
   <tabstop>txt_registracija</tabstop>
   <tabstop>txt_id</tabstop>
   <tabstop>txt_uporabnik</tabstop>
+  <tabstop>txt_geslo</tabstop>
   <tabstop>txt_ponovnogeslo</tabstop>
+  <tabstop>btn_geslo</tabstop>
   <tabstop>txt_naziv</tabstop>
   <tabstop>txt_zaposlitev</tabstop>
   <tabstop>txt_pogodba</tabstop>
+  <tabstop>txt_zaposlen</tabstop>
   <tabstop>txt_odpustitev</tabstop>
   <tabstop>txt_davcna</tabstop>
   <tabstop>txt_emso</tabstop>

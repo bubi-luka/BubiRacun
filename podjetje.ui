@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>882</width>
+    <width>931</width>
     <height>728</height>
    </rect>
   </property>
@@ -468,6 +468,8 @@
   <tabstop>txt_davcna</tabstop>
   <tabstop>txt_trr</tabstop>
   <tabstop>txt_url</tabstop>
+  <tabstop>txt_logo</tabstop>
+  <tabstop>btn_logo</tabstop>
   <tabstop>txt_lastnik</tabstop>
   <tabstop>txt_odgovorni</tabstop>
   <tabstop>txt_naziv</tabstop>

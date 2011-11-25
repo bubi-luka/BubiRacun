@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>potovanja</class>
  <widget class="QDialog" name="potovanja">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -218,6 +221,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -225,6 +231,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Briši</string>
        </property>
@@ -241,6 +250,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_stnaloga</tabstop>
+  <tabstop>txt_o_kraj</tabstop>
+  <tabstop>txt_p_kraj</tabstop>
+  <tabstop>txt_o_datum</tabstop>
+  <tabstop>txt_p_datum</tabstop>
+  <tabstop>txt_naslov</tabstop>
+  <tabstop>txt_kilometri</tabstop>
+  <tabstop>txt_povratek</tabstop>
+  <tabstop>btn_izhod</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

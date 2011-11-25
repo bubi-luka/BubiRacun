@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>opravila</class>
  <widget class="QDialog" name="opravila">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -723,6 +726,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izbriši</string>
        </property>
@@ -730,6 +736,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_izhod">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="text">
         <string>Izhod</string>
        </property>
@@ -746,6 +755,59 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_racun</tabstop>
+  <tabstop>txt_storitev</tabstop>
+  <tabstop>txt_ure</tabstop>
+  <tabstop>txt_cena</tabstop>
+  <tabstop>txt_popravljena_cena_ure</tabstop>
+  <tabstop>txt_ddv</tabstop>
+  <tabstop>cb_facebook</tabstop>
+  <tabstop>txt_p_facebook</tabstop>
+  <tabstop>cb_twitter</tabstop>
+  <tabstop>txt_p_twitter</tabstop>
+  <tabstop>cb_google</tabstop>
+  <tabstop>txt_p_google</tabstop>
+  <tabstop>cb_blog</tabstop>
+  <tabstop>txt_p_blog</tabstop>
+  <tabstop>cb_forum</tabstop>
+  <tabstop>txt_p_forum</tabstop>
+  <tabstop>cb_sfacebook</tabstop>
+  <tabstop>txt_p_sfacebook</tabstop>
+  <tabstop>cb_stwitter</tabstop>
+  <tabstop>txt_p_stwitter</tabstop>
+  <tabstop>cb_skuponi</tabstop>
+  <tabstop>txt_p_skuponi</tabstop>
+  <tabstop>cb_obrazec</tabstop>
+  <tabstop>txt_p_obrazec</tabstop>
+  <tabstop>cb_kupon</tabstop>
+  <tabstop>txt_p_stranka</tabstop>
+  <tabstop>cb_akcija</tabstop>
+  <tabstop>txt_p_akcija</tabstop>
+  <tabstop>cb_vip</tabstop>
+  <tabstop>txt_p_vip</tabstop>
+  <tabstop>txt_p_skupaj</tabstop>
+  <tabstop>cb_k_vikend</tabstop>
+  <tabstop>txt_k_vikend</tabstop>
+  <tabstop>cb_k_kratek</tabstop>
+  <tabstop>txt_k_kratek</tabstop>
+  <tabstop>cb_k_zahtevnost</tabstop>
+  <tabstop>txt_k_zahtevnost</tabstop>
+  <tabstop>cb_k_neumnost</tabstop>
+  <tabstop>txt_k_neumnosti</tabstop>
+  <tabstop>cb_k_komunikacija</tabstop>
+  <tabstop>txt_k_komunikacija</tabstop>
+  <tabstop>txt_k_skupaj</tabstop>
+  <tabstop>txt_znesekbrezddv</tabstop>
+  <tabstop>txt_popust</tabstop>
+  <tabstop>txt_s_ddv</tabstop>
+  <tabstop>txt_s_znesek</tabstop>
+  <tabstop>btn_izracunaj</tabstop>
+  <tabstop>btn_vnesi</tabstop>
+  <tabstop>btn_izhod</tabstop>
+  <tabstop>btn_brisi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

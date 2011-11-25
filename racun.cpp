@@ -360,16 +360,111 @@ void racun::on_btn_sprejmi_clicked() {
 			msgbox.exec();
 		}
 		else {
+
+			// poglej, ce je slucajno prislo do pretvorbe iz predracuna v racun in dodeli spremenljivki predracun ustrezno vrednost
+			QSqlQuery sql_iz_predracuna_v_racun;
+			bool predracun;
+			sql_iz_predracuna_v_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
+			sql_iz_predracuna_v_racun.exec();
+			if ( sql_iz_predracuna_v_racun.next() ) {
+				if ( prevedi(sql_iz_predracuna_v_racun.value(sql_iz_predracuna_v_racun.record().indexOf("tipracuna")).toString()) == "predracun" ) {
+					predracun = true;
+				}
+				else {
+					predracun = false;
+				}
+			}
+
 			QString projekt;
+
+			// doloci SQL query glede na stanje programa: vnesi nov vnos, popravi obstojeci vnos, kopiraj obstojeci vnos in vse pripadajoce opravke
 			QSqlQuery sql_vnesi_projekt;
-			if (ui->btn_sprejmi->text() == "Vnesi racun") {
+			if (ui->btn_sprejmi->text() == "Vnesi racun") { // nov vnos se neobstojecega (pred)racuna
 				sql_vnesi_projekt.prepare("INSERT INTO racuni (stracuna, stprojekta, tipracuna, stranka, datumpricetka, datumkonca, statusplacila, statusracunovodstva, zeplacano) "
 										  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
-			else {
+			else if ( predracun == false || ui->rb_predracun->isChecked() ) { // popravi ze obstojec vnos
 				sql_vnesi_projekt.prepare("UPDATE racuni SET stracuna = ?, stprojekta = ?, tipracuna = ?, stranka = ?, datumpricetka = ?, datumkonca = ?, statusplacila = ?, "
-										  "statusracunovodstva = ?, zeplacano = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+											"statusracunovodstva = ?, zeplacano = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
+			else if ( predracun == true && ui->rb_racun->isChecked() ) { // pretvori iz predracuna v racun
+				/*
+					* Vnos za racun ze obstaja. Preveri moznost, da se je iz predracuna naredil racun (obratno ne velja).
+					* Ce je prislo do te spremembe, ne popravljaj ampak vnesi kot nov racun, starega pusti pri miru.
+					* Prav tako kopiraj opravila kot del ze omenjenega racuna.
+				*/
+
+				// doloci novo stevilko racuna
+				QString stara_stevilka = ui->txt_stracuna->text();
+				QString leto = QDate::currentDate().toString("yyyy");
+				int i = 1;
+				QString stevilka = "";
+
+				QSqlQuery sql_insert_stracuna;
+				sql_insert_stracuna.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori("SR-" + leto) + "%'");
+				sql_insert_stracuna.exec();
+				while (sql_insert_stracuna.next()) {
+					i++;
+				}
+				if ( i < 10 ) {
+					stevilka = "00" + QString::number(i, 10);
+				}
+				else if ( i < 100 ) {
+					stevilka = "0" + QString::number(i, 10);
+				}
+				else {
+					stevilka = "" + QString::number(i, 10);
+				}
+				ui->txt_stracuna->setText("SR-" + leto + "-" + stevilka);
+
+				// pripravi SQL query za vnos
+				sql_vnesi_projekt.prepare("INSERT INTO racuni (stracuna, stprojekta, tipracuna, stranka, datumpricetka, datumkonca, statusplacila, statusracunovodstva, zeplacano) "
+											"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+				// kopira opravila iz predracuna v racun
+				QSqlQuery sql_poisci_opravila;
+				sql_poisci_opravila.prepare("SELECT * FROM opravila WHERE racun LIKE '" + pretvori(stara_stevilka) + "'");
+				sql_poisci_opravila.exec();
+				while ( sql_poisci_opravila.next() ) {
+					QSqlQuery sql_kopiraj_opravila;
+					sql_kopiraj_opravila.prepare("INSERT INTO opravila (racun, storitev, ure, cena_ure, ddv, p_facebook, p_twitter, p_google, p_blog, "
+													 "p_forum, p_sfacebook, p_stwitter, p_skuponi, p_obrazec, p_kupon, p_akcija, p_vip, popusti, k_vikend, "
+													 "k_kratekrok, k_zahtevnost, k_neumnosti, k_komunikacija, kontrapopusti, znesekbrezddv, znesekddv, znesekpopust, znesekskupaj) "
+													 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					sql_kopiraj_opravila.bindValue(0, pretvori(ui->txt_stracuna->text()));
+					sql_kopiraj_opravila.bindValue(1, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("storitev")).toString()));
+					sql_kopiraj_opravila.bindValue(2, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("ure")).toString()));
+					sql_kopiraj_opravila.bindValue(3, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("cena_ure")).toString()));
+					sql_kopiraj_opravila.bindValue(4, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("ddv")).toString()));
+					sql_kopiraj_opravila.bindValue(5, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_facebook")).toString()));
+					sql_kopiraj_opravila.bindValue(6, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_twitter")).toString()));
+					sql_kopiraj_opravila.bindValue(7, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_google")).toString()));
+					sql_kopiraj_opravila.bindValue(8, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_blog")).toString()));
+					sql_kopiraj_opravila.bindValue(9, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_forum")).toString()));
+					sql_kopiraj_opravila.bindValue(10, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_sfacebook")).toString()));
+					sql_kopiraj_opravila.bindValue(11, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_stwitter")).toString()));
+					sql_kopiraj_opravila.bindValue(12, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_skuponi")).toString()));
+					sql_kopiraj_opravila.bindValue(13, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_obrazec")).toString()));
+					sql_kopiraj_opravila.bindValue(14, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_kupon")).toString()));
+					sql_kopiraj_opravila.bindValue(15, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_akcija")).toString()));
+					sql_kopiraj_opravila.bindValue(16, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("p_vip")).toString()));
+					sql_kopiraj_opravila.bindValue(17, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popusti")).toString()));
+					sql_kopiraj_opravila.bindValue(18, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("k_vikend")).toString()));
+					sql_kopiraj_opravila.bindValue(19, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("k_kratekrok")).toString()));
+					sql_kopiraj_opravila.bindValue(20, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("k_zahtevnost")).toString()));
+					sql_kopiraj_opravila.bindValue(21, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("k_neumnosti")).toString()));
+					sql_kopiraj_opravila.bindValue(22, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("k_komunikacija")).toString()));
+					sql_kopiraj_opravila.bindValue(23, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("kontrapopusti")).toString()));
+					sql_kopiraj_opravila.bindValue(24, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesekbrezddv")).toString()));
+					sql_kopiraj_opravila.bindValue(25, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesekddv")).toString()));
+					sql_kopiraj_opravila.bindValue(26, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesekpopust")).toString()));
+					sql_kopiraj_opravila.bindValue(27, pretvori(sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesekskupaj")).toString()));
+					sql_kopiraj_opravila.exec();
+				}
+
+			}
+
+			// izvrsi SQL query
 			sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stracuna->text()));
 			sql_vnesi_projekt.bindValue(1, pretvori(ui->txt_projektid->text()));
 			if ( ui->rb_predracun->isChecked() ) {
