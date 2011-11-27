@@ -5,6 +5,7 @@
 #include <QFocusEvent>
 #include <QtSql>
 #include <QFile>
+#include <QFileDialog>
 
 #include "prejetiracuni.h"
 #include "ui_prejetiracuni.h"
@@ -167,7 +168,11 @@ void prejetiracuni::on_btn_izpisi_clicked() {
 	}
 	base.close();
 
-	QFile file1("prejetiracun.cvs");
+	QString pot_izvoza = QFileDialog::getSaveFileName(this, tr("Izberite kraj izvoza prejetih racunov"),
+														 QDir::homePath() + "/Documents/prejeti-racuni.csv",
+														 "Urejena tekstovna datoteka (*.csv *.txt *.xml, xls, ods)");
+
+	QFile file1(pot_izvoza);
 	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
 		return;
 	QTextStream out(&file1);

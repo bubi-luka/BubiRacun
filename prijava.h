@@ -21,6 +21,7 @@ private slots:
 	void on_btn_izhod_clicked();
 	void on_btn_brisi_clicked();
 	void on_btn_prijavi_clicked();
+	void test_user_name_changed();
 	void keyPressEvent(QKeyEvent *event);
 
 	QString pretvori(QString besedilo);

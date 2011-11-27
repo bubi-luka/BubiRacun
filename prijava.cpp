@@ -705,6 +705,15 @@ void prijava::on_btn_brisi_clicked() {
 
 	ui->txt_uporabnik->setFocus();
 
+
+
+	varnost podatki(int argc, int argv);
+//	QObject::connect(podatki, SIGNAL(user_name_changed()), this, SLOT(test_user_name_changed()));
+
+	vApp->set_user_name("Lukec");
+//	set_permission("Sef");
+//	set_permission("javno");
+
 }
 
 void prijava::on_btn_prijavi_clicked() {
@@ -742,7 +751,6 @@ void prijava::on_btn_prijavi_clicked() {
 				// set user name, permission and programm state
 
 
-
 				// show main window
 				GlavnoOkno *glavnookno = new GlavnoOkno;
 				glavnookno->showMaximized();
@@ -772,5 +780,11 @@ QString prijava::pretvori(QString besedilo) {
 QString prijava::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void prijava::test_user_name_changed() {
+
+	ui->txt_uporabnik->setText(vApp->user_name());
 
 }

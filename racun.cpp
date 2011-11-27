@@ -5,6 +5,7 @@
 #include <QFocusEvent>
 #include <QtSql>
 #include <QFile>
+#include <QFileDialog>
 
 #include "racun.h"
 #include "ui_racun.h"
@@ -218,7 +219,11 @@ void racun::on_btn_izpisi_clicked() {
 	}
 	base.close();
 
-	QFile file1("izdaniracuni.cvs");
+	QString pot_izvoza = QFileDialog::getSaveFileName(this, tr("Izberite kraj izvoza izdanega racuna"),
+														 QDir::homePath() + "/Documents/izdani-racuni.csv",
+														 "Urejena tekstovna datoteka (*.csv *.txt *.xml, xls, ods)");
+
+	QFile file1(pot_izvoza);
 	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
 		return;
 	QTextStream out(&file1);

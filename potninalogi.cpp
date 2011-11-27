@@ -10,6 +10,7 @@
 #include <QSize>
 #include <QSizeF>
 #include <QFile>
+#include <QFileDialog>
 
 #include "potninalogi.h"
 #include "ui_potninalogi.h"
@@ -326,7 +327,11 @@ void potninalogi::on_btn_izvozi_clicked() {
 	}
 	base.close();
 
-	QFile file1("potninalog.cvs");
+	QString pot_izvoza = QFileDialog::getSaveFileName(this, tr("Izberite kraj izvoza potnega naloga"),
+														 QDir::homePath() + "/Documents/potni-nalog.csv",
+														 "Urejena tekstovna datoteka (*.csv *.txt *.xml, xls, ods)");
+
+	QFile file1(pot_izvoza);
 	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
 		return;
 	QTextStream out(&file1);
