@@ -1,6 +1,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QWidget>
+#include <QKeyEvent>
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
@@ -13,6 +14,9 @@
 #include "wid_kuponi.h"
 #include "wid_racuni.h"
 #include "vizitka.h"
+#include "varnost.h"
+#include "kodiranje.h"
+#include "prijava.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -28,7 +32,10 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	QString ura = QTime::currentTime().toString("HH:mm:ss");
 
 	ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
-	ui->lbl_pozdrav->setText("Pozdravljeni!");
+	ui->lbl_pozdrav->setText("Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + ")!");
+
+	ui->txt_uporabnik->setText(vApp->id());
+	ui->txt_pozicija->setText(prevedi(vApp->state()));
 
 	ui->actionPoslovanje->setEnabled(false);
 	ui->actionPrihodek->setEnabled(false);
@@ -98,4 +105,45 @@ void GlavnoOkno::on_actionIzdani_ra_uni_triggered() {
 void GlavnoOkno::on_actionVizitka_triggered() {
 	Vizitka *widviz = new Vizitka;
 	ui->scrollArea->setWidget(widviz);
+}
+
+void GlavnoOkno::varnost_id_changed() {
+
+
+
+}
+
+QString GlavnoOkno::pretvori(QString besedilo) {
+
+	return kodiranje().zakodiraj(besedilo);
+
+}
+
+QString GlavnoOkno::prevedi(QString besedilo) {
+
+	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
+
+	if ( event->key() == Qt::Key_Escape ) {
+		ui->scrollArea->widget()->close();
+	}
+	else if ( (event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier) ) {
+		prijava *okno_prijava = new prijava;
+		okno_prijava->show();
+		GlavnoOkno::close();
+	}
+	else if ( (event->key() == Qt::Key_S) && (event->modifiers() == Qt::AltModifier) ) {
+
+		if (vApp->state() == pretvori("public") ) {
+			vApp->set_state(pretvori("private"));
+		}
+		else {
+			vApp->set_state(pretvori("public"));
+		}
+
+	}
+
 }

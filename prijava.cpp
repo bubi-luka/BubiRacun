@@ -705,15 +705,6 @@ void prijava::on_btn_brisi_clicked() {
 
 	ui->txt_uporabnik->setFocus();
 
-
-
-	varnost podatki(int argc, int argv);
-//	QObject::connect(podatki, SIGNAL(user_name_changed()), this, SLOT(test_user_name_changed()));
-
-	vApp->set_user_name("Lukec");
-//	set_permission("Sef");
-//	set_permission("javno");
-
 }
 
 void prijava::on_btn_prijavi_clicked() {
@@ -749,7 +740,13 @@ void prijava::on_btn_prijavi_clicked() {
 		else {
 			if ( prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
 				// set user name, permission and programm state
-
+				vApp->set_id(pretvori(ui->txt_uporabnik->text().toLower())); // set user based variables
+				if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // if first letter is uppercase - state is public
+					vApp->set_state(pretvori("public"));
+				}
+				else {
+					vApp->set_state(pretvori("private"));
+				}
 
 				// show main window
 				GlavnoOkno *glavnookno = new GlavnoOkno;
@@ -780,11 +777,5 @@ QString prijava::pretvori(QString besedilo) {
 QString prijava::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
-
-}
-
-void prijava::test_user_name_changed() {
-
-	ui->txt_uporabnik->setText(vApp->user_name());
 
 }

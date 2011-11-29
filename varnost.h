@@ -13,22 +13,26 @@ public:
 	~varnost();
 
 	// Getters
-	QString user_name() const;
+	QString id() const;
+	QString name() const;
+	QString surname() const;
 	QString permission() const;
 	QString state() const;
 
 	// Setters
-	void set_user_name(const QString &user_name);
+	void set_id(const QString &id);
 	void set_permission(const QString &permission);
 	void set_state(const QString &state);
 
 signals:
-	void user_name_changed();
+	void id_changed();
 	void permission_changed();
 	void state_changed();
 
 private:
-	QString m_user_name;
+	QString m_id;
+	QString m_name;
+	QString m_surname;
 	QString m_permission;
 	QString m_state;
 };
