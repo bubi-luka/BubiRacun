@@ -84,7 +84,15 @@ FORMS += \
 
 QT += sql
 
-OTHER_FILES +=
+OTHER_FILES += \
+    potni-nalog-besedilo.csv \
+    base.bz \
+    posta.csv \
+    skd.csv
+
+
+
+
 
 
 

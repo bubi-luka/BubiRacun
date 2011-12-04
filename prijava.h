@@ -26,6 +26,25 @@ private slots:
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 
+	// ustvari varnostno kopijo
+	void varnostna_kopija();
+
+	// ustvari tabele
+	void tabela_podjetje();
+	void tabela_uporabnik();
+
+	// ustvari tabele sifrantov
+	void tabela_skd();
+	void tabela_posta();
+	void tabela_nazivi();
+	void tabela_pogodbe();
+	void tabela_dovoljenja();
+
+	// vnese podatke v tabele
+	void vnesi_skd();
+	void vnesi_posta();
+	void vnesi_dovoljenja();
+
 signals:
 	void prenos1(QString besedilo);
 	void prenos2(QString besedilo);

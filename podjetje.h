@@ -19,8 +19,19 @@ private slots:
 	void on_btn_izhod_clicked();
 	void on_btn_brisi_clicked();
 	void on_btn_potrdi_clicked();
-	void on_btn_logo_clicked();
+
 	void on_txt_zavezanec_stateChanged();
+
+	void on_txt_lastnik_currentIndexChanged(QString besedilo);
+	void on_txt_kontaktna_currentIndexChanged(QString besedilo);
+	void on_txt_odgovorna_currentIndexChanged(QString besedilo);
+
+	void on_txt_skd_besedilo_currentIndexChanged(QString besedilo);
+	void on_txt_skd_textChanged(QString besedilo);
+
+	void on_txt_posta_currentIndexChanged(QString besedilo);
+	void on_txt_postna_stevilka_textChanged(QString besedilo);
+
 	void keyPressEvent(QKeyEvent *event);
 
 	void prejem(QString besedilo);

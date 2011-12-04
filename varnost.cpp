@@ -36,6 +36,12 @@ QString varnost::permission() const {
 
 }
 
+QString varnost::firm() const {
+
+	return m_firm;
+
+}
+
 QString varnost::state() const {
 
 	return m_state;
@@ -67,8 +73,14 @@ void varnost::set_id(const QString &id) {
 			m_id = sql_set_user_data.value(sql_set_user_data.record().indexOf("id")).toString();
 			m_name = sql_set_user_data.value(sql_set_user_data.record().indexOf("ime")).toString();
 			m_surname = sql_set_user_data.value(sql_set_user_data.record().indexOf("priimek")).toString();
-		//	set_permission(sql_set_user_data.value(sql_set_user_data.record().indexOf("dovoljenje")).toString());
-			set_permission("Direktor");
+			m_firm = sql_set_user_data.value(sql_set_user_data.record().indexOf("podjetje")).toString();
+
+			QSqlQuery sql_set_permission_data;
+			sql_set_permission_data.prepare("SELECT * FROM sif_dovoljenja WHERE id LIKE '" + sql_set_user_data.value(sql_set_user_data.record().indexOf("dovoljenje")).toString() + "'");
+			sql_set_permission_data.exec();
+			if ( sql_set_permission_data.next() ) {
+				set_permission(sql_set_permission_data.value(sql_set_permission_data.record().indexOf("dovoljenje")).toString());
+			}
 		}
 	}
 	base.close();

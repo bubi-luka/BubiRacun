@@ -24,7 +24,7 @@ uporabnik::uporabnik(QWidget *parent) :
 	// set masks
 	ui->txt_emso->setInputMask("99 99 999 999 999;_");
 	ui->txt_davcna->setInputMask("99999999;_");
-	ui->txt_ttr->setInputMask("SI56 9999 9999 9999 999;_");
+	ui->txt_tekoci_racun->setInputMask("SI56 9999 9999 9999 999;_");
 	ui->txt_gsm->setInputMask("+990 (\\0)99/999-999;_");
 	ui->txt_telefon->setInputMask("+990 (\\0)9/99-99-999;_");
 
@@ -79,7 +79,7 @@ void uporabnik::on_btn_brisi_clicked() {
 	ui->txt_id->setText("");
 	ui->txt_ime->setText("");
 	ui->txt_telefon->setText("");
-	ui->txt_ttr->setText("");
+	ui->txt_tekoci_racun->setText("");
 	ui->txt_uporabnik->setText("");
 	ui->txt_url->setText("");
 	ui->txt_ponovnogeslo->setText("");
@@ -358,7 +358,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 		ui->label_18->setPalette(palette_normal);
 		ui->label_18->setFont(font_normal);
 	}
-	if (ui->txt_ttr->text() == "") {
+	if (ui->txt_tekoci_racun->text() == "") {
 		napaka = "true";
 		ui->label_16->setPalette(palette_error);
 		ui->label_16->setFont(font_error);
@@ -400,7 +400,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			sql_vnesi_uporabnika.bindValue(1, pretvori(ui->txt_priimek->text()));
 			sql_vnesi_uporabnika.bindValue(2, pretvori(ui->txt_uporabnik->text()));
 			sql_vnesi_uporabnika.bindValue(3, pretvori(ui->txt_geslo->text()));
-			sql_vnesi_uporabnika.bindValue(4, pretvori(ui->txt_naslov->toPlainText()));
+			sql_vnesi_uporabnika.bindValue(4, pretvori(ui->txt_naslov->text()));
 			sql_vnesi_uporabnika.bindValue(5, pretvori(ui->txt_telefon->text().remove(" ")));
 			sql_vnesi_uporabnika.bindValue(6, pretvori(ui->txt_gsm->text().remove(" ")));
 			sql_vnesi_uporabnika.bindValue(7, pretvori(ui->txt_email->text()));
@@ -409,7 +409,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			sql_vnesi_uporabnika.bindValue(10, pretvori(ui->txt_naziv->currentText()));
 			sql_vnesi_uporabnika.bindValue(11, pretvori(ui->txt_davcna->text().remove(" ")));
 			sql_vnesi_uporabnika.bindValue(12, pretvori(ui->txt_emso->text().remove(" ")));
-			sql_vnesi_uporabnika.bindValue(13, pretvori(ui->txt_ttr->text().remove(" ")));
+			sql_vnesi_uporabnika.bindValue(13, pretvori(ui->txt_tekoci_racun->text().remove(" ")));
 			sql_vnesi_uporabnika.bindValue(14, pretvori(ui->txt_zaposlitev->text()));
 			sql_vnesi_uporabnika.bindValue(15, pretvori(ui->txt_odpustitev->text()));
 			sql_vnesi_uporabnika.bindValue(16, pretvori(ui->txt_pogodba->currentText()));
@@ -486,7 +486,7 @@ void uporabnik::prejem(QString besedilo) {
 				ui->txt_uporabnik->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("user_name")).toString()));
 				ui->txt_geslo->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("geslo")).toString()));
 				ui->txt_ponovnogeslo->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("geslo")).toString()));
-				ui->txt_naslov->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
+				ui->txt_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
 				ui->txt_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
 				ui->txt_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
 				ui->txt_email->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("email")).toString()));
@@ -506,7 +506,7 @@ void uporabnik::prejem(QString besedilo) {
 
 				ui->txt_davcna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("davcnastevilka")).toString()));
 				ui->txt_emso->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("emso")).toString()));
-				ui->txt_ttr->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("trr")).toString()));
+				ui->txt_tekoci_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("trr")).toString()));
 
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datumzaposlitve")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_zaposlitev->setDate(datum);

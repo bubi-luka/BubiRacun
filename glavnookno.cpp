@@ -2,6 +2,8 @@
 #include <QTimer>
 #include <QWidget>
 #include <QKeyEvent>
+#include <QtSql>
+#include <QMessageBox>
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
@@ -32,7 +34,34 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	QString ura = QTime::currentTime().toString("HH:mm:ss");
 
 	ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
-	ui->lbl_pozdrav->setText("Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + ")!");
+
+	QString pozdrav;
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_firma;
+		sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+		sql_firma.exec();
+		if ( sql_firma.next() ) {
+			pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
+		}
+	}
+	base.close();
+
+	pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
+	ui->lbl_pozdrav->setText(pozdrav);
 
 	ui->txt_uporabnik->setText(vApp->id());
 	ui->txt_pozicija->setText(prevedi(vApp->state()));

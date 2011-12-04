@@ -19,30 +19,29 @@ prijava::prijava(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	// ustvari varnostno kopijo
+	varnostna_kopija();
+
+	// ustvari tabele
+	tabela_podjetje();
+	tabela_uporabnik();
+
+	// ustvari tabele sifrantov
+	tabela_skd();
+	tabela_posta();
+	tabela_nazivi();
+	tabela_pogodbe();
+	tabela_dovoljenja();
+
+	// vnese podatke v tabele
+	vnesi_skd();
+	vnesi_posta();
+	vnesi_dovoljenja();
+
 	ui->txt_uporabnik->setFocus();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
-
-	QFile f_baza;
-	f_baza.setFileName(dbase_path);
-
-	QDir direktorij;
-	direktorij.setPath(QDir::homePath() + "/.BubiRacun");
-	if ( !direktorij.exists() ) {
-		direktorij.mkdir(QDir::homePath() + "/.BubiRacun");
-	}
-
-	direktorij.setPath(QDir::homePath() + "/.BubiRacun/kopija");
-	if ( !direktorij.exists() ) {
-		direktorij.mkdir(QDir::homePath() + "/.BubiRacun/kopija");
-	}
-
-
-	int i = 1;
-	while ( !f_baza.copy(QDir::homePath() + "/.BubiRacun/kopija/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck")) {
-		i++;
-	}
 
 	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
 	base.setDatabaseName(dbase_path);
@@ -58,55 +57,10 @@ prijava::prijava(QWidget *parent) :
 		// the database is opened
 
 		// kreiranje podatkov o uporabniku programa
-		QSqlQuery sql_create_table_users;
-		sql_create_table_users.prepare("CREATE TABLE IF NOT EXISTS uporabniki ("
-									   "id INTEGER PRIMARY KEY, "
-									   "user_name TEXT, "
-									   "ime TEXT, "
-									   "priimek TEXT, "
-									   "geslo TEXT, "
-									   "naslov TEXT, "
-									   "telefon TEXT, "
-									   "gsm TEXT, "
-									   "email TEXT, "
-									   "rojstnidatum TEXT, "
-									   "spletnastran TEXT, "
-									   "naziv TEXT, "
-									   "davcnastevilka TEXT, "
-									   "emso TEXT, "
-									   "trr TEXT, "
-									   "zaposlen TEXT, "
-									   "datumzaposlitve TEXT, "
-									   "koneczaposlitve TEXT, "
-									   "pogodba TEXT, "
-									   "avtomobil TEXT, "
-										 "registracija TEXT, "
-										 "dovoljenje TEXT)"
-									   );
-		sql_create_table_users.exec();
+
 
 		// kreiranje podatkov o podjetju
-		QSqlQuery sql_create_table_firm;
-		sql_create_table_firm.prepare("CREATE TABLE IF NOT EXISTS podjetje ("
-							  "id INTEGER PRIMARY KEY, "
-							  "ime TEXT, "
-							  "polnoime TEXT, "
-							  "naslov TEXT, "
-							  "davcnastevilka TEXT, "
-							  "ddvzavezanec TEXT, "
-							  "logo TEXT, "
-							  "email TEXT, "
-							  "spletnastran TEXT, "
-							  "maticnastevilka TEXT, "
-							  "trr TEXT, "
-							  "skd TEXT, "
-							  "lastnik TEXT, "
-							  "odgovornaoseba TEXT, "
-							  "nazivodgovorneosebe TEXT, "
-							  "gsm TEXT, "
-							  "telefon TEXT)"
-							  );
-		sql_create_table_firm.exec();
+
 
 		// kreiranje podatkov za racunovodstvo
 		QSqlQuery sql_create_table_stranke;
@@ -681,6 +635,7 @@ prijava::~prijava() {
 }
 
 void prijava::keyPressEvent(QKeyEvent *event) {
+
 	if (event->key() == Qt::Key_Return)
 	{
 		this->on_btn_prijavi_clicked();
@@ -693,13 +648,17 @@ void prijava::keyPressEvent(QKeyEvent *event) {
 	{
 		this->on_btn_brisi_clicked();
 	}
+
 }
 
 void prijava::on_btn_izhod_clicked() {
+
 	exit(0);
+
 }
 
 void prijava::on_btn_brisi_clicked() {
+
 	ui->txt_geslo->setText("");
 	ui->txt_uporabnik->setText("");
 
@@ -723,7 +682,7 @@ void prijava::on_btn_prijavi_clicked() {
 		msgbox.exec();
 	}
 	else {
-		// the database is opened
+		// baza je odprta
 
 		QSqlQuery sql_preveri;
 		sql_preveri.prepare("SELECT * FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text().toLower()) + "'");
@@ -739,16 +698,16 @@ void prijava::on_btn_prijavi_clicked() {
 		}
 		else {
 			if ( prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
-				// set user name, permission and programm state
-				vApp->set_id(pretvori(ui->txt_uporabnik->text().toLower())); // set user based variables
-				if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // if first letter is uppercase - state is public
+				// nastavi uporabnika, stanje, pravice uporabnika
+				vApp->set_id(pretvori(ui->txt_uporabnik->text().toLower())); // nastavi uporabniske pravice
+				if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
 					vApp->set_state(pretvori("public"));
 				}
 				else {
 					vApp->set_state(pretvori("private"));
 				}
 
-				// show main window
+				// prikazi glavno okno
 				GlavnoOkno *glavnookno = new GlavnoOkno;
 				glavnookno->showMaximized();
 				glavnookno->show();
@@ -766,6 +725,428 @@ void prijava::on_btn_prijavi_clicked() {
 
 	}
 	base.close();
+}
+
+// ustvari varnostno kopijo
+void prijava::varnostna_kopija() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile f_baza;
+	f_baza.setFileName(dbase_path);
+
+	QDir direktorij;
+	direktorij.setPath(QDir::homePath() + "/.BubiRacun");
+	if ( !direktorij.exists() ) {
+		direktorij.mkdir(QDir::homePath() + "/.BubiRacun");
+	}
+
+	direktorij.setPath(QDir::homePath() + "/.BubiRacun/kopija");
+	if ( !direktorij.exists() ) {
+		direktorij.mkdir(QDir::homePath() + "/.BubiRacun/kopija");
+	}
+
+	int i = 1;
+	while ( !f_baza.copy(QDir::homePath() + "/.BubiRacun/kopija/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck") ) {
+		i++;
+	}
+
+}
+
+// ustvari tabele
+void prijava::tabela_podjetje() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS podjetje ("
+														"id INTEGER PRIMARY KEY, "
+														"ime TEXT, "
+														"polnoime TEXT, "
+														"skd TEXT, "
+														"skd_besedilo TEXT, "
+														"url TEXT, "
+														"maticna_stevilka TEXT, "
+														"ddv_zavezanec TEXT, "
+														"davcna TEXT, "
+														"tekoci_racun TEXT, "
+														"naslov TEXT, "
+														"naslov_st TEXT, "
+														"posta TEXT, "
+														"postna_stevilka TEXT, "
+														"email TEXT, "
+														"gsm TEXT, "
+														"telefon TEXT, "
+														"lastnik TEXT, "
+														"kontaktna TEXT, "
+														"odgovorna TEXT)"
+							);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_uporabnik() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS uporabniki ("
+														 "id INTEGER PRIMARY KEY, "
+														 "user_name TEXT, "
+														 "ime TEXT, "
+														 "priimek TEXT, "
+														 "naziv TEXT, "
+														 "geslo TEXT, "
+														 "naslov TEXT, "
+														 "naslov_stevilka TEXT, "
+														 "posta TEXT, "
+														 "postna_stevilka TEXT, "
+														 "telefon TEXT, "
+														 "gsm TEXT, "
+														 "email TEXT, "
+														 "rojstni_datum TEXT, "
+														 "spletna_stran TEXT, "
+														 "davcna_stevilka TEXT, "
+														 "emso TEXT, "
+														 "tekoci_racun TEXT, "
+														 "zaposlen TEXT, "
+														 "datum_zaposlitve TEXT, "
+														 "konec_zaposlitve TEXT, "
+														 "pogodba TEXT, "
+														 "avtomobil TEXT, "
+														 "model_avtomobila TEXT, "
+														 "registracija TEXT, "
+														 "dovoljenje TEXT, "
+														 "podjetje TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+// sifranti
+void prijava::tabela_skd() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_skd ("
+														 "id INTEGER PRIMARY KEY, "
+														 "skd_stevilka TEXT, "
+														 "skd_naziv TEXT)"
+							);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_posta() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_posta ("
+														 "id INTEGER PRIMARY KEY, "
+														 "postna_stevilka TEXT, "
+														 "posta TEXT)"
+							);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_nazivi() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_naziv ("
+														 "id INTEGER PRIMARY KEY, "
+														 "naziv TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_pogodbe() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_pogodbe ("
+														 "id INTEGER PRIMARY KEY, "
+														 "pogodba TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_dovoljenja() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_dovoljenja ("
+														 "id INTEGER PRIMARY KEY, "
+														 "dovoljenje TEXT, "
+														 "opis TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+// vnese podatke v tabele
+void prijava::vnesi_skd() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/skd.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString skd_stevilka = vrstica.left(vrstica.indexOf(";", 0));
+			QString skd_besedilo = vrstica.right(vrstica.length() - vrstica.indexOf(";", 0) - 1);
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_skd WHERE skd_stevilka LIKE '" + pretvori(skd_stevilka) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_skd (skd_stevilka, skd_naziv) VALUES (?, ?)");
+				sql_insert_data.bindValue(0, pretvori(skd_stevilka));
+				sql_insert_data.bindValue(1, pretvori(skd_besedilo));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_posta() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/posta.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString posta_stevilka = vrstica.left(vrstica.indexOf(",", 0));
+			QString posta_besedilo = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_posta WHERE postna_stevilka LIKE '" + pretvori(posta_stevilka) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_posta (postna_stevilka, posta) VALUES (?, ?)");
+				sql_insert_data.bindValue(0, pretvori(posta_stevilka));
+				sql_insert_data.bindValue(1, pretvori(posta_besedilo));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_dovoljenja() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/dovoljenja.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString ime = vrstica.left(vrstica.indexOf(",", 0));
+			QString opis = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_dovoljenja WHERE dovoljenje LIKE '" + pretvori(ime) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_dovoljenja (dovoljenje, opis) VALUES (?, ?)");
+				sql_insert_data.bindValue(0, pretvori(ime));
+				sql_insert_data.bindValue(1, pretvori(opis));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
 }
 
 QString prijava::pretvori(QString besedilo) {

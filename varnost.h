@@ -17,6 +17,7 @@ public:
 	QString name() const;
 	QString surname() const;
 	QString permission() const;
+	QString firm() const;
 	QString state() const;
 
 	// Setters
@@ -35,6 +36,7 @@ private:
 	QString m_surname;
 	QString m_permission;
 	QString m_state;
+	QString m_firm;
 };
 
 

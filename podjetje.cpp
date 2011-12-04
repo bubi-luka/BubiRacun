@@ -18,14 +18,70 @@ podjetje::podjetje(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	// hide fields
-	ui->txt_logo->setVisible(false);
+		// podjetje
+			ui->txt_id->setText("");
+			ui->txt_ime->setText("");
+			ui->txt_polnoime->setText("");
+			ui->txt_skd->setText("");
+			ui->txt_url->setText("");
+			ui->txt_maticna_stevilka->setText("");
+			ui->txt_davcna->setText("");
+			ui->txt_tekoci_racun->setText("");
+			ui->txt_naslov->setText("");
+			ui->txt_naslov_st->setText("");
+			ui->txt_postna_stevilka->setText("");
+			ui->txt_email->setText("");
+			ui->txt_telefon->setText("");
+			ui->txt_gsm->setText("");
 
-	// set input mask
-	ui->txt_davcna->setInputMask("99999999;_");
-	ui->txt_trr->setInputMask("SI56 9999 9999 9999 999;_");
-	ui->txt_gsm->setInputMask("+990 (\\0)99/999-999;_");
-	ui->txt_telefon->setInputMask("+990 (\\0)9/99-99-999;_");
+			ui->txt_skd_besedilo->clear();
+			ui->txt_posta->clear();
+			ui->txt_zavezanec->setText("");
+
+		// lastnik
+			ui->txt_lastnik->clear();
+			ui->txt_lastnik_ime->setText("");
+			ui->txt_lastnik_priimek->setText("");
+			ui->txt_lastnik_naziv->setText("");
+			ui->txt_lastnik_naslov->setText("");
+			ui->txt_lastnik_st->setText("");
+			ui->txt_lastnik_posta->setText("");
+			ui->txt_lastnik_postna_stevilka->setText("");
+			ui->txt_lastnik_email->setText("");
+			ui->txt_lastnik_gsm->setText("");
+			ui->txt_lastnik_telefon->setText("");
+
+		// kontaktna oseba
+			ui->txt_kontaktna->clear();
+			ui->txt_kontaktna_ime->setText("");
+			ui->txt_kontaktna_priimek->setText("");
+			ui->txt_kontaktna_naziv->setText("");
+			ui->txt_kontaktna_naslov->setText("");
+			ui->txt_kontaktna_st->setText("");
+			ui->txt_kontaktna_posta->setText("");
+			ui->txt_kontaktna_postna_stevilka->setText("");
+			ui->txt_kontaktna_email->setText("");
+			ui->txt_kontaktna_gsm->setText("");
+			ui->txt_kontaktna_telefon->setText("");
+
+		// odgovorna oseba
+			ui->txt_odgovorna->clear();
+			ui->txt_odgovorna_ime->setText("");
+			ui->txt_odgovorna_priimek->setText("");
+			ui->txt_odgovorna_naziv->setText("");
+			ui->txt_odgovorna_naslov->setText("");
+			ui->txt_odgovorna_st->setText("");
+			ui->txt_odgovorna_posta->setText("");
+			ui->txt_odgovorna_postna_stevilka->setText("");
+			ui->txt_odgovorna_email->setText("");
+			ui->txt_odgovorna_gsm->setText("");
+			ui->txt_odgovorna_telefon->setText("");
+
+		// nastavi masko za vnos podatkov
+			ui->txt_davcna->setInputMask("99999999;_");
+			ui->txt_tekoci_racun->setInputMask("SI56 9999 9999 9999 999;_");
+			ui->txt_gsm->setInputMask("+990 (\\0)99/999-999;_");
+			ui->txt_telefon->setInputMask("+990 (\\0)9/99-99-999;_");
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -41,12 +97,53 @@ podjetje::podjetje(QWidget *parent) :
 		msgbox.exec();
 	}
 	else {
-		// insert data for combo box
+		// vnesi podatke v spustne sezname
+		ui->txt_skd_besedilo->addItem("");
+		ui->txt_posta->addItem("");
+		ui->txt_lastnik->addItem("");
+		ui->txt_odgovorna->addItem("");
+		ui->txt_kontaktna->addItem("");
+
 		QSqlQuery sql_fill_combo;
-		sql_fill_combo.prepare("SELECT * FROM sif_nazivi");
+		sql_fill_combo.prepare("SELECT * FROM sif_skd ORDER BY skd_stevilka ASC");
 		sql_fill_combo.exec();
 		while (sql_fill_combo.next()) {
-			ui->txt_naziv->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("naziv")).toString()));
+			ui->txt_skd_besedilo->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("skd_naziv")).toString()));
+		}
+		sql_fill_combo.clear();
+
+		sql_fill_combo.prepare("SELECT * FROM sif_posta ORDER BY posta ASC");
+		sql_fill_combo.exec();
+		while (sql_fill_combo.next()) {
+			ui->txt_posta->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("posta")).toString()));
+		}
+		sql_fill_combo.clear();
+
+		int i = 0; // preveri, ce obstaja kaksen uporabnik
+		sql_fill_combo.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+		sql_fill_combo.exec();
+		while (sql_fill_combo.next()) {
+			i++;
+			QString vrstica;
+			vrstica = vrstica + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString()) + ") ";
+			vrstica = vrstica + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()) + " ";
+			vrstica = vrstica + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString());
+			ui->txt_lastnik->addItem(vrstica);
+			ui->txt_odgovorna->addItem(vrstica);
+			ui->txt_kontaktna->addItem(vrstica);
+		}
+		sql_fill_combo.clear();
+
+		// ce uporabnik ne obstaja, potem skrijemo zavihke za vnos oseb
+		if ( i != 0 ) {
+			ui->tab_lastnik->setHidden(true);
+			ui->tab_kontaktna_oseba->setHidden(true);
+			ui->tab_odgovorna_oseba->setHidden(true);
+		}
+		else {
+			ui->tab_lastnik->setHidden(false);
+			ui->tab_kontaktna_oseba->setHidden(false);
+			ui->tab_odgovorna_oseba->setHidden(false);
 		}
 	}
 	base.close();
@@ -58,13 +155,16 @@ podjetje::~podjetje() {
 }
 
 void podjetje::on_btn_izhod_clicked() {
+
 	close();
+
 }
 
+// ne preverja polj
 void podjetje::on_btn_potrdi_clicked() {
 
 	QString napaka = "";
-
+/*
 	// nastavitev polja za napako
 	QFont font_error;
 	font_error.setBold(true);
@@ -208,7 +308,7 @@ void podjetje::on_btn_potrdi_clicked() {
 			ui->txt_url->setText(ui->txt_url->text().append("/"));
 		}
 	}
-
+*/
 	if (napaka == "") {
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -230,31 +330,34 @@ void podjetje::on_btn_potrdi_clicked() {
 				zavezanec = "DA";
 			}
 			if (ui->btn_potrdi->text() == "Vnesi podjetje") {
-			sql_vnesi.prepare("INSERT INTO podjetje (ime, polnoime, naslov, ddvzavezanec, davcnastevilka, logo, email, spletnastran, maticnastevilka, "
-							  "trr, skd, lastnik, odgovornaoseba, nazivodgovorneosebe, gsm, telefon)"
-							  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+			sql_vnesi.prepare("INSERT INTO podjetje (ime, polnoime, skd, skd_besedilo, url, maticna_stevilka, ddv_zavezanec, davcna, "
+												"tekoci_racun, naslov, naslov_st, posta, postna_stevilka, email, gsm, telefon, lastnik, kontaktna, odgovorna)"
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else {
-			sql_vnesi.prepare("UPDATE podjetje SET ime = ?, polnoime = ?, naslov = ?, ddvzavezanec = ?, davcnastevilka = ?, logo = ?, email = ?, "
-							  "spletnastran = ?, maticnastevilka = ?, trr = ?, skd = ?, lastnik = ?, odgovornaoseba = ?, "
-							  "nazivodgovorneosebe = ?, gsm = ?, telefon = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+			sql_vnesi.prepare("UPDATE podjetje SET ime = ?, polnoime = ?, skd = ?, skd_besedilo = ?, url = ?, maticna_stevilka = ?, "
+												"ddv_zavezanec = ?, davcna = ?, tekoci_racun = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
+												"email = ?, gsm = ?, telefon = ?, lastnik = ?, kontaktna = ?, odgovorna = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi.bindValue(0, pretvori(ui->txt_ime->text()));
 			sql_vnesi.bindValue(1, pretvori(ui->txt_polnoime->text()));
-			sql_vnesi.bindValue(2, pretvori(ui->txt_naslov->toPlainText()));
-			sql_vnesi.bindValue(3, pretvori(zavezanec));
-			sql_vnesi.bindValue(4, pretvori(ui->txt_davcna->text().remove(" ")));
-			sql_vnesi.bindValue(5, pretvori(ui->txt_logo->text()));
-			sql_vnesi.bindValue(6, pretvori(ui->txt_email->text()));
-			sql_vnesi.bindValue(7, pretvori(ui->txt_url->text()));
-			sql_vnesi.bindValue(8, pretvori(ui->txt_maticnastevilka->text()));
-			sql_vnesi.bindValue(9, pretvori(ui->txt_trr->text().remove(" ")));
-			sql_vnesi.bindValue(10, pretvori(ui->txt_skd->text()));
-			sql_vnesi.bindValue(11, pretvori(ui->txt_lastnik->text()));
-			sql_vnesi.bindValue(12, pretvori(ui->txt_odgovorni->text()));
-			sql_vnesi.bindValue(13, pretvori(ui->txt_naziv->currentText()));
+			sql_vnesi.bindValue(2, pretvori(ui->txt_skd->text()));
+			sql_vnesi.bindValue(3, pretvori(ui->txt_skd_besedilo->currentText()));
+			sql_vnesi.bindValue(4, pretvori(ui->txt_url->text()));
+			sql_vnesi.bindValue(5, pretvori(ui->txt_maticna_stevilka->text()));
+			sql_vnesi.bindValue(6, pretvori(zavezanec));
+			sql_vnesi.bindValue(7, pretvori(ui->txt_davcna->text().remove(" ")));
+			sql_vnesi.bindValue(8, pretvori(ui->txt_tekoci_racun->text().remove(" ")));
+			sql_vnesi.bindValue(9, pretvori(ui->txt_naslov->text()));
+			sql_vnesi.bindValue(10, pretvori(ui->txt_naslov_st->text()));
+			sql_vnesi.bindValue(11, pretvori(ui->txt_posta->currentText()));
+			sql_vnesi.bindValue(12, pretvori(ui->txt_postna_stevilka->text().remove(" ")));
+			sql_vnesi.bindValue(13, pretvori(ui->txt_email->text()));
 			sql_vnesi.bindValue(14, pretvori(ui->txt_gsm->text().remove(" ")));
 			sql_vnesi.bindValue(15, pretvori(ui->txt_telefon->text().remove(" ")));
+			sql_vnesi.bindValue(16, pretvori(ui->txt_lastnik->currentText().left(ui->txt_lastnik->currentText().indexOf(")", 0))));
+			sql_vnesi.bindValue(17, pretvori(ui->txt_kontaktna->currentText().left(ui->txt_kontaktna->currentText().indexOf(")", 0))));
+			sql_vnesi.bindValue(18, pretvori(ui->txt_odgovorna->currentText().left(ui->txt_odgovorna->currentText().indexOf(")", 0))));
 			sql_vnesi.exec();
 		}
 		base.close();
@@ -284,37 +387,29 @@ void podjetje::on_txt_zavezanec_stateChanged() {
 
 void podjetje::on_btn_brisi_clicked() {
 
-	ui->txt_davcna->setText("");
-	ui->txt_email->setText("");
+	ui->txt_id->setText("");
 	ui->txt_ime->setText("");
-	ui->txt_lastnik->setText("");
-	ui->txt_logo->setText("");
-	ui->txt_maticnastevilka->setText("");
-	ui->txt_odgovorni->setText("");
 	ui->txt_polnoime->setText("");
 	ui->txt_skd->setText("");
-	ui->txt_trr->setText("");
 	ui->txt_url->setText("");
+	ui->txt_maticna_stevilka->setText("");
+	ui->txt_davcna->setText("");
+	ui->txt_polnoime->setText("");
+	ui->txt_tekoci_racun->setText("");
+	ui->txt_naslov->setText("");
+	ui->txt_naslov_st->setText("");
+	ui->txt_postna_stevilka->setText("");
+	ui->txt_email->setText("");
 	ui->txt_telefon->setText("");
 	ui->txt_gsm->setText("");
 
-	ui->txt_naslov->clear();
-
-	ui->txt_naziv->setCurrentIndex(0);
+	ui->txt_skd_besedilo->setCurrentIndex(0);
+	ui->txt_posta->setCurrentIndex(0);
+	ui->txt_lastnik->setCurrentIndex(0);
+	ui->txt_kontaktna->setCurrentIndex(0);
+	ui->txt_odgovorna->setCurrentIndex(0);
 
 	ui->txt_zavezanec->setChecked(false);
-
-}
-
-void podjetje::on_btn_logo_clicked() {
-
-	QString potdoslike = QFileDialog::getOpenFileName(this,
-					tr("Izberite logotip"), QDir::homePath(), tr("Image Files (*.png *.jpg *.bmp)"));
-
-	ui->txt_logo->setText(potdoslike);
-
-	QImage slika(potdoslike);
-	ui->gv_logo->setPixmap(QPixmap::fromImage(slika));
 
 }
 
@@ -358,7 +453,7 @@ void podjetje::prejem(QString besedilo) {
 			sql_fill.prepare("SELECT * FROM podjetje WHERE id LIKE '" + besedilo + "'");
 			sql_fill.exec();
 			if (sql_fill.next()) {
-				if (prevedi(sql_fill.value(sql_fill.record().indexOf("ddvzavezanec")).toString()) == "DA") {
+				if (prevedi(sql_fill.value(sql_fill.record().indexOf("ddv_zavezanec")).toString()) == "DA") {
 					ui->txt_zavezanec->setChecked(true);
 				}
 				else {
@@ -367,35 +462,285 @@ void podjetje::prejem(QString besedilo) {
 				ui->txt_id->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("id")).toString()));
 				ui->txt_ime->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("ime")).toString()));
 				ui->txt_polnoime->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("polnoime")).toString()));
-				ui->txt_naslov->setPlainText(prevedi(sql_fill.value(sql_fill.record().indexOf("naslov")).toString()));
-				ui->txt_davcna->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("davcnastevilka")).toString()));
-				ui->txt_logo->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("logo")).toString()));
+				ui->txt_skd->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("skd")).toString()));
+				ui->txt_url->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("url")).toString()));
 
-				QImage slika(ui->txt_logo->text());
-				ui->gv_logo->setPixmap(QPixmap::fromImage(slika));
+				ui->txt_maticna_stevilka->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("maticna_stevilka")).toString()));
+				ui->txt_davcna->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("davcna")).toString()));
+				ui->txt_tekoci_racun->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("tekoci_racun")).toString()));
+
+				ui->txt_naslov->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("naslov")).toString()));
+				ui->txt_naslov_st->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("naslov_st")).toString()));
+				ui->txt_postna_stevilka->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("postna_stevilka")).toString()));
 
 				ui->txt_email->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("email")).toString()));
-				ui->txt_url->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("spletnastran")).toString()));
-				ui->txt_maticnastevilka->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("maticnastevilka")).toString()));
-				ui->txt_trr->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("trr")).toString()));
-				ui->txt_skd->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("skd")).toString()));
-				ui->txt_lastnik->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()));
-				ui->txt_odgovorni->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("odgovornaoseba")).toString()));
+				ui->txt_telefon->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("telefon")).toString()));
+				ui->txt_gsm->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("gsm")).toString()));
 
 				bool ok;
-				QSqlQuery sql_combo_naziv;
-				sql_combo_naziv.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + sql_fill.value(sql_fill.record().indexOf("nazivodgovorneosebe")).toString() + "'");
-				sql_combo_naziv.exec();
-				if (sql_combo_naziv.next()) {
-					ui->txt_naziv->setCurrentIndex(prevedi(sql_combo_naziv.value(sql_combo_naziv.record().indexOf("id")).toString()).toInt(&ok, 10) - 1);
+				QSqlQuery sql_combo;
+				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
+				sql_combo.exec();
+				if (sql_combo.next()) {
+					QString izbranec;
+					izbranec = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString()) + " ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString());
+					ui->txt_lastnik->setCurrentIndex(ui->txt_lastnik->findText(izbranec));
 				}
+				sql_combo.clear();
 
-				ui->txt_gsm->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("gsm")).toString()));
-				ui->txt_telefon->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("telefon")).toString()));
+				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("kontaktna")).toString() + "'");
+				sql_combo.exec();
+				if (sql_combo.next()) {
+					QString izbranec;
+					izbranec = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString()) + " ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString());
+					ui->txt_kontaktna->setCurrentIndex(ui->txt_kontaktna->findText(izbranec));
+				}
+				sql_combo.clear();
+
+				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("odgovorna")).toString() + "'");
+				sql_combo.exec();
+				if (sql_combo.next()) {
+					QString izbranec;
+					izbranec = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString()) + " ";
+					izbranec = izbranec + prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString());
+					ui->txt_odgovorna->setCurrentIndex(ui->txt_odgovorna->findText(izbranec));
+				}
+				sql_combo.clear();
+
 			}
 		}
 		base.close();
 	}
+
+}
+
+void podjetje::on_txt_lastnik_currentIndexChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_napolni;
+		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
+		sql_napolni.exec();
+		if ( sql_napolni.next() ) {
+			ui->txt_lastnik_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ime")).toString()));
+			ui->txt_lastnik_priimek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("priimek")).toString()));
+			ui->txt_lastnik_naziv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()));
+			ui->txt_lastnik_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
+			ui->txt_lastnik_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov_stevilka")).toString()));
+			ui->txt_lastnik_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("posta")).toString()));
+			ui->txt_lastnik_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("postna_stevilka")).toString()));
+			ui->txt_lastnik_email->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("email")).toString()));
+			ui->txt_lastnik_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
+			ui->txt_lastnik_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
+		}
+	}
+	base.close();
+}
+
+void podjetje::on_txt_kontaktna_currentIndexChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_napolni;
+		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
+		sql_napolni.exec();
+		if ( sql_napolni.next() ) {
+			ui->txt_kontaktna_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ime")).toString()));
+			ui->txt_kontaktna_priimek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("priimek")).toString()));
+			ui->txt_kontaktna_naziv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()));
+			ui->txt_kontaktna_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
+			ui->txt_kontaktna_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov_stevilka")).toString()));
+			ui->txt_kontaktna_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("posta")).toString()));
+			ui->txt_kontaktna_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("postna_stevilka")).toString()));
+			ui->txt_kontaktna_email->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("email")).toString()));
+			ui->txt_kontaktna_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
+			ui->txt_kontaktna_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
+		}
+	}
+	base.close();
+
+}
+
+void podjetje::on_txt_odgovorna_currentIndexChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_napolni;
+		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
+		sql_napolni.exec();
+		if ( sql_napolni.next() ) {
+			ui->txt_odgovorna_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ime")).toString()));
+			ui->txt_odgovorna_priimek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("priimek")).toString()));
+			ui->txt_odgovorna_naziv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()));
+			ui->txt_odgovorna_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
+			ui->txt_odgovorna_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov_stevilka")).toString()));
+			ui->txt_odgovorna_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("posta")).toString()));
+			ui->txt_odgovorna_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("postna_stevilka")).toString()));
+			ui->txt_odgovorna_email->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("email")).toString()));
+			ui->txt_odgovorna_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
+			ui->txt_odgovorna_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
+		}
+	}
+	base.close();
+
+}
+
+void podjetje::on_txt_skd_besedilo_currentIndexChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_najdi;
+		sql_najdi.prepare("SELECT * FROM sif_skd WHERE skd_naziv LIKE '" + pretvori(ui->txt_skd_besedilo->currentText()) + "'");
+		sql_najdi.exec();
+		if ( sql_najdi.next() ) {
+			ui->txt_skd->setText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("skd_stevilka")).toString()));
+		}
+	}
+	base.close();
+
+}
+
+void podjetje::on_txt_skd_textChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_najdi;
+		sql_najdi.prepare("SELECT * FROM sif_skd WHERE skd_stevilka LIKE '" + pretvori(besedilo) + "'");
+		sql_najdi.exec();
+		if ( sql_najdi.next() ) {
+			ui->txt_skd_besedilo->setCurrentIndex(ui->txt_skd_besedilo->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("skd_naziv")).toString())));
+		}
+	}
+	base.close();
+
+}
+
+void podjetje::on_txt_posta_currentIndexChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_najdi;
+		sql_najdi.prepare("SELECT * FROM sif_posta WHERE posta LIKE '" + pretvori(ui->txt_posta->currentText()) + "'");
+		sql_najdi.exec();
+		if ( sql_najdi.next() ) {
+			ui->txt_postna_stevilka->setText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("postna_stevilka")).toString()));
+		}
+	}
+	base.close();
+
+}
+
+void podjetje::on_txt_postna_stevilka_textChanged(QString besedilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_najdi;
+		sql_najdi.prepare("SELECT * FROM sif_posta WHERE postna_stevilka LIKE '" + pretvori(besedilo) + "'");
+		sql_najdi.exec();
+		if ( sql_najdi.next() ) {
+			ui->txt_posta->setCurrentIndex(ui->txt_posta->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("posta")).toString())));
+		}
+	}
+	base.close();
 
 }
 
