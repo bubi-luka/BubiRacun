@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Urejanje prejetih računov</string>
+   <string>BenRačun: Urejanje prejetega računa</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
    <item row="0" column="0">

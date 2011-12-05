@@ -87,42 +87,58 @@ void GlavnoOkno::sekundnik() {
 void GlavnoOkno::on_actionUporabniki_triggered() {
 	wid_uporabnik *widup = new wid_uporabnik;
 	ui->scrollArea->setWidget(widup);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Uporabniki!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Uporabniki");
 }
 
 void GlavnoOkno::on_actionPodjetje_triggered() {
 	wid_podjetje *widpod = new wid_podjetje;
 	ui->scrollArea->setWidget(widpod);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Podjetja!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podjetja");
 }
 
 void GlavnoOkno::on_actionPotni_nalogi_triggered() {
 	wid_potninalogi *widpot = new wid_potninalogi;
 	ui->scrollArea->setWidget(widpot);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Potni nalogi!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Potni nalogi");
 }
 
 void GlavnoOkno::on_actionPrejeti_ra_uni_triggered() {
 	wid_prejetiracuni *widrac = new wid_prejetiracuni;
 	ui->scrollArea->setWidget(widrac);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Prejeti racuni!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Prejeti racuni");
 }
 
 void GlavnoOkno::on_actionStranke_triggered() {
 	wid_stranke *widst = new wid_stranke;
 	ui->scrollArea->setWidget(widst);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Stranke!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Stranke");
 }
 
 void GlavnoOkno::on_actionProjekti_triggered() {
 	wid_projekti *widpr = new wid_projekti;
 	ui->scrollArea->setWidget(widpr);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Projekti!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Projekti");
 }
 
 void GlavnoOkno::on_actionKuponi_triggered() {
 	wid_kuponi *widkup = new wid_kuponi;
 	ui->scrollArea->setWidget(widkup);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Kuponi!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Kuponi");
 }
 
 void GlavnoOkno::on_actionIzdani_ra_uni_triggered() {
 
 	wid_racuni *widrac = new wid_racuni;
 	ui->scrollArea->setWidget(widrac);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Izdani racuni!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Izdani racuni");
 
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   widrac , SLOT(prejem(QString)));
@@ -134,6 +150,8 @@ void GlavnoOkno::on_actionIzdani_ra_uni_triggered() {
 void GlavnoOkno::on_actionVizitka_triggered() {
 	Vizitka *widviz = new Vizitka;
 	ui->scrollArea->setWidget(widviz);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Vizitka!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Vizitka");
 }
 
 void GlavnoOkno::varnost_id_changed() {
@@ -158,6 +176,8 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
 	if ( event->key() == Qt::Key_Escape ) {
 		ui->scrollArea->widget()->close();
+		setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)));
+		ui->lbl_pozicija->setText("");
 	}
 	else if ( (event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier) ) {
 		prijava *okno_prijava = new prijava;

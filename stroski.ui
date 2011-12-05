@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Vnos in urejanje stroškov potovanja</string>
+   <string>BenRačun: Urejanje potovalnega stroška</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">

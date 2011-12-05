@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string/>
+   <string>BenRačun: Urejanje stranke</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
@@ -26,9 +26,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-205</y>
+        <y>0</y>
         <width>846</width>
-        <height>992</height>
+        <height>986</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">

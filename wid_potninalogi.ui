@@ -35,14 +35,14 @@
      <item>
       <widget class="QPushButton" name="btn_nov">
        <property name="text">
-        <string>Nov potni nalog</string>
+        <string>Vnos potnega naloga</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
        <property name="text">
-        <string>Izbriši potni nalog</string>
+        <string>Izbris potnega naloga</string>
        </property>
       </widget>
      </item>
