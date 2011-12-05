@@ -88,7 +88,11 @@ OTHER_FILES += \
     potni-nalog-besedilo.csv \
     base.bz \
     posta.csv \
-    skd.csv
+    skd.csv \
+    dovoljenja.csv \
+    status_projekta.csv
+
+
 
 
 

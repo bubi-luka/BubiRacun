@@ -319,6 +319,7 @@ void stranke::on_txt_vir_currentIndexChanged(int stanje) {
 	else if (ui->txt_vir->currentText() == "Stranka") {
 		ui->label_19->setHidden(false);
 		ui->label_20->setHidden(false);
+		ui->label_12->setHidden(true);
 		ui->txt_vir_id->setHidden(true);
 		ui->txt_vir_ime->setHidden(false);
 		ui->txt_vir_kupon->setHidden(false);
@@ -327,10 +328,23 @@ void stranke::on_txt_vir_currentIndexChanged(int stanje) {
 	else {
 		ui->label_19->setHidden(true);
 		ui->label_20->setHidden(true);
+		ui->label_12->setHidden(false);
 		ui->txt_vir_id->setHidden(true);
 		ui->txt_vir_ime->setHidden(true);
 		ui->txt_vir_kupon->setHidden(true);
 		ui->txt_vir_besedilo->setHidden(false);
+		if ( ui->txt_vir->currentText() == "Oseba" ) {
+			ui->label_12->setText("Ime in priimek");
+		}
+		else if ( ui->txt_vir->currentText() == "Splet" ) {
+			ui->label_12->setText("Spletna stran");
+		}
+		else if ( ui->txt_vir->currentText() == "Forum" ) {
+			ui->label_12->setText("Ime foruma");
+		}
+		else if ( ui->txt_vir->currentText() == "Blog")  {
+			ui->label_12->setText("Ime bloga");
+		}
 	}
 }
 

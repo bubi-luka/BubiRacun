@@ -77,7 +77,7 @@ void wid_stranke::napolni() {
 		naslov2->setText("Priimek/Polni naziv");
 		naslov3->setText("Telefon");
 		naslov4->setText("GSM");
-		naslov5->setText("E-mail");
+		naslov5->setText("Elektronski naslov");
 		naslov6->setText("Izobr. ustanova");
 		naslov7->setText("Fizicna/Pravna");
 
@@ -95,7 +95,7 @@ void wid_stranke::napolni() {
 		ui->tbl_stranke->setColumnWidth(2, 120);
 		ui->tbl_stranke->setColumnWidth(3, 140);
 		ui->tbl_stranke->setColumnWidth(4, 140);
-		ui->tbl_stranke->setColumnWidth(5, 100);
+		ui->tbl_stranke->setColumnWidth(5, 150);
 		ui->tbl_stranke->setColumnWidth(6, 100);
 		ui->tbl_stranke->setColumnWidth(7, 100);
 
