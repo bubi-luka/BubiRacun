@@ -998,6 +998,34 @@ void prijava::tabela_dovoljenja() {
 
 }
 
+void prijava::tabela_status_projekta() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_status_projekta ("
+														 "id INTEGER PRIMARY KEY, "
+														 "status TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
 // vnese podatke v tabele
 void prijava::vnesi_skd() {
 
@@ -1140,6 +1168,102 @@ void prijava::vnesi_dovoljenja() {
 				sql_insert_data.prepare("INSERT INTO sif_dovoljenja (dovoljenje, opis) VALUES (?, ?)");
 				sql_insert_data.bindValue(0, pretvori(ime));
 				sql_insert_data.bindValue(1, pretvori(opis));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_nazive() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/nazivi.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString naziv = vrstica.left(vrstica.indexOf(",", 0));
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + pretvori(naziv) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_nazivi (naziv) VALUES (?)");
+				sql_insert_data.bindValue(0, pretvori(naziv));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_status_projekta() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/status_projekta.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString naziv = vrstica.left(vrstica.indexOf(",", 0));
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_status_projekta WHERE status LIKE '" + pretvori(naziv) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_status_projekta (status) VALUES (?)");
+				sql_insert_data.bindValue(0, pretvori(naziv));
 				sql_insert_data.exec();
 			}
 		}

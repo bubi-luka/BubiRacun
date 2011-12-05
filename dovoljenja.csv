@@ -1,0 +1,5 @@
+Administrator,Administrator ima dovoljenje do vseh delov programa, tudi razvojnih.
+Direktor,Direktor ima dovoljenja do vseh delov programa, razen razvojnih.
+Tajnik,Tajnik ima dovoljenje za urejanje podjetja in uporabnikov.
+Računovodja,Računovodja ima dovoljenja za pregledovanje in urejanje računov, potnih stroškov,...
+Vodja projekta,Vodja projekta ima dovoljenja za vnos in urejanje stranke, projekta, računov in opravil,

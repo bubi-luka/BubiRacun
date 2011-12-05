@@ -39,11 +39,14 @@ private slots:
 	void tabela_nazivi();
 	void tabela_pogodbe();
 	void tabela_dovoljenja();
+	void tabela_status_projekta();
 
 	// vnese podatke v tabele
 	void vnesi_skd();
 	void vnesi_posta();
 	void vnesi_dovoljenja();
+	void vnesi_nazive();
+	void vnesi_status_projekta();
 
 signals:
 	void prenos1(QString besedilo);

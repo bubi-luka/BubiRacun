@@ -23,6 +23,9 @@ private slots:
 	void keyPressEvent(QKeyEvent *event);
 	void on_txt_zaposlen_toggled(bool stanje);
 
+	void on_txt_posta_currentIndexChanged(QString besedilo);
+	void on_txt_postna_stevilka_textChanged(QString besedilo);
+
 	void prejem(QString besedilo);
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
