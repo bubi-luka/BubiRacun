@@ -25,7 +25,8 @@ HEADERS += \
     racun.h \
     wid_racuni.h \
     vizitka.h \
-    varnost.h
+    varnost.h \
+    popusti.h
 
 SOURCES += \
     main.cpp \
@@ -54,7 +55,8 @@ SOURCES += \
     racun.cpp \
     wid_racuni.cpp \
     vizitka.cpp \
-    varnost.cpp
+    varnost.cpp \
+    popusti.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -80,7 +82,8 @@ FORMS += \
     stroski.ui \
     racun.ui \
     wid_racuni.ui \
-    vizitka.ui
+    vizitka.ui \
+    popusti.ui
 
 QT += sql
 
@@ -90,7 +93,12 @@ OTHER_FILES += \
     posta.csv \
     skd.csv \
     dovoljenja.csv \
-    status_projekta.csv
+    status_projekta.csv \
+    popusti.csv
+
+
+
+
 
 
 

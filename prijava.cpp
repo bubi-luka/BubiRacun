@@ -32,11 +32,16 @@ prijava::prijava(QWidget *parent) :
 	tabela_nazivi();
 	tabela_pogodbe();
 	tabela_dovoljenja();
+	tabela_status_projekta();
+	tabela_popusti();
 
 	// vnese podatke v tabele
 	vnesi_skd();
 	vnesi_posta();
 	vnesi_dovoljenja();
+	vnesi_nazive();
+	vnesi_status_projekta();
+	vnesi_popuste();
 
 	ui->txt_uporabnik->setFocus();
 
@@ -500,106 +505,6 @@ prijava::prijava(QWidget *parent) :
 			sql_insert_sif_opravila.bindValue(1, pretvori("1.00"));
 			sql_insert_sif_opravila.bindValue(2, pretvori("20.0"));
 			sql_insert_sif_opravila.exec();
-		}
-
-		QSqlQuery sql_create_table_popusti;
-		sql_create_table_popusti.prepare("CREATE TABLE IF NOT EXISTS sif_popusti ("
-										"id INTEGER PRIMARY KEY, "
-										"popust TEXT, "
-										 "procent TEXT, "
-										 "tip TEXT)"
-										);
-		sql_create_table_popusti.exec();
-		QSqlQuery sql_check_popusti;
-		sql_check_popusti.prepare("SELECT * FROM sif_popusti");
-		sql_check_popusti.exec();
-		if (!sql_check_popusti.next()) {
-			QSqlQuery sql_insert_popusti;
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Facebook osebni"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Twitter osebni"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Google plus osebni"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Blog osebni"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Forum osebni"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Facebook sirjenje"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Twitter sirjenje"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Kuponi - pridobil stranke"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Obrazec akcija"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Kupon akcija"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Akcijski popust akcija"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Stalna stranka akcija"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("popust"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Vikend"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("podrazitev"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Kratek rok"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("podrazitev"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Zahtevna stranka"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("podrazitev"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Neumnosti"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("podrazitev"));
-			sql_insert_popusti.exec();
-			sql_insert_popusti.prepare("INSERT INTO sif_popusti (popust, procent, tip) VALUES (?, ?, ?)");
-			sql_insert_popusti.bindValue(0, pretvori("Komunikacija"));
-			sql_insert_popusti.bindValue(1, pretvori("1.00"));
-			sql_insert_popusti.bindValue(2, pretvori("podrazitev"));
-			sql_insert_popusti.exec();
 
 		}
 		//go_with_the_flow oz nimam pojma, keri bi ze morali biti tule, hehe
@@ -1026,6 +931,35 @@ void prijava::tabela_status_projekta() {
 
 }
 
+void prijava::tabela_popusti() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_popusti ("
+														 "id INTEGER PRIMARY KEY, "
+														 "popust TEXT, "
+														 "vrednost TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
 // vnese podatke v tabele
 void prijava::vnesi_skd() {
 
@@ -1264,6 +1198,56 @@ void prijava::vnesi_status_projekta() {
 				QSqlQuery sql_insert_data;
 				sql_insert_data.prepare("INSERT INTO sif_status_projekta (status) VALUES (?)");
 				sql_insert_data.bindValue(0, pretvori(naziv));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_popuste() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/popusti.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString popust = vrstica.left(vrstica.indexOf(",", 0));
+			QString vrednost = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori(popust) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_popusti (popust, vrednost) VALUES (?, ?)");
+				sql_insert_data.bindValue(0, pretvori(popust));
+				sql_insert_data.bindValue(1, pretvori(vrednost));
 				sql_insert_data.exec();
 			}
 		}

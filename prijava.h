@@ -40,6 +40,7 @@ private slots:
 	void tabela_pogodbe();
 	void tabela_dovoljenja();
 	void tabela_status_projekta();
+	void tabela_popusti();
 
 	// vnese podatke v tabele
 	void vnesi_skd();
@@ -47,6 +48,7 @@ private slots:
 	void vnesi_dovoljenja();
 	void vnesi_nazive();
 	void vnesi_status_projekta();
+	void vnesi_popuste();
 
 signals:
 	void prenos1(QString besedilo);
