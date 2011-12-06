@@ -64,7 +64,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tab_podjetje">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -1036,7 +1036,7 @@
          <item>
           <widget class="QLabel" name="label_52">
            <property name="text">
-            <string>Kontaktna oseba</string>
+            <string>Odgovorna oseba</string>
            </property>
           </widget>
          </item>
