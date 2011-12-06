@@ -187,6 +187,7 @@
     <addaction name="actionProjekti"/>
     <addaction name="separator"/>
     <addaction name="actionKuponi"/>
+    <addaction name="actionPopusti"/>
    </widget>
    <widget class="QMenu" name="menuNastavitve">
     <property name="title">
@@ -260,6 +261,11 @@
   <action name="actionKuponi">
    <property name="text">
     <string>Kuponi</string>
+   </property>
+  </action>
+  <action name="actionPopusti">
+   <property name="text">
+    <string>Popusti</string>
    </property>
   </action>
  </widget>

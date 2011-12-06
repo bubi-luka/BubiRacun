@@ -19,6 +19,7 @@
 #include "varnost.h"
 #include "kodiranje.h"
 #include "prijava.h"
+#include "popusti.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -152,6 +153,22 @@ void GlavnoOkno::on_actionVizitka_triggered() {
 	ui->scrollArea->setWidget(widviz);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Vizitka!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Vizitka");
+}
+
+
+void GlavnoOkno::on_actionPopusti_triggered() {
+
+	/*
+	* Za enkrat se popusti odprejo in urejajo zgolj v oknu, widget/tabela še ni predvidena
+	*/
+//	Vizitka *widviz = new Vizitka;
+//	ui->scrollArea->setWidget(widviz);
+//	ui->lbl_pozicija->setText("Nahajate se na tabeli Vizitka!");
+//	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Vizitka");
+
+	popusti *okno_popusti = new popusti;
+	okno_popusti->show();
+
 }
 
 void GlavnoOkno::varnost_id_changed() {
