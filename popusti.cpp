@@ -152,6 +152,9 @@ QString popusti::pretvori_v_double(QString besedilo) {
 	besedilo.remove("%");
 	besedilo.replace(",", ".");
 
+	if ( besedilo.left(1) == "0" ) {
+		besedilo.remove(0,1);
+	}
 	if ( besedilo == "" ) { // ce je polje prazno, dodamo vrednost 0.0
 		besedilo.append("0.0");
 	}

@@ -148,6 +148,8 @@ podjetje::podjetje(QWidget *parent) :
 	}
 	base.close();
 
+	ui->tab_podjetje->setCurrentIndex(0);
+
 }
 
 podjetje::~podjetje() {
@@ -432,6 +434,9 @@ void podjetje::prejem(QString besedilo) {
 
 	if (besedilo == "Novo podjetje") {
 		ui->btn_potrdi->setText("Vnesi podjetje");
+		ui->tab_lastnik->setDisabled(true);
+		ui->tab_kontaktna_oseba->setDisabled(true);
+		ui->tab_odgovorna_oseba->setDisabled(true);
 	}
 	else {
 		QString app_path = QApplication::applicationDirPath();
@@ -449,6 +454,10 @@ void podjetje::prejem(QString besedilo) {
 		}
 		else {
 			ui->btn_potrdi->setText("Popravi podjetje");
+			ui->tab_lastnik->setDisabled(false);
+			ui->tab_kontaktna_oseba->setDisabled(false);
+			ui->tab_odgovorna_oseba->setDisabled(false);
+
 			QSqlQuery sql_fill;
 			sql_fill.prepare("SELECT * FROM podjetje WHERE id LIKE '" + besedilo + "'");
 			sql_fill.exec();

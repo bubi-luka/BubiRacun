@@ -15,38 +15,38 @@ public:
     explicit stranke(QWidget *parent = 0);
     ~stranke();
 
-
 private slots:
 	void on_btn_izhod_clicked();
 	void on_btn_brisi_clicked();
 	void on_btn_vnesi_clicked();
-	void on_btn_nov_clicked();
+	void on_btn_novkupon_clicked();
 	void on_btn_novprojekt_clicked();
+
 	void on_rb_fizicna_toggled(bool stanje);
 	void on_rb_stalna_toggled(bool stanje);
 	void on_txt_vir_currentIndexChanged(int stanje);
+	void on_txt_posta_currentIndexChanged(QString besedilo);
+	void on_txt_postna_stevilka_textChanged(QString besedilo);
 	void keyPressEvent(QKeyEvent *event);
 
-	void on_cb_facebook_toggled(bool stanje);
-	void on_cb_twitter_toggled(bool stanje);
-	void on_cb_google_toggled(bool stanje);
-	void on_cb_blog_toggled(bool stanje);
-	void on_cb_forum_toggled(bool stanje);
-	void on_cb_sfacebook_toggled(bool stanje);
-	void on_cb_stwitter_toggled(bool stanje);
-	void on_cb_skuponi_toggled(bool stanje);
-	void on_cb_obrazec_toggled(bool stanje);
-	void on_cb_kupon_toggled(bool stanje);
-	void on_cb_akcija_toggled(bool stanje);
-	void on_cb_vip_toggled(bool stanje);
+	void on_cb_popust_fb1_toggled(bool stanje);
+	void on_cb_popust_fb2_toggled(bool stanje);
+	void on_cb_popust_komb1_toggled(bool stanje);
+	void on_cb_popust_komb2_toggled(bool stanje);
+	void on_cb_popust_stalna_toggled(bool stanje);
+	void on_cb_popust_kupon_toggled(bool stanje);
+	void on_cb_popust_akcija_toggled(bool stanje);
 
 	void on_tbl_projekti_doubleClicked();
 	void on_tbl_kuponi_doubleClicked();
 
 	void prejem(QString besedilo);
+	void osvezi(QString beseda);
+
+	QString pretvori_v_double(QString besedilo);
+	QString pretvori_iz_double(QString besedilo);
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
-	void osvezi(QString beseda);
 
 	void napolni_projekte();
 	void napolni_kupone();

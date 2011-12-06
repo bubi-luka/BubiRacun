@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
+    <width>593</width>
     <height>696</height>
    </rect>
   </property>
@@ -96,13 +96,13 @@
            <widget class="QLineEdit" name="txt_popust_fb1">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -132,13 +132,13 @@
            <widget class="QLineEdit" name="txt_popust_fb2">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -168,13 +168,13 @@
            <widget class="QLineEdit" name="txt_popust_komb1">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -204,13 +204,13 @@
            <widget class="QLineEdit" name="txt_popust_komb2">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -240,13 +240,13 @@
            <widget class="QLineEdit" name="txt_popust_stalna_stranka">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -276,13 +276,13 @@
            <widget class="QLineEdit" name="txt_popust_kupon">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -312,13 +312,13 @@
            <widget class="QLineEdit" name="txt_popust_akcija">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -401,13 +401,13 @@
            <widget class="QLineEdit" name="txt_vsi_popusti_facebook">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -437,13 +437,13 @@
            <widget class="QLineEdit" name="txt_popusti_skupaj">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -559,13 +559,13 @@
            <widget class="QLineEdit" name="txt_podrazitev_vikend">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -595,13 +595,13 @@
            <widget class="QLineEdit" name="txt_podrazitev_hitrost">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
@@ -631,13 +631,13 @@
            <widget class="QLineEdit" name="txt_podrazitev_zapleti">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
