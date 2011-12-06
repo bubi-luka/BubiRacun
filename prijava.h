@@ -32,6 +32,7 @@ private slots:
 	// ustvari tabele
 	void tabela_podjetje();
 	void tabela_uporabnik();
+	void tabela_stranke();
 
 	// ustvari tabele sifrantov
 	void tabela_skd();
@@ -41,14 +42,17 @@ private slots:
 	void tabela_dovoljenja();
 	void tabela_status_projekta();
 	void tabela_popusti();
+	void tabela_viri_strank();
 
 	// vnese podatke v tabele
 	void vnesi_skd();
 	void vnesi_posta();
-	void vnesi_dovoljenja();
 	void vnesi_nazive();
+	void vnesi_pogodbe();
+	void vnesi_dovoljenja();
 	void vnesi_status_projekta();
 	void vnesi_popuste();
+	void vnesi_vire_strank();
 
 signals:
 	void prenos1(QString besedilo);

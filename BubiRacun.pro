@@ -94,7 +94,11 @@ OTHER_FILES += \
     skd.csv \
     dovoljenja.csv \
     status_projekta.csv \
-    popusti.csv
+    popusti.csv \
+    nazivi.csv \
+    vir-strank.csv
+
+
 
 
 
