@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>737</width>
-    <height>711</height>
+    <width>748</width>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,8 +80,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-289</y>
-            <width>677</width>
+            <y>0</y>
+            <width>688</width>
             <height>892</height>
            </rect>
           </property>
@@ -711,8 +711,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>695</width>
-            <height>603</height>
+            <width>706</width>
+            <height>591</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -885,8 +885,8 @@
       <attribute name="title">
        <string>Popusti, akcije in podražitve</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_15">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
         <widget class="QGroupBox" name="groupBox_6">
          <property name="title">
           <string>Popusti</string>
@@ -1129,7 +1129,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="label_17">
               <property name="text">
-               <string>Facebook - všeč mi je (1 strankin prijatelj)</string>
+               <string>Facebook - všeč mi je (vsi prijatelji)</string>
               </property>
              </widget>
             </item>
@@ -1376,7 +1376,7 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item>
         <widget class="QGroupBox" name="groupBox_13">
          <property name="title">
           <string>Najvišji zneski popustov</string>
@@ -1388,6 +1388,9 @@
              <widget class="QLabel" name="label_41">
               <property name="text">
                <string>Trenutno stanje odstotkov</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -1420,7 +1423,7 @@
                <string>Najvišji nastavljeni odstotki</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -1632,32 +1635,37 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item>
         <widget class="QGroupBox" name="groupBox_12">
          <property name="title">
           <string>Podražitve</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout">
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_31">
+          <item row="1" column="0">
+           <layout class="QGridLayout" name="gridLayout_15">
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_42">
               <property name="text">
-               <string>Delo med vikendom</string>
+               <string>Urejanje</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_32">
-              <property name="text">
-               <string>Hitra storitev (kratek rok izvedbe)</string>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_35">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_33">
               <property name="text">
-               <string>Večji nepredvideni zapleti v procesu dela</string>
+               <string>Procenti</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -1671,26 +1679,88 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_35">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_32">
               <property name="text">
-               <string>Procenti</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <string>Hitra storitev (kratek rok izvedbe)</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_19">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_31">
+              <property name="text">
+               <string>Delo med vikendom</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>Večji nepredvideni zapleti v procesu dela</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="txt_podrazitev_vikend">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>txt_podrazitev_vikend</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="txt_podrazitev_hitrost">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>txt_podrazitev_hitrost</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QLineEdit" name="txt_podrazitev_zapleti">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>txt_podrazitev_zapleti</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_32">
               <item>
-               <spacer name="horizontalSpacer_17">
+               <spacer name="horizontalSpacer_37">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1703,30 +1773,68 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="txt_podrazitev_vikend">
-                <property name="minimumSize">
-                 <size>
-                  <width>74</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>75</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+               <widget class="QCheckBox" name="cb_podrazitev_vikend">
                 <property name="text">
-                 <string>txt_podrazitev_vikend</string>
+                 <string>cb_podrazitev_vikend</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_38">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <spacer name="horizontalSpacer_39">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cb_podrazitev_hitrost">
+                <property name="text">
+                 <string>cb_podrazitev_hitrost</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_40">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
             <item row="3" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_20">
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
               <item>
-               <spacer name="horizontalSpacer_18">
+               <spacer name="horizontalSpacer_41">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1739,30 +1847,14 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="txt_podrazitev_hitrost">
-                <property name="minimumSize">
-                 <size>
-                  <width>74</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>75</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+               <widget class="QCheckBox" name="cb_podrazitev_zapleti">
                 <property name="text">
-                 <string>txt_podrazitev_hitrost</string>
+                 <string>cb_podrazitev_zapleti</string>
                 </property>
                </widget>
               </item>
-             </layout>
-            </item>
-            <item row="4" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_21">
               <item>
-               <spacer name="horizontalSpacer_19">
+               <spacer name="horizontalSpacer_42">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1773,25 +1865,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="txt_podrazitev_zapleti">
-                <property name="minimumSize">
-                 <size>
-                  <width>74</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>75</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>txt_podrazitev_zapleti</string>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -1817,8 +1890,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>695</width>
-            <height>603</height>
+            <width>706</width>
+            <height>591</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
