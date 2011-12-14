@@ -96,7 +96,15 @@ OTHER_FILES += \
     status_projekta.csv \
     popusti.csv \
     nazivi.csv \
-    vir-strank.csv
+    vir-strank.csv \
+    status_racuna.csv \
+    status_placila.csv \
+    status_racunovodstva.csv
+
+
+
+
+
 
 
 

@@ -32,6 +32,8 @@ private slots:
 	// ustvari tabele
 	void tabela_podjetje();
 	void tabela_uporabnik();
+	void tabela_potni_nalogi();
+	void tabela_prejeti_racuni();
 	void tabela_stranke();
 
 	// ustvari tabele sifrantov
@@ -41,6 +43,9 @@ private slots:
 	void tabela_pogodbe();
 	void tabela_dovoljenja();
 	void tabela_status_projekta();
+	void tabela_status_racuna();
+	void tabela_status_placila();
+	void tabela_status_racunovodstva();
 	void tabela_popusti();
 	void tabela_viri_strank();
 
@@ -51,6 +56,9 @@ private slots:
 	void vnesi_pogodbe();
 	void vnesi_dovoljenja();
 	void vnesi_status_projekta();
+	void vnesi_status_racuna();
+	void vnesi_status_placila();
+	void vnesi_status_racunovodstva();
 	void vnesi_popuste();
 	void vnesi_vire_strank();
 
