@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>748</width>
+    <width>685</width>
     <height>699</height>
    </rect>
   </property>
@@ -81,7 +81,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>688</width>
+            <width>625</width>
             <height>892</height>
            </rect>
           </property>
@@ -711,12 +711,48 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>706</width>
+            <width>643</width>
             <height>591</height>
            </rect>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
+          <layout class="QGridLayout" name="gridLayout_16">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="groupBox_14">
+             <property name="title">
+              <string>Kupon</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_43">
+                <property name="text">
+                 <string>Tej stranki pripada naslednji kupon</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txt_kupon">
+                <property name="text">
+                 <string>txt_kupon</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>195</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="0">
             <widget class="QGroupBox" name="groupBox_7">
              <property name="title">
               <string>Omrežje strank</string>
@@ -861,19 +897,6 @@
               </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>195</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -1890,8 +1913,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>706</width>
-            <height>591</height>
+            <width>694</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -1976,6 +1999,8 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tab_stranka</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>rb_fizicna</tabstop>
   <tabstop>rb_pravna</tabstop>
   <tabstop>rb_enkratna</tabstop>
@@ -1987,13 +2012,20 @@
   <tabstop>txt_id</tabstop>
   <tabstop>txt_ime</tabstop>
   <tabstop>txt_priimek</tabstop>
+  <tabstop>txt_naslov</tabstop>
+  <tabstop>txt_naslov_st</tabstop>
+  <tabstop>txt_posta</tabstop>
+  <tabstop>txt_postna_stevilka</tabstop>
   <tabstop>txt_davcna</tabstop>
   <tabstop>txt_kontaktna</tabstop>
   <tabstop>txt_telefon</tabstop>
   <tabstop>txt_gsm</tabstop>
   <tabstop>txt_email</tabstop>
   <tabstop>txt_spletna_stran</tabstop>
+  <tabstop>txt_ustanova</tabstop>
   <tabstop>txt_opomba</tabstop>
+  <tabstop>btn_vnesi</tabstop>
+  <tabstop>scrollArea_3</tabstop>
   <tabstop>txt_vir</tabstop>
   <tabstop>txt_vir_id</tabstop>
   <tabstop>txt_vir_kupon</tabstop>
@@ -2001,9 +2033,33 @@
   <tabstop>txt_vir_besedilo</tabstop>
   <tabstop>btn_novkupon</tabstop>
   <tabstop>tbl_kuponi</tabstop>
+  <tabstop>cb_popust_fb1</tabstop>
+  <tabstop>txt_popust_fb1</tabstop>
+  <tabstop>cb_popust_fb2</tabstop>
+  <tabstop>txt_popust_fb2</tabstop>
+  <tabstop>cb_popust_komb1</tabstop>
+  <tabstop>txt_popust_komb1</tabstop>
+  <tabstop>cb_popust_komb2</tabstop>
+  <tabstop>txt_popust_komb2</tabstop>
+  <tabstop>cb_popust_stalna</tabstop>
+  <tabstop>txt_popust_stalna_stranka</tabstop>
+  <tabstop>cb_popust_kupon</tabstop>
+  <tabstop>txt_popust_kupon</tabstop>
+  <tabstop>cb_popust_akcija</tabstop>
+  <tabstop>txt_popust_akcija</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_1</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_2</tabstop>
+  <tabstop>txt_popusti_skupaj_1</tabstop>
+  <tabstop>txt_popusti_skupaj_2</tabstop>
+  <tabstop>cb_podrazitev_vikend</tabstop>
+  <tabstop>txt_podrazitev_vikend</tabstop>
+  <tabstop>cb_podrazitev_hitrost</tabstop>
+  <tabstop>txt_podrazitev_hitrost</tabstop>
+  <tabstop>cb_podrazitev_zapleti</tabstop>
+  <tabstop>txt_podrazitev_zapleti</tabstop>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>tbl_projekti</tabstop>
-  <tabstop>btn_vnesi</tabstop>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>btn_novprojekt</tabstop>
  </tabstops>
  <resources/>
  <connections/>

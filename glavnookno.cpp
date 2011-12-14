@@ -104,6 +104,12 @@ void GlavnoOkno::on_actionPotni_nalogi_triggered() {
 	ui->scrollArea->setWidget(widpot);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Potni nalogi!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Potni nalogi");
+
+	QObject::connect(this, SIGNAL(prenos(QString)),
+				 widpot , SLOT(prejem(QString)));
+	prenos("*");
+	this->disconnect();
+
 }
 
 void GlavnoOkno::on_actionPrejeti_ra_uni_triggered() {
@@ -111,6 +117,12 @@ void GlavnoOkno::on_actionPrejeti_ra_uni_triggered() {
 	ui->scrollArea->setWidget(widrac);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Prejeti racuni!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Prejeti racuni");
+
+	QObject::connect(this, SIGNAL(prenos(QString)),
+				 widrac , SLOT(prejem(QString)));
+	prenos("*");
+	this->disconnect();
+
 }
 
 void GlavnoOkno::on_actionStranke_triggered() {

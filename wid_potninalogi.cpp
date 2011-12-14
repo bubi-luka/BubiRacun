@@ -12,7 +12,11 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	napolni();
+		// disable and hide
+		ui->txt_stprojekta->setEnabled(false);
+		ui->txt_stprojekta->setVisible(false);
+
+		napolni();
 
 }
 
@@ -63,17 +67,33 @@ void wid_potninalogi::napolni() {
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
 		QTableWidgetItem *naslov2 = new QTableWidgetItem;
 		QTableWidgetItem *naslov3 = new QTableWidgetItem;
+
 		naslov0->setText("ID");
 		naslov1->setText("Podjetje");
 		naslov2->setText("St.  naloga");
 		naslov3->setText("Datum");
+
 		ui->tbl_potninalogi->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_potninalogi->setHorizontalHeaderItem(1, naslov1);
 		ui->tbl_potninalogi->setHorizontalHeaderItem(2, naslov2);
 		ui->tbl_potninalogi->setHorizontalHeaderItem(3, naslov3);
 
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM potninalogi");
+		QString projekt = "";
+
+		QSqlQuery sql_projekt;
+		sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+		sql_projekt.exec();
+		if ( sql_projekt.next() ) {
+			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+		}
+
+		QSqlQuery sql_fill("wid_racuni");
+		if ( ui->txt_stprojekta->text() != "*" ) {
+			sql_fill.prepare("SELECT * FROM potninalogi WHERE stprojekta LIKE '" + projekt + "'");
+		}
+		else {
+			sql_fill.prepare("SELECT * FROM potninalogi");
+		}
 		sql_fill.exec();
 
 		int row = 0;
@@ -171,6 +191,7 @@ void wid_potninalogi::osvezi(QString beseda) {
 
 	if ( beseda == "potninalog" ) {
 		napolni();
+		prenesi();
 	}
 
 }
@@ -184,5 +205,13 @@ QString wid_potninalogi::pretvori(QString besedilo) {
 QString wid_potninalogi::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void wid_potninalogi::prejem(QString besedilo) {
+
+	ui->txt_stprojekta->setText(besedilo);
+
+	napolni();
 
 }

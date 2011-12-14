@@ -10,6 +10,7 @@
 #include "projekti.h"
 #include "kuponi.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 stranke::stranke(QWidget *parent) :
     QDialog(parent),
@@ -34,6 +35,7 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_ustanova->setText("");
 		ui->txt_opomba->clear();
 
+		ui->txt_kupon->setText("");
 		ui->txt_vir->clear();
 		ui->txt_vir_id->setText("");
 		ui->txt_vir_ime->setText("");
@@ -199,6 +201,27 @@ stranke::stranke(QWidget *parent) :
 			}
 			sql_fill_combo.clear();
 
+			// fill cupon numbers
+			int i = 1;
+			QString leto = QDate::currentDate().toString("yyyy");
+			QSqlQuery sql_insert_stkupona;
+			sql_insert_stkupona.prepare("SELECT * FROM kuponi WHERE kupon LIKE '" + pretvori("KU-" + leto) + "%'");
+			sql_insert_stkupona.exec();
+			while (sql_insert_stkupona.next()) {
+				i++;
+			}
+
+			QString stevilka = 0;
+			if ( i < 10 ) {
+				stevilka = "00" + QString::number(i, 10);
+			}
+			else if ( i < 100 ) {
+				stevilka = "0" + QString::number(i, 10);
+			}
+			else {
+				stevilka = "" + QString::number(i, 10);
+			}
+			ui->txt_kupon->setText("KU-" + leto + "-" + stevilka);
 		}
 		base.close();
 
@@ -890,8 +913,8 @@ void stranke::on_btn_vnesi_clicked() {
 																	"kontakt, telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, "
 																	"placilnost, vir, vir_id, vir_kupon, vir_ime, vir_besedilo, pop_facebook_1, pop_facebook_2, "
 																	"pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_kupon, pop_akcija, pop_vsi_facebook, "
-																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_stranko.prepare("UPDATE stranke SET ime = ?, priimek = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
@@ -899,7 +922,8 @@ void stranke::on_btn_vnesi_clicked() {
 																	"opomba = ?, tip = ?, stalnost = ?, aktivnost = ?, placilnost = ?, vir = ?, vir_id = ?, "
 																	"vir_kupon = ?, vir_ime = ?, vir_besedilo = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
 																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_kupon = ?, pop_akcija = ?, "
-																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? WHERE id "
+																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
+																	"avtor_podjetje = ?, avtor_oseba ? ? WHERE id "
 																	"LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_stranko.bindValue(0, pretvori(ui->txt_ime->text()));
@@ -972,6 +996,9 @@ void stranke::on_btn_vnesi_clicked() {
 			sql_vnesi_stranko.bindValue(32, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
 			sql_vnesi_stranko.bindValue(33, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
 			sql_vnesi_stranko.bindValue(34, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+
+			sql_vnesi_stranko.bindValue(35, pretvori(vApp->firm()));
+			sql_vnesi_stranko.bindValue(36, pretvori(vApp->id()));
 
 			sql_vnesi_stranko.exec();
 
