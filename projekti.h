@@ -30,6 +30,7 @@ private slots:
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 	void izracunaj();
+	void napolni_podatke();
 
 signals:
 	void poslji(QString beseda);

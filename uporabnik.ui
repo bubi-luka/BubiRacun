@@ -729,17 +729,24 @@
   <tabstop>txt_ime</tabstop>
   <tabstop>txt_priimek</tabstop>
   <tabstop>txt_rojstni</tabstop>
+  <tabstop>txt_naslov</tabstop>
+  <tabstop>txt_naslov_st</tabstop>
+  <tabstop>txt_posta</tabstop>
+  <tabstop>txt_postna_stevilka</tabstop>
   <tabstop>txt_telefon</tabstop>
   <tabstop>txt_gsm</tabstop>
   <tabstop>txt_email</tabstop>
   <tabstop>txt_url</tabstop>
   <tabstop>txt_avto</tabstop>
+  <tabstop>txt_model</tabstop>
   <tabstop>txt_registracija</tabstop>
   <tabstop>txt_id</tabstop>
   <tabstop>txt_uporabnik</tabstop>
   <tabstop>txt_geslo</tabstop>
   <tabstop>txt_ponovnogeslo</tabstop>
   <tabstop>btn_geslo</tabstop>
+  <tabstop>txt_dovoljenja</tabstop>
+  <tabstop>txt_podjetje</tabstop>
   <tabstop>txt_naziv</tabstop>
   <tabstop>txt_zaposlitev</tabstop>
   <tabstop>txt_pogodba</tabstop>

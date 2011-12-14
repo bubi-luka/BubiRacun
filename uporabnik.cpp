@@ -430,7 +430,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			// baza je odprta
 
 			// ker v bazo vnasamo indekse (zmanjsamo podvajanje dela in kolicine podatkov),
-			// pridobimo intekse vrednosti spustnih seznamov
+			// pridobimo indekse vrednosti spustnih seznamov
 			QString dovoljenje;
 			QString podjetje;
 			QString naziv;
@@ -544,7 +544,7 @@ void uporabnik::keyPressEvent(QKeyEvent *event) {
 		this->on_btn_brisi_clicked();
 	}
 }
-// urejeno > za preveriti
+
 void uporabnik::prejem(QString besedilo) {
 
 	if (besedilo == "Nov uporabnik") {

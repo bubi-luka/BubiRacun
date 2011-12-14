@@ -23,9 +23,11 @@ private slots:
 	void napolni();
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
+	void prejem(QString besedilo);
 
 signals:
 	void prenos(QString beseda);
+	void prenesi();
 
 private:
     Ui::wid_potninalogi *ui;

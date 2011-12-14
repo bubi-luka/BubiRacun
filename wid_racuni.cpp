@@ -13,11 +13,11 @@ wid_racuni::wid_racuni(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	// disable and hide
-	ui->txt_stprojekta->setEnabled(false);
-	ui->txt_stprojekta->setVisible(false);
+		// disable and hide
+		ui->txt_stprojekta->setEnabled(false);
+		ui->txt_stprojekta->setVisible(false);
 
-	napolni();
+		napolni();
 }
 
 wid_racuni::~wid_racuni()
@@ -101,7 +101,7 @@ void wid_racuni::napolni() {
 		QString projekt = "";
 
 		QSqlQuery sql_projekt;
-		sql_projekt.prepare("SELECT * FROM projekti WHERE stprojekta LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+		sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
 		sql_projekt.exec();
 		if ( sql_projekt.next() ) {
 			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();

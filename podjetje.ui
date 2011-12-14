@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>656</width>
-    <height>678</height>
+    <height>653</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-153</y>
+            <y>0</y>
             <width>596</width>
             <height>723</height>
            </rect>
@@ -578,7 +578,7 @@
             <x>0</x>
             <y>0</y>
             <width>614</width>
-            <height>534</height>
+            <height>509</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -831,7 +831,7 @@
             <x>0</x>
             <y>0</y>
             <width>614</width>
-            <height>534</height>
+            <height>509</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1084,7 +1084,7 @@
             <x>0</x>
             <y>0</y>
             <width>614</width>
-            <height>534</height>
+            <height>509</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1285,6 +1285,7 @@
  </widget>
  <tabstops>
   <tabstop>tab_podjetje</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>txt_id</tabstop>
   <tabstop>txt_ime</tabstop>
   <tabstop>txt_polnoime</tabstop>
@@ -1302,11 +1303,11 @@
   <tabstop>txt_email</tabstop>
   <tabstop>txt_telefon</tabstop>
   <tabstop>txt_gsm</tabstop>
-  <tabstop>btn_potrdi</tabstop>
   <tabstop>txt_lastnik</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>txt_lastnik_ime</tabstop>
   <tabstop>txt_lastnik_priimek</tabstop>
+  <tabstop>txt_lastnik_naziv</tabstop>
   <tabstop>txt_lastnik_naslov</tabstop>
   <tabstop>txt_lastnik_st</tabstop>
   <tabstop>txt_lastnik_posta</tabstop>
@@ -1314,7 +1315,6 @@
   <tabstop>txt_lastnik_email</tabstop>
   <tabstop>txt_lastnik_gsm</tabstop>
   <tabstop>txt_lastnik_telefon</tabstop>
-  <tabstop>txt_lastnik_naziv</tabstop>
   <tabstop>txt_kontaktna</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>txt_kontaktna_ime</tabstop>
@@ -1327,6 +1327,19 @@
   <tabstop>txt_kontaktna_email</tabstop>
   <tabstop>txt_kontaktna_gsm</tabstop>
   <tabstop>txt_kontaktna_telefon</tabstop>
+  <tabstop>txt_odgovorna</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>txt_odgovorna_ime</tabstop>
+  <tabstop>txt_odgovorna_priimek</tabstop>
+  <tabstop>txt_odgovorna_naziv</tabstop>
+  <tabstop>txt_odgovorna_naslov</tabstop>
+  <tabstop>txt_odgovorna_st</tabstop>
+  <tabstop>txt_odgovorna_posta</tabstop>
+  <tabstop>txt_odgovorna_postna_stevilka</tabstop>
+  <tabstop>txt_odgovorna_email</tabstop>
+  <tabstop>txt_odgovorna_gsm</tabstop>
+  <tabstop>txt_odgovorna_telefon</tabstop>
+  <tabstop>btn_potrdi</tabstop>
  </tabstops>
  <resources/>
  <connections/>

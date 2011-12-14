@@ -33,6 +33,9 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLineEdit" name="txt_stprojekta"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="btn_nov">
        <property name="text">
         <string>Vnos potnega naloga</string>
