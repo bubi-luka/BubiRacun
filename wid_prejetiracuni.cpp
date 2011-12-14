@@ -12,7 +12,11 @@ wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	napolni();
+		// disable and hide
+		ui->txt_stprojekta->setEnabled(false);
+		ui->txt_stprojekta->setVisible(false);
+
+		napolni();
 
 }
 
@@ -47,7 +51,7 @@ void wid_prejetiracuni::napolni() {
 		}
 
 		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM prejetiracuni");
+		sql_clear.prepare("SELECT * FROM prejeti_racuni");
 		sql_clear.exec();
 		while (sql_clear.next()) {
 			ui->tbl_racuni->removeRow(0);
@@ -98,8 +102,22 @@ void wid_prejetiracuni::napolni() {
 		ui->tbl_racuni->setHorizontalHeaderItem(8, naslov8);
 		ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
 
+		QString projekt = "";
+
+		QSqlQuery sql_projekt;
+		sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+		sql_projekt.exec();
+		if ( sql_projekt.next() ) {
+			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+		}
+
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM prejetiracuni");
+		if ( ui->txt_stprojekta->text() != "*" ) {
+			sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + projekt + "'");
+		}
+		else {
+			sql_fill.prepare("SELECT * FROM prejeti_racuni");
+		}
 		sql_fill.exec();
 
 		int row = 0;
@@ -108,8 +126,8 @@ void wid_prejetiracuni::napolni() {
 			ui->tbl_racuni->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[10] = {"id", "stevilkavnosa", "stevilkaracuna", "datumprejema", "posiljatelj", "zadeva", "znesek", "statusracuna",
-								"statusplacila", "statusracunovodstvo"};
+			QString polja[10] = {"id", "stevilka_vnosa", "stevilka_racuna", "datum_prejema", "izdajatelj_kratki", "zadeva", "znesek",
+													 "status_racuna", "status_placila", "status_racunovodstva"};
 
 			while (col <= 9) {
 
@@ -123,7 +141,6 @@ void wid_prejetiracuni::napolni() {
 			}
 
 			row++;
-
 		}
 	}
 	base.close();
@@ -149,7 +166,7 @@ void wid_prejetiracuni::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM prejetiracuni WHERE id LIKE '" + id + "'");
+		sql_brisi.prepare("DELETE FROM prejeti_racuni WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}
 	base.close();
@@ -206,5 +223,13 @@ QString wid_prejetiracuni::pretvori(QString besedilo) {
 QString wid_prejetiracuni::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void wid_prejetiracuni::prejem(QString besedilo) {
+
+	ui->txt_stprojekta->setText(besedilo);
+
+	napolni();
 
 }

@@ -16,16 +16,18 @@ public:
     ~wid_prejetiracuni();
 
 private slots:
-	void on_btn_nov_clicked();
 	void on_tbl_racuni_doubleClicked();
+	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();
 	void osvezi(QString beseda);
 	void napolni();
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
+	void prejem(QString besedilo);
 
 signals:
 	void prenos(QString beseda);
+	void prenesi();
 
 private:
     Ui::wid_prejetiracuni *ui;
