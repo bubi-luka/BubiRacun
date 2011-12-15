@@ -38,6 +38,8 @@ private slots:
 	void on_txt_posta_currentIndexChanged(QString besedilo);
 	void on_txt_postna_stevilka_textChanged(QString besedilo);
 
+	void on_txt_naziv_podjetja_kratki_editingFinished();
+
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);

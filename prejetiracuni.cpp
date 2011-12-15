@@ -161,6 +161,23 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 				ui->txt_status_racunovodstva->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("status")).toString()));
 			}
 			sql_fill.clear();
+
+			// napolnimo podatke o placniku
+			sql_fill.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+			sql_fill.exec();
+			if ( sql_fill.next() ) {
+				ui->txt_podjetje->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("ime")).toString()));
+			}
+			sql_fill.clear();
+
+			sql_fill.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + vApp->id() + "'");
+			sql_fill.exec();
+			if ( sql_fill.next() ) {
+				ui->txt_oseba->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("priimek")).toString()) +
+																	" " + prevedi(sql_fill.value(sql_fill.record().indexOf("ime")).toString()));
+			}
+			sql_fill.clear();
+
 		}
 		base.close();
 
@@ -767,5 +784,40 @@ void prejetiracuni::on_txt_postna_stevilka_textChanged(QString besedilo) {
 		}
 	}
 	base.close();
+
+}
+
+void prejetiracuni::on_txt_naziv_podjetja_kratki_editingFinished() {
+
+	if ( ui->btn_sprejmi->text() == "Vnesi racun" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			// baza je odprta
+
+			QSqlQuery sql_podjetje;
+			sql_podjetje.prepare("SELECT * FROM prejeti_racuni WHERE izdajatelj_kratki LIKE '" + pretvori(ui->txt_naziv_podjetja_kratki->text()) + "'");
+			sql_podjetje.exec();
+			while ( sql_podjetje.next() ) {
+				ui->txt_naziv_podjetja_polni->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("izdajatelj_polni")).toString()));
+				ui->txt_ulica->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ulica")).toString()));
+				ui->txt_hisna_stevilka->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("hisna_stevilka")).toString()));
+				ui->txt_postna_stevilka->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString()));
+				ui->txt_zadeva->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("zadeva")).toString()));
+			}
+		}
+		base.close();
+	}
 
 }
