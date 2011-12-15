@@ -26,122 +26,207 @@ potninalogi::potninalogi(QWidget *parent) :
 {
 		ui->setupUi(this);
 
-	// disable fields
-	ui->txt_kilometri->setEnabled(false);
-	ui->txt_cenaprevoza->setEnabled(false);
-	ui->txt_skupaj->setEnabled(false);
-	ui->txt_ostalo->setEnabled(false);
-	ui->txt_cenaodsotnosti->setEnabled(false);
-	ui->txt_dnevnica1->setEnabled(false);
-	ui->txt_dnevnica2->setEnabled(false);
-	ui->txt_dnevnica3->setEnabled(false);
-	ui->txt_dnevi->setEnabled(false);
-	ui->txt_ure->setEnabled(false);
+		// pocisti polja privzetih vrednosti
+		ui->txt_id->setText("");
+		ui->txt_stevilka_naloga->setText("");
+		ui->txt_datum_naloga->setDate(QDate::currentDate());
+		ui->txt_namen->clear();
+		ui->txt_naziv_ciljnega_podjetja->setText("");
+		ui->txt_stevilka_projekta->clear();
+		ui->txt_opombe->setPlainText("");
+		ui->txt_cena_prevoza->setText("");
+		ui->txt_cena_dnevnic->setText("");
+		ui->txt_ostali_stroski->setText("");
+		ui->txt_stroski_skupaj->setText("");
 
-	ui->txt_priznajdnevnico->setChecked(true);
+		ui->txt_skupaj_kilometri->setText("");
+		ui->txt_kilometrina->setText("");
+		ui->txt_skupaj_dnevi->setText("");
+		ui->txt_skupaj_ure->setText("");
+		ui->txt_priznana_dnevnica->setText("");
+		ui->txt_dnevnica_6_8->setText("");
+		ui->txt_dnevnica_8_12->setText("");
+		ui->txt_dnevnica_12_24->setText("");
+		ui->txt_zajtrk_8_12->setText("");
+		ui->txt_zajtrk_12_24->setText("");
 
-	// hide car info
-	ui->txt_avtomobil->setHidden(true);
-	ui->txt_registrska->setHidden(true);
-	ui->label_9->setHidden(true);
-	ui->label_8->setHidden(true);
+		ui->cb_predlagatelj_podjetje->setText("");
+		ui->txt_predlagatelj_izbira_podjetje->clear();
+		ui->txt_predlagatelj_podjetje->setText("");
+		ui->txt_predlagatelj_naslov->setText("");
+		ui->txt_predlagatelj_naslov_st->setText("");
+		ui->txt_predlagatelj_posta->setText("");
+		ui->txt_predlagatelj_postna_stevilka->setText("");
+		ui->cb_predlagatelj_oseba->setText("");
+		ui->txt_predlagatelj_izbira_oseba->clear();
+		ui->txt_predlagatelj_oseba->setText("");
+		ui->txt_predlagatelj_naziv->setText("");
 
-	QString leto = QDate::currentDate().toString("yyyy");
-	leto = leto.insert(3, "\\");
-	leto = leto.insert(2, "\\");
-	leto = leto.insert(1, "\\");
-	leto = leto.insert(0, "\\");
+		ui->txt_prejemnik_izbira_osebe->clear();
+		ui->txt_prejemnik_priimek->setText("");
+		ui->txt_prejemnik_ime->setText("");
+		ui->txt_prejemnik_naziv->setText("");
+		ui->txt_prejemnik_naslov->setText("");
+		ui->txt_prejemnik_naslov_st->setText("");
+		ui->txt_prejemnik_posta->setText("");
+		ui->txt_prejemnik_postna_stevilka->setText("");
+		ui->txt_prevoz->clear();
+		ui->txt_znamka_avtomobila->setText("");
+		ui->txt_model_avtomobila->setText("");
+		ui->txt_registrska_stevilka->setText("");
 
-	ui->txt_stnaloga->setInputMask("P\\N-" + leto + "-999;_");
+		// onemogocimo dolocena polja
+		ui->txt_cena_prevoza->setEnabled(false);
+		ui->txt_cena_dnevnic->setEnabled(false);
+		ui->txt_ostali_stroski->setEnabled(false);
+		ui->txt_stroski_skupaj->setEnabled(false);
 
-	leto = QDate::currentDate().toString("yyyy");
+		ui->txt_skupaj_kilometri->setEnabled(false);
+		ui->txt_kilometrina->setEnabled(false);
+		ui->txt_skupaj_dnevi->setEnabled(false);
+		ui->txt_skupaj_ure->setEnabled(false);
+		ui->txt_dnevnica_6_8->setEnabled(false);
+		ui->txt_dnevnica_8_12->setEnabled(false);
+		ui->txt_dnevnica_12_24->setEnabled(false);
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+		ui->txt_predlagatelj_podjetje->setEnabled(false);
+		ui->txt_predlagatelj_naslov->setEnabled(false);
+		ui->txt_predlagatelj_naslov_st->setEnabled(false);
+		ui->txt_predlagatelj_posta->setEnabled(false);
+		ui->txt_predlagatelj_postna_stevilka->setEnabled(false);
+		ui->txt_predlagatelj_oseba->setEnabled(false);
+		ui->txt_predlagatelj_naziv->setEnabled(false);
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		int i = 1;
-		QString stevilka = "";
-		QSqlQuery sql_insert_stnaloga;
-		sql_insert_stnaloga.prepare("SELECT * FROM potninalogi WHERE stevilkanaloga LIKE '" + pretvori("PN-" + leto) + "%'");
-		sql_insert_stnaloga.exec();
-		while (sql_insert_stnaloga.next()) {
-			i++;
-		}
-		if ( i < 10 ) {
-			stevilka = "00" + QString::number(i, 10);
-		}
-		else if ( i < 100 ) {
-			stevilka = "0" + QString::number(i, 10);
+		ui->txt_prejemnik_priimek->setEnabled(false);
+		ui->txt_prejemnik_ime->setEnabled(false);
+		ui->txt_prejemnik_naziv->setEnabled(false);
+		ui->txt_prejemnik_naslov->setEnabled(false);
+		ui->txt_prejemnik_naslov_st->setEnabled(false);
+		ui->txt_prejemnik_posta->setEnabled(false);
+		ui->txt_prejemnik_postna_stevilka->setEnabled(false);
+		ui->txt_znamka_avtomobila->setEnabled(false);
+		ui->txt_model_avtomobila->setEnabled(false);
+		ui->txt_registrska_stevilka->setEnabled(false);
+
+		// nastavi privzete vrednosti
+		ui->txt_priznana_dnevnica->setChecked(true);
+		ui->cb_predlagatelj_podjetje->setChecked(false);
+		ui->cb_predlagatelj_oseba->setChecked(false);
+
+		// skrij neuporabljena polja
+		ui->txt_predlagatelj_izbira_podjetje->setHidden(true);
+		ui->txt_predlagatelj_izbira_oseba->setHidden(true);
+
+		ui->txt_znamka_avtomobila->setHidden(true);
+		ui->txt_registrska_stevilka->setHidden(true);
+		ui->txt_model_avtomobila->setHidden(true);
+		ui->label_9->setHidden(true);
+		ui->label_8->setHidden(true);
+		ui->label_40->setHidden(true);
+
+		// pridobi podatke za stevilko naloga
+		QString leto = QDate::currentDate().toString("yyyy");
+		leto = leto.insert(3, "\\");
+		leto = leto.insert(2, "\\");
+		leto = leto.insert(1, "\\");
+		leto = leto.insert(0, "\\");
+
+		// nastavi obliko leta
+		ui->txt_stevilka_naloga->setInputMask("P\\N-" + leto + "-999;_");
+
+		leto = QDate::currentDate().toString("yyyy");
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
 		else {
-			stevilka = "" + QString::number(i, 10);
+			// baza je odprta
+
+			// zapisi stevilko potnega naloga
+			int i = 1;
+			QString stevilka = "";
+			QSqlQuery sql_insert_stnaloga;
+			sql_insert_stnaloga.prepare("SELECT * FROM potninalogi WHERE stevilkanaloga LIKE '" + pretvori("PN-" + leto) + "%'");
+			sql_insert_stnaloga.exec();
+			while (sql_insert_stnaloga.next()) {
+				i++;
+			}
+			if ( i < 10 ) {
+				stevilka = "00" + QString::number(i, 10);
+			}
+			else if ( i < 100 ) {
+				stevilka = "0" + QString::number(i, 10);
+			}
+			else {
+				stevilka = "" + QString::number(i, 10);
+			}
+			ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
+
+			// nastavi privzeto vrednost za kilometrino
+			ui->txt_kilometrina->setText("0,37 EUR");
+
+			// dodaj prazno vrstico spustnim seznamom
+			ui->txt_namen->addItem("");
+			ui->txt_stevilka_projekta->addItem("");
+			ui->txt_predlagatelj_izbira_podjetje->addItem("");
+			ui->txt_predlagatelj_izbira_oseba->addItem("");
+			ui->txt_prejemnik_izbira_osebe->addItem("");
+			ui->txt_prevoz->addItem("");
+
+			// napolni spustne sezname
+			QSqlQuery sql_fill_combo;
+			sql_fill_combo.prepare("SELECT * FROM sif_namen_potnega_naloga");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_namen->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("namen")).toString()));
+			}
+			sql_fill_combo.clear();
+
+			sql_fill_combo.prepare("SELECT * FROM projekti");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_stevilka_projekta->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("naziv_projekta")).toString()));
+			}
+			sql_fill_combo.clear();
+
+			sql_fill_combo.prepare("SELECT * FROM podjetje");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_predlagatelj_izbira_podjetje->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
+			}
+			sql_fill_combo.clear();
+
+			sql_fill_combo.prepare("SELECT * FROM uporabniki");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				QString uporabnik;
+				uporabnik = prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString()) + ") ";
+				uporabnik += prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()) + " ";
+				uporabnik += prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString());
+				ui->txt_predlagatelj_izbira_oseba->addItem(uporabnik);
+				ui->txt_prejemnik_izbira_osebe->addItem(uporabnik);
+			}
+			sql_fill_combo.clear();
+
+			sql_fill_combo.prepare("SELECT * FROM sif_prevozna_sredstva");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_prevoz->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("prevoz")).toString()));
+			}
+			sql_fill_combo.clear();
 		}
-		ui->txt_stnaloga->setText("PN-" + leto + "-" + stevilka);
+		base.close();
 
-		ui->txt_datum->setDate(QDate::currentDate());
-
-		ui->txt_kilometrina->setText("0.37");
-//		ui->txt_dnevnica->setText("10.00");
-
-		// add empty first line to all combobox
-		ui->txt_podjetje->addItem("");
-		ui->txt_nazivpredlagatelja->addItem("");
-		ui->txt_predlagatelj->addItem("");
-		ui->txt_prevoz->addItem("");
-		ui->txt_prejemnik->addItem("");
-		ui->txt_prejemnikime->addItem("");
-		ui->txt_nazivprejemnika->addItem("");
-		ui->txt_namen->addItem("");
-
-		QSqlQuery sql_fill_combo;
-		sql_fill_combo.prepare("SELECT * FROM podjetje");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_podjetje->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
-		}
-		sql_fill_combo.clear();
-
-		sql_fill_combo.prepare("SELECT * FROM sif_nazivi");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_nazivpredlagatelja->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("naziv")).toString()));
-			ui->txt_nazivprejemnika->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("naziv")).toString()));
-		}
-		sql_fill_combo.clear();
-
-		sql_fill_combo.prepare("SELECT * FROM sif_prevoz");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_prevoz->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("prevoz")).toString()));
-		}
-		sql_fill_combo.clear();
-
-		sql_fill_combo.prepare("SELECT * FROM uporabniki");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_prejemnik->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()));
-		}
-		sql_fill_combo.clear();
-
-		sql_fill_combo.prepare("SELECT * FROM sif_namen");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_namen->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("namen")).toString()));
-		}
-		sql_fill_combo.clear();
-	}
-	base.close();
 }
 
 potninalogi::~potninalogi()
@@ -154,9 +239,9 @@ void potninalogi::on_btn_izhod_clicked() {
 	close();
 
 }
-
+//
 void potninalogi::on_btn_izvozi_clicked() {
-
+/*
 	// v string vsebina se shrani celotno besedilo enega potnega naloga
 	QString vsebina;
 
@@ -353,11 +438,11 @@ void potninalogi::on_btn_izvozi_clicked() {
 //	document->print(&printer);
 
 //	delete document;
-
+*/
 }
-
+//
 void potninalogi::on_txt_podjetje_currentIndexChanged(int index) {
-
+/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -402,10 +487,11 @@ void potninalogi::on_txt_podjetje_currentIndexChanged(int index) {
 		}
 	}
 	base.close();
+	*/
 }
-
+//
 void potninalogi::on_txt_predlagatelj_currentIndexChanged(int index) {
-
+/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -442,11 +528,11 @@ void potninalogi::on_txt_predlagatelj_currentIndexChanged(int index) {
 		}
 	}
 	base.close();
-
+*/
 }
-
+//
 void potninalogi::on_txt_prejemnik_currentIndexChanged(int index) {
-
+/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -471,11 +557,11 @@ void potninalogi::on_txt_prejemnik_currentIndexChanged(int index) {
 		}
 	}
 	base.close();
-
+*/
 }
-
+//
 void potninalogi::on_txt_prejemnikime_currentIndexChanged(int index){
-
+/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -524,27 +610,32 @@ void potninalogi::on_txt_prejemnikime_currentIndexChanged(int index){
 
 	}
 	base.close();
-
+*/
 }
 
 void potninalogi::on_txt_prevoz_currentIndexChanged(int index) {
 
 	if (index == 1) {
-		ui->txt_avtomobil->setHidden(false);
-		ui->txt_registrska->setHidden(false);
+		ui->txt_znamka_avtomobila->setHidden(false);
+		ui->txt_model_avtomobila->setHidden(false);
+		ui->txt_registrska_stevilka->setHidden(false);
 		ui->label_9->setHidden(false);
 		ui->label_8->setHidden(false);
+		ui->label_40->setHidden(false);
 	}
 	else {
-		ui->txt_avtomobil->setHidden(true);
-		ui->txt_registrska->setHidden(true);
+		ui->txt_znamka_avtomobila->setHidden(true);
+		ui->txt_model_avtomobila->setHidden(true);
+		ui->txt_registrska_stevilka->setHidden(true);
 		ui->label_9->setHidden(true);
 		ui->label_8->setHidden(true);
+		ui->label_40->setHidden(true);
 	}
+
 }
 
 void potninalogi::on_btn_sprejmi_clicked() {
-
+/*
 	izracun(); // just to be safe
 
 	// check for correct fields
@@ -765,7 +856,8 @@ void potninalogi::on_btn_sprejmi_clicked() {
 			ui->label_8->setPalette(palette_normal);
 			ui->label_8->setFont(font_normal);
 		}
-
+*/
+	/*
 		// javi napake, ce ni napak vnesi v bazo
 		if (napaka == "") {
 			QSqlQuery sql_vnesi_uporabnika;
@@ -825,7 +917,7 @@ void potninalogi::on_btn_sprejmi_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void potninalogi::keyPressEvent(QKeyEvent *event) {
@@ -868,89 +960,83 @@ void potninalogi::prejem(QString besedilo) {
 		}
 		else {
 			QSqlQuery sql_napolni;
-			sql_napolni.prepare("SELECT * FROM potninalogi WHERE id LIKE '" + besedilo + "'");
+			sql_napolni.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + besedilo + "'");
 			sql_napolni.exec();
 			if (sql_napolni.next()) {
 				ui->txt_id->setText(sql_napolni.value(sql_napolni.record().indexOf("id")).toString());
-				ui->txt_stnaloga->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilkanaloga")).toString()));
-				ui->txt_naloga->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naloga")).toString()));
-				ui->txt_avtomobil->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("tipavtomobila")).toString()));
-				ui->txt_registrska->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("registrskastevilka")).toString()));
-				ui->txt_kilometri->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("razdalja")).toString()));
-				ui->txt_kilometrina->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("kilometrina")).toString()));
-
-				ui->txt_naslovprejemnika->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
-				ui->txt_naslovpodjetja->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslovpodjetja")).toString()));
+				ui->txt_stevilka_naloga->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString()));
+				ui->txt_datum_naloga->setDate(QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_naloga")).toString()), "dd'.'MM'.'yyyy"));
+				ui->txt_naziv_ciljnega_podjetja->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv_ciljnega_podjetja")).toString()));
 				ui->txt_opombe->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opombe")).toString()));
+				ui->txt_cena_prevoza->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena_prevoza")).toString()));
+				ui->txt_cena_dnevnic->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena_dnevnic")).toString()));
+				ui->txt_ostali_stroski->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ostali_stroski")).toString()));
+				ui->txt_stroski_skupaj->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString()));
 
-				ui->txt_datum->setDate(QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum")).toString()), "dd'.'MM'.'yyyy"));
+				ui->txt_skupaj_kilometri->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("skupaj_kilometri")).toString()));
+				ui->txt_kilometrina->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("kilometrina")).toString()));
+				ui->txt_skupaj_dnevi->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("skupaj_dnevi")).toString()));
+				ui->txt_skupaj_ure->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("skupaj_ure")).toString()));
 
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("zajtrk2")).toString()) == "zajtrk2") {
-					ui->txt_zajtrk2->setChecked(true);
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("priznana_dnevnica")).toString()) == "1" ) {
+					ui->txt_priznana_dnevnica->setChecked(true);
 				}
 				else {
-					ui->txt_zajtrk2->setChecked(false);
+					ui->txt_priznana_dnevnica->setChecked(false);
 				}
 
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("zajtrk3")).toString()) == "zajtrk3") {
-					ui->txt_zajtrk3->setChecked(true);
+				ui->txt_dnevnica_6_8->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("dnevnica_6_8")).toString()));
+				ui->txt_dnevnica_8_12->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("dnevnica_8_12")).toString()));
+				ui->txt_dnevnica_12_24->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("dnevnica_12_24")).toString()));
+
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("zajtrk_8_12")).toString()) == "1" ) {
+					ui->txt_zajtrk_8_12->setChecked(true);
 				}
 				else {
-					ui->txt_zajtrk3->setChecked(false);
+					ui->txt_zajtrk_8_12->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("zajtrk_12_24")).toString()) == "1" ) {
+					ui->txt_zajtrk_12_24->setChecked(true);
+				}
+				else {
+					ui->txt_zajtrk_12_24->setChecked(false);
 				}
 
-				bool ok;
+				ui->txt_predlagatelj_podjetje->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje")).toString()));
+				ui->txt_predlagatelj_oseba->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba")).toString()));
+
 				QSqlQuery sql_combo;
-				sql_combo.prepare("SELECT * FROM podjetje WHERE ime LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("podjetje")).toString() + "'");
+				sql_combo.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("namen_naloga")).toString() + "'");
 				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_podjetje->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM uporabniki WHERE priimek LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("naslovnik")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_prejemnik->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM uporabniki WHERE ime LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("naslovnikime")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_prejemnikime->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_nazivprejemnika->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
+				if ( sql_combo.next() ) {
+					ui->txt_namen->setCurrentIndex(ui->txt_namen->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("namen")).toString())));
 				}
 				sql_combo.clear();
 
-				sql_combo.prepare("SELECT * FROM sif_namen WHERE namen LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("namen")).toString() + "'");
+				sql_combo.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_projekta")).toString() + "'");
 				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_namen->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM sif_prevoz WHERE prevoz LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("prevoznosredstvo")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_prevoz->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM podjetje WHERE odgovornaoseba LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("predlagatelj")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_predlagatelj->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
-				}
-				sql_combo.clear();
-				sql_combo.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("nazivpredlagatelja")).toString() + "'");
-				sql_combo.exec();
-				if (sql_combo.next()) {
-					ui->txt_nazivpredlagatelja->setCurrentIndex(sql_combo.value(sql_combo.record().indexOf("id")).toString().toInt(&ok, 10));
+				if ( sql_combo.next() ) {
+					ui->txt_stevilka_projekta->setCurrentIndex(ui->txt_stevilka_projekta->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("naziv_projekta")).toString())));
 				}
 				sql_combo.clear();
 
+				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba")).toString() + "'");
+				sql_combo.exec();
+				if ( sql_combo.next() ) {
+					QString uporabnik;
+					uporabnik = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
+					uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString()) + " ";
+					uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString());
+					ui->txt_prejemnik_izbira_osebe->setCurrentIndex(ui->txt_prejemnik_izbira_osebe->findText(uporabnik));
+				}
+				sql_combo.clear();
+
+				sql_combo.prepare("SELECT * FROM sif_prevozno_sredstvo WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("prevozno_sredstvo")).toString() + "'");
+				sql_combo.exec();
+				if ( sql_combo.next() ) {
+					ui->txt_prevoz->setCurrentIndex(ui->txt_prevoz->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("prevoz")).toString())));
+				}
+				sql_combo.clear();
 			}
 		}
 		base.close();
@@ -961,7 +1047,7 @@ void potninalogi::prejem(QString besedilo) {
 	ui->wid_st->setWidget(widst);
 	QObject::connect(this, SIGNAL(prenos(QString)),
 				 widst , SLOT(prejem(QString)));
-	prenos(ui->txt_stnaloga->text());
+	prenos(ui->txt_stevilka_naloga->text());
 //	this->disconnect();
 
 	QObject::connect(widst, SIGNAL(prenesi()),
@@ -972,7 +1058,7 @@ void potninalogi::prejem(QString besedilo) {
 
 	QObject::connect(this, SIGNAL(prenos(QString)),
 				 widpot , SLOT(prejem(QString)));
-	prenos(ui->txt_stnaloga->text());
+	prenos(ui->txt_stevilka_naloga->text());
 //	this->disconnect();
 
 	QObject::connect(widpot, SIGNAL(prenesi()),
@@ -993,9 +1079,9 @@ QString potninalogi::prevedi(QString besedilo) {
 	return kodiranje().odkodiraj(besedilo);
 
 }
-
+//
 void potninalogi::izracun() {
-
+/*
 	double kilometri = 0;
 	double cenaprevoza = 0;
 	double ostalo = 0;
@@ -1109,7 +1195,7 @@ void potninalogi::izracun() {
 												ui->txt_ostalo->text().toDouble(ok), 'f', 2));
 	}
 	base.close();
-
+*/
 }
 
 void potninalogi::sprejmist() {

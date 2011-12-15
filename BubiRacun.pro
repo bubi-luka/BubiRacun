@@ -99,7 +99,11 @@ OTHER_FILES += \
     vir-strank.csv \
     status_racuna.csv \
     status_placila.csv \
-    status_racunovodstva.csv
+    status_racunovodstva.csv \
+    namen_potnega_naloga.csv \
+    prevozna_sredstva.csv
+
+
 
 
 

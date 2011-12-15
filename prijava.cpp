@@ -41,6 +41,8 @@ prijava::prijava(QWidget *parent) :
 	tabela_status_racunovodstva();
 	tabela_popusti();
 	tabela_viri_strank();
+	tabela_namen_potnega_naloga();
+	tabela_prevoz();
 
 	// vnese podatke v tabele
 	vnesi_skd();
@@ -54,6 +56,8 @@ prijava::prijava(QWidget *parent) :
 	vnesi_status_racunovodstva();
 	vnesi_popuste();
 	vnesi_vire_strank();
+	vnesi_namen_potnega_naloga();
+	vnesi_prevoz();
 
 	ui->txt_uporabnik->setFocus();
 
@@ -169,54 +173,6 @@ prijava::prijava(QWidget *parent) :
 		sql_create_table_pot.exec();
 
 		// kreiranje sifrantov
-		QSqlQuery sql_create_table_prevoz;
-		sql_create_table_prevoz.prepare("CREATE TABLE IF NOT EXISTS sif_prevoz ("
-										"id INTEGER PRIMARY KEY, "
-										"prevoz TEXT)"
-										);
-		sql_create_table_prevoz.exec();
-		QSqlQuery sql_check_prevoz;
-		sql_check_prevoz.prepare("SELECT * FROM sif_prevoz");
-		sql_check_prevoz.exec();
-		if (!sql_check_prevoz.next()) {
-			QSqlQuery sql_insert_prevoz;
-			sql_insert_prevoz.prepare("INSERT INTO sif_prevoz (prevoz) VALUES ('" + pretvori("Avtomobil") + "')");
-			sql_insert_prevoz.exec();
-			sql_insert_prevoz.prepare("INSERT INTO sif_prevoz (prevoz) VALUES ('" + pretvori("Taksi") + "')");
-			sql_insert_prevoz.exec();
-			sql_insert_prevoz.prepare("INSERT INTO sif_prevoz (prevoz) VALUES ('" + pretvori("Vlak") + "')");
-			sql_insert_prevoz.exec();
-			sql_insert_prevoz.prepare("INSERT INTO sif_prevoz (prevoz) VALUES ('" + pretvori("Avtobus") + "')");
-			sql_insert_prevoz.exec();
-			sql_insert_prevoz.prepare("INSERT INTO sif_prevoz (prevoz) VALUES ('" + pretvori("Letalo") + "')");
-			sql_insert_prevoz.exec();
-		}
-
-		QSqlQuery sql_create_table_namen;
-		sql_create_table_namen.prepare("CREATE TABLE IF NOT EXISTS sif_namen ("
-										"id INTEGER PRIMARY KEY, "
-										"namen TEXT)"
-										);
-		sql_create_table_namen.exec();
-		QSqlQuery sql_check_namen;
-		sql_check_namen.prepare("SELECT * FROM sif_namen");
-		sql_check_namen.exec();
-		if (!sql_check_namen.next()) {
-			QSqlQuery sql_insert_namen;
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("Sestanek") + "')");
-			sql_insert_namen.exec();
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("Uvodni sestanek") + "')");
-			sql_insert_namen.exec();
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("Oddaja porocila") + "')");
-			sql_insert_namen.exec();
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("Predstavitev porocila") + "')");
-			sql_insert_namen.exec();
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("Izobrazevanje") + "')");
-			sql_insert_namen.exec();
-			sql_insert_namen.prepare("INSERT INTO sif_namen (namen) VALUES ('" + pretvori("PR") + "')");
-			sql_insert_namen.exec();
-		}
-
 		QSqlQuery sql_create_table_projekt;
 		sql_create_table_projekt.prepare("CREATE TABLE IF NOT EXISTS sif_projekt ("
 										"id INTEGER PRIMARY KEY, "
@@ -549,7 +505,7 @@ void prijava::tabela_uporabnik() {
 	base.close();
 
 }
-// se ni urejeno
+
 void prijava::tabela_potni_nalogi() {
 
 	QString app_path = QApplication::applicationDirPath();
@@ -570,26 +526,30 @@ void prijava::tabela_potni_nalogi() {
 		QSqlQuery sql_create_table;
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potni_nalogi ("
 														 "id INTEGER PRIMARY KEY, "
-														 "podjetje TEXT, "
-														 "stevilkanaloga TEXT, "
-														 "datum TEXT, "
-														 "naslovnik TEXT, "
-														 "naslovnikime TEXT, "
-														 "naziv TEXT, "
-														 "naslov TEXT, "
-														 "naloga TEXT, "
-														 "namen TEXT, "
-														 "prevoznosredstvo TEXT, "
-														 "tipavtomobila TEXT, "
-														 "registrskastevilka TEXT, "
-														 "razdalja TEXT, "
-														 "kilometrina TEXT, "
+														 "stevilka_naloga TEXT, "
+														 "datum_naloga TEXT, "
+														 "namen_naloga TEXT, "
+														 "naziv_ciljnega_podjetja TEXT, "
+														 "stevilka_projekta TEXT, "
 														 "opombe TEXT, "
-														 "predlagatelj TEXT, "
-														 "nazivpredlagatelja TEXT, "
-														 "naslovpodjetja TEXT, "
-														 "zajtrk2 TEXT, "
-														 "zajtrk3 TEXT)"
+														 "cena_prevoza TEXT, "
+														 "cena_dnevnic TEXT, "
+														 "ostali_stroski TEXT, "
+														 "stroski_skupaj TEXT, "
+														 "skupaj_kilometri TEXT, "
+														 "kilometrina TEXT, "
+														 "skupaj_dnevi TEXT, "
+														 "skupaj_ure TEXT, "
+														 "priznana_dnevnica TEXT, "
+														 "dnevnica_6_8 TEXT, "
+														 "dnevnica_8_12 TEXT, "
+														 "dnevnica_12_24 TEXT, "
+														 "zajtrk_8_12 TEXT, "
+														 "zajtrk12_24 TEXT, "
+														 "predlagatelj_podjetje TEXT, "
+														 "predlagatelj_oseba TEXT, "
+														 "prejemnik_oseba TEXT, "
+														 "prevozno_sredstvo TEXT)"
 														);
 		sql_create_table.exec();
 	}
@@ -1018,6 +978,62 @@ void prijava::tabela_viri_strank() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_viri_strank ("
 														 "id INTEGER PRIMARY KEY, "
 														 "vir TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_namen_potnega_naloga() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_namen_potnega_naloga ("
+														 "id INTEGER PRIMARY KEY, "
+														 "namen TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_prevoz() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_prevozna_sredstva ("
+														 "id INTEGER PRIMARY KEY, "
+														 "prevoz TEXT)"
 										 );
 		sql_create_table.exec();
 	}
@@ -1562,6 +1578,103 @@ void prijava::vnesi_vire_strank() {
 
 }
 
+void prijava::vnesi_namen_potnega_naloga() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/namen_potnega_naloga.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString namen = vrstica.left(vrstica.indexOf(",", 0));
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE namen LIKE '" + pretvori(namen) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_namen_potnega_naloga (namen) VALUES (?)");
+				sql_insert_data.bindValue(0, pretvori(namen));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_prevoz() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/prevozna_sredstva.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString vrstica = besedilo.readLine();
+			QString prevoz = vrstica.left(vrstica.indexOf(",", 0));
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_prevozna_sredstva WHERE prevoz LIKE '" + pretvori(prevoz) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_prevozna_sredstva (prevoz) VALUES (?)");
+				sql_insert_data.bindValue(0, pretvori(prevoz));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+// pretvori v in iz kodirane oblike
 QString prijava::pretvori(QString besedilo) {
 
 	return kodiranje().zakodiraj(besedilo);
