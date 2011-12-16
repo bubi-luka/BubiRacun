@@ -541,11 +541,12 @@ void prijava::tabela_potni_nalogi() {
 														 "skupaj_dnevi TEXT, "
 														 "skupaj_ure TEXT, "
 														 "priznana_dnevnica TEXT, "
+														 "cena_dnevnice TEXT, "
 														 "dnevnica_6_8 TEXT, "
 														 "dnevnica_8_12 TEXT, "
 														 "dnevnica_12_24 TEXT, "
 														 "zajtrk_8_12 TEXT, "
-														 "zajtrk12_24 TEXT, "
+														 "zajtrk_12_24 TEXT, "
 														 "predlagatelj_podjetje TEXT, "
 														 "predlagatelj_oseba TEXT, "
 														 "prejemnik_oseba TEXT, "
@@ -1225,11 +1226,11 @@ void prijava::vnesi_nazive() {
 			QString naziv = vrstica.left(vrstica.indexOf(",", 0));
 
 			QSqlQuery sql_check_table;
-			sql_check_table.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + pretvori(naziv) + "'");
+			sql_check_table.prepare("SELECT * FROM sif_naziv WHERE naziv LIKE '" + pretvori(naziv) + "'");
 			sql_check_table.exec();
 			if ( !sql_check_table.next() ) {
 				QSqlQuery sql_insert_data;
-				sql_insert_data.prepare("INSERT INTO sif_nazivi (naziv) VALUES (?)");
+				sql_insert_data.prepare("INSERT INTO sif_naziv (naziv) VALUES (?)");
 				sql_insert_data.bindValue(0, pretvori(naziv));
 				sql_insert_data.exec();
 			}
