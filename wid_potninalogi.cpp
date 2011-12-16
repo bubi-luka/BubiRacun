@@ -51,7 +51,7 @@ void wid_potninalogi::napolni() {
 		}
 
 		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM potninalogi");
+		sql_clear.prepare("SELECT * FROM potni_nalogi");
 		sql_clear.exec();
 		while (sql_clear.next()) {
 			ui->tbl_potninalogi->removeRow(0);
@@ -89,10 +89,10 @@ void wid_potninalogi::napolni() {
 
 		QSqlQuery sql_fill("wid_racuni");
 		if ( ui->txt_stprojekta->text() != "*" ) {
-			sql_fill.prepare("SELECT * FROM potninalogi WHERE stprojekta LIKE '" + projekt + "'");
+			sql_fill.prepare("SELECT * FROM potni_nalogi WHERE stprojekta LIKE '" + projekt + "'");
 		}
 		else {
-			sql_fill.prepare("SELECT * FROM potninalogi");
+			sql_fill.prepare("SELECT * FROM potni_nalogi");
 		}
 		sql_fill.exec();
 
@@ -162,7 +162,7 @@ void wid_potninalogi::on_btn_brisi_clicked() {
 		sql_brisi.exec();
 		sql_brisi.clear();
 
-		sql_brisi.prepare("DELETE FROM potninalogi WHERE id LIKE '" + id + "'");
+		sql_brisi.prepare("DELETE FROM potni_nalogi WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}
 	base.close();
