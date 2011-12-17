@@ -16,6 +16,12 @@ stroski::stroski(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	// izbrisi besedilo vnosnih polj
+	ui->txt_id->setText("");
+	ui->txt_nalog->setText("");
+	ui->txt_strosek->setText("");
+	ui->txt_cena->setText("");
+
 	// set certain fields as disabled
 	ui->txt_id->setDisabled(true);
 	ui->txt_nalog->setDisabled(true);
@@ -45,8 +51,7 @@ void stroski::on_btn_brisi_clicked() {
 void stroski::on_btn_sprejmi_clicked() {
 
 	QString napaka = "";
-	bool *ok;
-	ui->txt_cena->setText(QString::number(ui->txt_cena->text().replace(",", ".").toDouble(ok), 'f', 2));
+	ui->txt_cena->setText(QString::number(ui->txt_cena->text().replace(",", ".").toDouble(), 'f', 2));
 /*
 	// nastavitev polja za napako
 	QFont font_error;

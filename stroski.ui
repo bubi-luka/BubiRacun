@@ -42,10 +42,18 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="txt_strosek"/>
+           <widget class="QLineEdit" name="txt_strosek">
+            <property name="text">
+             <string>txt_strosek</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="txt_cena"/>
+           <widget class="QLineEdit" name="txt_cena">
+            <property name="text">
+             <string>txt_cena</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
@@ -55,10 +63,18 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="txt_id"/>
+           <widget class="QLineEdit" name="txt_id">
+            <property name="text">
+             <string>txt_id</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="txt_nalog"/>
+           <widget class="QLineEdit" name="txt_nalog">
+            <property name="text">
+             <string>txt_nalog</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
