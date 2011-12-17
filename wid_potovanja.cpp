@@ -52,7 +52,7 @@ void wid_potovanja::napolni() {
 		}
 
 		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM pot");
+		sql_clear.prepare("SELECT * FROM potovanja");
 		sql_clear.exec();
 		while (sql_clear.next()) {
 			ui->tbl_potovanja->removeRow(0);
@@ -88,7 +88,7 @@ void wid_potovanja::napolni() {
 		ui->tbl_potovanja->setHorizontalHeaderItem(5, naslov5);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM pot WHERE potninalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
+		sql_fill.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
 		sql_fill.exec();
 
 		int row = 0;
@@ -97,7 +97,7 @@ void wid_potovanja::napolni() {
 			ui->tbl_potovanja->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[6] = {"id", "odhod", "prihod", "casodhod", "casprihod", "kilometri"};
+			QString polja[6] = {"id", "kraj_odhoda", "kraj_prihoda", "cas_odhoda", "cas_prihoda", "kilometri"};
 
 			while (col <= 5) {
 
@@ -153,7 +153,7 @@ void wid_potovanja::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM pot WHERE id LIKE '" + id + "'");
+		sql_brisi.prepare("DELETE FROM potovanja WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
 	}
 	base.close();

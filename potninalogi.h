@@ -27,9 +27,9 @@ private slots:
 	void on_btn_sprejmi_clicked();
 	void keyPressEvent(QKeyEvent *event);
 
-	void on_txt_priznajdnevnico_toggled();
-	void on_txt_zajtrk2_toggled();
-	void on_txt_zajtrk3_toggled();
+	void on_txt_priznana_dnevnica_toggled();
+	void on_txt_zajtrk_8_12_toggled();
+	void on_txt_zajtrk_12_24_toggled();
 
 	void prejem(QString besedilo);
 	void sprejmist();

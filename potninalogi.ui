@@ -503,7 +503,7 @@
               <item row="2" column="1">
                <widget class="QCheckBox" name="txt_zajtrk_8_12">
                 <property name="text">
-                 <string>Zajtrk</string>
+                 <string>txt_zajtrk_8_12</string>
                 </property>
                </widget>
               </item>
@@ -512,6 +512,13 @@
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
+                <property name="text">
+                 <string>txt_zajtrk_12_24</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_43">
                 <property name="text">
                  <string>Zajtrk</string>
                 </property>
@@ -530,14 +537,14 @@
       <attribute name="title">
        <string>Predlagatelj</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Podatki o predlagatelju</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
            <layout class="QFormLayout" name="formLayout_2">
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
@@ -659,32 +666,61 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="txt_predlagatelj_izbira_podjetje">
-                <property name="minimumSize">
-                 <size>
-                  <width>150</width>
-                  <height>0</height>
-                 </size>
-                </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
-                 <property name="text">
-                  <string>txt_predlagatelj_izbira_podjetje</string>
-                 </property>
+                 <widget class="QComboBox" name="txt_predlagatelj_izbira_podjetje">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_predlagatelj_izbira_podjetje</string>
+                   </property>
+                  </item>
+                 </widget>
                 </item>
-               </widget>
+                <item>
+                 <widget class="QLineEdit" name="txt_predlagatelj_podjetje">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>txt_predlagatelj_podjetje</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="QLineEdit" name="txt_predlagatelj_podjetje">
-                <property name="minimumSize">
+               <spacer name="horizontalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
                  <size>
-                  <width>150</width>
-                  <height>0</height>
+                  <width>40</width>
+                  <height>20</height>
                  </size>
                 </property>
-                <property name="text">
-                 <string>txt_predlagatelj_podjetje</string>
-                </property>
-               </widget>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -705,32 +741,61 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="txt_predlagatelj_izbira_oseba">
-                <property name="minimumSize">
-                 <size>
-                  <width>150</width>
-                  <height>0</height>
-                 </size>
-                </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
                 <item>
-                 <property name="text">
-                  <string>txt_predlagatelj_izbira_oseba</string>
-                 </property>
+                 <widget class="QComboBox" name="txt_predlagatelj_izbira_oseba">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_predlagatelj_izbira_oseba</string>
+                   </property>
+                  </item>
+                 </widget>
                 </item>
-               </widget>
+                <item>
+                 <widget class="QLineEdit" name="txt_predlagatelj_oseba">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>txt_predlagatelj_oseba</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="QLineEdit" name="txt_predlagatelj_oseba">
-                <property name="minimumSize">
+               <spacer name="horizontalSpacer_11">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
                  <size>
-                  <width>150</width>
-                  <height>0</height>
+                  <width>40</width>
+                  <height>20</height>
                  </size>
                 </property>
-                <property name="text">
-                 <string>txt_predlagatelj_oseba</string>
-                </property>
-               </widget>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -750,34 +815,21 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="1">
-           <spacer name="horizontalSpacer_6">
+          <item>
+           <spacer name="verticalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
-              <height>20</height>
+              <width>20</width>
+              <height>40</height>
              </size>
             </property>
            </spacer>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="1" column="0">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>374</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
