@@ -26,6 +26,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_podjetje();
 	tabela_uporabnik();
 	tabela_potni_nalogi();
+	tabela_potovanja();
 	tabela_prejeti_racuni();
 	tabela_stranke();
 
@@ -158,19 +159,6 @@ prijava::prijava(QWidget *parent) :
 										"cena TEXT)"
 										);
 		sql_create_table_stroski.exec();
-
-		QSqlQuery sql_create_table_pot;
-		sql_create_table_pot.prepare("CREATE TABLE IF NOT EXISTS pot ("
-										"id INTEGER PRIMARY KEY, "
-										"potninalog TEXT, "
-										"odhod TEXT, "
-										"prihod TEXT, "
-										"casodhod TEXT, "
-										"casprihod TEXT, "
-										"kilometri TEXT, "
-										"naslov TEXT)"
-										);
-		sql_create_table_pot.exec();
 
 		// kreiranje sifrantov
 		QSqlQuery sql_create_table_projekt;
@@ -551,6 +539,40 @@ void prijava::tabela_potni_nalogi() {
 														 "predlagatelj_oseba TEXT, "
 														 "prejemnik_oseba TEXT, "
 														 "prevozno_sredstvo TEXT)"
+														);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_potovanja() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potovanja ("
+														 "id INTEGER PRIMARY KEY, "
+														 "potni_nalog TEXT, "
+														 "kraj_odhoda TEXT, "
+														 "kraj_prihoda TEXT, "
+														 "cas_odhoda TEXT, "
+														 "cas_prihoda TEXT, "
+														 "kilometri TEXT, "
+														 "naslov TEXT)"
 														);
 		sql_create_table.exec();
 	}
