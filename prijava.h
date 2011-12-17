@@ -34,6 +34,7 @@ private slots:
 	void tabela_uporabnik();
 	void tabela_potni_nalogi();
 	void tabela_potovanja();
+	void tabela_stroski();
 	void tabela_prejeti_racuni();
 	void tabela_stranke();
 
