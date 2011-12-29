@@ -97,7 +97,7 @@ void wid_podjetje::napolni() {
 			ui->tbl_podjetje->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[7] = {"id", "ime", "polnoime", "telefon", "gsm", "email", "davcnastevilka"};
+			QString polja[7] = {"id", "ime", "polnoime", "telefon", "gsm", "email", "davcna"};
 
 			while (col <= 6) {
 
