@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>3</number>
+      <number>5</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>

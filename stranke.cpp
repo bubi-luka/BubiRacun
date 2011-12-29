@@ -923,7 +923,7 @@ void stranke::on_btn_vnesi_clicked() {
 																	"vir_kupon = ?, vir_ime = ?, vir_besedilo = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
 																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_kupon = ?, pop_akcija = ?, "
 																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
-																	"avtor_podjetje = ?, avtor_oseba ? ? WHERE id "
+																	"avtor_podjetje = ?, avtor_oseba = ? WHERE id "
 																	"LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_stranko.bindValue(0, pretvori(ui->txt_ime->text()));

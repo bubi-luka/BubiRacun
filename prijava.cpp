@@ -30,6 +30,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_stroski();
 	tabela_prejeti_racuni();
 	tabela_stranke();
+	tabela_projekti();
 
 	// ustvari tabele sifrantov
 	tabela_skd();
@@ -78,18 +79,6 @@ prijava::prijava(QWidget *parent) :
 	}
 	else {
 		// the database is opened
-		QSqlQuery sql_create_table_projekti;
-		sql_create_table_projekti.prepare("CREATE TABLE IF NOT EXISTS projekti ("
-										  "id INTEGER PRIMARY KEY, "
-										  "stprojekta TEXT, "
-										  "naziv TEXT, "
-										  "stranka TEXT, "
-										  "pricetek TEXT, "
-										  "konec TEXT, "
-										  "statusprojekta TEXT)"
-										  );
-		sql_create_table_projekti.exec();
-
 		QSqlQuery sql_create_table_racuni;
 		sql_create_table_racuni.prepare("CREATE TABLE IF NOT EXISTS racuni ("
 										"id INTEGER PRIMARY KEY, "
@@ -710,6 +699,49 @@ void prijava::tabela_stranke() {
 														 "pod_zapleti TEXT, "
 														 "avtor_podjetje TEXT, "
 														 "avtor_oseba TEXT)"
+														);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_projekti() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS projekti ("
+														 "id INTEGER PRIMARY KEY, "
+														 "stevilka_projekta TEXT, "
+														 "naslov_projekta TEXT, "
+														 "stranka TEXT, "
+														 "pricetek_dela TEXT, "
+														 "konec_dela TEXT, "
+														 "status_projekta TEXT, "
+														 "popust_fb1 TEXT, "
+														 "popust_fb2 TEXT, "
+														 "popust_komb1 TEXT, "
+														 "popust_komb2 TEXT, "
+														 "popust_stranka TEXT, "
+														 "popust_kupon TEXT, "
+														 "popust_akcija TEXT, "
+														 "podrazitev_vikend TEXT, "
+														 "podrazitev_hitrost TEXT, "
+														 "podrazitev_zapleti TEXT)"
 														);
 		sql_create_table.exec();
 	}

@@ -37,6 +37,7 @@ private slots:
 	void tabela_stroski();
 	void tabela_prejeti_racuni();
 	void tabela_stranke();
+	void tabela_projekti();
 
 	// ustvari tabele sifrantov
 	void tabela_skd();

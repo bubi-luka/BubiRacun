@@ -41,7 +41,7 @@ void wid_projekti::napolni() {
 		// clear previous content
 		ui->tbl_projekti->clear();
 
-		for (int i = 0; i <= 8; i++) {
+		for (int i = 0; i <= 6; i++) {
 			ui->tbl_projekti->removeColumn(0);
 		}
 
@@ -60,8 +60,6 @@ void wid_projekti::napolni() {
 		ui->tbl_projekti->insertColumn(4);
 		ui->tbl_projekti->insertColumn(5);
 		ui->tbl_projekti->insertColumn(6);
-		ui->tbl_projekti->insertColumn(7);
-		ui->tbl_projekti->insertColumn(8);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -70,8 +68,6 @@ void wid_projekti::napolni() {
 		QTableWidgetItem *naslov4 = new QTableWidgetItem;
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
-		QTableWidgetItem *naslov7 = new QTableWidgetItem;
-		QTableWidgetItem *naslov8 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
 		naslov1->setText("St. projekta");
@@ -79,9 +75,7 @@ void wid_projekti::napolni() {
 		naslov3->setText("Projekt");
 		naslov4->setText("Datum pricetka");
 		naslov5->setText("Datum konca");
-		naslov6->setText("Placilo");
-		naslov7->setText("Se placati");
-		naslov8->setText("Status placila");
+		naslov6->setText("Status projekta");
 
 		ui->tbl_projekti->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_projekti->setHorizontalHeaderItem(1, naslov1);
@@ -90,8 +84,6 @@ void wid_projekti::napolni() {
 		ui->tbl_projekti->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_projekti->setHorizontalHeaderItem(5, naslov5);
 		ui->tbl_projekti->setHorizontalHeaderItem(6, naslov6);
-		ui->tbl_projekti->setHorizontalHeaderItem(7, naslov7);
-		ui->tbl_projekti->setHorizontalHeaderItem(8, naslov8);
 
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM projekti");
@@ -103,9 +95,9 @@ void wid_projekti::napolni() {
 			ui->tbl_projekti->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[9] = {"id", "stprojekta", "stranka", "naziv", "pricetek", "konec", "znesek", "seplacati", "statusplacila"};
+			QString polja[7] = {"id", "stevilka_projekta", "stranka", "naslov_projekta", "pricetek_dela", "konec_dela", "status_projekta"};
 
-			while (col <= 8) {
+			while (col <= 6) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
 				if ( polja[i] == "stranka" ) {
@@ -120,6 +112,17 @@ void wid_projekti::napolni() {
 						else {
 							celica->setText(prevedi(sql_stranka.value(sql_stranka.record().indexOf("ime")).toString()));
 						}
+					}
+				}
+				else if ( polja[i] == "status_projekta" ) {
+					QSqlQuery sql_status;
+					sql_status.prepare("SELECT * FROM sif_status_projekta WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+					sql_status.exec();
+					if ( sql_status.next() ) {
+						celica->setText(prevedi(sql_status.value(sql_status.record().indexOf("status")).toString()));
+					}
+					else {
+						celica->setText("Neopredeljeno");
 					}
 				}
 				else {

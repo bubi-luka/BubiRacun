@@ -78,7 +78,7 @@ uporabnik::uporabnik(QWidget *parent) :
 			ui->txt_podjetje->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
 		}
 		sql_fill_combo.clear();
-		sql_fill_combo.prepare("SELECT * FROM sif_nazivi");
+		sql_fill_combo.prepare("SELECT * FROM sif_naziv");
 		sql_fill_combo.exec();
 		while (sql_fill_combo.next()) {
 			ui->txt_naziv->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("naziv")).toString()));
@@ -452,7 +452,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			}
 			sql_id.clear();
 
-			sql_id.prepare("SELECT * FROM sif_nazivi WHERE naziv LIKE '" + pretvori(ui->txt_naziv->currentText()) + "'");
+			sql_id.prepare("SELECT * FROM sif_naziv WHERE naziv LIKE '" + pretvori(ui->txt_naziv->currentText()) + "'");
 			sql_id.exec();
 			if ( sql_id.next() ) {
 				naziv = prevedi(sql_id.value(sql_id.record().indexOf("id")).toString());
@@ -607,7 +607,7 @@ void uporabnik::prejem(QString besedilo) {
 				}
 				sql_combo.clear();
 
-				sql_combo.prepare("SELECT * FROM sif_nazivi WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString() + "'");
+				sql_combo.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString() + "'");
 				sql_combo.exec();
 				if (sql_combo.next()) {
 					ui->txt_naziv->setCurrentIndex(ui->txt_naziv->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("naziv")).toString())));
