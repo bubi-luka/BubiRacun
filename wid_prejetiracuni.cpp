@@ -121,6 +121,7 @@ void wid_prejetiracuni::napolni() {
 		sql_fill.exec();
 
 		int row = 0;
+
 		while (sql_fill.next()) {
 			ui->tbl_racuni->insertRow(row);
 			ui->tbl_racuni->setRowHeight(row, 20);
@@ -141,6 +142,7 @@ void wid_prejetiracuni::napolni() {
 			}
 
 			row++;
+
 		}
 	}
 	base.close();

@@ -774,6 +774,8 @@ void projekti::napolni_podatke() {
 		QSqlQuery sql_napolni;
 		int i = 0; // steje stevilo racunov
 		double znesek = 0.0; // steje koncne zneske na racunih
+		double znesek_ddv = 0.0;
+		double znesek_brez_ddv = 0.0;
 		double ure = 0.0; // steje ure dela na projektu
 
 		// preveri prejete racune
@@ -782,26 +784,36 @@ void projekti::napolni_podatke() {
 		while ( sql_napolni.next() ) {
 			i++;
 			znesek += prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek")).toString()).toDouble();
+			znesek_ddv += prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_ddv")).toString()).toDouble();
+			znesek_brez_ddv += prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_00")).toString()).toDouble();
+			znesek_brez_ddv += prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_85")).toString()).toDouble();
+			znesek_brez_ddv += prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_20")).toString()).toDouble();
 		}
 
 		// vnesi prejete racune
 		ui->txt_st_prejetih_racunov->setText(QString::number(i, 10));
 		ui->txt_znesek_prejetih_racunov->setText(QString::number(znesek, 'f', 2) + " EUR");
+		ui->txt_prejeti_placilo->setText(QString::number(znesek, 'f', 2) + " EUR");
+		ui->txt_prejeti_ddv->setText(QString::number(znesek_ddv, 'f', 2) + " EUR");
+		ui->txt_prejeti_brez_ddv->setText(QString::number(znesek_brez_ddv, 'f', 2) + " EUR");
 
 		sql_napolni.clear();
 		i = 0;
 		znesek = 0.0;
 		ure = 0.0;
+		double potni_stoski = 0.0;
 
 		// preveri potne naloge
 		sql_napolni.prepare("SELECT * FROM potni_nalogi WHERE stevilka_projekta LIKE '" + pretvori(ui->txt_id->text()) + "'");
 		sql_napolni.exec();
 		while ( sql_napolni.next() ) {
 			i++;
+			potni_stoski += prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString()).toDouble();
 		}
 
 		// vnesi potne naloge
 		ui->txt_st_potnih_nalogov->setText(QString::number(i, 10));
+		ui->txt_potni_stroski->setText(QString::number(potni_stoski, 'f', 2) + " EUR");
 
 		sql_napolni.clear();
 		i = 0;
@@ -831,6 +843,7 @@ void projekti::napolni_podatke() {
 		znesek = 0.0;
 		znesek = ui->txt_znesek_izdanih_racunov->text().left(ui->txt_znesek_izdanih_racunov->text().length() - 4).toDouble();
 		znesek -= ui->txt_znesek_prejetih_racunov->text().left(ui->txt_znesek_prejetih_racunov->text().length() - 4).toDouble();
+		znesek -= ui->txt_potni_stroski->text().left(ui->txt_potni_stroski->text().length() - 4).toDouble();
 
 		ui->txt_znesek_skupaj->setText(QString::number(znesek, 'f', 2) + " EUR");
 	}
