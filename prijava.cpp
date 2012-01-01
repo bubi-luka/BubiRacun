@@ -729,6 +729,7 @@ void prijava::tabela_projekti() {
 														 "stevilka_projekta TEXT, "
 														 "naslov_projekta TEXT, "
 														 "stranka TEXT, "
+														 "avtor_oseba TEXT, "
 														 "pricetek_dela TEXT, "
 														 "konec_dela TEXT, "
 														 "status_projekta TEXT, "

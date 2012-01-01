@@ -27,11 +27,9 @@ private slots:
 	void on_txt_znesek_brez_ddv_85_editingFinished();
 	void on_txt_znesek_brez_ddv_20_editingFinished();
 
-	void on_txt_izberi_podjetje_currentIndexChanged(QString besedilo);
 	void on_txt_izberi_osebo_currentIndexChanged(QString besedilo);
 	void on_txt_izberi_projekt_currentIndexChanged(QString besedilo);
 
-	void on_cb_podjetje_toggled(bool stanje);
 	void on_cb_oseba_toggled(bool stanje);
 	void on_cb_projekt_toggled(bool stanje);
 

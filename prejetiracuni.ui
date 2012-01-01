@@ -322,13 +322,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QCheckBox" name="cb_podjetje">
-              <property name="text">
-               <string>cb_podjetje</string>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_16">
               <property name="text">
@@ -366,21 +359,6 @@
                 <property name="text">
                  <string>txt_podjetje</string>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="txt_izberi_podjetje">
-                <property name="minimumSize">
-                 <size>
-                  <width>150</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>txt_izberi_podjetje</string>
-                 </property>
-                </item>
                </widget>
               </item>
              </layout>
