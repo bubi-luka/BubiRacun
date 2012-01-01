@@ -445,12 +445,12 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 			sql_vnesi.bindValue(13, pretvori(ui->txt_oseba->text().left(ui->txt_oseba->text().indexOf(") ", 0))));
 			sql_vnesi.bindValue(14, pretvori(ui->txt_projekt->text().left(ui->txt_projekt->text().indexOf(") ", 0))));
 			sql_vnesi.bindValue(15, pretvori(vApp->id()));
-			sql_vnesi.bindValue(16, pretvori(ui->txt_znesek_brez_ddv_0->text()));
-			sql_vnesi.bindValue(17, pretvori(ui->txt_znesek_brez_ddv_85->text()));
-			sql_vnesi.bindValue(18, pretvori(ui->txt_znesek_brez_ddv_20->text()));
-			sql_vnesi.bindValue(19, pretvori(ui->txt_znesek_ddv->text()));
-			sql_vnesi.bindValue(20, pretvori(ui->txt_znesek_brez_ddv->text()));
-			sql_vnesi.bindValue(21, pretvori(ui->txt_znesek->text()));
+			sql_vnesi.bindValue(16, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_0->text())));
+			sql_vnesi.bindValue(17, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_85->text())));
+			sql_vnesi.bindValue(18, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_20->text())));
+			sql_vnesi.bindValue(19, pretvori(pretvori_v_double(ui->txt_znesek_ddv->text())));
+			sql_vnesi.bindValue(20, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv->text())));
+			sql_vnesi.bindValue(21, pretvori(pretvori_v_double(ui->txt_znesek->text())));
 			sql_vnesi.bindValue(22, pretvori(ui->txt_status_placila->currentText()));
 			sql_vnesi.bindValue(23, pretvori(ui->txt_status_racunovodstva->currentText()));
 			sql_vnesi.exec();

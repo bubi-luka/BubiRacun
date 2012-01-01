@@ -223,21 +223,21 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="label_45">
               <property name="text">
                <string>Zaslužek</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="label_46">
               <property name="text">
                <string>Število potnih nalogov</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
+            <item row="7" column="0">
              <widget class="QLabel" name="label_47">
               <property name="text">
                <string>Skupaj ur dela</string>
@@ -284,7 +284,7 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="5" column="1">
              <widget class="QLineEdit" name="txt_znesek_skupaj">
               <property name="enabled">
                <bool>false</bool>
@@ -294,7 +294,7 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="6" column="1">
              <widget class="QLineEdit" name="txt_st_potnih_nalogov">
               <property name="enabled">
                <bool>false</bool>
@@ -304,13 +304,30 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="7" column="1">
              <widget class="QLineEdit" name="txt_st_ur_dela">
               <property name="enabled">
                <bool>false</bool>
               </property>
               <property name="text">
                <string>txt_st_ur_dela</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="txt_potni_stroski">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>txt_potni_stroski</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_14">
+              <property name="text">
+               <string>Skupni znesek potnih stroskov</string>
               </property>
              </widget>
             </item>
