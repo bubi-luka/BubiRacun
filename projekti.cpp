@@ -12,6 +12,7 @@
 #include "wid_racuni.h"
 #include "wid_prejetiracuni.h"
 #include "wid_potninalogi.h"
+#include "varnost.h"
 
 projekti::projekti(QWidget *parent) :
     QDialog(parent),
@@ -90,7 +91,6 @@ projekti::projekti(QWidget *parent) :
 
 		// zacasno
 		ui->tab_zapisi->setDisabled(true);
-		ui->tab_potni_nalogi->setDisabled(true);
 
 	// onemogoci polja
 	ui->txt_id->setEnabled(false);
@@ -302,13 +302,13 @@ void projekti::on_btn_sprejmi_clicked() {
 
 			QSqlQuery sql_vnesi_projekt;
 			if (ui->btn_sprejmi->text() == "Vnesi projekt") {
-				sql_vnesi_projekt.prepare("INSERT INTO projekti (stevilka_projekta, naslov_projekta, stranka, pricetek_dela, konec_dela, "
+				sql_vnesi_projekt.prepare("INSERT INTO projekti (stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
 																	"status_projekta, popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_kupon, "
 																	"popust_akcija, podrazitev_vikend, podrazitev_hitrost, podrazitev_zapleti) "
-																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else {
-				sql_vnesi_projekt.prepare("UPDATE projekti SET stevilka_projekta = ?, naslov_projekta = ?, stranka = ?, pricetek_dela = ?, "
+				sql_vnesi_projekt.prepare("UPDATE projekti SET stevilka_projekta = ?, naslov_projekta = ?, stranka = ?, avtor_oseba = ?, pricetek_dela = ?, "
 																	"konec_dela = ?, status_projekta = ?, popust_fb1 = ?, popust_fb2 = ?, popust_komb1 = ?, "
 																	"popust_komb2 = ?, popust_stranka = ?, popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, "
 																	"podrazitev_hitrost = ?, podrazitev_zapleti = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
@@ -316,19 +316,20 @@ void projekti::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_projekta->text()));
 			sql_vnesi_projekt.bindValue(1, pretvori(ui->txt_naziv_projekta->text()));
 			sql_vnesi_projekt.bindValue(2, pretvori(ui->txt_stranka_id->text()));
-			sql_vnesi_projekt.bindValue(3, pretvori(ui->txt_pricetek->text()));
-			sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_konec->text()));
-			sql_vnesi_projekt.bindValue(5, pretvori(status_projekta));
-			sql_vnesi_projekt.bindValue(6, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
-			sql_vnesi_projekt.bindValue(7, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
-			sql_vnesi_projekt.bindValue(8, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
-			sql_vnesi_projekt.bindValue(9, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
-			sql_vnesi_projekt.bindValue(10, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
-			sql_vnesi_projekt.bindValue(11, pretvori(pretvori_v_double(ui->txt_popust_kupon->text())));
-			sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
-			sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
-			sql_vnesi_projekt.bindValue(14, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
-			sql_vnesi_projekt.bindValue(15, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+			sql_vnesi_projekt.bindValue(3, pretvori(vApp->id()));
+			sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_pricetek->text()));
+			sql_vnesi_projekt.bindValue(5, pretvori(ui->txt_konec->text()));
+			sql_vnesi_projekt.bindValue(6, pretvori(status_projekta));
+			sql_vnesi_projekt.bindValue(7, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
+			sql_vnesi_projekt.bindValue(8, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
+			sql_vnesi_projekt.bindValue(9, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
+			sql_vnesi_projekt.bindValue(10, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
+			sql_vnesi_projekt.bindValue(11, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+			sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_popust_kupon->text())));
+			sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
+			sql_vnesi_projekt.bindValue(14, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+			sql_vnesi_projekt.bindValue(15, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+			sql_vnesi_projekt.bindValue(16, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
 
 			sql_vnesi_projekt.exec();
 		}
@@ -489,23 +490,25 @@ void projekti::prejem(QString besedilo) {
 
 		QObject::connect(this, SIGNAL(prenos(QString)),
 					 widizd , SLOT(prejem(QString)));
-		prenos(ui->txt_stranka_id->text());
+		prenos(ui->txt_id->text());
 		this->disconnect();
+
 		// widget pri prejetih racunih
 		wid_prejetiracuni *widpre = new wid_prejetiracuni;
 		ui->wid_prejeti_racuni->setWidget(widpre);
 
 		QObject::connect(this, SIGNAL(prenos(QString)),
 					 widpre , SLOT(prejem(QString)));
-		prenos(ui->txt_stranka_id->text());
+		prenos(ui->txt_id->text());
 		this->disconnect();
+
 		// widget pri potnih nalogih
 		wid_potninalogi *widpot = new wid_potninalogi;
 		ui->wid_potni_nalogi->setWidget(widpot);
 
 		QObject::connect(this, SIGNAL(prenos(QString)),
 					 widpot , SLOT(prejem(QString)));
-		prenos(ui->txt_stranka_id->text());
+		prenos(ui->txt_id->text());
 		this->disconnect();
 
 		izracunaj(); // calculate the values

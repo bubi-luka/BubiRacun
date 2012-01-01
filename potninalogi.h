@@ -18,8 +18,6 @@ public:
 private slots:
 	void on_btn_izhod_clicked();
 	void on_btn_izvozi_clicked();
-	void on_cb_predlagatelj_podjetje_toggled();
-	void on_txt_predlagatelj_izbira_podjetje_currentIndexChanged();
 	void on_cb_predlagatelj_oseba_toggled();
 	void on_txt_predlagatelj_izbira_oseba_currentIndexChanged();
 	void on_txt_prejemnik_izbira_osebe_currentIndexChanged();
