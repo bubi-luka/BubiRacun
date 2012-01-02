@@ -23,16 +23,21 @@ private slots:
 	void on_btn_izracunaj_clicked();
 	void on_tbl_opravila_doubleClicked();
 
-	void on_txt_stranka_currentIndexChanged(QString besedilo);
-	void on_txt_strankaid_textChanged(QString besedilo);
-	void on_txt_projekt_currentIndexChanged(QString besedilo);
-	void on_txt_projektid_textChanged(QString besedilo);
+	void on_txt_stranka_currentIndexChanged();
+	void on_txt_stranka_id_textChanged();
+	void on_txt_projekt_currentIndexChanged();
+	void on_txt_projekt_id_textChanged();
+
+	void on_rb_predracun_toggled();
 
 	void keyPressEvent(QKeyEvent *event);
 
 	void prejem(QString besedilo);
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
+	QString pretvori_v_double(QString besedilo);
+	QString pretvori_iz_double(QString besedilo);
+
 	void izracunaj();
 	void napolni();
 	void osvezi(QString beseda);
