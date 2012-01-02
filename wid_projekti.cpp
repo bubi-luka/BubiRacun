@@ -5,6 +5,7 @@
 #include "ui_wid_projekti.h"
 #include "projekti.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 wid_projekti::wid_projekti(QWidget *parent) :
     QWidget(parent),
@@ -86,7 +87,7 @@ void wid_projekti::napolni() {
 		ui->tbl_projekti->setHorizontalHeaderItem(6, naslov6);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM projekti");
+		sql_fill.prepare("SELECT * FROM projekti WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "'");
 		sql_fill.exec();
 
 		int row = 0;

@@ -122,7 +122,7 @@ void wid_racuni::napolni() {
 			ui->tbl_racuni->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[9] = {"id", "stracuna", "stprojekta", "stranka", "datumpricetka", "datumkonca", "statusplacila", "statusracunovodstva", "tipracuna"};
+			QString polja[9] = {"id", "stevilka_racuna", "projekt", "stranka", "datum_pricetka", "datum_konca", "status_placila", "status_racunovodstva", "tip_racuna"};
 
 			while (col <= 8) {
 
@@ -132,7 +132,7 @@ void wid_racuni::napolni() {
 					sql_find_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 					sql_find_stranka.exec();
 					if ( sql_find_stranka.next() ) {
-						if ( prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("tip")).toString()) == "fizicna" ) {
+						if ( prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("tip")).toString()) == "1" ) {
 							celica->setText(prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("ime")).toString()) + " " +
 											prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("priimek")).toString()));
 						}
