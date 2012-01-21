@@ -195,6 +195,7 @@
     </property>
     <addaction name="actionUporabniki"/>
     <addaction name="actionPodjetje"/>
+    <addaction name="action_asovnice"/>
    </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
@@ -266,6 +267,14 @@
   <action name="actionPopusti">
    <property name="text">
     <string>Popusti</string>
+   </property>
+  </action>
+  <action name="action_asovnice">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Časovnice</string>
    </property>
   </action>
  </widget>

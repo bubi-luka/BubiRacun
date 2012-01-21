@@ -27,6 +27,7 @@ private slots:
 	void on_actionVizitka_triggered();
 	void on_actionIzdani_ra_uni_triggered();
 	void on_actionPopusti_triggered();
+	void on_action_asovnice_triggered();
 	void varnost_id_changed();
 	void keyPressEvent(QKeyEvent *event);
 
