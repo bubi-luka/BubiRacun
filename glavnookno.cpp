@@ -20,6 +20,7 @@
 #include "kodiranje.h"
 #include "prijava.h"
 #include "popusti.h"
+#include "wid_casovnice.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -161,12 +162,22 @@ void GlavnoOkno::on_actionIzdani_ra_uni_triggered() {
 }
 
 void GlavnoOkno::on_actionVizitka_triggered() {
+
 	Vizitka *widviz = new Vizitka;
 	ui->scrollArea->setWidget(widviz);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Vizitka!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Vizitka");
+
 }
 
+void GlavnoOkno::on_action_asovnice_triggered() {
+
+	wid_casovnice *widcas = new wid_casovnice;
+	ui->scrollArea->setWidget(widcas);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Casovnice!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Casovnice");
+
+}
 
 void GlavnoOkno::on_actionPopusti_triggered() {
 
@@ -184,8 +195,6 @@ void GlavnoOkno::on_actionPopusti_triggered() {
 }
 
 void GlavnoOkno::varnost_id_changed() {
-
-
 
 }
 
