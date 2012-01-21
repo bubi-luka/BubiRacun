@@ -939,7 +939,7 @@ void projekti::on_cb_popust_fb2_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb2")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb2")).toString())));
+					ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb2")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1001,7 +1001,7 @@ void projekti::on_cb_popust_komb1_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb1")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb1")).toString())));
+					ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb1")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1063,7 +1063,7 @@ void projekti::on_cb_popust_komb2_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb2")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb2")).toString())));
+					ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb2")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1125,7 +1125,7 @@ void projekti::on_cb_popust_stalna_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_stranka")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_stranka")).toString())));
+					ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_stranka")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1187,7 +1187,7 @@ void projekti::on_cb_popust_kupon_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString())));
+					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1249,7 +1249,7 @@ void projekti::on_cb_popust_akcija_toggled(bool stanje) {
 			sql_projekti.exec();
 			if ( sql_projekti.next() ) {
 				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_akcija")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_akcija")).toString())));
+					ui->txt_popust_akcija->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_akcija")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1351,6 +1351,67 @@ void projekti::on_txt_popust_stalna_stranka_textChanged(QString besedilo) {
 void projekti::on_txt_popust_kupon_textChanged(QString besedilo) {
 
 	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 5);
+
+}
+
+
+void projekti::on_txt_popust_fb1_editingFinished() {
+
+	ui->txt_popust_fb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb1->text())));
+
+}
+
+void projekti::on_txt_popust_fb2_editingFinished() {
+
+	ui->txt_popust_fb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb2->text())));
+
+}
+
+void projekti::on_txt_popust_komb1_editingFinished() {
+
+	ui->txt_popust_komb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb1->text())));
+
+}
+
+void projekti::on_txt_popust_komb2_editingFinished() {
+
+	ui->txt_popust_komb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb2->text())));
+
+}
+
+void projekti::on_txt_popust_stalna_stranka_editingFinished() {
+
+	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+
+}
+
+void projekti::on_txt_popust_kupon_editingFinished() {
+
+	ui->txt_popust_kupon->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_kupon->text())));
+
+}
+
+void projekti::on_txt_popust_akcija_editingFinished() {
+
+	ui->txt_popust_akcija->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_akcija->text())));
+
+}
+
+void projekti::on_txt_podrazitev_vikend_editingFinished() {
+
+	ui->txt_podrazitev_vikend->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+
+}
+
+void projekti::on_txt_podrazitev_hitrost_editingFinished() {
+
+	ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+
+}
+
+void projekti::on_txt_podrazitev_zapleti_editingFinished() {
+
+	ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
 
 }
 

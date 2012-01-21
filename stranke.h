@@ -48,6 +48,17 @@ private slots:
 	void on_txt_popust_stalna_stranka_textChanged(QString besedilo);
 	void on_txt_popust_kupon_textChanged(QString besedilo);
 
+	void on_txt_popust_fb1_editingFinished();
+	void on_txt_popust_fb2_editingFinished();
+	void on_txt_popust_komb1_editingFinished();
+	void on_txt_popust_komb2_editingFinished();
+	void on_txt_popust_stalna_stranka_editingFinished();
+	void on_txt_popust_kupon_editingFinished();
+	void on_txt_popust_akcija_editingFinished();
+	void on_txt_podrazitev_vikend_editingFinished();
+	void on_txt_podrazitev_hitrost_editingFinished();
+	void on_txt_podrazitev_zapleti_editingFinished();
+
 	void on_tbl_projekti_doubleClicked();
 	void on_tbl_kuponi_doubleClicked();
 
