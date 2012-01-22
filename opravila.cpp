@@ -4,82 +4,154 @@
 #include <QValidator>
 #include <QFocusEvent>
 #include <QtSql>
+#include <QObject>
 
 #include "opravila.h"
 #include "ui_opravila.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 opravila::opravila(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::opravila)
 {
-    ui->setupUi(this);
+		ui->setupUi(this);
 
-	// disable fields
-	ui->txt_id->setEnabled(false);
-	ui->txt_racun->setEnabled(false);
+		// izbrisi polja
+		ui->txt_id->setText("");
+		ui->txt_id_stranka->setText("");
+		ui->txt_stranka->setText("");
+		ui->txt_id_projekt->setText("");
+		ui->txt_projekt->setText("");
+		ui->txt_id_racun->setText("");
+		ui->txt_racun->setText("");
 
-	ui->txt_s_znesek->setEnabled(false);
-	ui->txt_popravljena_cena_ure->setEnabled(false);
+		ui->txt_skupina->clear();
+		ui->txt_storitev->clear();
+		ui->txt_urna_postavka_brez_ddv->setText("");
+		ui->txt_ddv->clear();
+		ui->txt_urna_postavka->setText("");
 
-	ui->txt_p_akcija->setEnabled(false);
-	ui->txt_p_blog->setEnabled(false);
-	ui->txt_p_facebook->setEnabled(false);
-	ui->txt_p_forum->setEnabled(false);
-	ui->txt_p_google->setEnabled(false);
-	ui->txt_p_obrazec->setEnabled(false);
-	ui->txt_p_sfacebook->setEnabled(false);
-	ui->txt_p_skuponi->setEnabled(false);
-	ui->txt_p_stranka->setEnabled(false);
-	ui->txt_p_stwitter->setEnabled(false);
-	ui->txt_p_twitter->setEnabled(false);
-	ui->txt_p_vip->setEnabled(false);
+		ui->cb_vikend->setText("");
+		ui->cb_hitrost->setText("");
+		ui->cb_zapleti->setText("");
 
-	ui->txt_k_komunikacija->setEnabled(false);
-	ui->txt_k_kratek->setEnabled(false);
-	ui->txt_k_neumnosti->setEnabled(false);
-	ui->txt_k_skupaj->setEnabled(false);
-	ui->txt_k_vikend->setEnabled(false);
-	ui->txt_k_zahtevnost->setEnabled(false);
+		ui->txt_storitev_pribitek->setText("");
+		ui->txt_pribitek->setText("");
+		ui->txt_nova_urna_postavka_brez_ddv->setText("");
+		ui->txt_novi_ddv->setText("");
+		ui->txt_nova_urna_postavka->setText("");
 
-	ui->txt_popust->setEnabled(false);
-	ui->txt_p_skupaj->setEnabled(false);
-	ui->txt_s_znesek->setEnabled(false);
-	ui->txt_s_ddv->setEnabled(false);
+		ui->rb_predracun->setText("");
+		ui->rb_casovnice->setText("");
+		ui->rb_rocni_vnos->setText("");
+		ui->txt_predracun->setText("");
+		ui->txt_casovnice->setText("");
+		ui->txt_rocni_vnos->setText("");
 
-	// fill combo box and tables
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+		ui->txt_storitev_na_racunu->setText("");
+		ui->txt_stevilo_opravljenih_ur->setText("");
+		ui->txt_urna_postavka_na_racunu->setText("");
+		ui->txt_stopnja_ddv->setText("");
+		ui->txt_popusti->setText("");
+		ui->txt_znesek_brez_ddv_na_racunu->setText("");
+		ui->txt_znesek_ddv_na_racunu->setText("");
+		ui->txt_znesek_na_racunu->setText("");
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
+		ui->cb_popust_fb1->setText("");
+		ui->cb_popust_fb2->setText("");
+		ui->cb_popust_komb1->setText("");
+		ui->cb_popust_komb2->setText("");
+		ui->cb_popust_stalna->setText("");
+		ui->cb_popust_kupon->setText("");
+		ui->cb_popust_akcija->setText("");
+		ui->cb_podrazitev_vikend->setText("");
+		ui->cb_podrazitev_hitrost->setText("");
+		ui->cb_podrazitev_zapleti->setText("");
+		ui->txt_popust_fb1->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_fb2->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_komb1->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_komb2->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_stalna_stranka->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_kupon->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popust_akcija->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double("0,0 %"));
+		ui->txt_popusti_skupaj_2->setText(pretvori_iz_double("0,0 %"));
 
-		// fill combo box
-		ui->txt_storitev->addItem("");
-		ui->txt_ddv->addItem("");
+		ui->tbl_casovnice->clear();
 
-		QSqlQuery sql_fill_combo;
-		sql_fill_combo.prepare("SELECT * FROM sif_opravila");
-		sql_fill_combo.exec();
-		while (sql_fill_combo.next()) {
-			ui->txt_storitev->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("opravilo")).toString()));
+		// onemogoci polja s popusti
+		ui->txt_popust_fb1->setEnabled(false);
+		ui->txt_popust_fb2->setEnabled(false);
+		ui->txt_popust_komb1->setEnabled(false);
+		ui->txt_popust_komb2->setEnabled(false);
+		ui->txt_popust_stalna_stranka->setEnabled(false);
+		ui->txt_popust_kupon->setEnabled(false);
+		ui->txt_popust_akcija->setEnabled(false);
+		ui->txt_vsi_popusti_facebook_1->setEnabled(false);
+		ui->txt_vsi_popusti_facebook_2->setEnabled(false);
+		ui->txt_popusti_skupaj_1->setEnabled(false);
+		ui->txt_popusti_skupaj_2->setEnabled(false);
+		ui->txt_podrazitev_vikend->setEnabled(false);
+		ui->txt_podrazitev_hitrost->setEnabled(false);
+		ui->txt_podrazitev_zapleti->setEnabled(false);
+
+		// skrij potrebna polja
+		ui->txt_id_stranka->setHidden(true);
+		ui->txt_id_projekt->setHidden(true);
+		ui->txt_id_racun->setHidden(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
+		else {
+			// baza je odprta
 
-		ui->txt_ddv->addItem("0,0%");
-		ui->txt_ddv->addItem("8,5%");
-		ui->txt_ddv->addItem("20,0%");
+			// napolni spustne sezname
+			ui->txt_ddv->addItem("");
+			ui->txt_ddv->addItem("20,0 %");
+			ui->txt_ddv->addItem("8,5 %");
+			ui->txt_ddv->addItem("0,0 %");
 
-	}
-	base.close();
+			ui->txt_skupina->addItem("");
+
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '%" + pretvori("BenSTUDENT").right(6) + "'");
+			sql_fill.exec();
+			while ( sql_fill.next() ) {
+				if ( ui->txt_skupina->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString())) == -1 ) {
+					ui->txt_skupina->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString()));
+				}
+			}
+			sql_fill.clear();
+
+			sql_fill.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '%" + pretvori("max_pop_facebook") + "'");
+			sql_fill.exec();
+			if ( sql_fill.next() ) {
+				ui->txt_vsi_popusti_facebook_1->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
+			}
+			sql_fill.clear();
+
+			sql_fill.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '%" + pretvori("max_pop_vsi") + "'");
+			sql_fill.exec();
+			if ( sql_fill.next() ) {
+				ui->txt_popusti_skupaj_1->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
+			}
+			sql_fill.clear();
+
+		}
+		base.close();
+
 }
 
 opravila::~opravila()
@@ -90,7 +162,7 @@ opravila::~opravila()
 void opravila::keyPressEvent(QKeyEvent *event) {
 	if (event->key() == Qt::Key_Return)
 	{
-		this->on_btn_vnesi_clicked();
+		this->on_btn_sprejmi_clicked();
 	}
 	else if (event->key() == Qt::Key_Escape)
 	{
@@ -102,173 +174,586 @@ void opravila::keyPressEvent(QKeyEvent *event) {
 	}
 }
 
-// prazno, dokler ne definiramo funkcije gumba
-void opravila::on_btn_brisi_clicked() {
-
-}
-
 void opravila::on_btn_izhod_clicked() {
 
 	close();
 
 }
 
-void opravila::on_btn_izracunaj_clicked() {
-
-	double rezultat = 0;
-
-	// popusti
-	ui->txt_p_facebook->setText(ui->txt_p_facebook->text().remove("%").replace(",", "."));
-	if (ui->txt_p_facebook->text() == "") {
-		ui->txt_p_facebook->setText("0");
-	}
-	if (!ui->txt_p_facebook->text().contains(".")) {
-		ui->txt_p_facebook->setText(ui->txt_p_facebook->text() + ".00");
-	}
-	ui->txt_p_twitter->setText(ui->txt_p_twitter->text().remove("%").replace(",", "."));
-	if (ui->txt_p_twitter->text() == "") {
-		ui->txt_p_twitter->setText("0");
-	}
-	if (!ui->txt_p_twitter->text().contains(".")) {
-		ui->txt_p_twitter->setText(ui->txt_p_twitter->text() + ".00");
-	}
-	ui->txt_p_google->setText(ui->txt_p_google->text().remove("%").replace(",", "."));
-	if (ui->txt_p_google->text() == "") {
-		ui->txt_p_google->setText("0");
-	}
-	if (!ui->txt_p_google->text().contains(".")) {
-		ui->txt_p_google->setText(ui->txt_p_google->text() + ".00");
-	}
-	ui->txt_p_blog->setText(ui->txt_p_blog->text().remove("%").replace(",", "."));
-	if (ui->txt_p_blog->text() == "") {
-		ui->txt_p_blog->setText("0");
-	}
-	if (!ui->txt_p_blog->text().contains(".")) {
-		ui->txt_p_blog->setText(ui->txt_p_blog->text() + ".00");
-	}
-	ui->txt_p_forum->setText(ui->txt_p_forum->text().remove("%").replace(",", "."));
-	if (ui->txt_p_forum->text() == "") {
-		ui->txt_p_forum->setText("0");
-	}
-	if (!ui->txt_p_forum->text().contains(".")) {
-		ui->txt_p_forum->setText(ui->txt_p_forum->text() + ".00");
-	}
-	ui->txt_p_sfacebook->setText(ui->txt_p_sfacebook->text().remove("%").replace(",", "."));
-	if (ui->txt_p_sfacebook->text() == "") {
-		ui->txt_p_sfacebook->setText("0");
-	}
-	if (!ui->txt_p_sfacebook->text().contains(".")) {
-		ui->txt_p_sfacebook->setText(ui->txt_p_sfacebook->text() + ".00");
-	}
-	ui->txt_p_stwitter->setText(ui->txt_p_stwitter->text().remove("%").replace(",", "."));
-	if (ui->txt_p_stwitter->text() == "") {
-		ui->txt_p_stwitter->setText("0");
-	}
-	if (!ui->txt_p_stwitter->text().contains(".")) {
-		ui->txt_p_stwitter->setText(ui->txt_p_stwitter->text() + ".00");
-	}
-	ui->txt_p_skuponi->setText(ui->txt_p_skuponi->text().remove("%").replace(",", "."));
-	if (ui->txt_p_skuponi->text() == "") {
-		ui->txt_p_skuponi->setText("0");
-	}
-	if (!ui->txt_p_skuponi->text().contains(".")) {
-		ui->txt_p_skuponi->setText(ui->txt_p_skuponi->text() + ".00");
-	}
-	ui->txt_p_obrazec->setText(ui->txt_p_obrazec->text().remove("%").replace(",", "."));
-	if (ui->txt_p_obrazec->text() == "") {
-		ui->txt_p_obrazec->setText("0");
-	}
-	if (!ui->txt_p_obrazec->text().contains(".")) {
-		ui->txt_p_obrazec->setText(ui->txt_p_obrazec->text() + ".00");
-	}
-	ui->txt_p_vip->setText(ui->txt_p_vip->text().remove("%").replace(",", "."));
-	if (ui->txt_p_vip->text() == "") {
-		ui->txt_p_vip->setText("0");
-	}
-	if (!ui->txt_p_vip->text().contains(".")) {
-		ui->txt_p_vip->setText(ui->txt_p_vip->text() + ".00");
-	}
-	ui->txt_p_akcija->setText(ui->txt_p_akcija->text().remove("%").replace(",", "."));
-	if (ui->txt_p_akcija->text() == "") {
-		ui->txt_p_akcija->setText("0");
-	}
-	if (!ui->txt_p_akcija->text().contains(".")) {
-		ui->txt_p_akcija->setText(ui->txt_p_akcija->text() + ".00");
-	}
-	ui->txt_p_stranka->setText(ui->txt_p_stranka->text().remove("%").replace(",", "."));
-	if (ui->txt_p_stranka->text() == "") {
-		ui->txt_p_stranka->setText("0");
-	}
-	if (!ui->txt_p_stranka->text().contains(".")) {
-		ui->txt_p_stranka->setText(ui->txt_p_stranka->text() + ".00");
-	}
-
-	ui->txt_p_skupaj->setText(QString::number(ui->txt_p_facebook->text().toDouble() + ui->txt_p_twitter->text().toDouble() + ui->txt_p_google->text().toDouble() +
-												  ui->txt_p_blog->text().toDouble() + ui->txt_p_forum->text().toDouble() + ui->txt_p_sfacebook->text().toDouble() +
-												  ui->txt_p_stwitter->text().toDouble() + ui->txt_p_skuponi->text().toDouble() + ui->txt_p_obrazec->text().toDouble() +
-												  ui->txt_p_vip->text().toDouble() + ui->txt_p_akcija->text().toDouble() +
-												  ui->txt_p_stranka->text().toDouble(), 'f', 2));
-
-	// podrazitve
-	rezultat = 0;
-
-	ui->txt_k_vikend->setText(ui->txt_k_vikend->text().remove("%").replace(",", "."));
-	if (ui->txt_k_vikend->text() == "") {
-		ui->txt_k_vikend->setText("0");
-	}
-	if (!ui->txt_k_vikend->text().contains(".")) {
-		ui->txt_k_vikend->setText(ui->txt_k_vikend->text() + ".00");
-	}
-	ui->txt_k_kratek->setText(ui->txt_k_kratek->text().remove("%").replace(",", "."));
-	if (ui->txt_k_kratek->text() == "") {
-		ui->txt_k_kratek->setText("0");
-	}
-	if (!ui->txt_k_kratek->text().contains(".")) {
-		ui->txt_k_kratek->setText(ui->txt_k_kratek->text() + ".00");
-	}
-	ui->txt_k_neumnosti->setText(ui->txt_k_neumnosti->text().remove("%").replace(",", "."));
-	if (ui->txt_k_neumnosti->text() == "") {
-		ui->txt_k_neumnosti->setText("0");
-	}
-	if (!ui->txt_k_neumnosti->text().contains(".")) {
-		ui->txt_k_neumnosti->setText(ui->txt_k_neumnosti->text() + ".00");
-	}
-	ui->txt_k_zahtevnost->setText(ui->txt_k_zahtevnost->text().remove("%").replace(",", "."));
-	if (ui->txt_k_zahtevnost->text() == "") {
-		ui->txt_k_zahtevnost->setText("0");
-	}
-	if (!ui->txt_k_zahtevnost->text().contains(".")) {
-		ui->txt_k_zahtevnost->setText(ui->txt_k_zahtevnost->text() + ".00");
-	}
-	ui->txt_k_komunikacija->setText(ui->txt_k_komunikacija->text().remove("%").replace(",", "."));
-	if (ui->txt_k_komunikacija->text() == "") {
-		ui->txt_k_komunikacija->setText("0");
-	}
-	if (!ui->txt_k_komunikacija->text().contains(".")) {
-		ui->txt_k_komunikacija->setText(ui->txt_k_komunikacija->text() + ".00");
-	}
-
-	ui->txt_k_skupaj->setText(QString::number(ui->txt_k_vikend->text().toDouble() + ui->txt_k_kratek->text().toDouble() +
-											  ui->txt_k_neumnosti->text().toDouble() + ui->txt_k_zahtevnost->text().toDouble() +
-											  ui->txt_k_komunikacija->text().toDouble(), 'f', 2));
-
-	// izracun za racun
-	rezultat = 0;
-
-	ui->txt_cena->setText(ui->txt_cena->text().replace(",", "."));
-	ui->txt_ure->setText(ui->txt_ure->text().replace(",", "."));
-	ui->txt_popravljena_cena_ure->setText(QString::number(ui->txt_cena->text().toDouble() * (1 + ui->txt_k_skupaj->text().toDouble()/100), 'f', 2));
-
-	ui->txt_znesekbrezddv->setText(QString::number(ui->txt_popravljena_cena_ure->text().toDouble() * ui->txt_ure->text().toDouble(), 'f', 2));
-	ui->txt_popust->setText(QString::number(ui->txt_znesekbrezddv->text().toDouble() * ui->txt_p_skupaj->text().toDouble()/100 , 'f', 2));
-	ui->txt_s_ddv->setText(QString::number((ui->txt_znesekbrezddv->text().toDouble() - ui->txt_popust->text().toDouble()) * ui->txt_ddv->currentText().left(ui->txt_ddv->currentText().length() - 1).replace(",", ".").toDouble()/100, 'f', 2));
-	ui->txt_s_znesek->setText(QString::number(ui->txt_znesekbrezddv->text().toDouble() - ui->txt_popust->text().toDouble() + ui->txt_s_ddv->text().toDouble(), 'f', 2));
+void opravila::on_btn_brisi_clicked() { // dokler ne definiramo gumba, bo prazno
 
 }
 
-void opravila::on_btn_vnesi_clicked() {
+void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 
-	on_btn_izracunaj_clicked();
+	QString napaka = "";
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		if (napaka == "") {
+			QSqlQuery sql_vnesi_opravilo;
+			if (ui->btn_sprejmi->text() == "Vnesi novo opravilo") { // vnesi novega uporabnika
+			sql_vnesi_opravilo.prepare("INSERT INTO opravila (stevilka_stranke, stevilka_projekta, stevilka_racuna, opravilo_skupina, "
+																 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
+																 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
+																 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
+																 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni) "
+																 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			}
+			else { // popravi ze obstojeci vnos
+				sql_vnesi_opravilo.prepare("UPDATE opravila SET stevilka_stranke = ?, stevilka_projekta = ?, stevilka_racuna = ?, "
+																	 "opravilo_skupina = ?, opravilo_storitev = ?, urna_postavka_brez_ddv = ?, urna_postavka_z_ddv = ?, "
+																	 "ddv = ?, popust_fb1 = ?, popust_fb2 = ?, popust_komb1 = ?, popust_komb2 = ?, popust_stranka = ?, "
+																	 "popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, podrazitev_hitrost = ?, "
+																	 "podrazitev_zapleti = ?, pribitek_vikend = ?, pribitek_hitrost = ?, pribitek_zapleti = ?, tip_ur = ?, "
+																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ? "
+																	 "WHERE id LIKE '" + ui->txt_id->text() + "'");
+			}
+			sql_vnesi_opravilo.bindValue(0, pretvori(ui->txt_id_stranka->text()));
+			sql_vnesi_opravilo.bindValue(1, pretvori(ui->txt_id_projekt->text()));
+			sql_vnesi_opravilo.bindValue(2, pretvori(ui->txt_id_racun->text()));
+			sql_vnesi_opravilo.bindValue(3, pretvori(ui->txt_skupina->currentText()));
+			sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_storitev->currentText()));
+			sql_vnesi_opravilo.bindValue(5, pretvori(pretvori_v_double(ui->txt_urna_postavka_brez_ddv->text())));
+			sql_vnesi_opravilo.bindValue(6, pretvori(pretvori_v_double(ui->txt_urna_postavka->text())));
+			sql_vnesi_opravilo.bindValue(7, pretvori(pretvori_v_double(ui->txt_ddv->currentText())));
+			sql_vnesi_opravilo.bindValue(8, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
+			sql_vnesi_opravilo.bindValue(9, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
+			sql_vnesi_opravilo.bindValue(10, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
+			sql_vnesi_opravilo.bindValue(11, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
+			sql_vnesi_opravilo.bindValue(12, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+			sql_vnesi_opravilo.bindValue(13, pretvori(pretvori_v_double(ui->txt_popust_kupon->text())));
+			sql_vnesi_opravilo.bindValue(14, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
+			sql_vnesi_opravilo.bindValue(15, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+			sql_vnesi_opravilo.bindValue(16, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+			sql_vnesi_opravilo.bindValue(17, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+			if ( ui->cb_vikend->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(18, pretvori("1"));
+			}
+			else {
+				sql_vnesi_opravilo.bindValue(18, pretvori("0"));
+			}
+			if ( ui->cb_hitrost->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(19, pretvori("1"));
+			}
+			else {
+				sql_vnesi_opravilo.bindValue(19, pretvori("0"));
+			}
+			if ( ui->cb_zapleti->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(20, pretvori("1"));
+			}
+			else {
+				sql_vnesi_opravilo.bindValue(20, pretvori("0"));
+			}
+			if ( ui->rb_predracun->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(21, pretvori("predracun"));
+				sql_vnesi_opravilo.bindValue(22, pretvori(ui->txt_predracun->text()));
+			}
+			else if ( ui->rb_casovnice->isChecked() ){
+				sql_vnesi_opravilo.bindValue(21, pretvori("casovnice"));
+				sql_vnesi_opravilo.bindValue(22, pretvori(ui->txt_casovnice->text()));
+			}
+			else if ( ui->rb_rocni_vnos->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(21, pretvori("rocno"));
+				sql_vnesi_opravilo.bindValue(22, pretvori(ui->txt_rocni_vnos->text()));
+			}
+			else {
+				sql_vnesi_opravilo.bindValue(21, pretvori(""));
+				sql_vnesi_opravilo.bindValue(22, pretvori(""));
+			}
+			sql_vnesi_opravilo.bindValue(23, pretvori(ui->txt_rocni_vnos->text()));
+			// izracuna znesek popustov
+			double popusti = 0.0;
+			popusti = pretvori_v_double(ui->txt_nova_urna_postavka_brez_ddv->text()).toDouble();
+			popusti *= pretvori_v_double(ui->txt_stevilo_opravljenih_ur->text()).toDouble();
+			popusti *= pretvori_v_double(ui->txt_popusti->text()).toDouble() / 100;
+			//
+			sql_vnesi_opravilo.bindValue(24, pretvori(pretvori_v_double(QString::number(popusti, 'f', 2))));
+			sql_vnesi_opravilo.bindValue(25, pretvori(pretvori_v_double(ui->txt_znesek_ddv_na_racunu->text())));
+			sql_vnesi_opravilo.bindValue(26, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_na_racunu->text())));
+			sql_vnesi_opravilo.exec();
+
+			// send signal to reload widget
+			poslji("opravilo");
+
+			// close this window
+			close();
+		}
+	}
+	base.close();
+
+}
+
+void opravila::prejem(QString beseda) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		if ( beseda.left(13) == "Novo opravilo" ) { // nov vnos opravila
+			ui->btn_sprejmi->setText("Vnesi novo opravilo");
+
+			QString stevilka_racuna = beseda.right(11);
+			ui->txt_racun->setText(stevilka_racuna);
+
+			QSqlQuery sql_napolni;
+			sql_napolni.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(stevilka_racuna) + "'");
+			sql_napolni.exec();
+			if ( sql_napolni.next() ) {
+				ui->txt_id_stranka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString()));
+				ui->txt_id_projekt->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("projekt")).toString()));
+				ui->txt_id_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
+			}
+
+		}
+		if ( beseda.left(14) == "Staro opravilo" ) { // pregled obstojecega opravila
+			ui->btn_sprejmi->setText("Popravi opravilo");
+
+			QString stevilka_opravila = beseda.right(beseda.length() - 14);
+			ui->txt_id->setText(stevilka_opravila);
+
+			QSqlQuery sql_napolni;
+			sql_napolni.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(stevilka_opravila) + "'");
+			sql_napolni.exec();
+			if ( sql_napolni.next() ) {
+
+				// vnos vnosnih polj
+				ui->txt_id_stranka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_stranke")).toString()));
+				ui->txt_id_projekt->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_projekta")).toString()));
+				ui->txt_id_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_racuna")).toString()));
+				ui->txt_skupina->setCurrentIndex(ui->txt_skupina->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_skupina")).toString())));
+				ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
+				ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()));
+				ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %"));
+				ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()));
+				ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("rocni_vnos_ur")).toString()));
+
+				// izbira popustov
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_fb1")).toString()) != "0.0" ) {
+					ui->cb_popust_fb1->setChecked(true);
+				}
+				else {
+					ui->cb_popust_fb1->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_fb2")).toString()) != "0.0" ) {
+					ui->cb_popust_fb2->setChecked(true);
+				}
+				else {
+					ui->cb_popust_fb2->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_komb1")).toString()) != "0.0" ) {
+					ui->cb_popust_komb1->setChecked(true);
+				}
+				else {
+					ui->cb_popust_komb1->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_komb2")).toString()) != "0.0" ) {
+					ui->cb_popust_komb2->setChecked(true);
+				}
+				else {
+					ui->cb_popust_komb2->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_stranka")).toString()) != "0.0" ) {
+					ui->cb_popust_stalna->setChecked(true);
+				}
+				else {
+					ui->cb_popust_stalna->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_kupon")).toString()) != "0.0" ) {
+					ui->cb_popust_kupon->setChecked(true);
+				}
+				else {
+					ui->cb_popust_kupon->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_akcija")).toString()) != "0.0" ) {
+					ui->cb_popust_akcija->setChecked(true);
+				}
+				else {
+					ui->cb_popust_akcija->setChecked(false);
+				}
+
+				// vnos podrazitev
+				ui->txt_podrazitev_vikend->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("podrazitev_vikend")).toString()));
+				ui->txt_podrazitev_hitrost->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("podrazitev_hitrost")).toString()));
+				ui->txt_podrazitev_zapleti->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("podrazitev_zapleti")).toString()));
+
+				// oznacitev podrazitev
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pribitek_vikend")).toString()) == "1" ) {
+					ui->cb_vikend->setChecked(true);
+				}
+				else {
+					ui->cb_vikend->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pribitek_hitrost")).toString()) == "1" ) {
+					ui->cb_hitrost->setChecked(true);
+				}
+				else {
+					ui->cb_hitrost->setChecked(false);
+				}
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pribitek_zapleti")).toString()) == "1" ) {
+					ui->cb_zapleti->setChecked(true);
+				}
+				else {
+					ui->cb_zapleti->setChecked(false);
+				}
+
+				// oznacitev obracuna ur
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "predracun" ) {
+					ui->rb_predracun->setChecked(true);
+					ui->txt_predracun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+				}
+				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "casovnice" ) {
+					ui->rb_casovnice->setChecked(true);
+					ui->txt_casovnice->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+				}
+				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "rocno" ) {
+					ui->rb_rocni_vnos->setChecked(true);
+					ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+				}
+
+
+
+			}
+		}
+	}
+	base.close();
+
+}
+
+void opravila::on_btn_izracunaj_clicked() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_txt_skupina_currentIndexChanged() {
+
+	// pocisti storitve
+	ui->txt_storitev->clear();
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		// napolni spustne sezname
+		ui->txt_storitev->addItem("");
+
+		QSqlQuery sql_fill;
+		sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "'");
+		sql_fill.exec();
+		while ( sql_fill.next() ) {
+			if ( ui->txt_storitev->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString())) == -1 ) {
+				ui->txt_storitev->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString()));
+			}
+		}
+		sql_fill.clear();
+
+	}
+	base.close();
+
+}
+
+void opravila::on_txt_storitev_currentIndexChanged() {
+
+	// pocisti polja
+	ui->txt_urna_postavka_brez_ddv->setText("");
+	ui->txt_ddv->setCurrentIndex(0);
+	ui->txt_urna_postavka->setText("");
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("111Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_fill;
+		sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "' AND "
+										 "storitev LIKE '" + pretvori(ui->txt_storitev->currentText()) + "'");
+		sql_fill.exec();
+		if ( sql_fill.next() ) {
+			ui->txt_urna_postavka_brez_ddv->setText(pretvori_iz_double(QString::number(prevedi(sql_fill.value(sql_fill.record().indexOf("urna_postavka")).toString()).toDouble(), 'f', 2)) + " EUR");
+			ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("ddv")).toString().replace(".", ",").append(" %"))));
+		}
+		sql_fill.clear();
+
+	}
+	base.close();
+
+}
+
+void opravila::izracunaj_urno_postavko_z_ddv() {
+
+	double urna_postavka = pretvori_v_double(ui->txt_urna_postavka_brez_ddv->text()).toDouble();
+	double ddv = pretvori_v_double(ui->txt_ddv->currentText()).toDouble();
+
+	double urna_postavka_z_ddv = urna_postavka * ( 1 + ddv / 100 );
+
+	ui->txt_urna_postavka->setText(pretvori_iz_double(QString::number(urna_postavka_z_ddv, 'f', 2)) + " EUR");
+
+}
+
+void opravila::on_txt_urna_postavka_brez_ddv_textChanged() {
+
+	izracunaj_urno_postavko_z_ddv();
+
+}
+
+void opravila::on_txt_ddv_currentIndexChanged() {
+
+	izracunaj_urno_postavko_z_ddv();
+
+}
+
+void opravila::on_txt_urna_postavka_textChanged() {
+
+	napolni_polja();
+
+}
+
+void opravila::on_cb_vikend_toggled() {
+
+	napolni_polja();
+
+}
+
+void opravila::on_cb_hitrost_toggled() {
+
+	napolni_polja();
+
+}
+
+void opravila::on_cb_zapleti_toggled() {
+
+	napolni_polja();
+
+}
+
+void opravila::napolni_polja() {
+
+	// polja napolni samo, ce je urna postavka izpolnjena
+	if ( ui->txt_urna_postavka->text() != "" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			// baza je odprta
+
+			// prepisi polja iz vnosnih polj
+			ui->txt_storitev_pribitek->setText(ui->txt_skupina->currentText() + " - " +
+																				 ui->txt_storitev->currentText());
+			ui->txt_novi_ddv->setText(ui->txt_ddv->currentText());
+
+			// ugotovi pribitke
+			double pribitek = 0.0;
+
+			QSqlQuery sql_pribitek;
+
+			if ( ui->cb_vikend->isChecked() ) {
+				sql_pribitek.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pod_vikend") + "'");
+				sql_pribitek.exec();
+				if ( sql_pribitek.next() ) {
+					pribitek = pribitek + pretvori_v_double(ui->txt_podrazitev_vikend->text()).toDouble();
+					ui->txt_storitev_pribitek->setText(ui->txt_storitev_pribitek->text() + " - Delo med vikendom");
+				}
+				sql_pribitek.clear();
+			}
+
+			if ( ui->cb_hitrost->isChecked() ) {
+				sql_pribitek.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pod_hitrost") + "'");
+				sql_pribitek.exec();
+				if ( sql_pribitek.next() ) {
+					pribitek = pribitek + pretvori_v_double(ui->txt_podrazitev_hitrost->text()).toDouble();
+					ui->txt_storitev_pribitek->setText(ui->txt_storitev_pribitek->text() + " - Prednostna obdelava");
+				}
+				sql_pribitek.clear();
+			}
+
+			if ( ui->cb_zapleti->isChecked() ) {
+				sql_pribitek.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pod_zapleti") + "'");
+				sql_pribitek.exec();
+				if ( sql_pribitek.next() ) {
+					pribitek = pribitek + pretvori_v_double(ui->txt_podrazitev_zapleti->text()).toDouble();
+					ui->txt_storitev_pribitek->setText(ui->txt_storitev_pribitek->text() + " - Zahtevna naloga");
+				}
+				sql_pribitek.clear();
+			}
+
+			ui->txt_pribitek->setText(pretvori_iz_double(QString::number(pribitek, 'f', 2)) + " %");
+			double nova_urna_postavka = pretvori_v_double(ui->txt_urna_postavka_brez_ddv->text()).toDouble() * ( 1 + pribitek / 100 );
+			ui->txt_nova_urna_postavka_brez_ddv->setText(pretvori_iz_double(QString::number(nova_urna_postavka, 'f', 2)) + " EUR");
+
+			double ddv = pretvori_v_double(ui->txt_ddv->currentText()).toDouble();
+
+			double nova_urna_postavka_z_ddv = nova_urna_postavka * ( 1 + ddv / 100 );
+
+			ui->txt_nova_urna_postavka->setText(pretvori_iz_double(QString::number(nova_urna_postavka_z_ddv, 'f', 2)) + " EUR");
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_storitev_pribitek->setText("");
+		ui->txt_pribitek->setText("");
+		ui->txt_nova_urna_postavka_brez_ddv->setText("");
+		ui->txt_novi_ddv->setText("");
+		ui->txt_nova_urna_postavka->setText("");
+		ui->cb_vikend->setChecked(false);
+		ui->cb_hitrost->setChecked(false);
+		ui->cb_zapleti->setChecked(false);
+	}
+
+	izracunaj_racun();
+
+}
+
+void opravila::izracunaj_racun() {
+
+	// napisi celoten naziv storitve
+	ui->txt_storitev_na_racunu->setText(ui->txt_storitev_pribitek->text());
+
+	// napisi urno postavko
+	ui->txt_urna_postavka_na_racunu->setText(ui->txt_nova_urna_postavka_brez_ddv->text());
+
+	// napisi ustrezno stevilo opravljenih ur
+	if ( ui->rb_predracun->isChecked() ) {
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_predracun->text());
+	}
+	else if ( ui->rb_casovnice->isChecked() ) {
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_casovnice->text());
+	}
+	else if ( ui->rb_rocni_vnos->isChecked() ) {
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_rocni_vnos->text());
+	}
+
+	// napisi ustrezen ddv
+	ui->txt_stopnja_ddv->setText(ui->txt_novi_ddv->text());
+
+	// izracunaj skupni znesek popustov
+	double popusti_skupaj = 0.0;
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
+	popusti_skupaj += pretvori_v_double(ui->txt_popust_akcija->text()).toDouble();
+
+	ui->txt_popusti->setText(pretvori_iz_double(QString::number(popusti_skupaj, 'f', 1)) + " %");
+
+	// izracunaj koncni znesek storitve
+	double urna_postavka = pretvori_v_double(ui->txt_urna_postavka_na_racunu->text()).toDouble();
+	double stevilo_ur = pretvori_v_double(ui->txt_stevilo_opravljenih_ur->text()).toDouble();
+	double ddv = pretvori_v_double(ui->txt_stopnja_ddv->text()).toDouble();
+	double popusti = pretvori_v_double(ui->txt_popusti->text()).toDouble();
+	double znesek_brez_ddv = 0.0;
+	double znesek_ddv = 0.0;
+	double znesek = 0.0;
+
+	znesek_brez_ddv = urna_postavka * stevilo_ur * (1 - popusti / 100 );
+	znesek_ddv = znesek_brez_ddv * ddv / 100 ;
+	znesek = znesek_brez_ddv + znesek_ddv;
+
+	// napisi zneske na racunu
+	ui->txt_znesek_brez_ddv_na_racunu->setText(pretvori_iz_double(QString::number(znesek_brez_ddv, 'f', 2)) + " EUR");
+	ui->txt_znesek_ddv_na_racunu->setText(pretvori_iz_double(QString::number(znesek_ddv, 'f', 2)) + " EUR");
+	ui->txt_znesek_na_racunu->setText(pretvori_iz_double(QString::number(znesek, 'f', 2)) + " EUR");
+
+}
+
+void opravila::on_rb_predracun_toggled() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_rb_casovnice_toggled() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_rb_rocni_vnos_toggled() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_txt_predracun_textChanged() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_txt_casovnice_textChanged() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_txt_rocni_vnos_textChanged() {
+
+	izracunaj_racun();
+
+}
+
+void opravila::on_txt_id_stranka_textChanged() {
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -284,118 +769,216 @@ void opravila::on_btn_vnesi_clicked() {
 		msgbox.exec();
 	}
 	else {
-		QSqlQuery sql_vnesi_opravilo;
-		if (ui->btn_vnesi->text() == "Vnesi opravilo") { // vnesi novega uporabnika
-			sql_vnesi_opravilo.prepare("INSERT INTO opravila (racun, storitev, ure, cena_ure, ddv, p_facebook, p_twitter, p_google, p_blog, "
-									   "p_forum, p_sfacebook, p_stwitter, p_skuponi, p_obrazec, p_kupon, p_akcija, p_vip, popusti, k_vikend, "
-									   "k_kratekrok, k_zahtevnost, k_neumnosti, k_komunikacija, kontrapopusti, znesekbrezddv, znesekddv, znesekpopust, znesekskupaj) "
-									   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		// baza je odprta
 
-		}
-		else { // popravi ze obstojeci vnos
-			sql_vnesi_opravilo.prepare("UPDATE opravila SET racun = ?, storitev = ?, ure = ?, cena_ure = ?, ddv = ?, p_facebook = ?, p_twitter = ?, "
-									   "p_google = ?, p_blog = ?, p_forum = ?, p_sfacebook = ?, p_stwitter = ?, p_skuponi = ?, p_obrazec = ?, p_kupon = ?, "
-									   "p_akcija = ?, p_vip = ?, popusti = ?, k_vikend = ?, k_kratekrok = ?, k_zahtevnost = ?, k_neumnosti = ?, "
-									   "k_komunikacija = ?, kontrapopusti = ?, znesekbrezddv = ?, znesekddv = ?, znesekpopust, = ?, znesekskupaj = ? "
-									   "WHERE id LIKE '" + ui->txt_id->text() + "'");
-		}
-		sql_vnesi_opravilo.bindValue(0, pretvori(ui->txt_racun->text()));
-		sql_vnesi_opravilo.bindValue(1, pretvori(ui->txt_storitev->currentText()));
-		sql_vnesi_opravilo.bindValue(2, pretvori(ui->txt_ure->text()));
-		sql_vnesi_opravilo.bindValue(3, pretvori(ui->txt_cena->text()));
-		sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_ddv->currentText()));
-		sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_p_facebook->text()));
-		sql_vnesi_opravilo.bindValue(6, pretvori(ui->txt_p_twitter->text()));
-		sql_vnesi_opravilo.bindValue(7, pretvori(ui->txt_p_google->text()));
-		sql_vnesi_opravilo.bindValue(8, pretvori(ui->txt_p_blog->text()));
-		sql_vnesi_opravilo.bindValue(9, pretvori(ui->txt_p_forum->text()));
-		sql_vnesi_opravilo.bindValue(10, pretvori(ui->txt_p_sfacebook->text()));
-		sql_vnesi_opravilo.bindValue(11, pretvori(ui->txt_p_stwitter->text()));
-		sql_vnesi_opravilo.bindValue(12, pretvori(ui->txt_p_skuponi->text()));
-		sql_vnesi_opravilo.bindValue(13, pretvori(ui->txt_p_obrazec->text()));
-		sql_vnesi_opravilo.bindValue(14, pretvori(ui->txt_p_stranka->text()));
-		sql_vnesi_opravilo.bindValue(15, pretvori(ui->txt_p_akcija->text()));
-		sql_vnesi_opravilo.bindValue(16, pretvori(ui->txt_p_vip->text()));
-		sql_vnesi_opravilo.bindValue(17, pretvori(ui->txt_p_skupaj->text()));
-		sql_vnesi_opravilo.bindValue(18, pretvori(ui->txt_k_vikend->text()));
-		sql_vnesi_opravilo.bindValue(19, pretvori(ui->txt_k_kratek->text()));
-		sql_vnesi_opravilo.bindValue(20, pretvori(ui->txt_k_zahtevnost->text()));
-		sql_vnesi_opravilo.bindValue(21, pretvori(ui->txt_k_neumnosti->text()));
-		sql_vnesi_opravilo.bindValue(22, pretvori(ui->txt_k_komunikacija->text()));
-		sql_vnesi_opravilo.bindValue(23, pretvori(ui->txt_k_skupaj->text()));
-		sql_vnesi_opravilo.bindValue(24, pretvori(ui->txt_znesekbrezddv->text()));
-		sql_vnesi_opravilo.bindValue(25, pretvori(ui->txt_s_ddv->text()));
-		sql_vnesi_opravilo.bindValue(26, pretvori(ui->txt_popust->text()));
-		sql_vnesi_opravilo.bindValue(27, pretvori(ui->txt_s_znesek->text()));
-		sql_vnesi_opravilo.exec();
-	}
+		QSqlQuery sql_poisci;
+		sql_poisci.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+		sql_poisci.exec();
+		if ( sql_poisci.next() ) {
 
-	base.close();
-
-	// send signal to reload widget
-	poslji("opravila");
-
-	// close this window
-	close();
-
-}
-
-void opravila::on_txt_storitev_currentIndexChanged(QString besedilo) {
-
-	if (ui->btn_vnesi->text() != "Vnesi") {
-		if (besedilo != "") {
-			QString app_path = QApplication::applicationDirPath();
-			QString dbase_path = app_path + "/base.bz";
-
-			QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-			base.setDatabaseName(dbase_path);
-			base.database();
-			base.open();
-			if(base.isOpen() != true){
-				QMessageBox msgbox;
-				msgbox.setText("Baze ni bilo moc odpreti");
-				msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-				msgbox.exec();
+			// napolni ime stranke
+			if (prevedi(sql_poisci.value(sql_poisci.record().indexOf("tip")).toString()) == "1" ) {
+				ui->txt_stranka->setText(prevedi(sql_poisci.value(sql_poisci.record().indexOf("priimek")).toString()) + " " +
+																 prevedi(sql_poisci.value(sql_poisci.record().indexOf("ime")).toString()));
 			}
 			else {
-				QSqlQuery sql_napolni;
-				sql_napolni.prepare("SELECT * FROM sif_opravila WHERE opravilo LIKE '" + pretvori(besedilo) + "'");
-				sql_napolni.exec();
-				if (sql_napolni.next()) {
-					int i = 0;
-					if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "0.0") {
-						i = 1;
-					}
-					else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "8.5") {
-						i = 2;
-					}
-					else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "20.0") {
-						i = 3;
-					}
-					ui->txt_ddv->setCurrentIndex(i);
-					ui->txt_cena->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena")).toString()));
-				}
+				ui->txt_stranka->setText(prevedi(sql_poisci.value(sql_poisci.record().indexOf("ime")).toString()));
 			}
-			base.close();
+			ui->txt_podrazitev_vikend->setText(pretvori_iz_double(prevedi(sql_poisci.value(sql_poisci.record().indexOf("pod_vikend")).toString())) + " %");
+			ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(prevedi(sql_poisci.value(sql_poisci.record().indexOf("pod_hitrost")).toString())) + " %");
+			ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(prevedi(sql_poisci.value(sql_poisci.record().indexOf("pod_zapleti")).toString())) + " %");
 		}
 		else {
-			ui->txt_ddv->setCurrentIndex(0);
+			ui->txt_stranka->setText("");
 		}
+
 	}
+	base.close();
 
 }
 
-void opravila::prejem(QString besedilo) {
+void opravila::on_txt_id_projekt_textChanged() {
 
-	QString id = "";
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
 
-	if (besedilo.contains("Novo opravilo")) {
-		ui->btn_vnesi->setText("Vnesi opravilo");
-		ui->txt_racun->setText(besedilo.right(besedilo.length() - 13));
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_poisci;
+		sql_poisci.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+		sql_poisci.exec();
+		if ( sql_poisci.next() ) {
+			ui->txt_projekt->setText(prevedi(sql_poisci.value(sql_poisci.record().indexOf("stevilka_projekta")).toString()) + ": " +
+															 prevedi(sql_poisci.value(sql_poisci.record().indexOf("naslov_projekta")).toString()));
+		}
+		else {
+			ui->txt_projekt->setText("");
+		}
+
+	}
+	base.close();
+
+}
+
+void opravila::on_txt_id_racun_textChanged() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		QSqlQuery sql_poisci;
+		sql_poisci.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id_racun->text()) + "'");
+		sql_poisci.exec();
+		if ( sql_poisci.next() ) {
+			ui->txt_racun->setText(prevedi(sql_poisci.value(sql_poisci.record().indexOf("stevilka_racuna")).toString()));
+		}
+		else {
+			ui->txt_racun->setText("");
+		}
+
+	}
+	base.close();
+
+}
+
+void opravila::izracunaj_popuste(double vrednost, int polje) {
+
+	/*
+		* racunali bomo po naslednjem principu
+		* najprej izracunamo sestevek vseh vnosnih polj s popusti (razen akcijskega)
+		* vrednost mora biti nujno manjsa od najvisje dovoljenje vrednosti
+		* ce ni, takoj prekini racunanje in vrni sporocilo z napako
+		* poglej, ali bi bil sestevek vseh polj vecji od najvisje dovoljene vrednosti
+		* ce ni, vnesi stevilko v polje in popravi sestevke
+		* ce je, vnesi najvisjo dovoljeno vrednost v polje in popravi sestevke ter
+		* obvesti uporabnika s sporocilom
+		*/
+
+	/*
+	* polje == 0 => fb1
+	* polje == 1 => fb2
+	* polje == 2 => komb1
+	* polje == 3 => komb2
+	* polje == 4 => stranka
+	* polje == 5 => kupon
+	*/
+
+	// vsa vnosna polja s popustom pretvorimo v vrednost double, da bo mozno racunanje
+	double popust[7];
+	popust[0] = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
+	popust[1] = pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
+	popust[2] = pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
+	popust[3] = pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
+	popust[4] = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
+	popust[5] = pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
+	popust[6] = pretvori_v_double(ui->txt_popust_akcija->text()).toDouble();
+
+	// maksimalne vrednosti sestevka popustov
+	double max_fb = pretvori_v_double(ui->txt_vsi_popusti_facebook_1->text()).toDouble();
+	double max_vsi = pretvori_v_double(ui->txt_popusti_skupaj_1->text()).toDouble();
+
+	double sestevek;
+	sestevek = popust[0] + popust[1];
+
+	if ( sestevek > max_fb ) {
+		if ( polje == 0 ) {
+			popust[0] = max_fb - popust[1];
+			ui->txt_popust_fb1->setText(pretvori_iz_double(QString::number(popust[0], 'f', 1)) + " %");
+		}
+		else if ( polje == 1 ) {
+			popust[1] = max_fb - popust[0];
+			ui->txt_popust_fb2->setText(pretvori_iz_double(QString::number(popust[1], 'f', 1)) + " %");
+		}
+		QMessageBox msg_napaka;
+		msg_napaka.setText("Vnesli ste previsoko vrednost. Vrednost je avtomatsko "
+											 "popravljena na najvisjo dovoljena vrednost za to polje!");
+		msg_napaka.exec();
+		return;
+	}
+
+	sestevek = popust[0] + popust[1];
+	ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)) + " %");
+
+	sestevek = 0.0;
+	for ( int i = 0; i <= 5; i++ ) {
+		sestevek += popust[i];
+	}
+	if ( sestevek > max_vsi ) {
+		if ( polje == 0 ) {
+			popust[0] = max_vsi - sestevek + popust[0];
+			ui->txt_popust_fb1->setText(pretvori_iz_double(QString::number(popust[0], 'f', 1)) + " %");
+		}
+		else if ( polje == 1 ) {
+			popust[1] = max_vsi - sestevek + popust[1];
+			ui->txt_popust_fb2->setText(pretvori_iz_double(QString::number(popust[1], 'f', 1)) + " %");
+		}
+		else if ( polje == 2 ) {
+			popust[2] = max_vsi - sestevek + popust[2];
+			ui->txt_popust_komb1->setText(pretvori_iz_double(QString::number(popust[2], 'f', 1)) + " %");
+		}
+		else if ( polje == 3 ) {
+			popust[3] = max_vsi - sestevek + popust[3];
+			ui->txt_popust_komb2->setText(pretvori_iz_double(QString::number(popust[3], 'f', 1)) + " %");
+		}
+		else if ( polje == 4 ) {
+			popust[4] = max_vsi - sestevek + popust[4];
+			ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust[4], 'f', 1)) + " %");
+		}
+		else if ( polje == 5 ) {
+			popust[5] = max_vsi - sestevek + popust[5];
+			ui->txt_popust_kupon->setText(pretvori_iz_double(QString::number(popust[5], 'f', 1)) + " %");
+		}
+		QMessageBox msg_napaka;
+		msg_napaka.setText("Vnesli ste previsoko vrednost. Vrednost je avtomatsko "
+											 "popravljena na najvisjo dovoljena vrednost za to polje!");
+		msg_napaka.exec();
+		return;
+	}
+
+	sestevek = 0.0;
+	for ( int i = 0; i <= 5; i++ ) {
+		sestevek += popust[i];
+	}
+	ui->txt_popusti_skupaj_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)) + " %");
+
+	sestevek += popust[6];
+
+	ui->txt_popusti->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)) + " %");
+
+}
+
+void opravila::on_cb_popust_fb1_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_fb1->setEnabled(true);
+
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
 
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
 		base.setDatabaseName(dbase_path);
 		base.database();
 		base.open();
@@ -406,111 +989,72 @@ void opravila::prejem(QString besedilo) {
 			msgbox.exec();
 		}
 		else {
-			QSqlQuery sql_stranka;
-			sql_stranka.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-			sql_stranka.exec();
-			if ( sql_stranka.next() ) {
-				id = prevedi(sql_stranka.value(sql_stranka.record().indexOf("stranka")).toString());
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_fb1")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_fb1")).toString())));
+					nipopusta = "false";
+				}
 			}
 
-			QSqlQuery sql_popusti;
-			sql_popusti.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(id) + "'");
-			sql_popusti.exec();
-			if (sql_popusti.next()) {
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("facebook")).toString()) == "facebook" ) {
-					ui->txt_p_facebook->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_facebook")).toString()));
-					ui->cb_facebook->setChecked(true);
-				}
-				else {
-					ui->cb_facebook->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("twitter")).toString()) == "twitter" ) {
-					ui->txt_p_twitter->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_twitter")).toString()));
-					ui->cb_twitter->setChecked(true);
-				}
-				else {
-					ui->cb_twitter->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("google")).toString()) == "google" ) {
-					ui->txt_p_google->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_google")).toString()));
-					ui->cb_google->setChecked(true);
-				}
-				else {
-					ui->cb_google->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("blog")).toString()) == "blog" ) {
-					ui->txt_p_blog->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_blog")).toString()));
-					ui->cb_blog->setChecked(true);
-				}
-				else {
-					ui->cb_blog->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("forum")).toString()) == "forum" ) {
-					ui->txt_p_forum->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_forum")).toString()));
-					ui->cb_forum->setChecked(true);
-				}
-				else {
-					ui->cb_forum->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("s_facebook")).toString()) == "sfacebook" ) {
-					ui->txt_p_sfacebook->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_s_facebook")).toString()));
-					ui->cb_sfacebook->setChecked(true);
-				}
-				else {
-					ui->cb_sfacebook->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("s_twitter")).toString()) == "stwitter" ) {
-					ui->txt_p_stwitter->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_s_twitter")).toString()));
-					ui->cb_stwitter->setChecked(true);
-				}
-				else {
-					ui->cb_stwitter->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("s_kuponi")).toString()) == "skuponi" ) {
-					ui->txt_p_skuponi->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_s_kuponi")).toString()));
-					ui->cb_skuponi->setChecked(true);
-				}
-				else {
-					ui->cb_skuponi->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("obrazec")).toString()) == "obrazec" ) {
-					ui->txt_p_obrazec->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_obrazec")).toString()));
-					ui->cb_obrazec->setChecked(true);
-				}
-				else {
-					ui->cb_obrazec->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("vip")).toString()) == "vip" ) {
-					ui->txt_p_vip->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_vip")).toString()));
-					ui->cb_vip->setChecked(true);
-				}
-				else {
-					ui->cb_vip->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("akcija")).toString()) == "akcija" ) {
-					ui->txt_p_akcija->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_akcija")).toString()));
-					ui->cb_akcija->setChecked(true);
-				}
-				else {
-					ui->cb_akcija->setChecked(false);
-				}
-				if ( prevedi(sql_popusti.value(sql_popusti.record().indexOf("kuponi")).toString()) == "kuponi" ) {
-					ui->txt_p_stranka->setText(prevedi(sql_popusti.value(sql_popusti.record().indexOf("pop_kuponi")).toString()));
-					ui->cb_kupon->setChecked(true);
-				}
-				else {
-					ui->cb_kupon->setChecked(false);
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb1")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb1")).toString())));
+						nipopusta = "false";
+					}
 				}
 			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook_1")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook_1")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_facebook_stranka") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_fb1->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
 		}
 		base.close();
 	}
 	else {
-		// besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
+		ui->txt_popust_fb1->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_fb1->setEnabled(false);
+	}
+
+	ui->txt_popust_fb1->setText(ui->txt_popust_fb1->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_fb2_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_fb2->setEnabled(true);
+
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
 
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
 		base.setDatabaseName(dbase_path);
 		base.database();
 		base.open();
@@ -521,173 +1065,611 @@ void opravila::prejem(QString besedilo) {
 			msgbox.exec();
 		}
 		else {
-			QSqlQuery sql_napolni;
-			sql_napolni.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(besedilo) + "'");
-			sql_napolni.exec();
-			if (sql_napolni.next()) {
-				ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
-				ui->txt_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("racun")).toString()));
+			QString nipopusta = "true";
 
-				QSqlQuery sql_combo;
-				sql_combo.prepare("SELECT * FROM sif_opravila WHERE opravilo LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("storitev")).toString() + "'");
-				sql_combo.exec();
-				if ( sql_combo.next() ) {
-					ui->txt_storitev->setCurrentIndex(prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()).toInt());
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_fb2")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_fb2")).toString())));
+					nipopusta = "false";
 				}
-
-				ui->txt_ure->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ure")).toString()));
-				ui->txt_cena->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena_ure")).toString()));
-
-				int i = 0;
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "20.0%" ) {
-					i = 3;
-				}
-				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "8.5%" ) {
-					i = 2;
-				}
-				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()) == "0.0%" ) {
-					i = 1;
-				}
-
-				ui->txt_ddv->setCurrentIndex(i);
-
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_facebook")).toString()) != "0.00" ) {
-					ui->txt_p_facebook->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_facebook")).toString()));
-					ui->cb_facebook->setChecked(true);
-				}
-				else {
-					ui->cb_facebook->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_twitter")).toString()) != "0.00" ) {
-					ui->txt_p_twitter->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_twitter")).toString()));
-					ui->cb_twitter->setChecked(true);
-				}
-				else {
-					ui->cb_twitter->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_google")).toString()) != "0.00" ) {
-					ui->txt_p_google->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_google")).toString()));
-					ui->cb_google->setChecked(true);
-				}
-				else {
-					ui->cb_google->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_blog")).toString()) != "0.00" ) {
-					ui->txt_p_blog->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_blog")).toString()));
-					ui->cb_blog->setChecked(true);
-				}
-				else {
-					ui->cb_blog->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_forum")).toString()) != "0.00" ) {
-					ui->txt_p_forum->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_forum")).toString()));
-					ui->cb_forum->setChecked(true);
-				}
-				else {
-					ui->cb_forum->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_sfacebook")).toString()) != "0.00" ) {
-					ui->txt_p_sfacebook->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_sfacebook")).toString()));
-					ui->cb_sfacebook->setChecked(true);
-				}
-				else {
-					ui->cb_sfacebook->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_stwitter")).toString()) != "0.00" ) {
-					ui->txt_p_stwitter->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_stwitter")).toString()));
-					ui->cb_stwitter->setChecked(true);
-				}
-				else {
-					ui->cb_stwitter->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_skuponi")).toString()) != "0.00" ) {
-					ui->txt_p_skuponi->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_skuponi")).toString()));
-					ui->cb_skuponi->setChecked(true);
-				}
-				else {
-					ui->cb_skuponi->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_obrazec")).toString()) != "0.00" ) {
-					ui->txt_p_obrazec->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_obrazec")).toString()));
-					ui->cb_obrazec->setChecked(true);
-				}
-				else {
-					ui->cb_obrazec->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_kupon")).toString()) != "0.00" ) {
-					ui->txt_p_stranka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_kupon")).toString()));
-					ui->cb_kupon->setChecked(true);
-				}
-				else {
-					ui->cb_kupon->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_akcija")).toString()) != "0.00" ) {
-					ui->txt_p_akcija->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_akcija")).toString()));
-					ui->cb_akcija->setChecked(true);
-				}
-				else {
-					ui->cb_akcija->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_vip")).toString()) != "0.00" ) {
-					ui->txt_p_vip->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("p_vip")).toString()));
-					ui->cb_vip->setChecked(true);
-				}
-				else {
-					ui->cb_vip->setChecked(false);
-				}
-
-				ui->txt_p_skupaj->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("popusti")).toString()));
-
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_vikend")).toString()) != "0.00" ) {
-					ui->txt_k_vikend->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_vikend")).toString()));
-					ui->cb_k_vikend->setChecked(true);
-				}
-				else {
-					ui->cb_k_vikend->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_kratekrok")).toString()) != "0.00" ) {
-					ui->txt_k_kratek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_kratekrok")).toString()));
-					ui->cb_k_kratek->setChecked(true);
-				}
-				else {
-					ui->cb_k_kratek->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_zahtevnost")).toString()) != "0.00" ) {
-					ui->txt_k_zahtevnost->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_zahtevnost")).toString()));
-					ui->cb_k_zahtevnost->setChecked(true);
-				}
-				else {
-					ui->cb_k_zahtevnost->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_neumnosti")).toString()) != "0.00" ) {
-					ui->txt_k_neumnosti->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_neumnosti")).toString()));
-					ui->cb_k_neumnost->setChecked(true);
-				}
-				else {
-					ui->cb_k_neumnost->setChecked(false);
-				}
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_komunikacija")).toString()) != "0.00" ) {
-					ui->txt_k_komunikacija->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("k_komunikacija")).toString()));
-					ui->cb_k_komunikacija->setChecked(true);
-				}
-				else {
-					ui->cb_k_komunikacija->setChecked(false);
-				}
-
-				ui->txt_k_skupaj->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("kontrapopusti")).toString()));
-
-				ui->txt_znesekbrezddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesekbrezddv")).toString()));
-				ui->txt_s_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesekddv")).toString()));
-				ui->txt_s_znesek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesekskupaj")).toString()));
 			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb2")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_fb2")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook_2")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook_2")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_facebook_prijatelj") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
 		}
 		base.close();
-
-		ui->btn_vnesi->setText("Popravi opravilo");
-
-		on_btn_izracunaj_clicked();
-
 	}
+	else {
+		ui->txt_popust_fb2->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_fb2->setEnabled(false);
+	}
+
+	ui->txt_popust_fb2->setText(ui->txt_popust_fb2->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_komb1_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_komb1->setEnabled(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_komb1")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_komb1")).toString())));
+					nipopusta = "false";
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb1")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb1")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_1")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_1")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kombinacija_1") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_popust_komb1->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_komb1->setEnabled(false);
+	}
+
+	ui->txt_popust_komb1->setText(ui->txt_popust_komb1->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_komb2_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_komb2->setEnabled(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_komb2")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_komb2")).toString())));
+					nipopusta = "false";
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb2")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_komb2")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_2")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_2")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kombinacija_2") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_popust_komb2->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_komb2->setEnabled(false);
+	}
+
+	ui->txt_popust_komb2->setText(ui->txt_popust_komb2->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_stalna_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_stalna_stranka->setEnabled(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_stranka")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_stranka")).toString())));
+					nipopusta = "false";
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_stranka")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_stranka")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_stranka")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_stranka")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_stalna_stranka") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_popust_stalna_stranka->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_stalna_stranka->setEnabled(false);
+	}
+
+	ui->txt_popust_stalna_stranka->setText(ui->txt_popust_stalna_stranka->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_kupon_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_kupon->setEnabled(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_kupon")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_kupon")).toString())));
+					nipopusta = "false";
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kupon") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_popust_kupon->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_kupon->setEnabled(false);
+	}
+
+	ui->txt_popust_kupon->setText(ui->txt_popust_kupon->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_popust_akcija_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_popust_akcija->setEnabled(true);
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QString nipopusta = "true";
+
+			QSqlQuery sql_opravila;
+			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_opravila.exec();
+			if ( sql_opravila.next() ) {
+				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_akcija")).toString()) != "0.0" ) { // projekt ima popust
+					ui->txt_popust_akcija->setText(pretvori_iz_double(prevedi(sql_opravila.value(sql_opravila.record().indexOf("popust_akcija")).toString())));
+					nipopusta = "false";
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_projekti;
+				sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id_projekt->text()) + "'");
+				sql_projekti.exec();
+				if ( sql_projekti.next() ) {
+					if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_akcija")).toString()) != "0.0" ) { // projekt ima popust
+						ui->txt_popust_akcija->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_akcija")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id_stranka->text()) + "'");
+				sql_stranke.exec();
+				if ( sql_stranke.next() ) {
+					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_akcija")).toString()) != "0.0" ) { // stranka ima popust
+						ui->txt_popust_akcija->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_akcija")).toString())));
+						nipopusta = "false";
+					}
+				}
+			}
+
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_akcija") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_akcija->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+
+		}
+		base.close();
+	}
+	else {
+		ui->txt_popust_akcija->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_akcija->setEnabled(false);
+	}
+
+	ui->txt_popust_akcija->setText(ui->txt_popust_akcija->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_podrazitev_vikend_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_podrazitev_vikend->setEnabled(true);
+	}
+	else {
+		ui->txt_podrazitev_vikend->setEnabled(false);
+	}
+
+	ui->txt_podrazitev_vikend->setText(ui->txt_podrazitev_vikend->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_podrazitev_hitrost_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_podrazitev_hitrost->setEnabled(true);
+	}
+	else {
+		ui->txt_podrazitev_hitrost->setEnabled(false);
+	}
+
+	ui->txt_podrazitev_hitrost->setText(ui->txt_podrazitev_hitrost->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_cb_podrazitev_zapleti_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+		ui->txt_podrazitev_zapleti->setEnabled(true);
+	}
+	else {
+		ui->txt_podrazitev_zapleti->setEnabled(false);
+	}
+
+	ui->txt_podrazitev_zapleti->setText(ui->txt_podrazitev_zapleti->text().remove(" %").replace(".", ",") + " %");
+
+}
+
+void opravila::on_txt_popust_fb1_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 0);
+
+}
+
+void opravila::on_txt_popust_fb2_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 1);
+
+}
+
+void opravila::on_txt_popust_komb1_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 2);
+
+}
+
+void opravila::on_txt_popust_komb2_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 3);
+
+}
+
+void opravila::on_txt_popust_stalna_stranka_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 4);
+
+}
+
+void opravila::on_txt_popust_kupon_textChanged(QString besedilo) {
+
+	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 5);
+
+}
+
+void opravila::on_txt_popust_fb1_editingFinished() {
+
+	ui->txt_popust_fb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb1->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_fb2_editingFinished() {
+
+	ui->txt_popust_fb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb2->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_komb1_editingFinished() {
+
+	ui->txt_popust_komb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb1->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_komb2_editingFinished() {
+
+	ui->txt_popust_komb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb2->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_stalna_stranka_editingFinished() {
+
+	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_stalna_stranka->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_kupon_editingFinished() {
+
+	ui->txt_popust_kupon->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_kupon->text())) + " %");
+
+}
+
+void opravila::on_txt_popust_akcija_editingFinished() {
+
+	ui->txt_popust_akcija->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_akcija->text())) + " %");
+
+}
+
+void opravila::on_txt_podrazitev_vikend_editingFinished() {
+
+	ui->txt_podrazitev_vikend->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_vikend->text())) + " %");
+
+}
+
+void opravila::on_txt_podrazitev_hitrost_editingFinished() {
+
+	ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_hitrost->text())) + " %");
+
+}
+
+void opravila::on_txt_podrazitev_zapleti_editingFinished() {
+
+	ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_zapleti->text())) + " %");
+
+}
+
+QString opravila::pretvori_v_double(QString besedilo) {
+
+	besedilo.remove(" ");
+	besedilo.remove("%");
+	besedilo.remove("EUR");
+	besedilo.replace(",", ".");
+
+	if ( besedilo.left(1) == "0" ) {
+		besedilo.remove(0,1);
+	}
+	if ( besedilo == "" ) { // ce je polje prazno, dodamo vrednost 0.0
+		besedilo.append("0.0");
+	}
+	if ( besedilo.left(1) == "." ) { // ce besedilo nima vodilne nicle, pa je pricakovana, jo dodamo
+		besedilo.prepend("0");
+	}
+	if ( besedilo.right(1) == "." ) { // ce ima besedilo decimalno locilo, za njim pa nic, dodamo 0
+		besedilo.append("0");
+	}
+	if ( !besedilo.contains(".") ) { // ce je celo stevilo dodamo decimalno locilo in vrednost 0
+		besedilo.append(".0");
+	}
+
+	return besedilo;
+
+}
+
+QString opravila::pretvori_iz_double(QString besedilo) {
+
+	besedilo.replace(".",",");
+
+	return besedilo;
+
 }
 
 QString opravila::pretvori(QString besedilo) {
@@ -699,1045 +1681,5 @@ QString opravila::pretvori(QString besedilo) {
 QString opravila::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
-
-}
-
-void opravila::on_cb_facebook_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_p_facebook->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_facebook")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_facebook->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_facebook")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_facebook->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_facebook")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Facebook osebni") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_facebook->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_facebook->setText("0.00");
-		ui->txt_p_facebook->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_twitter_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_twitter->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_twitter")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_twitter->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_twitter")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_twitter")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_twitter->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_twitter")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Twitter osebni") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_twitter->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_twitter->setText("0.00");
-		ui->txt_p_twitter->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_google_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_google->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_google")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_google->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_google")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_google")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_google->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_google")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Google plus osebni") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_google->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_google->setText("0.00");
-		ui->txt_p_google->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_blog_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_blog->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_blog")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_blog->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_blog")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_blog")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_blog->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_blog")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Blog osebni") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_blog->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_blog->setText("0.00");
-		ui->txt_p_blog->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_forum_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_forum->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_forum")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_forum->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_forum")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_forum")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_forum->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_forum")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Forum osebni") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_forum->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_forum->setText("0.00");
-		ui->txt_p_forum->setEnabled(false);
-	}
-}
-
-void opravila::on_cb_sfacebook_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_sfacebook->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_sfacebook")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_sfacebook->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_sfacebook")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_facebook")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_sfacebook->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_facebook")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Facebook sirjenje") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_sfacebook->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_sfacebook->setText("0.00");
-		ui->txt_p_sfacebook->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_stwitter_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_stwitter->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_stwitter")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_stwitter->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_stwitter")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_twitter")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_stwitter->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_twitter")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Twitter sirjenje") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_stwitter->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_stwitter->setText("0.00");
-		ui->txt_p_stwitter->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_skuponi_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_skuponi->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_skuponi")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_skuponi->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_skuponi")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_kuponi")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_skuponi->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_s_kuponi")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Kuponi - pridobil stranke") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_skuponi->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_skuponi->setText("0.00");
-		ui->txt_p_skuponi->setEnabled(false);
-	}
-}
-
-void opravila::on_cb_obrazec_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_obrazec->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_obrazec")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_obrazec->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_obrazec")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_obrazec")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_obrazec->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_obrazec")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Obrazec akcija") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_obrazec->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_obrazec->setText("0.00");
-		ui->txt_p_obrazec->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_kupon_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_stranka->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_kupon")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_stranka->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_kupon")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kuponi")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_stranka->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kuponi")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Kupon akcija") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_stranka->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_stranka->setText("0.00");
-		ui->txt_p_stranka->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_akcija_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_akcija->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_akcija")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_akcija->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_akcija")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_akcija")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_akcija->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_akcija")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Akcijski popust akcija") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_akcija->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_akcija->setText("0.00");
-		ui->txt_p_akcija->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_vip_toggled(bool stanje){
-
-	if ( stanje == true ) {
-		ui->txt_p_vip->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_vip")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_p_vip->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("p_vip")).toString()));
-					nipopusta = "false";
-				}
-			}
-			else {
-				QSqlQuery sql_racun;
-				sql_racun.prepare("SELECT * FROM racuni WHERE stracuna LIKE '" + pretvori(ui->txt_racun->text()) + "'");
-				sql_racun.exec();
-				if ( sql_racun.next() ) {
-					QSqlQuery sql_stranke;
-					sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-					sql_stranke.exec();
-					if ( sql_stranke.next() ) {
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_vip")).toString()) != "0.00" ) { // opravilo ima popust
-							ui->txt_p_vip->setText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_vip")).toString()));
-							nipopusta = "false";
-						}
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Stalna stranka akcija") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_p_vip->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_p_vip->setText("0.00");
-		ui->txt_p_vip->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_k_vikend_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_k_vikend->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_vikend")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_k_vikend->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_vikend")).toString()));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Vikend") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_k_vikend->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_k_vikend->setText("0.00");
-		ui->txt_k_vikend->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_k_kratek_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_k_kratek->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_kratekrok")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_k_kratek->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_kratekrok")).toString()));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Kratek rok") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_k_kratek->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_k_kratek->setText("0.00");
-		ui->txt_k_kratek->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_k_zahtevnost_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_k_zahtevnost->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_zahtevnost")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_k_zahtevnost->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_zahtevnost")).toString()));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Zahtevna stranka") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_k_zahtevnost->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_k_zahtevnost->setText("0.00");
-		ui->txt_k_zahtevnost->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_k_neumnost_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_k_neumnosti->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_neumnosti")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_k_neumnosti->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_neumnosti")).toString()));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Neumnosti") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_k_neumnosti->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_k_neumnosti->setText("0.00");
-		ui->txt_k_neumnosti->setEnabled(false);
-	}
-
-}
-
-void opravila::on_cb_k_komunikacija_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_k_komunikacija->setEnabled(true);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			QString nipopusta = "true";
-
-			QSqlQuery sql_opravila;
-			sql_opravila.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_opravila.exec();
-			if ( sql_opravila.next() ) {
-				if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_komunikacija")).toString()) != "0.00" ) { // opravilo ima popust
-					ui->txt_k_komunikacija->setText(prevedi(sql_opravila.value(sql_opravila.record().indexOf("k_komunikacija")).toString()));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("Komunikacija") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_k_komunikacija->setText(prevedi(sql_osnova.value(sql_osnova.record().indexOf("procent")).toString()));
-				}
-			}
-
-		}
-		base.close();
-	}
-	else {
-		ui->txt_k_komunikacija->setText("0.00");
-		ui->txt_k_komunikacija->setEnabled(false);
-	}
 
 }

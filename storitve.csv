@@ -1,0 +1,21 @@
+BenŠTUDENT,Splošno,Priprava na projekt,10.0,20.0,ura
+BenŠTUDENT,BenANALITIK,Multivariantna analiza,19.5,20.0,ura
+BenŠTUDENT,BenANALITIK,Osnovna analiza,15.0,20.0,ura
+BenŠTUDENT,BenVPRAŠALNIK,Izdelava,15.0,20.0,ura
+BenŠTUDENT,BenVPRAŠALNIK,Povezava na benstat.si (1 mesec),30.0,20.0,anketa
+BenŠTUDENT,BenVPRAŠALNIK,Prispevek na benstat.si,40.0,20.0,anketa
+BenŠTUDENT,BenVPRAŠALNIK,Povezava na Facebook,0.0,20.0,anketa
+BenŠTUDENT,BenOBLIKOVALEC,Tehnično urejanje,1.0,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Osnovno tehnično urejanje,1.25,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Napredno tehnično urejanje,1.5,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Dodatno urejanje,5.0,20.0,element
+BenŠTUDENT,BenOBLIKOVALEC,Osnovno lektoriranje,1.2,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Napredno lektoriranje,1.5,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Zahtevno lektoriranje,1.8,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC,Abecednik lektoriranje,3.5,20.0,stran
+BenŠTUDENT,BenPODATEK,Kodiranje enostavnih odprtih odgovorov,15.0,20.0,vprašanje
+BenŠTUDENT,BenPODATEK,Kodiranje zahtevnih odprtih odgovorov,30.0,20.0,vprašanje
+BenŠTUDENT,BenPODATEK,Transkript,10.0,20.0,ura
+BenŠTUDENT,BenTISKAR,Črno – beli tisk,0.04,20.0,stran
+BenŠTUDENT,BenTISKAR,Barvni tisk,0.5,20.0,stran
+BenŠTUDENT,BenTISKAR,Vezava,13.0,20.0,kos
