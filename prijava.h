@@ -39,6 +39,7 @@ private slots:
 	void tabela_stranke();
 	void tabela_projekti();
 	void tabela_racuni();
+	void tabela_opravila();
 
 	// ustvari tabele sifrantov
 	void tabela_skd();
@@ -55,6 +56,7 @@ private slots:
 	void tabela_namen_potnega_naloga();
 	void tabela_prevoz();
 	void tabela_predracuni();
+	void tabela_storitev();
 
 	// vnese podatke v tabele
 	void vnesi_skd();
@@ -71,6 +73,7 @@ private slots:
 	void vnesi_namen_potnega_naloga();
 	void vnesi_prevoz();
 	void vnesi_predracune();
+	void vnesi_storitve();
 
 signals:
 	void prenos1(QString besedilo);

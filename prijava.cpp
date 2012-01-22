@@ -32,6 +32,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_stranke();
 	tabela_projekti();
 	tabela_racuni();
+	tabela_opravila();
 
 	// ustvari tabele sifrantov
 	tabela_skd();
@@ -48,6 +49,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_namen_potnega_naloga();
 	tabela_prevoz();
 	tabela_predracuni();
+	tabela_storitev();
 
 	// vnese podatke v tabele
 	vnesi_skd();
@@ -64,6 +66,7 @@ prijava::prijava(QWidget *parent) :
 	vnesi_namen_potnega_naloga();
 	vnesi_prevoz();
 	vnesi_predracune();
+	vnesi_storitve();
 
 	ui->txt_uporabnik->setFocus();
 
@@ -82,40 +85,6 @@ prijava::prijava(QWidget *parent) :
 	}
 	else {
 		// the database is opened
-		QSqlQuery sql_create_table_opravila;
-		sql_create_table_opravila.prepare("CREATE TABLE IF NOT EXISTS opravila ("
-										  "id INTEGER PRIMARY KEY, "
-										  "racun TEXT,"
-										  "storitev TEXT, "
-										  "ure TEXT, "
-										  "cena_ure TEXT, "
-										  "ddv TEXT, "
-										  "p_facebook TEXT, "
-										  "p_twitter TEXT, "
-										  "p_google TEXT, "
-										  "p_blog TEXT, "
-										  "p_forum TEXT, "
-										  "p_sfacebook TEXT, "
-										  "p_stwitter TEXT, "
-										  "p_skuponi TEXT, "
-										  "p_obrazec TEXT, "
-										  "p_kupon TEXT, "
-										  "p_akcija TEXT, "
-										  "p_vip TEXT, "
-										  "popusti TEXT, "
-										  "k_vikend TEXT, "
-										  "k_kratekrok TEXT, "
-										  "k_zahtevnost TEXT, "
-										  "k_neumnosti TEXT, "
-										  "k_komunikacija TEXT, "
-										  "kontrapopusti TEXT, "
-										  "znesekbrezddv TEXT, "
-										  "znesekddv TEXT, "
-										  "znesekpopust TEXT, "
-										  "znesekskupaj TEXT)"
-										  );
-		sql_create_table_opravila.exec();
-
 		QSqlQuery sql_create_table_kuponi;
 		sql_create_table_kuponi.prepare("CREATE TABLE IF NOT EXISTS kuponi ("
 										"id INTEGER PRIMARY KEY, "
@@ -176,41 +145,6 @@ prijava::prijava(QWidget *parent) :
 			sql_insert_placilo.exec();
 		}
 
-		QSqlQuery sql_create_table_sif_opravila;
-		sql_create_table_sif_opravila.prepare("CREATE TABLE IF NOT EXISTS sif_opravila ("
-											"id INTEGER PRIMARY KEY, "
-											"opravilo TEXT, "
-											"cena TEXT, "
-											"ddv TEXT)"
-											);
-		sql_create_table_sif_opravila.exec();
-		QSqlQuery sql_check_sif_opravila;
-		sql_check_sif_opravila.prepare("SELECT * FROM sif_opravila");
-		sql_check_sif_opravila.exec();
-		if (!sql_check_sif_opravila.next()) {
-			QSqlQuery sql_insert_sif_opravila;
-			sql_insert_sif_opravila.prepare("INSERT INTO sif_opravila (opravilo, cena, ddv) VALUES (?, ?, ?)");
-			sql_insert_sif_opravila.bindValue(0, pretvori("Multivariantna analiza"));
-			sql_insert_sif_opravila.bindValue(1, pretvori("10.00"));
-			sql_insert_sif_opravila.bindValue(2, pretvori("20.0"));
-			sql_insert_sif_opravila.exec();
-			sql_insert_sif_opravila.prepare("INSERT INTO sif_opravila (opravilo, cena, ddv) VALUES (?, ?, ?)");
-			sql_insert_sif_opravila.bindValue(0, pretvori("Faktorska analiza"));
-			sql_insert_sif_opravila.bindValue(1, pretvori("8.00"));
-			sql_insert_sif_opravila.bindValue(2, pretvori("0.0"));
-			sql_insert_sif_opravila.exec();
-			sql_insert_sif_opravila.prepare("INSERT INTO sif_opravila (opravilo, cena, ddv) VALUES (?, ?, ?)");
-			sql_insert_sif_opravila.bindValue(0, pretvori("T test"));
-			sql_insert_sif_opravila.bindValue(1, pretvori("5.00"));
-			sql_insert_sif_opravila.bindValue(2, pretvori("8.5"));
-			sql_insert_sif_opravila.exec();
-			sql_insert_sif_opravila.prepare("INSERT INTO sif_opravila (opravilo, cena, ddv) VALUES (?, ?, ?)");
-			sql_insert_sif_opravila.bindValue(0, pretvori("Povprecje"));
-			sql_insert_sif_opravila.bindValue(1, pretvori("1.00"));
-			sql_insert_sif_opravila.bindValue(2, pretvori("20.0"));
-			sql_insert_sif_opravila.exec();
-
-		}
 		//go_with_the_flow oz nimam pojma, keri bi ze morali biti tule, hehe
 
 		QSqlQuery sql_read_table_users;
@@ -778,6 +712,60 @@ void prijava::tabela_racuni() {
 
 }
 
+void prijava::tabela_opravila() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS opravila ("
+														 "id INTEGER PRIMARY KEY, "
+														 "stevilka_stranke TEXT, "
+														 "stevilka_projekta TEXT, "
+														 "stevilka_racuna TEXT, "
+														 "opravilo_skupina TEXT, "
+														 "opravilo_storitev TEXT, "
+														 "urna_postavka_brez_ddv TEXT, "
+														 "urna_postavka_z_ddv TEXT, "
+														 "ddv TEXT, "
+														 "popust_fb1 TEXT, "
+														 "popust_fb2 TEXT, "
+														 "popust_komb1 TEXT, "
+														 "popust_komb2 TEXT, "
+														 "popust_stranka TEXT, "
+														 "popust_kupon TEXT, "
+														 "popust_akcija TEXT, "
+														 "podrazitev_vikend TEXT, "
+														 "podrazitev_hitrost TEXT, "
+														 "podrazitev_zapleti TEXT, "
+														 "pribitek_vikend TEXT, "
+														 "pribitek_hitrost TEXT, "
+														 "pribitek_zapleti TEXT, "
+														 "tip_ur TEXT, "
+														 "ur_dela TEXT, "
+														 "rocni_vnos_ur TEXT, "
+														 "znesek_popustov TEXT, "
+														 "znesek_ddv TEXT, "
+														 "znesek_koncni TEXT)"
+										);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
 // sifranti
 void prijava::tabela_skd() {
 
@@ -1168,6 +1156,39 @@ void prijava::tabela_predracuni() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_status_predracuna ("
 														 "id INTEGER PRIMARY KEY, "
 														 "status TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_storitev() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_storitve ("
+														 "id INTEGER PRIMARY KEY, "
+														 "sklop TEXT, "
+														 "skupina TEXT, "
+														 "storitev TEXT, "
+														 "urna_postavka TEXT, "
+														 "ddv TEXT, "
+														 "enota TEXT)"
 										 );
 		sql_create_table.exec();
 	}
@@ -1846,6 +1867,71 @@ void prijava::vnesi_predracune() {
 				QSqlQuery sql_insert_data;
 				sql_insert_data.prepare("INSERT INTO sif_status_predracuna (status) VALUES (?)");
 				sql_insert_data.bindValue(0, pretvori(predracun));
+				sql_insert_data.exec();
+			}
+		}
+	}
+	base.close();
+	datoteka.remove();
+
+}
+
+void prijava::vnesi_storitve() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QFile datoteka(app_path + "/storitve.csv");
+	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return;
+	}
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		/*
+		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		*/
+		QTextStream besedilo(&datoteka);
+		while (!besedilo.atEnd()) {
+			QString opravilo = besedilo.readLine();
+			QString sklop = opravilo.left(opravilo.indexOf(",", 0));
+			opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+			QString skupina = opravilo.left(opravilo.indexOf(",", 0));
+			opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+			QString storitev = opravilo.left(opravilo.indexOf(",", 0));
+			opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+			QString cena = opravilo.left(opravilo.indexOf(",", 0));
+			opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+			QString ddv = opravilo.left(opravilo.indexOf(",", 0));
+			opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+			QString enota = opravilo.left(opravilo.indexOf(",", 0));
+		opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
+
+			QSqlQuery sql_check_table;
+			sql_check_table.prepare("SELECT * FROM sif_storitve WHERE storitev LIKE '" + pretvori(storitev) + "' AND skupina LIKE '" + pretvori(skupina) + "'");
+			sql_check_table.exec();
+			if ( !sql_check_table.next() ) {
+				QSqlQuery sql_insert_data;
+				sql_insert_data.prepare("INSERT INTO sif_storitve (sklop, skupina, storitev, urna_postavka, ddv, enota) "
+																"VALUES (?, ?, ?, ?, ?, ?)");
+				sql_insert_data.bindValue(0, pretvori(sklop));
+				sql_insert_data.bindValue(1, pretvori(skupina));
+				sql_insert_data.bindValue(2, pretvori(storitev));
+				sql_insert_data.bindValue(3, pretvori(cena));
+				sql_insert_data.bindValue(4, pretvori(ddv));
+				sql_insert_data.bindValue(5, pretvori(enota));
 				sql_insert_data.exec();
 			}
 		}

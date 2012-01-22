@@ -664,10 +664,10 @@ void racun::napolni() {
 		QTableWidgetItem *naslov7 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
-		naslov1->setText("Stev. racuna");
+		naslov1->setText("Skupina");
 		naslov2->setText("Storitev");
-		naslov3->setText("Opravljene ure");
-		naslov4->setText("Cena ure");
+		naslov3->setText("Stevilo ur dela");
+		naslov4->setText("Urna postavka");
 		naslov5->setText("Popusti");
 		naslov6->setText("DDV");
 		naslov7->setText("Koncni znesek");
@@ -681,30 +681,71 @@ void racun::napolni() {
 		ui->tbl_opravila->setHorizontalHeaderItem(6, naslov6);
 		ui->tbl_opravila->setHorizontalHeaderItem(7, naslov7);
 		ui->tbl_opravila->setColumnWidth(0, 20);
-		ui->tbl_opravila->setColumnWidth(1, 60);
-		ui->tbl_opravila->setColumnWidth(2, 60);
-		ui->tbl_opravila->setColumnWidth(3, 60);
-		ui->tbl_opravila->setColumnWidth(4, 140);
-		ui->tbl_opravila->setColumnWidth(5, 140);
+		ui->tbl_opravila->setColumnWidth(1, 100);
+		ui->tbl_opravila->setColumnWidth(2, 300);
+		ui->tbl_opravila->setColumnWidth(3, 100);
+		ui->tbl_opravila->setColumnWidth(4, 100);
+		ui->tbl_opravila->setColumnWidth(5, 100);
 		ui->tbl_opravila->setColumnWidth(6, 100);
-		ui->tbl_opravila->setColumnWidth(7, 150);
+		ui->tbl_opravila->setColumnWidth(7, 100);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM opravila WHERE racun LIKE '" + pretvori(ui->txt_stevilka_racuna->text()) + "'");
+		sql_fill.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "'");
 		sql_fill.exec();
 
 		int row = 0;
 		while (sql_fill.next()) {
 			ui->tbl_opravila->insertRow(row);
 			ui->tbl_opravila->setRowHeight(row, 20);
+
 			int col = 0;
 			int i = 0;
-			QString polja[8] = {"id", "racun", "storitev", "ure", "cena_ure", "popusti", "znesekddv", "znesekskupaj"};
+			QString polja[8] = {"id", "opravilo_skupina", "opravilo_storitev", "ur_dela", "urna_postavka", "znesek_popustov", "znesek_ddv", "znesek_koncni"};
 
 			while (col <= 7) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[col] == "opravilo_storitev" ) {
+					QString storitev = "";
+					storitev = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString());
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_vikend")).toString()) == "1" ) {
+						storitev += " - Delo med vikendom";
+					}
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_hitrost")).toString()) == "1" ) {
+						storitev += " - Prednostna obdelava";
+					}
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_zapleti")).toString()) == "1" ) {
+						storitev += " - Zahtevna naloga";
+					}
+					celica->setText(storitev);
+				}
+				else if ( polja[col] == "urna_postavka" ) {
+					double urna_postavka = 0.00;
+					urna_postavka = prevedi(sql_fill.value(sql_fill.record().indexOf("urna_postavka_brez_ddv")).toString()).toDouble();
+					double podrazitev = 0.0;
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_vikend")).toString()) == "1" ) {
+						podrazitev += prevedi(sql_fill.value(sql_fill.record().indexOf("podrazitev_vikend")).toString()).toDouble();
+					}
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_hitrost")).toString()) == "1" ) {
+						podrazitev += prevedi(sql_fill.value(sql_fill.record().indexOf("podrazitev_hitrost")).toString()).toDouble();
+					}
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_zapleti")).toString()) == "1" ) {
+						podrazitev += prevedi(sql_fill.value(sql_fill.record().indexOf("podrazitev_zapleti")).toString()).toDouble();
+					}
+					celica->setText(QString::number(urna_postavka * ( 1 + podrazitev / 100 ), 'f', 2).replace(".", ",") + " EUR");
+				}
+				else if ( polja[col] == "znesek_popustov" ) {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+				}
+				else if ( polja[col] == "znesek_ddv" ) {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+				}
+				else if ( polja[col] == "znesek_koncni" ) {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_opravila->setItem(row, col, celica);
 
 				col++;
@@ -880,23 +921,22 @@ void racun::izracunaj() {
 	}
 	else {
 		QSqlQuery sql_racun;
-		sql_racun.prepare("SELECT * FROM opravila WHERE racun LIKE '" + pretvori(ui->txt_stevilka_racuna->text()) + "'");
+		sql_racun.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "'");
 		sql_racun.exec();
 		while ( sql_racun.next() ) {
-			popusti = popusti + prevedi(sql_racun.value(sql_racun.record().indexOf("znesekpopust")).toString()).toDouble();
-			brezddv = brezddv + prevedi(sql_racun.value(sql_racun.record().indexOf("znesekbrezddv")).toString()).toDouble();
-			ddv = ddv + prevedi(sql_racun.value(sql_racun.record().indexOf("znesekddv")).toString()).toDouble();
-			placilo = placilo + prevedi(sql_racun.value(sql_racun.record().indexOf("znesekskupaj")).toString()).toDouble();
+			popusti = popusti + prevedi(sql_racun.value(sql_racun.record().indexOf("znesek_popustov")).toString()).toDouble();
+			brezddv = brezddv + prevedi(sql_racun.value(sql_racun.record().indexOf("znesek_koncni")).toString()).toDouble();
+			ddv = ddv + prevedi(sql_racun.value(sql_racun.record().indexOf("znesek_ddv")).toString()).toDouble();
 		}
 	}
 	base.close();
 
-	ui->txt_popusti->setText(pretvori_iz_double(QString::number(popusti, 'f', 2)));
-	ui->txt_znesek_brez_ddv->setText(pretvori_iz_double(QString::number(brezddv, 'f', 2)));
-	ui->txt_znesek_ddv->setText(pretvori_iz_double(QString::number(ddv, 'f', 2)));
-	ui->txt_znesek->setText(pretvori_iz_double(QString::number(placilo, 'f', 2)));
+	ui->txt_popusti->setText(pretvori_iz_double(QString::number(popusti, 'f', 2)) + " EUR");
+	ui->txt_znesek_brez_ddv->setText(pretvori_iz_double(QString::number(brezddv, 'f', 2)) + " EUR");
+	ui->txt_znesek_ddv->setText(pretvori_iz_double(QString::number(ddv, 'f', 2)) + " EUR");
+	ui->txt_znesek->setText(pretvori_iz_double(QString::number(brezddv + ddv, 'f', 2)) + " EUR");
 	ui->txt_se_placati->setText(pretvori_iz_double(QString::number(pretvori_v_double(ui->txt_znesek->text()).toDouble() -
-																																 pretvori_v_double(ui->txt_avans->text()).toDouble(), 'f', 2)));
+																																 pretvori_v_double(ui->txt_avans->text()).toDouble(), 'f', 2)) + " EUR");
 
 }
 
@@ -952,7 +992,7 @@ void racun::on_btn_opravilo_clicked() {
 
 void racun::osvezi(QString beseda) {
 
-	if ( beseda == "opravila" ) {
+	if ( beseda == "opravilo" ) {
 		napolni();
 		izracunaj();
 	}
@@ -965,7 +1005,7 @@ void racun::on_tbl_opravila_doubleClicked() {
 	uredi->show();
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
-	prenos(ui->tbl_opravila->selectedItems().takeAt(0)->text()); // ce opravilo obstaja, posljemo naprej id opravila
+	prenos("Staro opravilo" + ui->tbl_opravila->selectedItems().takeAt(0)->text()); // ce opravilo obstaja, posljemo naprej id opravila
 	this->disconnect();
 
 	// receive signal to refresh table
@@ -978,6 +1018,7 @@ QString racun::pretvori_v_double(QString besedilo) {
 
 	besedilo.remove(" ");
 	besedilo.remove("%");
+	besedilo.remove("EUR");
 	besedilo.replace(",", ".");
 
 	if ( besedilo.left(1) == "0" ) {
@@ -1002,7 +1043,6 @@ QString racun::pretvori_v_double(QString besedilo) {
 
 QString racun::pretvori_iz_double(QString besedilo) {
 
-	besedilo.append(" %");
 	besedilo.replace(".",",");
 
 	return besedilo;
@@ -1017,19 +1057,19 @@ void racun::on_rb_predracun_toggled() {
 
 	if ( ui->rb_predracun->isChecked() ) {
 		ui->txt_status_predracuna->setHidden(false);
-		ui->label_10->setHidden(true);
+		ui->label_10->setHidden(false);
 		ui->txt_status_placila->setHidden(true);
-		ui->label_6->setHidden(false);
+		ui->label_6->setHidden(true);
 		ui->txt_status_racunovodstva->setHidden(true);
-		ui->label_7->setHidden(false);
+		ui->label_7->setHidden(true);
 	}
 	else {
 		ui->txt_status_predracuna->setHidden(true);
-		ui->label_10->setHidden(false);
+		ui->label_10->setHidden(true);
 		ui->txt_status_placila->setHidden(false);
-		ui->label_6->setHidden(true);
+		ui->label_6->setHidden(false);
 		ui->txt_status_racunovodstva->setHidden(false);
-		ui->label_7->setHidden(true);
+		ui->label_7->setHidden(false);
 	}
 
 }

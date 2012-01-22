@@ -109,7 +109,7 @@ void wid_racuni::napolni() {
 
 		QSqlQuery sql_fill("wid_racuni");
 		if ( ui->txt_stprojekta->text() != "*" ) {
-			sql_fill.prepare("SELECT * FROM racuni WHERE stprojekta LIKE '" + projekt + "'");
+			sql_fill.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + projekt + "'");
 		}
 		else {
 			sql_fill.prepare("SELECT * FROM racuni");
