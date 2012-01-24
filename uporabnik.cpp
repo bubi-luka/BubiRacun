@@ -474,7 +474,7 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			}
 
 			QSqlQuery sql_vnesi_uporabnika;
-			if (ui->btn_sprejmi->text() == "Vnesi uporabnika") { // vnesi novega uporabnika
+			if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") { // vnesi novega uporabnika
 				sql_vnesi_uporabnika.prepare("INSERT INTO uporabniki (ime, priimek, user_name, geslo, naslov, naslov_stevilka, posta, postna_stevilka, "
 																		 "telefon, gsm, email, rojstni_datum, spletna_stran, naziv, davcna_stevilka, emso, tekoci_racun, "
 																		 "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, avtomobil, model_avtomobila, registracija, "
@@ -547,8 +547,8 @@ void uporabnik::keyPressEvent(QKeyEvent *event) {
 
 void uporabnik::prejem(QString besedilo) {
 
-	if (besedilo == "Nov uporabnik") {
-		ui->btn_sprejmi->setText("Vnesi uporabnika");
+	if (besedilo == "Nov zaposleni") {
+		ui->btn_sprejmi->setText("Vnesi zaposlenega");
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi vnos");

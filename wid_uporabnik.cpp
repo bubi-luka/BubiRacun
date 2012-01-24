@@ -200,7 +200,7 @@ void wid_uporabnik::on_btn_nov_clicked() {
 	uredi->show();
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
-	prenos("Nov uporabnik");
+	prenos("Nov zaposleni");
 	this->disconnect();
 
 	// receive signal to refresh table

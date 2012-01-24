@@ -35,14 +35,14 @@
      <item>
       <widget class="QPushButton" name="btn_nov">
        <property name="text">
-        <string>Vnos novega uporabnika</string>
+        <string>Vnos novega zaposlenega</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
        <property name="text">
-        <string>Izbris uporabnika</string>
+        <string>Izbris zaposlenega</string>
        </property>
       </widget>
      </item>
