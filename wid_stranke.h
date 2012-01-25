@@ -16,6 +16,9 @@ public:
     ~wid_stranke();
 
 private slots:
+	void on_cb_fizicna_toggled();
+	void on_cb_pravna_toggled();
+
 	void on_tbl_stranke_doubleClicked();
 	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();

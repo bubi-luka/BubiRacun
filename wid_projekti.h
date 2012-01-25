@@ -16,6 +16,11 @@ public:
     ~wid_projekti();
 
 private slots:
+	void on_cb_stranka_currentIndexChanged();
+	void on_cb_mesec_currentIndexChanged();
+	void on_cb_leto_currentIndexChanged();
+	void on_cb_projekt_currentIndexChanged();
+
 	void on_tbl_projekti_doubleClicked();
 	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();
