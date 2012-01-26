@@ -298,12 +298,9 @@ void wid_prejetiracuni::napolni() {
 
 					col++;
 					i++;
-
 				}
-
 				row++;
 			}
-
 		}
 	}
 	base.close();
