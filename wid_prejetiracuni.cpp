@@ -5,6 +5,7 @@
 #include "ui_wid_prejetiracuni.h"
 #include "prejetiracuni.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
     QWidget(parent),
@@ -16,13 +17,145 @@ wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
 		ui->txt_stprojekta->setEnabled(false);
 		ui->txt_stprojekta->setVisible(false);
 
+		// napolni filtrirne spustne sezname
+		QString gumb = ui->btn_nov->text();
+		ui->btn_nov->setText("");
+
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			// the database is opened
+
+			QSqlQuery sql_napolni;
+
+			// filtriraj po mesecu
+			ui->cb_mesec->addItem("");
+			ui->cb_mesec->addItem("01) Januar");
+			ui->cb_mesec->addItem("02) Februar");
+			ui->cb_mesec->addItem("03) Marec");
+			ui->cb_mesec->addItem("04) April");
+			ui->cb_mesec->addItem("05) Maj");
+			ui->cb_mesec->addItem("06) Junij");
+			ui->cb_mesec->addItem("07) Julij");
+			ui->cb_mesec->addItem("08) Avgust");
+			ui->cb_mesec->addItem("09) September");
+			ui->cb_mesec->addItem("10) Oktober");
+			ui->cb_mesec->addItem("11) November");
+			ui->cb_mesec->addItem("12) December");
+
+			// filtriraj po letu
+			ui->cb_leto->addItem("");
+			int min_leto = QDate::currentDate().year();
+			int max_leto = QDate::currentDate().year();
+
+			sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE avtor LIKE '" + pretvori(vApp->id()) + "'");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				if ( min_leto > prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_prejema")).toString()).right(4).toInt() ) {
+					min_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_prejema")).toString()).right(4).toInt();
+				}
+				if ( max_leto < prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_prejema")).toString()).right(4).toInt() ) {
+					max_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_prejema")).toString()).right(4).toInt();
+				}
+			}
+
+			for ( int i = min_leto; i <= max_leto; i++ ) {
+				ui->cb_leto->addItem(QString::number(i, 10));
+			}
+			sql_napolni.clear();
+
+			// filtriraj po izdajatelju racuna
+			ui->cb_izdajatelj->addItem("");
+			sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE avtor LIKE '" + pretvori(vApp->id()) + "'");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				if ( ui->cb_izdajatelj->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString())) == -1 ) {
+					ui->cb_izdajatelj->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString()));
+				}
+			}
+			sql_napolni.clear();
+
+			// filtriraj po statusu placila
+			ui->cb_placilo->addItem("");
+			sql_napolni.prepare("SELECT * FROM sif_status_placila");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				ui->cb_placilo->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("status")).toString()));
+			}
+			sql_napolni.clear();
+
+			// filtriraj po statusu racunovodstva
+			ui->cb_racunovodstvo->addItem("");
+			sql_napolni.prepare("SELECT * FROM sif_status_racunovodstva");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				ui->cb_racunovodstvo->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("status")).toString()));
+			}
+			sql_napolni.clear();
+
+		}
+		base.close();
+
 		napolni();
+
+		ui->btn_nov->setText(gumb);
 
 }
 
 wid_prejetiracuni::~wid_prejetiracuni()
 {
     delete ui;
+}
+
+void wid_prejetiracuni::on_cb_mesec_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
+void wid_prejetiracuni::on_cb_leto_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
+void wid_prejetiracuni::on_cb_izdajatelj_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
+void wid_prejetiracuni::on_cb_placilo_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
+void wid_prejetiracuni::on_cb_racunovodstvo_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
 }
 
 void wid_prejetiracuni::napolni() {
@@ -46,7 +179,7 @@ void wid_prejetiracuni::napolni() {
 		// clear previous content
 		ui->tbl_racuni->clear();
 
-		for (int i = 0; i <= 9; i++) {
+		for (int i = 0; i <= 6; i++) {
 			ui->tbl_racuni->removeColumn(0);
 		}
 
@@ -65,9 +198,6 @@ void wid_prejetiracuni::napolni() {
 		ui->tbl_racuni->insertColumn(4);
 		ui->tbl_racuni->insertColumn(5);
 		ui->tbl_racuni->insertColumn(6);
-		ui->tbl_racuni->insertColumn(7);
-		ui->tbl_racuni->insertColumn(8);
-		ui->tbl_racuni->insertColumn(9);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -76,20 +206,14 @@ void wid_prejetiracuni::napolni() {
 		QTableWidgetItem *naslov4 = new QTableWidgetItem;
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
-		QTableWidgetItem *naslov7 = new QTableWidgetItem;
-		QTableWidgetItem *naslov8 = new QTableWidgetItem;
-		QTableWidgetItem *naslov9 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
-		naslov1->setText("Stevilka vnosa");
-		naslov2->setText("Stevilka racuna");
-		naslov3->setText("Datum prejema");
-		naslov4->setText("Izdajatelj");
-		naslov5->setText("Zadeva");
-		naslov6->setText("Znesek");
-		naslov7->setText("Status racuna");
-		naslov8->setText("Status placila");
-		naslov9->setText("Status racunovodstva");
+		naslov1->setText("Stevilka racuna");
+		naslov2->setText("Datum prejema");
+		naslov3->setText("Izdajatelj");
+		naslov4->setText("Rok placila");
+		naslov5->setText("Status placila");
+		naslov6->setText("Status racunovodstva");
 
 		ui->tbl_racuni->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_racuni->setHorizontalHeaderItem(1, naslov1);
@@ -98,9 +222,6 @@ void wid_prejetiracuni::napolni() {
 		ui->tbl_racuni->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_racuni->setHorizontalHeaderItem(5, naslov5);
 		ui->tbl_racuni->setHorizontalHeaderItem(6, naslov6);
-		ui->tbl_racuni->setHorizontalHeaderItem(7, naslov7);
-		ui->tbl_racuni->setHorizontalHeaderItem(8, naslov8);
-		ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
 
 		QString projekt = "";
 
@@ -111,37 +232,77 @@ void wid_prejetiracuni::napolni() {
 			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
 		}
 
+		QString stavek = "";
+
+		if ( ui->cb_izdajatelj->currentText() != "" ) {
+			stavek += " AND izdajatelj_kratki LIKE '" + pretvori(ui->cb_izdajatelj->currentText()) + "'";
+		}
+		if ( ui->cb_placilo->currentText() != "" ) {
+			stavek += " AND status_placila LIKE '" + pretvori (ui->cb_placilo->currentText()) + "'";
+		}
+		if ( ui->cb_racunovodstvo->currentText() != "" ) {
+			stavek += " AND status_racunovodstva LIKE '" + pretvori (ui->cb_racunovodstvo->currentText()) + "'";
+		}
+
+		if ( stavek != "" && ui->txt_stprojekta->text() == "*" && stavek.indexOf(" WHERE") == -1 ) {
+			stavek = " WHERE" + stavek.right(stavek.length() - 4);
+		}
+
 		QSqlQuery sql_fill;
 		if ( ui->txt_stprojekta->text() != "*" ) {
-			sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + projekt + "'");
+			sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + projekt + "'" + stavek);
 		}
 		else {
-			sql_fill.prepare("SELECT * FROM prejeti_racuni");
+			sql_fill.prepare("SELECT * FROM prejeti_racuni" + stavek);
 		}
 		sql_fill.exec();
 
 		int row = 0;
 
 		while (sql_fill.next()) {
-			ui->tbl_racuni->insertRow(row);
-			ui->tbl_racuni->setRowHeight(row, 20);
-			int col = 0;
-			int i = 0;
-			QString polja[10] = {"id", "stevilka_vnosa", "stevilka_racuna", "datum_prejema", "izdajatelj_kratki", "zadeva", "znesek",
-													 "status_racuna", "status_placila", "status_racunovodstva"};
-
-			while (col <= 9) {
-
-				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
-				ui->tbl_racuni->setItem(row, col, celica);
-
-				col++;
-				i++;
-
+			// filtriramo glede na mesec in leto
+			QString filter = "pozitivno";
+			if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_prejema")).toString()).right(4);
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_prejema")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_mesec->currentText() != "" ) {
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_prejema")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_prejema")).toString()).right(4);
+				if ( leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
 			}
 
-			row++;
+			if ( filter == "pozitivno" ) {
+				ui->tbl_racuni->insertRow(row);
+				ui->tbl_racuni->setRowHeight(row, 20);
+				int col = 0;
+				int i = 0;
+				QString polja[7] = {"id", "stevilka_racuna", "datum_prejema", "izdajatelj_kratki", "rok_placila", "status_placila",
+														"status_racunovodstva"};
+
+				while (col <= 6) {
+
+					QTableWidgetItem *celica = new QTableWidgetItem;
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					ui->tbl_racuni->setItem(row, col, celica);
+
+					col++;
+					i++;
+
+				}
+
+				row++;
+			}
 
 		}
 	}
