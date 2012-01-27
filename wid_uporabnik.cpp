@@ -5,12 +5,56 @@
 #include "ui_wid_uporabnik.h"
 #include "uporabnik.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 wid_uporabnik::wid_uporabnik(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::wid_uporabnik)
 {
     ui->setupUi(this);
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			// the database is opened
+
+			// zaradi nepotrebnih filtriranj tabele spremenimo napis na enem od gumbov
+			QString besedilo = ui->btn_nov->text();
+			ui->btn_nov->setText("");
+
+			QSqlQuery sql_napolni;
+
+			ui->cb_pogodba->addItem("");
+			sql_napolni.prepare("SELECT * FROM sif_pogodbe");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				ui->cb_pogodba->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()) + ") " +
+																prevedi(sql_napolni.value(sql_napolni.record().indexOf("pogodba")).toString()));
+			}
+			sql_napolni.clear();
+
+			ui->cb_mesto->addItem("");
+			sql_napolni.prepare("SELECT * FROM sif_naziv");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				ui->cb_mesto->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()) + ") " +
+																prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()));
+			}
+			sql_napolni.clear();
+
+			ui->btn_nov->setText(besedilo);
+		}
+		base.close();
 
 	napolni();
 
@@ -21,7 +65,32 @@ wid_uporabnik::~wid_uporabnik()
 	delete ui;
 }
 
+void wid_uporabnik::on_cb_mesto_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
+void wid_uporabnik::on_cb_pogodba_currentIndexChanged() {
+
+	if ( ui->btn_nov->text() != "" ) {
+		napolni();
+	}
+
+}
+
 void wid_uporabnik::napolni() {
+
+	QString stavek = "";
+
+	if ( ui->cb_pogodba->currentText() != "" ) {
+		stavek += " AND pogodba LIKE '" + pretvori(ui->cb_pogodba->currentText().left(ui->cb_pogodba->currentText().indexOf(") ", 0))) + "'";
+	}
+	if ( ui->cb_mesto->currentText() != "" ) {
+		stavek += " AND naziv LIKE '" + pretvori(ui->cb_mesto->currentText().left(ui->cb_mesto->currentText().indexOf(") ", 0))) + "'";
+	}
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -42,7 +111,7 @@ void wid_uporabnik::napolni() {
 		// clear previous content
 		ui->tbl_uporabnik->clear();
 
-		for (int i = 0; i <= 7; i++) {
+		for (int i = 0; i <= 8; i++) {
 			ui->tbl_uporabnik->removeColumn(0);
 		}
 
@@ -62,6 +131,7 @@ void wid_uporabnik::napolni() {
 		ui->tbl_uporabnik->insertColumn(5);
 		ui->tbl_uporabnik->insertColumn(6);
 		ui->tbl_uporabnik->insertColumn(7);
+		ui->tbl_uporabnik->insertColumn(8);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -71,6 +141,7 @@ void wid_uporabnik::napolni() {
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
 		QTableWidgetItem *naslov7 = new QTableWidgetItem;
+		QTableWidgetItem *naslov8 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
 		naslov1->setText("Ime");
@@ -80,6 +151,7 @@ void wid_uporabnik::napolni() {
 		naslov5->setText("GSM");
 		naslov6->setText("E-mail");
 		naslov7->setText("Tip pogodbe");
+		naslov8->setText("Delavno mesto");
 
 		ui->tbl_uporabnik->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_uporabnik->setHorizontalHeaderItem(1, naslov1);
@@ -89,6 +161,7 @@ void wid_uporabnik::napolni() {
 		ui->tbl_uporabnik->setHorizontalHeaderItem(5, naslov5);
 		ui->tbl_uporabnik->setHorizontalHeaderItem(6, naslov6);
 		ui->tbl_uporabnik->setHorizontalHeaderItem(7, naslov7);
+		ui->tbl_uporabnik->setHorizontalHeaderItem(8, naslov8);
 		ui->tbl_uporabnik->setColumnWidth(0, 20);
 		ui->tbl_uporabnik->setColumnWidth(1, 60);
 		ui->tbl_uporabnik->setColumnWidth(2, 60);
@@ -97,9 +170,10 @@ void wid_uporabnik::napolni() {
 		ui->tbl_uporabnik->setColumnWidth(5, 140);
 		ui->tbl_uporabnik->setColumnWidth(6, 100);
 		ui->tbl_uporabnik->setColumnWidth(7, 150);
+		ui->tbl_uporabnik->setColumnWidth(8, 150);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM uporabniki");
+		sql_fill.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + pretvori(vApp->firm()) + "'" + stavek);
 		sql_fill.exec();
 
 		int row = 0;
@@ -108,12 +182,30 @@ void wid_uporabnik::napolni() {
 			ui->tbl_uporabnik->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[8] = {"id", "ime", "priimek", "user_name", "telefon", "gsm", "email", "pogodba"};
+			QString polja[9] = {"id", "ime", "priimek", "user_name", "telefon", "gsm", "email", "pogodba", "naziv"};
 
-			while (col <= 7) {
+			while (col <= 8) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[i] == "pogodba" ) {
+					QSqlQuery sql_besedilo;
+					sql_besedilo.prepare("SELECT * FROM sif_pogodbe WHERE id LIKE '" + pretvori(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + "'");
+					sql_besedilo.exec();
+					if ( sql_besedilo.next() ) {
+						celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf(polja[i])).toString()));
+					}
+				}
+				else if ( polja[i] == "naziv" ) {
+					QSqlQuery sql_besedilo;
+					sql_besedilo.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + "'");
+					sql_besedilo.exec();
+					if ( sql_besedilo.next() ) {
+						celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf(polja[i])).toString()));
+					}
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_uporabnik->setItem(row, col, celica);
 
 				col++;

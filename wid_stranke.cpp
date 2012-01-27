@@ -21,8 +21,30 @@ wid_stranke::~wid_stranke()
     delete ui;
 }
 
+void wid_stranke::on_cb_fizicna_toggled() {
+
+	napolni();
+
+}
+
+void wid_stranke::on_cb_pravna_toggled() {
+
+	napolni();
+
+}
 
 void wid_stranke::napolni() {
+
+	QString stavek = "SELECT * FROM stranke";
+
+	if ( ! ( ui->cb_fizicna->isChecked() && ui->cb_pravna->isChecked() ) ) {
+		if ( ui->cb_fizicna->isChecked() ) {
+			stavek += " WHERE tip LIKE '1'";
+		}
+		if ( ui->cb_pravna->isChecked() ) {
+			stavek +=  "WHERE tip LIKE '2'";
+		}
+	}
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -100,7 +122,7 @@ void wid_stranke::napolni() {
 		ui->tbl_stranke->setColumnWidth(7, 100);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM stranke");
+		sql_fill.prepare(stavek);
 		sql_fill.exec();
 
 		int row = 0;
@@ -114,7 +136,23 @@ void wid_stranke::napolni() {
 			while (col <= 7) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+
+				// uredi sifrante
+				if ( polja[i] == "tip" ) {
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) {
+						celica->setText("Fizicna");
+					}
+					else if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "2" ) {
+						celica->setText("Pravna");
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
+
 				ui->tbl_stranke->setItem(row, col, celica);
 
 				col++;

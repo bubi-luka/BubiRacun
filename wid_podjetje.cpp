@@ -43,7 +43,7 @@ void wid_podjetje::napolni() {
 		// clear previous content
 		ui->tbl_podjetje->clear();
 
-		for (int i = 0; i <= 6; i++) {
+		for (int i = 0; i <= 9; i++) {
 			ui->tbl_podjetje->removeColumn(0);
 		}
 
@@ -62,6 +62,9 @@ void wid_podjetje::napolni() {
 		ui->tbl_podjetje->insertColumn(4);
 		ui->tbl_podjetje->insertColumn(5);
 		ui->tbl_podjetje->insertColumn(6);
+		ui->tbl_podjetje->insertColumn(7);
+		ui->tbl_podjetje->insertColumn(8);
+		ui->tbl_podjetje->insertColumn(9);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -70,14 +73,20 @@ void wid_podjetje::napolni() {
 		QTableWidgetItem *naslov4 = new QTableWidgetItem;
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
+		QTableWidgetItem *naslov7 = new QTableWidgetItem;
+		QTableWidgetItem *naslov8 = new QTableWidgetItem;
+		QTableWidgetItem *naslov9 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
 		naslov1->setText("Naziv");
 		naslov2->setText("Polni naziv");
-		naslov3->setText("Telefon");
-		naslov4->setText("GSM");
-		naslov5->setText("Email");
-		naslov6->setText("Davcna st.");
+		naslov3->setText("Odgovorna oseba");
+		naslov4->setText("Kontaktna oseba");
+		naslov5->setText("Telefon");
+		naslov6->setText("GSM");
+		naslov7->setText("Email");
+		naslov8->setText("Davcna st.");
+		naslov9->setText("Spletna stran");
 
 		ui->tbl_podjetje->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_podjetje->setHorizontalHeaderItem(1, naslov1);
@@ -86,6 +95,9 @@ void wid_podjetje::napolni() {
 		ui->tbl_podjetje->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_podjetje->setHorizontalHeaderItem(5, naslov5);
 		ui->tbl_podjetje->setHorizontalHeaderItem(6, naslov6);
+		ui->tbl_podjetje->setHorizontalHeaderItem(7, naslov7);
+		ui->tbl_podjetje->setHorizontalHeaderItem(8, naslov8);
+		ui->tbl_podjetje->setHorizontalHeaderItem(9, naslov9);
 
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM podjetje");
@@ -97,12 +109,32 @@ void wid_podjetje::napolni() {
 			ui->tbl_podjetje->setRowHeight(row, 20);
 			int col = 0;
 			int i = 0;
-			QString polja[7] = {"id", "ime", "polnoime", "telefon", "gsm", "email", "davcna"};
+			QString polja[10] = {"id", "ime", "polnoime", "odgovorna", "kontaktna", "telefon", "gsm", "email", "davcna", "url"};
 
-			while (col <= 6) {
+			while (col <= 9) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[i] == "odgovorna" ) {
+					QSqlQuery sql_oseba;
+					sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+					sql_oseba.exec();
+					if ( sql_oseba.next() ) {
+						celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
+														prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
+					}
+				}
+				else if ( polja[i] == "kontaktna" ) {
+					QSqlQuery sql_oseba;
+					sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+					sql_oseba.exec();
+					if ( sql_oseba.next() ) {
+						celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
+														prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
+					}
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_podjetje->setItem(row, col, celica);
 
 				col++;

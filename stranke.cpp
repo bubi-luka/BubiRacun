@@ -69,6 +69,9 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_podrazitev_zapleti->setText("");
 
 		ui->tbl_projekti->clear();
+		ui->cb_leto->clear();
+		ui->cb_mesec->clear();
+		ui->cb_projekt->clear();
 
 		/*
 			* Nastavimo validacijo polj
@@ -222,6 +225,37 @@ stranke::stranke(QWidget *parent) :
 				stevilka = "" + QString::number(i, 10);
 			}
 			ui->txt_kupon->setText("KU-" + leto + "-" + stevilka);
+
+			// napolni spustne sezname pri projektih - filtriranje
+			// zaradi nepotrebnih filtriranj tabele spremenimo napis na enem od gumbov
+			QString besedilo = ui->btn_novprojekt->text();
+			ui->btn_novprojekt->setText("");
+
+			ui->cb_mesec->addItem("");
+			ui->cb_mesec->addItem("01) Januar");
+			ui->cb_mesec->addItem("02) Februar");
+			ui->cb_mesec->addItem("03) Marec");
+			ui->cb_mesec->addItem("04) April");
+			ui->cb_mesec->addItem("05) Maj");
+			ui->cb_mesec->addItem("06) Junij");
+			ui->cb_mesec->addItem("07) Julij");
+			ui->cb_mesec->addItem("08) Avgust");
+			ui->cb_mesec->addItem("09) September");
+			ui->cb_mesec->addItem("10) Oktober");
+			ui->cb_mesec->addItem("11) November");
+			ui->cb_mesec->addItem("12) December");
+
+			QSqlQuery sql_napolni;
+			ui->cb_projekt->addItem("");
+			sql_napolni.prepare("SELECT * FROM sif_status_projekta");
+			sql_napolni.exec();
+			while ( sql_napolni.next() ) {
+				ui->cb_projekt->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()) + ") " +
+																prevedi(sql_napolni.value(sql_napolni.record().indexOf("status")).toString()));
+			}
+
+			ui->btn_novprojekt->setText(besedilo);
+
 		}
 		base.close();
 
@@ -237,11 +271,43 @@ stranke::~stranke()
     delete ui;
 }
 
+void stranke::on_cb_mesec_currentIndexChanged() {
+
+	if ( ui->btn_novprojekt->text() != "" ) {
+		napolni_projekte();
+	}
+
+}
+
+void stranke::on_cb_leto_currentIndexChanged() {
+
+	if ( ui->btn_novprojekt->text() != "" ) {
+		napolni_projekte();
+	}
+
+}
+
+void stranke::on_cb_projekt_currentIndexChanged() {
+
+	if ( ui->btn_novprojekt->text() != "" ) {
+		napolni_projekte();
+	}
+
+}
+
 void stranke::napolni_projekte() {
+
+
+	QString stavek = "";
+
+	if ( ui->cb_projekt->currentText() != "" ) {
+		stavek += " AND status_projekta LIKE '" + pretvori(ui->cb_projekt->currentText().left(ui->cb_projekt->currentText().indexOf(") ", 0))) + "'";
+	}
+
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
 	base.setDatabaseName(dbase_path);
 	base.database();
 	base.open();
@@ -252,11 +318,12 @@ void stranke::napolni_projekte() {
 		msgbox.exec();
 	}
 	else {
-		// fill table projekti
+		// the database is opened
+
 		// clear previous content
 		ui->tbl_projekti->clear();
 
-		for (int i = 0; i <= 3; i++) {
+		for (int i = 0; i <= 5; i++) {
 			ui->tbl_projekti->removeColumn(0);
 		}
 
@@ -272,60 +339,93 @@ void stranke::napolni_projekte() {
 		ui->tbl_projekti->insertColumn(1);
 		ui->tbl_projekti->insertColumn(2);
 		ui->tbl_projekti->insertColumn(3);
+		ui->tbl_projekti->insertColumn(4);
+		ui->tbl_projekti->insertColumn(5);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
 		QTableWidgetItem *naslov2 = new QTableWidgetItem;
 		QTableWidgetItem *naslov3 = new QTableWidgetItem;
+		QTableWidgetItem *naslov4 = new QTableWidgetItem;
+		QTableWidgetItem *naslov5 = new QTableWidgetItem;
+
 		naslov0->setText("ID");
-		naslov1->setText("Projekt");
-		naslov2->setText("Pricetek");
-		naslov3->setText("Konec");
+		naslov1->setText("St. projekta");
+		naslov2->setText("Ime projekt");
+		naslov3->setText("Datum pricetka");
+		naslov4->setText("Datum zakljucka");
+		naslov5->setText("Status projekta");
+
 		ui->tbl_projekti->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_projekti->setHorizontalHeaderItem(1, naslov1);
 		ui->tbl_projekti->setHorizontalHeaderItem(2, naslov2);
 		ui->tbl_projekti->setHorizontalHeaderItem(3, naslov3);
+		ui->tbl_projekti->setHorizontalHeaderItem(4, naslov4);
+		ui->tbl_projekti->setHorizontalHeaderItem(5, naslov5);
 
 		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM projekti WHERE stranka LIKE '" + ui->txt_id->text() + "'");
+		sql_fill.prepare("SELECT * FROM projekti WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "' AND stranka LIKE '" + pretvori(ui->txt_id->text()) + "'" + stavek);
 		sql_fill.exec();
 
 		int row = 0;
-		QString racunovodstvo = "";
-
 		while (sql_fill.next()) {
-			// check for active project and set custummer as active if found one
-			if (prevedi(sql_fill.value(sql_fill.record().indexOf("statusracunovodstvo")).toString()) != "Oddano") {
-				racunovodstvo = "V delu";
+
+			// filtriramo glede na mesec in leto
+			QString filter = "pozitivno";
+			if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("pricetek_dela")).toString()).right(4);
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("pricetek_dela")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_mesec->currentText() != "" ) {
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("pricetek_dela")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("pricetek_dela")).toString()).right(4);
+				if ( leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
 			}
 
-			ui->tbl_projekti->insertRow(row);
-			ui->tbl_projekti->setRowHeight(row, 20);
-			int col = 0;
-			while (col <= 3) {
+			if ( filter == "pozitivno" ) {
+				ui->tbl_projekti->insertRow(row);
+				ui->tbl_projekti->setRowHeight(row, 20);
+				int col = 0;
+				int i = 0;
+				QString polja[6] = {"id", "stevilka_projekta", "naslov_projekta", "pricetek_dela", "konec_dela", "status_projekta"};
 
-				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(col).toString()));
-				ui->tbl_projekti->setItem(row, col, celica);
+				while (col <= 5) {
 
-				col++;
+					QTableWidgetItem *celica = new QTableWidgetItem;
+					if ( polja[i] == "status_projekta" ) {
+						QSqlQuery sql_status;
+						sql_status.prepare("SELECT * FROM sif_status_projekta WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+						sql_status.exec();
+						if ( sql_status.next() ) {
+							celica->setText(prevedi(sql_status.value(sql_status.record().indexOf("status")).toString()));
+						}
+						else {
+							celica->setText("Neopredeljeno");
+						}
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
+					ui->tbl_projekti->setItem(row, col, celica);
 
+					col++;
+					i++;
+
+				}
+
+				row++;
 			}
-
-			row++;
-
 		}
-		if (racunovodstvo == "") {
-			ui->rb_neaktivna->setChecked(true);
-		}
-		else {
-			ui->rb_aktivna->setChecked(true);
-		}
-
-	// poda napacne vrednosti popustov, zato stalnost dolocamo rocno
-	//	if ( row > 1 ) {
-	//		ui->rb_stalna->setChecked(true);
-	//	}
 	}
 	base.close();
 
@@ -1203,6 +1303,32 @@ void stranke::prejem(QString besedilo) {
 					ui->txt_popusti_skupaj_1->setText(prevedi(pretvori_iz_double(sql_napolni.value(sql_napolni.record().indexOf("vrednost")).toString())));
 				}
 				sql_napolni.clear();
+
+				QString gumb = ui->btn_novprojekt->text();
+				ui->btn_novprojekt->setText("");
+
+				ui->cb_leto->addItem("");
+				int min_leto = QDate::currentDate().year();
+				int max_leto = QDate::currentDate().year();
+
+				sql_napolni.prepare("SELECT * FROM projekti WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "' AND stranka LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_napolni.exec();
+				while ( sql_napolni.next() ) {
+					if ( min_leto > prevedi(sql_napolni.value(sql_napolni.record().indexOf("pricetek_dela")).toString()).right(4).toInt() ) {
+						min_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("pricetek_dela")).toString()).right(4).toInt();
+					}
+					if ( max_leto < prevedi(sql_napolni.value(sql_napolni.record().indexOf("pricetek_dela")).toString()).right(4).toInt() ) {
+						max_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("pricetek_dela")).toString()).right(4).toInt();
+					}
+				}
+
+				for ( int i = min_leto; i <= max_leto; i++ ) {
+					ui->cb_leto->addItem(QString::number(i, 10));
+				}
+				sql_napolni.clear();
+
+				ui->btn_novprojekt->setText(gumb);
+
 			}
 		}
 		base.close();

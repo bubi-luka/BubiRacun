@@ -16,14 +16,23 @@ public:
     ~wid_potninalogi();
 
 private slots:
+	void on_cb_mesec_currentIndexChanged();
+	void on_cb_leto_currentIndexChanged();
+	void on_cb_namen_currentIndexChanged();
+	void on_cb_stranka_currentIndexChanged();
+	void on_cb_kraj_currentIndexChanged();
+	void on_cb_prevoz_currentIndexChanged();
+
 	void on_tbl_potninalogi_doubleClicked();
 	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();
+
 	void osvezi(QString beseda);
+	void prejem(QString besedilo);
 	void napolni();
+
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
-	void prejem(QString besedilo);
 
 signals:
 	void prenos(QString beseda);
