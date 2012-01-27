@@ -43,6 +43,8 @@ racun::racun(QWidget *parent) :
 		ui->txt_rok_placila->setDate(QDate::currentDate());
 		ui->txt_status_placila->clear();
 		ui->txt_status_racunovodstva->clear();
+		ui->txt_status_oddaje_racuna->clear();
+		ui->txt_datum_oddaje_racuna->setDate(QDate::currentDate());
 
 		ui->tbl_opravila->clear();
 
@@ -59,7 +61,6 @@ racun::racun(QWidget *parent) :
 		// skrij polja
 		ui->txt_projekt_id->setVisible(false);
 		ui->txt_stranka_id->setVisible(false);
-
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -106,6 +107,7 @@ racun::racun(QWidget *parent) :
 			ui->txt_stranka->addItem("");
 			ui->txt_status_placila->addItem("");
 			ui->txt_status_racunovodstva->addItem("");
+			ui->txt_status_oddaje_racuna->addItem("");
 
 			QSqlQuery sql_fill_combo;
 			sql_fill_combo.prepare("SELECT * FROM sif_status_predracuna");
@@ -142,6 +144,14 @@ racun::racun(QWidget *parent) :
 			while (sql_fill_combo.next()) {
 				ui->txt_status_racunovodstva->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("status")).toString()));
 			}
+			sql_fill_combo.clear();
+
+			sql_fill_combo.prepare("SELECT * FROM sif_status_oddaje_racuna");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_status_oddaje_racuna->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("status")).toString()));
+			}
+			sql_fill_combo.clear();
 
 		}
 		base.close();
@@ -487,13 +497,14 @@ void racun::on_btn_sprejmi_clicked() {
 			QSqlQuery sql_vnesi_projekt;
 			if (ui->btn_sprejmi->text() == "Vnesi racun") { // nov vnos se neobstojecega (pred)racuna
 				sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
-																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans) VALUES "
-																	"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, status_oddaje_racuna, "
+																	"datum_oddaje_racuna) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else if ( predracun == false || ui->rb_predracun->isChecked() ) { // popravi ze obstojec vnos
 				sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
 																	"avtor_oseba = ?, datum_pricetka = ?, datum_konca = ?, datum_izdaje = ?, datum_placila = ?, "
-																	"status_placila = ?, status_racunovodstva = ?, avans = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+																	"status_placila = ?, status_racunovodstva = ?, avans = ?, status_oddaje_racuna = ?, datum_oddaje_racuna = ? "
+																	"WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			else if ( predracun == true && ui->rb_racun->isChecked() ) { // pretvori iz predracuna v racun
 				/*
@@ -527,8 +538,8 @@ void racun::on_btn_sprejmi_clicked() {
 
 				// pripravi SQL query za vnos
 				sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
-																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans) VALUES "
-																	"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, status_oddaje_racuna, "
+																	"datum_oddaje_racuna) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 				// kopira opravila iz predracuna v racun
 				QSqlQuery sql_poisci_opravila;
@@ -592,6 +603,8 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(10, pretvori(ui->txt_status_placila->currentText()));
 			sql_vnesi_projekt.bindValue(11, pretvori(ui->txt_status_racunovodstva->currentText()));
 			sql_vnesi_projekt.bindValue(12, pretvori(ui->txt_avans->text()));
+			sql_vnesi_projekt.bindValue(13, pretvori(ui->txt_status_oddaje_racuna->currentText()));
+			sql_vnesi_projekt.bindValue(14, pretvori(ui->txt_datum_oddaje_racuna->text()));
 
 			sql_vnesi_projekt.exec();
 		}
@@ -840,6 +853,8 @@ void racun::prejem(QString besedilo) {
 				ui->txt_datum_izdaje_racuna->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_rok_placila->setDate(datum);
+				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_oddaje_racuna")).toString()), "dd'.'MM'.'yyyy");
+				ui->txt_datum_oddaje_racuna->setDate(datum);
 
 				QSqlQuery sql_combo;
 				sql_combo.prepare("SELECT * FROM sif_status_placila WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_placila")).toString() + "'");
@@ -860,6 +875,13 @@ void racun::prejem(QString besedilo) {
 				sql_combo.exec();
 				if ( sql_combo.next() ) {
 					ui->txt_status_predracuna->setCurrentIndex(ui->txt_status_predracuna->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString())));
+				}
+				sql_combo.clear();
+
+				sql_combo.prepare("SELECT * FROM sif_status_oddaje_racuna WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_oddaje_racuna")).toString() + "'");
+				sql_combo.exec();
+				if ( sql_combo.next() ) {
+					ui->txt_status_oddaje_racuna->setCurrentIndex(ui->txt_status_oddaje_racuna->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString())));
 				}
 				sql_combo.clear();
 

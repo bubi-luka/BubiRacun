@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -373,7 +373,21 @@
            </item>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Status oddaje računa</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_19">
+           <property name="text">
+            <string>Datum oddaje računa</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
           <spacer name="verticalSpacer_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -385,6 +399,25 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="txt_status_oddaje_racuna">
+           <item>
+            <property name="text">
+             <string>txt_status_oddaje_racuna</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QDateEdit" name="txt_datum_oddaje_racuna">
+           <property name="displayFormat">
+            <string>dd.MM.yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
