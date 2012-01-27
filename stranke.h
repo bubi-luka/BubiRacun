@@ -59,6 +59,10 @@ private slots:
 	void on_txt_podrazitev_hitrost_editingFinished();
 	void on_txt_podrazitev_zapleti_editingFinished();
 
+	void on_cb_mesec_currentIndexChanged();
+	void on_cb_leto_currentIndexChanged();
+	void on_cb_projekt_currentIndexChanged();
+
 	void on_tbl_projekti_doubleClicked();
 	void on_tbl_kuponi_doubleClicked();
 

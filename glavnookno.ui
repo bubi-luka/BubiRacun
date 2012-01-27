@@ -193,8 +193,9 @@
     <property name="title">
      <string>Nastavitve</string>
     </property>
-    <addaction name="actionUporabniki"/>
     <addaction name="actionPodjetje"/>
+    <addaction name="actionUporabniki"/>
+    <addaction name="separator"/>
     <addaction name="action_asovnice"/>
    </widget>
    <addaction name="menuDelo"/>
@@ -251,7 +252,7 @@
   </action>
   <action name="actionUporabniki">
    <property name="text">
-    <string>Uporabniki</string>
+    <string>Zaposleni</string>
    </property>
   </action>
   <action name="actionPodjetje">

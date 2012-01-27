@@ -89,8 +89,8 @@ void GlavnoOkno::sekundnik() {
 void GlavnoOkno::on_actionUporabniki_triggered() {
 	wid_uporabnik *widup = new wid_uporabnik;
 	ui->scrollArea->setWidget(widup);
-	ui->lbl_pozicija->setText("Nahajate se na tabeli Uporabniki!");
-	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Uporabniki");
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Zaposlenih!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Zaposleni");
 }
 
 void GlavnoOkno::on_actionPodjetje_triggered() {
