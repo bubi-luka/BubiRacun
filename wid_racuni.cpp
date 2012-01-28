@@ -43,7 +43,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 			// filtriraj po tipu racuna
 			ui->cb_racun->addItem("");
 			ui->cb_racun->addItem("1) Predracun");
-			ui->cb_racun->addItem("2) Racun");
+			ui->cb_racun->addItem("2) Predplacilo");
+			ui->cb_racun->addItem("3) Racun");
 
 			// filtriraj po mesecu
 			ui->cb_mesec->addItem("");
@@ -297,12 +298,25 @@ void wid_racuni::napolni() {
 														 "se_placati", "status_placila", "status_racunovodstva"};
 
 				while (col <= 9) {
+					QSqlQuery sql_predracun;
+					QString id_predracuna;
+					sql_predracun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_racuna")).toString() +
+																"' AND tip_racuna LIKE '" + pretvori("1") + "'");
+					sql_predracun.exec();
+					if ( sql_predracun.next() ) {
+						id_predracuna = sql_predracun.value(sql_predracun.record().indexOf("id")).toString();
+					}
+					sql_predracun.clear();
+
 					QTableWidgetItem *celica = new QTableWidgetItem;
 					if ( polja[i] == "tip_racuna" ) {
 						if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
 							celica->setText("Predracun");
 						}
 						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "2" ) {
+							celica->setText("Predplacilo");
+						}
+						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "3" ) {
 							celica->setText("Racun");
 						}
 					}
@@ -325,15 +339,16 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "projekt" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM projeki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_projekta")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("projekt")).toString() + "'");
 						sql_kodiraj.exec();
 						if ( sql_kodiraj.next() ) {
-							celica->setText(prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("ime")).toString()));
+							celica->setText(prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("naslov_projekta")).toString()));
 						}
 					}
 					else if ( polja[i] == "znesek_za_placilo" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + id_predracuna +
+																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
 						while ( sql_kodiraj.next() ) {
@@ -343,7 +358,8 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "se_placati" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + id_predracuna +
+																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
 						while ( sql_kodiraj.next() ) {
@@ -385,7 +401,6 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
 void wid_racuni::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_racuni->selectedItems().takeAt(0)->text();
-	QString stracuna = ui->tbl_racuni->selectedItems().takeAt(1)->text();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -402,11 +417,11 @@ void wid_racuni::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM opravila WHERE racun LIKE '" + pretvori(stracuna) + "'");
+		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
 		sql_brisi.clear();
 
-		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + id + "'");
+		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
 	}
 	base.close();

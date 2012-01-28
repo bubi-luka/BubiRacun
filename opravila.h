@@ -39,6 +39,7 @@ private slots:
 	void on_txt_id_stranka_textChanged();
 	void on_txt_id_projekt_textChanged();
 	void on_txt_id_racun_textChanged();
+	void on_txt_id_tip_textChanged();
 
 	void on_rb_predracun_toggled();
 	void on_rb_casovnice_toggled();
