@@ -962,6 +962,26 @@ void racun::prejem(QString besedilo) {
 				ui->txt_avans->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("avans")).toString()));
 				ui->txt_odstotek_avansa->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("odstotek_avansa")).toString()));
 			}
+
+			// onemogoci shranjevanje podatkov v predplacilo
+			if ( ui->rb_predplacilo->isChecked() ) {
+				ui->btn_sprejmi->setEnabled(false);
+				ui->btn_opravilo->setEnabled(false);
+				ui->btn_brisi_opravilo->setEnabled(false);
+			}
+
+			// ce obstaja racun in predplacilni racun, onemogoci shranjevanje podatkov v predracun
+			if ( ui->rb_predracun->isChecked() ) {
+				QSqlQuery sql_racun;
+				sql_racun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_stevilka_racuna->text()) +
+													"' AND tip_racuna LIKE '" + pretvori("3") + "'");
+				sql_racun.exec();
+				if ( sql_racun.next() ) {
+					ui->btn_sprejmi->setEnabled(false);
+					ui->btn_opravilo->setEnabled(false);
+					ui->btn_brisi_opravilo->setEnabled(false);
+				}
+			}
 		}
 		base.close();
 

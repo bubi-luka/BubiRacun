@@ -442,9 +442,22 @@ void opravila::prejem(QString beseda) {
 					ui->rb_rocni_vnos->setChecked(true);
 					ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
 				}
+			}
+		}
 
+		// ce je opravilo del predplacila, onemogoci shranjevanje
+		if ( ui->txt_id_tip->text() == "2" ) {
+			ui->btn_sprejmi->setEnabled(false);
+		}
 
-
+		// ce je opravilo del predracuna in obstaja racun, onemogoci shranjevanje
+		if ( ui->txt_id_tip->text() == "1" ) {
+			QSqlQuery sql_racun;
+			sql_racun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_racun->text()) +
+												"' AND tip_racuna LIKE '" + pretvori("3") + "'");
+			sql_racun.exec();
+			if ( sql_racun.next() ) {
+				ui->btn_sprejmi->setEnabled(false);
 			}
 		}
 	}
