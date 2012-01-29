@@ -28,7 +28,11 @@ private slots:
 	void on_txt_projekt_currentIndexChanged();
 	void on_txt_projekt_id_textChanged();
 
+	void on_txt_odstotek_avansa_editingFinished();
+
 	void on_rb_predracun_toggled();
+	void on_rb_predplacilo_toggled();
+	void on_rb_racun_toggled();
 
 	void keyPressEvent(QKeyEvent *event);
 
