@@ -24,6 +24,7 @@ racun::racun(QWidget *parent) :
 		// pocisti polja
 		ui->txt_id->setText("");
 		ui->txt_stevilka_racuna->setText("");
+		ui->txt_stara_stevilka_racuna->setText("");
 		ui->txt_status_predracuna->clear();
 		ui->txt_stranka_id->setText("");
 		ui->txt_stranka->clear();
@@ -60,6 +61,7 @@ racun::racun(QWidget *parent) :
 		ui->txt_znesek->setEnabled(false);
 		ui->txt_znesek_brez_ddv->setEnabled(false);
 		ui->txt_avans->setEnabled(false);
+		ui->txt_stara_stevilka_racuna->setEnabled(false);
 
 		// skrij polja
 		ui->txt_projekt_id->setVisible(false);
@@ -81,28 +83,6 @@ racun::racun(QWidget *parent) :
 		}
 		else {
 			// baza podatkov je odprta
-
-			// vnesi stevilko projekta
-			QString leto = QDate::currentDate().toString("yyyy");
-			int i = 1;
-			QString stevilka = "";
-
-			QSqlQuery sql_insert_stracuna;
-			sql_insert_stracuna.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori("SR-" + leto) + "%'");
-			sql_insert_stracuna.exec();
-			while (sql_insert_stracuna.next()) {
-				i++;
-			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_racuna->setText("SR-" + leto + "-" + stevilka);
 
 			// napolni spustne sezname
 			ui->txt_status_predracuna->addItem("");
@@ -533,7 +513,7 @@ void racun::on_btn_sprejmi_clicked() {
 				QSqlQuery sql_vnesi_projekt;
 				QString stavek = "INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
 												 "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-												 "status_oddaje_racuna, datum_oddaje_racuna) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+												 "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				if (ui->btn_sprejmi->text() == "Vnesi racun") { // nov vnos se neobstojecega (pred)racuna
 					sql_vnesi_projekt.prepare(stavek);
 				}
@@ -541,7 +521,7 @@ void racun::on_btn_sprejmi_clicked() {
 					sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
 																		"avtor_oseba = ?, datum_pricetka = ?, datum_konca = ?, datum_izdaje = ?, datum_placila = ?, "
 																		"status_placila = ?, status_racunovodstva = ?, avans = ?, odstotek_avansa = ?, status_oddaje_racuna = ?, "
-																		"datum_oddaje_racuna = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+																		"datum_oddaje_racuna = ?, stara_stevilka_racuna = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 				}
 
 				sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_racuna->text()));
@@ -571,6 +551,7 @@ void racun::on_btn_sprejmi_clicked() {
 				sql_vnesi_projekt.bindValue(13, pretvori(ui->txt_odstotek_avansa->text()));
 				sql_vnesi_projekt.bindValue(14, pretvori(ui->txt_status_oddaje_racuna->currentText()));
 				sql_vnesi_projekt.bindValue(15, pretvori(ui->txt_datum_oddaje_racuna->text()));
+				sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 
 				sql_vnesi_projekt.exec();
 
@@ -597,6 +578,7 @@ void racun::on_btn_sprejmi_clicked() {
 						sql_vnesi_projekt.bindValue(13, pretvori(ui->txt_odstotek_avansa->text()));
 						sql_vnesi_projekt.bindValue(14, pretvori(ui->txt_status_oddaje_racuna->currentText()));
 						sql_vnesi_projekt.bindValue(15, pretvori(ui->txt_datum_oddaje_racuna->text()));
+						sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 
 						sql_vnesi_projekt.exec();
 
@@ -849,6 +831,8 @@ void racun::prejem(QString besedilo) {
 		ui->rb_racun->setEnabled(false);
 		ui->rb_predracun->setChecked(true);
 
+		stevilka_racuna();
+
 		// from projekt id get stranka id
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -907,6 +891,14 @@ void racun::prejem(QString besedilo) {
 				ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
 				ui->txt_stranka_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString()));
 				ui->txt_stevilka_racuna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_racuna")).toString()));
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("stara_stevilka_racuna")).toString()) != "" ) {
+					ui->cb_stara_stevilka_racuna->setChecked(true);
+					ui->txt_stara_stevilka_racuna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stara_stevilka_racuna")).toString()));
+				}
+				else {
+					ui->cb_stara_stevilka_racuna->setChecked(false);
+					ui->txt_stara_stevilka_racuna->setText("");
+				}
 				ui->txt_projekt_id->setText(pretvori(sql_napolni.value(sql_napolni.record().indexOf("projekt")).toString()));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()) == "1") {
@@ -1258,5 +1250,157 @@ void racun::on_txt_odstotek_avansa_editingFinished() {
 																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
 
 	izracunaj();
+
+}
+
+void racun::on_cb_stara_stevilka_racuna_toggled() {
+
+	if ( ui->cb_stara_stevilka_racuna->isChecked() ) {
+		ui->txt_stara_stevilka_racuna->setEnabled(true);
+	}
+	else {
+		ui->txt_stara_stevilka_racuna->setEnabled(false);
+	}
+
+}
+
+void racun::stevilka_racuna() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		QString leto = QDate::currentDate().toString("yyyy");
+		QString mesec = QDate::currentDate().toString("MM");
+		QString dan = QDate::currentDate().toString("dd");
+		QString racun = "";
+
+		int i = 1;
+
+		// izracunamo zaporedno stevilko racuna v tekocem letu
+		QSqlQuery sql_stetje_racunov;
+		sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) + "' AND tip_racuna LIKE '1'");
+		sql_stetje_racunov.exec();
+		while ( sql_stetje_racunov.next() ) {
+			i++;
+		}
+
+		// iz stevilke racuna ustvarimo tromestno stevilko, pretvorjeno v besedo
+		racun = QString::number(i, 10);
+		if ( racun.length() == 1 ) {
+			racun = "00" + racun;
+		}
+		else if ( racun.length() == 2 ) {
+			racun = "0" + racun;
+		}
+
+		/**
+			*	1) Tvorimo nakljucna tri stevila, katerih matematicna operacija nam pove, ali je racun javen ali zaseben
+			*	2) Zdruzimo podatke in nakljucna stevila
+			*	3) Po modulu 11 izracunamo kontrolne stevilke in jih vnesemo v ustrezna polja
+			*	4) Dodamo oznako modela in drzave
+			*/
+
+		// 2) Tvorimo nakljucna tri stevila, katerih matematicna operacija nam pove, ali je racun javen ali zaseben
+		QTime polnoc = QTime::fromString("00:00:00:001", "hh:mm:ss:zzz");
+		int cas = polnoc.msecsTo(QTime::currentTime());
+		qsrand(cas);
+		int	cifra_1 = qrand()%(9);
+
+		polnoc = QTime::fromString("00:00:01:001", "hh:mm:ss:zzz");
+		cas = polnoc.msecsTo(QTime::currentTime());
+		qsrand(cas);
+		int cifra_2 = qrand()%(9);
+
+		int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+		int ostanek = sestevek % 11;
+
+		int kontrolna = 11 - ostanek;
+
+		if ( kontrolna >= 9 ) {
+			kontrolna = 0;
+		}
+
+		int cifra_3 = 9;
+		if ( vApp->state() == pretvori("private") ) { // ker je dostop zaseben, imajo do njega pravico samo zaposleni
+			QMessageBox dostop;
+			dostop.setIcon(QMessageBox::Question);
+			dostop.setText("Naj bo racun javno dostopen?");
+			dostop.setInformativeText("Za vec informacij kliknite Vec informacij!");
+			dostop.setDetailedText("Da (Yes): Racun je javno dostopen, vidijo ga lahko vsi, prikaze se na vseh tiskaninah\n"
+															"Ne (No): Racun je zaseben, dostop do njega imajo samo zaposleni v ustreznem nacinu dela\n"
+															"Prekini (Cancel): Se obravnava kot ne");
+			dostop.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+			dostop.setDefaultButton(QMessageBox::Yes);
+			int ret = dostop.exec(); // nosi vrednost pritisnjenega gumba za nadaljno obravnavo
+
+			switch (ret) {
+				case QMessageBox::Yes:
+					cifra_3 = kontrolna;
+					break;
+				case QMessageBox::No:
+					cifra_3 = kontrolna + 1;
+					break;
+				case QMessageBox::Cancel:
+					cifra_3 = kontrolna;
+					break;
+				default:
+					cifra_3 = kontrolna;
+					break;
+			}
+		}
+		else { // javen dostop, vsi lahko vidijo ta racun
+			cifra_3 = kontrolna;
+		}
+
+		// 2) Zdruzimo podatke in nakljucna stevila
+		QString sklic = "";
+		sklic += racun;
+		sklic += QString::number(cifra_1, 10);
+		sklic += dan;
+		sklic += QString::number(cifra_2, 10);
+		sklic += mesec;
+		sklic += QString::number(cifra_3, 10);
+		sklic += leto.right(2);
+
+		// 3) Po modulu 11 izracunamo kontrolne stevilke in jih vnesemo v ustrezna polja
+		sestevek = 0;
+		int n = sklic.length() + 1;
+
+		for ( int i = 1; i <= sklic.length(); i++ ) {
+			sestevek += n * sklic.left(i).right(1).toInt();
+			n--;
+		}
+
+		ostanek = 0;
+		ostanek = sestevek % 11;
+
+		kontrolna = 0;
+		kontrolna = 11 - ostanek;
+
+		if ( kontrolna >= 10 ) {
+			kontrolna = 0;
+		}
+
+		sklic += QString::number(kontrolna, 10);
+
+		// 4) Dodamo oznako modela in drzave
+		sklic = "SI12" + sklic;
+
+		ui->txt_stevilka_racuna->setText(sklic);
+
+	}
+	base.close();
 
 }

@@ -34,6 +34,8 @@ private slots:
 	void on_rb_predplacilo_toggled();
 	void on_rb_racun_toggled();
 
+	void on_cb_stara_stevilka_racuna_toggled();
+
 	void keyPressEvent(QKeyEvent *event);
 
 	void prejem(QString besedilo);
@@ -42,6 +44,7 @@ private slots:
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
 
+	void stevilka_racuna();
 	void izracunaj();
 	void napolni();
 	void osvezi(QString beseda);
