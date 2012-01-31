@@ -696,6 +696,7 @@ void prijava::tabela_racuni() {
 														 "id INTEGER PRIMARY KEY, "
 														 "stevilka_racuna TEXT, "
 														 "stara_stevilka_racuna TEXT, "
+														 "sklic TEXT, "
 														 "tip_racuna TEXT, "
 														 "status_racuna TEXT, "
 														 "stranka TEXT, "
@@ -709,6 +710,7 @@ void prijava::tabela_racuni() {
 														 "status_racunovodstva TEXT, "
 														 "odstotek_avansa TEXT, "
 														 "avans TEXT, "
+														 "datum_placila_avansa TEXT, "
 														 "status_oddaje_racuna TEXT, "
 														 "datum_oddaje_racuna TEXT)"
 										);

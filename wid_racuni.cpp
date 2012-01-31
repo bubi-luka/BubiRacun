@@ -288,6 +288,41 @@ void wid_racuni::napolni() {
 					filter = "negativno";
 				}
 			}
+			// filtriramo glede na javni, zasebni status racuna
+			if ( vApp->state() != pretvori("private") ) {
+
+				// doloci vse tri cifre
+				QString sklic = prevedi(sql_fill.value(sql_fill.record().indexOf("sklic")).toString());
+				sklic = sklic.right(sklic.length() - 5); // odbijemo drzavo in model
+				sklic = sklic.right(sklic.length() - 5); // odbijemo stevilko racuna
+				int cifra_1 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_1 in dan
+				int cifra_2 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_2 in mesec
+				int cifra_3 = sklic.left(1).toInt();
+
+				// iz prvih dveh izracunaj kontrolno stevilko
+				int kontrolna = 0;
+
+				int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+				int ostanek = sestevek % 11;
+
+				kontrolna = 11 - ostanek;
+
+				if ( kontrolna >= 9 ) {
+					kontrolna = 0;
+				}
+
+				// od cifre_3 odstej kontrolno stevilko
+				// tako dobis 0 => racun je javen ali 1 => racun je zaseben
+				int razlika = cifra_3 - kontrolna;
+
+				if ( razlika == 1 ) {
+					filter = "negativno"; // racuna ne prikazi
+				}
+
+			}
 
 			if ( filter == "pozitivno" ) {
 				ui->tbl_racuni->insertRow(row);
@@ -464,6 +499,12 @@ void wid_racuni::on_btn_nov_clicked() {
 	// receive signal to refresh table
 	QObject::connect(uredi, SIGNAL(poslji(QString)),
 			   this , SLOT(osvezi(QString)));
+
+}
+
+void wid_racuni::on_btn_osvezi_clicked() {
+
+	napolni();
 
 }
 

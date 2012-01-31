@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -340,14 +340,14 @@
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="label_11">
            <property name="text">
             <string>Datum izdaje računa</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QDateEdit" name="txt_datum_izdaje_racuna">
            <property name="displayFormat">
             <string>dd.MM.yyyy</string>
@@ -357,14 +357,14 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="label_12">
            <property name="text">
             <string>Rok plačila</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QDateEdit" name="txt_rok_placila">
            <property name="displayFormat">
             <string>dd.MM.yyyy</string>
@@ -374,14 +374,14 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string>Status plačila</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QComboBox" name="txt_status_placila">
            <property name="minimumSize">
             <size>
@@ -396,14 +396,14 @@
            </item>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
             <string>Status računovodstva</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QComboBox" name="txt_status_racunovodstva">
            <property name="minimumSize">
             <size>
@@ -418,21 +418,21 @@
            </item>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="label_13">
            <property name="text">
             <string>Status oddaje računa</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="label_19">
            <property name="text">
             <string>Datum oddaje računa</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="9" column="0">
           <spacer name="verticalSpacer_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -445,7 +445,7 @@
            </property>
           </spacer>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QComboBox" name="txt_status_oddaje_racuna">
            <item>
             <property name="text">
@@ -454,7 +454,7 @@
            </item>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <widget class="QDateEdit" name="txt_datum_oddaje_racuna">
            <property name="displayFormat">
             <string>dd.MM.yyyy</string>
@@ -464,19 +464,43 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <widget class="QLabel" name="label_20">
            <property name="text">
             <string>Odstotek avansa</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
+         <item row="7" column="1">
           <widget class="QLineEdit" name="txt_odstotek_avansa">
            <property name="text">
             <string>txt_odstotek_avansa</string>
            </property>
           </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_22">
+           <property name="text">
+            <string>Sklic</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txt_sklic">
+           <property name="text">
+            <string>txt_sklic</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="text">
+            <string>Avans plačan</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QDateEdit" name="txt_datum_placila_avansa"/>
          </item>
         </layout>
        </item>
