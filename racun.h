@@ -28,6 +28,9 @@ private slots:
 	void on_txt_projekt_currentIndexChanged();
 	void on_txt_projekt_id_textChanged();
 
+	void on_txt_status_predracuna_currentIndexChanged();
+	void on_txt_status_oddaje_racuna_currentIndexChanged();
+
 	void on_txt_odstotek_avansa_editingFinished();
 
 	void on_rb_predracun_toggled();

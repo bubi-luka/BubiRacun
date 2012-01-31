@@ -481,7 +481,8 @@ void racun::on_btn_sprejmi_clicked() {
 			*	V ostalih primerih vprasanja ne postavimo, ampak samo shranimo v ustrezen zapis.
 			*/
 		int izbira = 0;
-		if ( ui->rb_predracun->isChecked() ) {
+		if ( ui->rb_predracun->isChecked() && ui->txt_status_oddaje_racuna->currentText() != "" && ui->txt_status_predracuna->currentText() != "" ) {
+
 			QMessageBox koncano;
 			koncano.setIcon(QMessageBox::Question);
 			koncano.setText("Zelite zakljuciti urejanje predracuna, ga shraniti in ustvariti predplacilni racun in racun?");
@@ -1258,5 +1259,56 @@ void racun::on_txt_odstotek_avansa_editingFinished() {
 																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
 
 	izracunaj();
+
+}
+
+
+void racun::on_txt_status_predracuna_currentIndexChanged() {
+
+	if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() != "" ) { // preveti, ce ima predracun ze vnesena opravila, ki so pogoj za zakljucen predracun
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			QSqlQuery opravila;
+			opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
+			opravila.exec();
+			if ( !opravila.next() ) {
+				QMessageBox opozorilo;
+				opozorilo.setIcon(QMessageBox::Critical);
+				opozorilo.setText("Ne morete nastaviti statusa predracuna, ce predracun ne vsebuje opravil!");
+				opozorilo.exec();
+				ui->txt_status_predracuna->setCurrentIndex(0);
+			}
+		}
+		base.close();
+	}
+	else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "" ) {
+		ui->txt_status_oddaje_racuna->setCurrentIndex(0);
+	}
+
+}
+
+void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
+
+	if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
+		if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "" ) {
+			QMessageBox opozorilo;
+			opozorilo.setIcon(QMessageBox::Critical);
+			opozorilo.setText("Ne morete nastaviti statusa oddaje predracuna, ce status predracuna ni izpolnjen!");
+			opozorilo.exec();
+			ui->txt_status_oddaje_racuna->setCurrentIndex(0);
+		}
+	}
 
 }
