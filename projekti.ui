@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -377,6 +377,15 @@
            <height>0</height>
           </size>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>tbl_zapisi</string>
@@ -400,6 +409,13 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
+          <widget class="QLineEdit" name="txt_id_zapisa">
+           <property name="text">
+            <string>txt_id_zapisa</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="label_48">
            <property name="text">
             <string>Datum in ura zapisa</string>
@@ -407,7 +423,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QDateTimeEdit" name="txt_datum_zapisa"/>
+          <widget class="QDateTimeEdit" name="txt_datum_zapisa">
+           <property name="displayFormat">
+            <string>dd.MM.yyyy HH:mm</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_49">
@@ -459,9 +479,16 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="txt_vnesi_zapis">
+            <widget class="QPushButton" name="btn_vnesi_zapis">
              <property name="text">
               <string>Vnesi zapis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_pocisti">
+             <property name="text">
+              <string>Počisti</string>
              </property>
             </widget>
            </item>

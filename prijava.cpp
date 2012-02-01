@@ -33,6 +33,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_projekti();
 	tabela_racuni();
 	tabela_opravila();
+	tabela_opombe();
 
 	// ustvari tabele sifrantov
 	tabela_skd();
@@ -765,6 +766,40 @@ void prijava::tabela_opravila() {
 														 "znesek_popustov TEXT, "
 														 "znesek_ddv TEXT, "
 														 "znesek_koncni TEXT)"
+										);
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_opombe() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS opombe ("
+														 "id INTEGER PRIMARY KEY, "
+														 "stevilka_stranke TEXT, "
+														 "stevilka_projekta TEXT, "
+														 "stevilka_racuna TEXT, "
+														 "tip_racuna TEXT, "
+														 "datum TEXT, "
+														 "naslov TEXT, "
+														 "besedilo TEXT)"
 										);
 		sql_create_table.exec();
 	}

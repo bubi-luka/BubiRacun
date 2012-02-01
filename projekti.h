@@ -59,6 +59,11 @@ private slots:
 	void izracunaj_popuste(double vrednost, int polje);
 	void izracunaj();
 
+	void on_btn_vnesi_zapis_clicked();
+	void on_btn_pocisti_clicked();
+	void on_tbl_zapisi_doubleClicked();
+	void napolni_zapise();
+
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
 	QString pretvori(QString besedilo);

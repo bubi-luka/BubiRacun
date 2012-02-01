@@ -37,6 +37,11 @@ private slots:
 	void on_rb_predplacilo_toggled();
 	void on_rb_racun_toggled();
 
+	void on_btn_vnesi_zapis_2_clicked();
+	void on_btn_pocisti_2_clicked();
+	void on_tbl_zapisi_2_doubleClicked();
+	void napolni_zapise();
+
 	void keyPressEvent(QKeyEvent *event);
 
 	void prejem(QString besedilo);

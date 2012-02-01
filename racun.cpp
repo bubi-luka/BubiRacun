@@ -39,6 +39,12 @@ racun::racun(QWidget *parent) :
 		ui->txt_znesek_ddv->setText("");
 		ui->txt_znesek->setText("");
 
+		ui->txt_id_zapisa_2->setText("");
+		ui->tbl_zapisi_2->clear();
+		ui->txt_datum_zapisa_2->setDateTime(QDateTime::currentDateTime());
+		ui->txt_naslov_zapisa_2->setText("");
+		ui->txt_opis_zapisa_2->setPlainText("");
+
 		ui->txt_datum_izdaje_racuna->setDate(QDate::currentDate());
 		ui->txt_rok_placila->setDate(QDate::currentDate());
 		ui->txt_status_placila->clear();
@@ -64,6 +70,7 @@ racun::racun(QWidget *parent) :
 		// skrij polja
 		ui->txt_projekt_id->setVisible(false);
 		ui->txt_stranka_id->setVisible(false);
+		ui->txt_id_zapisa_2->setVisible(false);
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -988,6 +995,8 @@ void racun::prejem(QString besedilo) {
 
 		napolni();
 
+		napolni_zapise();
+
 		izracunaj(); // calculate the values
 
 	}
@@ -1310,5 +1319,204 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 			ui->txt_status_oddaje_racuna->setCurrentIndex(0);
 		}
 	}
+
+}
+
+
+void racun::on_btn_vnesi_zapis_2_clicked() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+		QSqlQuery sql_vnesi_zapis;
+		if (ui->btn_vnesi_zapis_2->text() == "Vnesi zapis") {
+			sql_vnesi_zapis.prepare("INSERT INTO opombe (stevilka_stranke, stevilka_projekta, stevilka_racuna, tip_racuna, datum, naslov, "
+																"besedilo) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		}
+		else {
+			sql_vnesi_zapis.prepare("UPDATE opombe SET stevilka_stranke = ?, stevilka_projekta = ?, stevilka_racuna = ?, tip_racuna = ?, datum = ?, naslov = ?, "
+															"besedilo = ? WHERE id LIKE '" + pretvori(ui->txt_id_zapisa_2->text()) + "'");
+		}
+		sql_vnesi_zapis.bindValue(0, pretvori(ui->txt_stranka_id->text()));
+		sql_vnesi_zapis.bindValue(1, pretvori(ui->txt_projekt_id->text()));
+		sql_vnesi_zapis.bindValue(2, pretvori(ui->txt_id->text()));
+		if ( ui->rb_predracun->isChecked() ) {
+			sql_vnesi_zapis.bindValue(3, pretvori("1"));
+		}
+		else if ( ui->rb_predplacilo->isChecked() ) {
+			sql_vnesi_zapis.bindValue(3, pretvori("2"));
+		}
+		else if ( ui->rb_racun->isChecked() ) {
+			sql_vnesi_zapis.bindValue(3, pretvori("3"));
+		}
+		sql_vnesi_zapis.bindValue(4, pretvori(ui->txt_datum_zapisa_2->text()));
+		sql_vnesi_zapis.bindValue(5, pretvori(ui->txt_naslov_zapisa_2->text()));
+		sql_vnesi_zapis.bindValue(6, pretvori(ui->txt_opis_zapisa_2->toPlainText()));
+
+		sql_vnesi_zapis.exec();
+	}
+	base.close();
+
+	ui->txt_id_zapisa_2->setText("");
+	ui->txt_datum_zapisa_2->setDateTime(QDateTime::currentDateTime());
+	ui->txt_naslov_zapisa_2->setText("");
+	ui->txt_opis_zapisa_2->clear();
+
+	ui->btn_vnesi_zapis_2->setText("Vnesi zapis");
+
+	napolni_zapise();
+
+}
+
+void racun::on_tbl_zapisi_2_doubleClicked() {
+
+	QString id = ui->tbl_zapisi_2->selectedItems().takeAt(0)->text();
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		QSqlQuery sql_napolni;
+		sql_napolni.prepare("SELECT * FROM opombe WHERE id LIKE '" + pretvori(id) + "'");
+		sql_napolni.exec();
+		if ( sql_napolni.next() ) {
+			ui->txt_id_zapisa_2->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
+			QDateTime datum = QDateTime::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum")).toString()), "dd'.'MM'.'yyyy' 'hh':'mm");
+			ui->txt_datum_zapisa_2->setDateTime(datum);
+			ui->txt_naslov_zapisa_2->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
+			ui->txt_opis_zapisa_2->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("besedilo")).toString()));
+		}
+	}
+	base.close();
+
+	ui->btn_vnesi_zapis_2->setText("Popravi zapis");
+
+}
+
+void racun::napolni_zapise() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		// clear previous content
+		ui->tbl_zapisi_2->clear();
+
+		for (int i = 0; i <= 2; i++) {
+			ui->tbl_zapisi_2->removeColumn(0);
+		}
+
+		QSqlQuery sql_clear;
+		sql_clear.prepare("SELECT * FROM opombe");
+		sql_clear.exec();
+		while (sql_clear.next()) {
+			ui->tbl_zapisi_2->removeRow(0);
+		}
+
+		// start filling the table
+		ui->tbl_zapisi_2->insertColumn(0);
+		ui->tbl_zapisi_2->insertColumn(1);
+		ui->tbl_zapisi_2->insertColumn(2);
+
+		QTableWidgetItem *naslov0 = new QTableWidgetItem;
+		QTableWidgetItem *naslov1 = new QTableWidgetItem;
+		QTableWidgetItem *naslov2 = new QTableWidgetItem;
+
+		naslov0->setText("ID");
+		naslov1->setText("Datum zapisa");
+		naslov2->setText("Naslov zapisa");
+
+		ui->tbl_zapisi_2->setHorizontalHeaderItem(0, naslov0);
+		ui->tbl_zapisi_2->setHorizontalHeaderItem(1, naslov1);
+		ui->tbl_zapisi_2->setHorizontalHeaderItem(2, naslov2);
+
+		QString tip_racuna = "";
+		if ( ui->rb_predracun->isChecked() ) {
+			tip_racuna = "1";
+		}
+		else if ( ui->rb_predplacilo->isChecked() ) {
+			tip_racuna = "2";
+		}
+		else if ( ui->rb_racun->isChecked() ) {
+			tip_racuna = "3";
+		}
+
+		QSqlQuery sql_fill;
+		sql_fill.prepare("SELECT * FROM opombe WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip_racuna) + "' ORDER BY id ASC");
+		sql_fill.exec();
+
+		int row = 0;
+		while (sql_fill.next()) {
+			ui->tbl_zapisi_2->insertRow(row);
+			ui->tbl_zapisi_2->setRowHeight(row, 20);
+			int col = 0;
+			int i = 0;
+			QString polja[8] = {"id", "datum", "naslov"};
+
+			while (col <= 2) {
+
+				QTableWidgetItem *celica = new QTableWidgetItem;
+				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				ui->tbl_zapisi_2->setItem(row, col, celica);
+
+				col++;
+				i++;
+
+			}
+
+			row++;
+
+		}
+	}
+	base.close();
+
+}
+
+void racun::on_btn_pocisti_2_clicked() {
+
+	ui->txt_id_zapisa_2->setText("");
+	ui->txt_datum_zapisa_2->setDateTime(QDateTime::currentDateTime());
+	ui->txt_naslov_zapisa_2->setText("");
+	ui->txt_opis_zapisa_2->clear();
+
+	ui->btn_vnesi_zapis_2->setText("Vnesi zapis");
+
+	napolni_zapise();
 
 }
