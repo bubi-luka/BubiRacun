@@ -451,8 +451,26 @@ void wid_racuni::on_btn_brisi_clicked() {
 		msgbox.exec();
 	}
 	else {
+		QString tip_racuna = "";
+		QString id_predracuna = "";
+
+		QSqlQuery sql_racun;
+		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+		sql_racun.exec();
+		if ( sql_racun.next() ) {
+			tip_racuna = sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString();
+			id_predracuna = sql_racun.value(sql_racun.record().indexOf("stevilka_racuna")).toString();
+		}
+		sql_racun.clear();
+		sql_racun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
+		sql_racun.exec();
+		if ( sql_racun.next() ) {
+			id_predracuna = sql_racun.value(sql_racun.record().indexOf("id")).toString();
+		}
+		sql_racun.clear();
+
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
+		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + tip_racuna + "'");
 		sql_brisi.exec();
 		sql_brisi.clear();
 

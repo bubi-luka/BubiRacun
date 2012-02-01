@@ -30,6 +30,7 @@ private slots:
 
 	void on_txt_odstotek_avansa_editingFinished();
 	void on_txt_datum_izdaje_racuna_dateChanged();
+	void on_txt_status_oddaje_racuna_currentIndexChanged();
 
 	void on_rb_predracun_toggled();
 	void on_rb_predplacilo_toggled();
