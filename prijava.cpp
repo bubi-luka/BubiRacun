@@ -695,6 +695,7 @@ void prijava::tabela_racuni() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS racuni ("
 														 "id INTEGER PRIMARY KEY, "
 														 "stevilka_racuna TEXT, "
+														 "stevilka_starsa TEXT, "
 														 "stara_stevilka_racuna TEXT, "
 														 "sklic TEXT, "
 														 "tip_racuna TEXT, "

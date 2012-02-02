@@ -333,7 +333,7 @@ void wid_racuni::napolni() {
 														 "se_placati", "status_placila", "status_racunovodstva"};
 
 				while (col <= 9) {
-					QSqlQuery sql_predracun;
+/*					QSqlQuery sql_predracun;
 					QString id_predracuna;
 					sql_predracun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_racuna")).toString() +
 																"' AND tip_racuna LIKE '" + pretvori("1") + "'");
@@ -342,7 +342,7 @@ void wid_racuni::napolni() {
 						id_predracuna = sql_predracun.value(sql_predracun.record().indexOf("id")).toString();
 					}
 					sql_predracun.clear();
-
+*/
 					QTableWidgetItem *celica = new QTableWidgetItem;
 					if ( polja[i] == "tip_racuna" ) {
 						if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
@@ -382,7 +382,7 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "znesek_za_placilo" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + id_predracuna +
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
 																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
@@ -393,7 +393,7 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "se_placati" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + id_predracuna +
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
 																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
