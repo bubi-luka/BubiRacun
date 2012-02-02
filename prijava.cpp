@@ -247,10 +247,10 @@ void prijava::on_btn_prijavi_clicked() {
 				// nastavi uporabnika, stanje, pravice uporabnika
 				vApp->set_id(pretvori(ui->txt_uporabnik->text().toLower())); // nastavi uporabniske pravice
 				if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
-					vApp->set_state(pretvori("public"));
+					vApp->set_state(pretvori("private")); // samo za oci pisarja
 				}
 				else {
-					vApp->set_state(pretvori("private"));
+					vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
 				}
 
 				// prikazi glavno okno
@@ -696,6 +696,9 @@ void prijava::tabela_racuni() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS racuni ("
 														 "id INTEGER PRIMARY KEY, "
 														 "stevilka_racuna TEXT, "
+														 "stevilka_starsa TEXT, "
+														 "stara_stevilka_racuna TEXT, "
+														 "sklic TEXT, "
 														 "tip_racuna TEXT, "
 														 "status_racuna TEXT, "
 														 "stranka TEXT, "
@@ -709,6 +712,7 @@ void prijava::tabela_racuni() {
 														 "status_racunovodstva TEXT, "
 														 "odstotek_avansa TEXT, "
 														 "avans TEXT, "
+														 "datum_placila_avansa TEXT, "
 														 "status_oddaje_racuna TEXT, "
 														 "datum_oddaje_racuna TEXT)"
 										);

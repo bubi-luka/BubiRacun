@@ -99,6 +99,11 @@ void varnost::set_permission(const QString &permission)	{
 
 void varnost::set_state(const QString &state) {
 
+	/**
+		*	stanje "public" je odprto za vse radovedneze
+		*	stanje "private" je odprto samo za zaposlene, da vse podatke
+		*/
+
 	m_state = state;
 	emit state_changed();
 
