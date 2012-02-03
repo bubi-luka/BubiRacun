@@ -333,16 +333,6 @@ void wid_racuni::napolni() {
 														 "se_placati", "status_placila", "status_racunovodstva"};
 
 				while (col <= 9) {
-/*					QSqlQuery sql_predracun;
-					QString id_predracuna;
-					sql_predracun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_racuna")).toString() +
-																"' AND tip_racuna LIKE '" + pretvori("1") + "'");
-					sql_predracun.exec();
-					if ( sql_predracun.next() ) {
-						id_predracuna = sql_predracun.value(sql_predracun.record().indexOf("id")).toString();
-					}
-					sql_predracun.clear();
-*/
 					QTableWidgetItem *celica = new QTableWidgetItem;
 					if ( polja[i] == "tip_racuna" ) {
 						if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
