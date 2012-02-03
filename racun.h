@@ -28,7 +28,19 @@ private slots:
 	void on_txt_projekt_currentIndexChanged();
 	void on_txt_projekt_id_textChanged();
 
+	void on_txt_odstotek_avansa_editingFinished();
+	void on_txt_datum_izdaje_racuna_dateChanged();
+	void on_txt_status_oddaje_racuna_currentIndexChanged();
+
 	void on_rb_predracun_toggled();
+	void on_rb_predplacilo_toggled();
+	void on_rb_racun_toggled();
+
+	void on_btn_vnesi_zapis_2_clicked();
+	void on_btn_pocisti_2_clicked();
+	void on_tbl_zapisi_2_doubleClicked();
+	void napolni_zapise();
+	void on_cb_stara_stevilka_racuna_toggled();
 
 	void keyPressEvent(QKeyEvent *event);
 
@@ -38,6 +50,7 @@ private slots:
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
 
+	void stevilka_racuna();
 	void izracunaj();
 	void napolni();
 	void osvezi(QString beseda);

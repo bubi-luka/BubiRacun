@@ -233,4 +233,6 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
 	}
 
+	ui->txt_pozicija->setText(prevedi(vApp->state()));
+
 }

@@ -42,7 +42,7 @@ void wid_stranke::napolni() {
 			stavek += " WHERE tip LIKE '1'";
 		}
 		if ( ui->cb_pravna->isChecked() ) {
-			stavek +=  "WHERE tip LIKE '2'";
+			stavek += " WHERE tip LIKE '2'";
 		}
 	}
 

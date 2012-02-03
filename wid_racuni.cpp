@@ -43,7 +43,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 			// filtriraj po tipu racuna
 			ui->cb_racun->addItem("");
 			ui->cb_racun->addItem("1) Predracun");
-			ui->cb_racun->addItem("2) Racun");
+			ui->cb_racun->addItem("2) Predplacilo");
+			ui->cb_racun->addItem("3) Racun");
 
 			// filtriraj po mesecu
 			ui->cb_mesec->addItem("");
@@ -287,6 +288,41 @@ void wid_racuni::napolni() {
 					filter = "negativno";
 				}
 			}
+			// filtriramo glede na javni, zasebni status racuna
+			if ( vApp->state() != pretvori("private") ) {
+
+				// doloci vse tri cifre
+				QString sklic = prevedi(sql_fill.value(sql_fill.record().indexOf("sklic")).toString());
+				sklic = sklic.right(sklic.length() - 5); // odbijemo drzavo in model
+				sklic = sklic.right(sklic.length() - 5); // odbijemo stevilko racuna
+				int cifra_1 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_1 in dan
+				int cifra_2 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_2 in mesec
+				int cifra_3 = sklic.left(1).toInt();
+
+				// iz prvih dveh izracunaj kontrolno stevilko
+				int kontrolna = 0;
+
+				int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+				int ostanek = sestevek % 11;
+
+				kontrolna = 11 - ostanek;
+
+				if ( kontrolna >= 9 ) {
+					kontrolna = 0;
+				}
+
+				// od cifre_3 odstej kontrolno stevilko
+				// tako dobis 0 => racun je javen ali 1 => racun je zaseben
+				int razlika = cifra_3 - kontrolna;
+
+				if ( razlika == 1 ) {
+					filter = "negativno"; // racuna ne prikazi
+				}
+
+			}
 
 			if ( filter == "pozitivno" ) {
 				ui->tbl_racuni->insertRow(row);
@@ -303,6 +339,9 @@ void wid_racuni::napolni() {
 							celica->setText("Predracun");
 						}
 						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "2" ) {
+							celica->setText("Predplacilo");
+						}
+						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "3" ) {
 							celica->setText("Racun");
 						}
 					}
@@ -325,15 +364,16 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "projekt" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM projeki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_projekta")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("projekt")).toString() + "'");
 						sql_kodiraj.exec();
 						if ( sql_kodiraj.next() ) {
-							celica->setText(prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("ime")).toString()));
+							celica->setText(prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("naslov_projekta")).toString()));
 						}
 					}
 					else if ( polja[i] == "znesek_za_placilo" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
+																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
 						while ( sql_kodiraj.next() ) {
@@ -343,7 +383,8 @@ void wid_racuni::napolni() {
 					}
 					else if ( polja[i] == "se_placati" ) {
 						QSqlQuery sql_kodiraj;
-						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
+						sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
+																"' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
 						sql_kodiraj.exec();
 						double znesek = 0.0;
 						while ( sql_kodiraj.next() ) {
@@ -385,7 +426,6 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
 void wid_racuni::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_racuni->selectedItems().takeAt(0)->text();
-	QString stracuna = ui->tbl_racuni->selectedItems().takeAt(1)->text();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -401,12 +441,30 @@ void wid_racuni::on_btn_brisi_clicked() {
 		msgbox.exec();
 	}
 	else {
+		QString tip_racuna = "";
+		QString id_predracuna = "";
+
+		QSqlQuery sql_racun;
+		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+		sql_racun.exec();
+		if ( sql_racun.next() ) {
+			tip_racuna = sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString();
+			id_predracuna = sql_racun.value(sql_racun.record().indexOf("stevilka_racuna")).toString();
+		}
+		sql_racun.clear();
+		sql_racun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
+		sql_racun.exec();
+		if ( sql_racun.next() ) {
+			id_predracuna = sql_racun.value(sql_racun.record().indexOf("id")).toString();
+		}
+		sql_racun.clear();
+
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM opravila WHERE racun LIKE '" + pretvori(stracuna) + "'");
+		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + tip_racuna + "'");
 		sql_brisi.exec();
 		sql_brisi.clear();
 
-		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + id + "'");
+		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
 	}
 	base.close();
@@ -449,6 +507,12 @@ void wid_racuni::on_btn_nov_clicked() {
 	// receive signal to refresh table
 	QObject::connect(uredi, SIGNAL(poslji(QString)),
 			   this , SLOT(osvezi(QString)));
+
+}
+
+void wid_racuni::on_btn_osvezi_clicked() {
+
+	napolni();
 
 }
 

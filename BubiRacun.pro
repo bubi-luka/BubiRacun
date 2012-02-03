@@ -106,7 +106,9 @@ OTHER_FILES += \
     namen_potnega_naloga.csv \
     prevozna_sredstva.csv \
     status_predracuna.csv \
-    storitve.csv
+    storitve.csv \
+    status_oddaje_racuna.csv
+
 
 
 

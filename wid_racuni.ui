@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
+    <width>854</width>
     <height>628</height>
    </rect>
   </property>
@@ -88,6 +88,26 @@
      </item>
      <item>
       <widget class="QLineEdit" name="txt_stprojekta"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_osvezi">
+       <property name="text">
+        <string>Osveži</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="btn_nov">
