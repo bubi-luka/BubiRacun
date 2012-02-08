@@ -1132,7 +1132,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>Izvozi CSV</string>
+        <string>Natisni</string>
        </property>
       </widget>
      </item>

@@ -1,1 +1,64 @@
-Podjetje;Št. naloga;Datum naloga;Kdo odpotuje;Del. mesto;Stanujoč;Odpotuje dne;Ob uri;Kam-A;Kam-B;Naloga;Do datuma;Št. dni;Uporaba;Avto;Potne str. plača;Odredbodajalec;Prejemnik;Predlagatelj;Prebivališče;Datum odhoda;Ura odhoda;Datum vrnitve;Ura vrnitve;Št. dni odsotnosti;Odsotnost ur/min;Št. dnevnic;Cena dnevnice;Skupaj EUR;Odstotek zvišanja dnevnice;Skupaj;Št. km;Eur/km;Relacija;Reg. št.;Skupaj v znesku;Izplačilo;V;Dne;Predlagatelj;Odredbodajalec;Prejemnik
+(podjetje)
+Nalog za službeno potovanje
+št.
+datum:
+Odrejam, da odpotuje:
+na delovnem mestu:
+stanujoč:
+dne:
+ ob:
+ uri
+po nalogu (odločba-spis)
+v/na:
+z nalogo:
+Potovanje bo trajalo do:
+ to je:
+ dni
+Odobravam uporabo
+Potne stroške plača:
+Višina dnevnice:
+Posebni dodatki:
+Odobravam izplačilo predujma v znesku EUR:
+Podpis odredbodajalca
+Podpis prejemnika
+ŽIG
+Posluje brez žiga
+Predujem EUR
+prejel dne
+Obračun potnih stroškov
+Ime in priimek predlagatelja:
+Prebivališče:
+Odsotnost
+Št. dnevnic
+po EUR
+Skupaj EUR
+Odhod:
+Ob
+dni
+ur/minut
+Vrnitev:
+Ob
+% zvišanja/znižanja dnevnic od EUR
+Skupaj
+Prevozni stroški:
+št. km =
+ km x
+ EUR
+relacija:
+reg. št.:
+Drugi stroški:
+Skupaj v znesku
+Ostane za izplačilo/vračilo EUR
+Priloge
+v
+dne
+Račun pregledal in odobril izplačilo EUR v breme
+Likvidator
+Izplačano EUR
+ dne
+Blagajnik
+ŽIG
+Posluje brez žiga
+Predlagatelj računa
+Odredbodajalec
+Prejemnik
