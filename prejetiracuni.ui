@@ -716,7 +716,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>Izpiši kot CSV</string>
+        <string>Natisni</string>
        </property>
       </widget>
      </item>

@@ -1334,7 +1334,7 @@ void potninalogi::print(QString id) {
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
 	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-	dialog->setWindowTitle(tr("Print Document"));
+	dialog->setWindowTitle(tr("Natisni potni nalog"));
 
 	if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
