@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
-    <height>718</height>
+    <width>950</width>
+    <height>748</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -170,6 +170,23 @@
       <widget class="QPushButton" name="btn_print">
        <property name="text">
         <string>Natisni</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_print_pdf">
+       <property name="text">
+        <string>Natisni kot PDF</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_print_seznam">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Natisni seznam</string>
        </property>
       </widget>
      </item>
