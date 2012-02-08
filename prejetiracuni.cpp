@@ -813,6 +813,7 @@ void prejetiracuni::print(QString id) {
 	dialog->setWindowTitle(tr("Natisni prejet racun"));
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
+	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
 	if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
