@@ -107,7 +107,13 @@ OTHER_FILES += \
     prevozna_sredstva.csv \
     status_predracuna.csv \
     storitve.csv \
-    status_oddaje_racuna.csv
+    status_oddaje_racuna.csv \
+    racun-besedilo-predracun.csv \
+    racun-besedilo-predplacilo.csv \
+    racun-besedilo-racun.csv
+
+
+
 
 
 

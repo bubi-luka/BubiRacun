@@ -16,6 +16,11 @@ public:
     ~wid_racuni();
 
 private slots:
+	void on_btn_refresh_clicked();
+	void on_btn_print_clicked();
+	void on_btn_print_pdf_clicked();
+	void on_btn_print_seznam_clicked();
+
 	void on_cb_racun_currentIndexChanged();
 	void on_cb_mesec_currentIndexChanged();
 	void on_cb_leto_currentIndexChanged();
@@ -25,11 +30,13 @@ private slots:
 	void on_tbl_racuni_doubleClicked();
 	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();
-	void on_btn_osvezi_clicked();
 
 	void osvezi(QString beseda);
 	void prejem(QString besedilo);
 	void napolni();
+
+	void print(QString id);
+	void printpdf(QString id);
 
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);

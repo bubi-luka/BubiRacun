@@ -45,6 +45,7 @@ private slots:
 
 	void prejem(QString besedilo);
 	void izracunaj();
+	void print(QString id);
 
 signals:
 	void poslji(QString beseda);
