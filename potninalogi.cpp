@@ -1329,7 +1329,6 @@ void potninalogi::print(QString id) {
 
 	QPrinter printer;
 	printer.setPaperSize(QPrinter::A4);
-	printer.setResolution(300);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 

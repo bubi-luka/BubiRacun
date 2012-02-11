@@ -1,5 +1,9 @@
 #include <QtSql>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QDir>
 
 #include "wid_racuni.h"
 #include "ui_wid_racuni.h"
@@ -510,16 +514,268 @@ void wid_racuni::on_btn_nov_clicked() {
 
 }
 
-void wid_racuni::on_btn_osvezi_clicked() {
-
-	napolni();
-
-}
-
 void wid_racuni::prejem(QString besedilo) {
 
 	ui->txt_stprojekta->setText(besedilo);
 
 	napolni();
+
+}
+
+void wid_racuni::on_btn_refresh_clicked() {
+
+	napolni();
+
+}
+
+void wid_racuni::on_btn_print_clicked() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_racuni");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		QString projekt = "";
+
+		QSqlQuery sql_projekt;
+		sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+		sql_projekt.exec();
+		if ( sql_projekt.next() ) {
+			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+		}
+
+		QString stavek = "";
+
+		if ( ui->cb_racun->currentText() != "" ) {
+			stavek += " AND tip_racuna LIKE '" + pretvori(ui->cb_racun->currentText()).left(1) + "'";
+		}
+		if ( ui->cb_placilo->currentText() != "" ) {
+			stavek += " AND status_placila LIKE '" + pretvori (ui->cb_placilo->currentText()) + "'";
+		}
+		if ( ui->cb_racunovodstvo->currentText() != "" ) {
+			stavek += " AND status_racunovodstva LIKE '" + pretvori (ui->cb_racunovodstvo->currentText()) + "'";
+		}
+
+		if ( stavek != "" && ui->txt_stprojekta->text() == "*" && stavek.indexOf(" WHERE") == -1 ) {
+			stavek = " WHERE" + stavek.right(stavek.length() - 4);
+		}
+
+		QSqlQuery sql_fill("wid_racuni");
+		if ( ui->txt_stprojekta->text() != "*" ) {
+			sql_fill.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + projekt + "'" + stavek);
+		}
+		else {
+			sql_fill.prepare("SELECT * FROM racuni" + stavek);
+		}
+		sql_fill.exec();
+
+		int row = 0;
+		while (sql_fill.next()) {
+			// filtriramo glede na mesec in leto
+			QString filter = "pozitivno";
+			if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_mesec->currentText() != "" ) {
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+				if ( leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			// filtriramo glede na javni, zasebni status racuna
+			if ( vApp->state() != pretvori("private") ) {
+
+				// doloci vse tri cifre
+				QString sklic = prevedi(sql_fill.value(sql_fill.record().indexOf("sklic")).toString());
+				sklic = sklic.right(sklic.length() - 5); // odbijemo drzavo in model
+				sklic = sklic.right(sklic.length() - 5); // odbijemo stevilko racuna
+				int cifra_1 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_1 in dan
+				int cifra_2 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_2 in mesec
+				int cifra_3 = sklic.left(1).toInt();
+
+				// iz prvih dveh izracunaj kontrolno stevilko
+				int kontrolna = 0;
+
+				int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+				int ostanek = sestevek % 11;
+
+				kontrolna = 11 - ostanek;
+
+				if ( kontrolna >= 9 ) {
+					kontrolna = 0;
+				}
+
+				// od cifre_3 odstej kontrolno stevilko
+				// tako dobis 0 => racun je javen ali 1 => racun je zaseben
+				int razlika = cifra_3 - kontrolna;
+
+				if ( razlika == 1 ) {
+					filter = "negativno"; // racuna ne prikazi
+				}
+
+			}
+
+			if ( filter == "pozitivno" ) {
+				print(prevedi(sql_fill.value(sql_fill.record().indexOf("id")).toString()));
+			}
+		}
+	}
+	base.close();
+
+}
+
+void wid_racuni::on_btn_print_pdf_clicked() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_racuni");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		QString projekt = "";
+
+		QSqlQuery sql_projekt;
+		sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+		sql_projekt.exec();
+		if ( sql_projekt.next() ) {
+			projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+		}
+
+		QString stavek = "";
+
+		if ( ui->cb_racun->currentText() != "" ) {
+			stavek += " AND tip_racuna LIKE '" + pretvori(ui->cb_racun->currentText()).left(1) + "'";
+		}
+		if ( ui->cb_placilo->currentText() != "" ) {
+			stavek += " AND status_placila LIKE '" + pretvori (ui->cb_placilo->currentText()) + "'";
+		}
+		if ( ui->cb_racunovodstvo->currentText() != "" ) {
+			stavek += " AND status_racunovodstva LIKE '" + pretvori (ui->cb_racunovodstvo->currentText()) + "'";
+		}
+
+		if ( stavek != "" && ui->txt_stprojekta->text() == "*" && stavek.indexOf(" WHERE") == -1 ) {
+			stavek = " WHERE" + stavek.right(stavek.length() - 4);
+		}
+
+		QSqlQuery sql_fill("wid_racuni");
+		if ( ui->txt_stprojekta->text() != "*" ) {
+			sql_fill.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + projekt + "'" + stavek);
+		}
+		else {
+			sql_fill.prepare("SELECT * FROM racuni" + stavek);
+		}
+		sql_fill.exec();
+
+		int row = 0;
+		while (sql_fill.next()) {
+			// filtriramo glede na mesec in leto
+			QString filter = "pozitivno";
+			if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_mesec->currentText() != "" ) {
+				QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+				if ( mesec != ui->cb_mesec->currentText().left(2) ) {
+					filter = "negativno";
+				}
+			}
+			else if ( ui->cb_leto->currentText() != "" ) {
+				QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+				if ( leto != ui->cb_leto->currentText() ) {
+					filter = "negativno";
+				}
+			}
+			// filtriramo glede na javni, zasebni status racuna
+			if ( vApp->state() != pretvori("private") ) {
+
+				// doloci vse tri cifre
+				QString sklic = prevedi(sql_fill.value(sql_fill.record().indexOf("sklic")).toString());
+				sklic = sklic.right(sklic.length() - 5); // odbijemo drzavo in model
+				sklic = sklic.right(sklic.length() - 5); // odbijemo stevilko racuna
+				int cifra_1 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_1 in dan
+				int cifra_2 = sklic.left(1).toInt();
+				sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_2 in mesec
+				int cifra_3 = sklic.left(1).toInt();
+
+				// iz prvih dveh izracunaj kontrolno stevilko
+				int kontrolna = 0;
+
+				int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+				int ostanek = sestevek % 11;
+
+				kontrolna = 11 - ostanek;
+
+				if ( kontrolna >= 9 ) {
+					kontrolna = 0;
+				}
+
+				// od cifre_3 odstej kontrolno stevilko
+				// tako dobis 0 => racun je javen ali 1 => racun je zaseben
+				int razlika = cifra_3 - kontrolna;
+
+				if ( razlika == 1 ) {
+					filter = "negativno"; // racuna ne prikazi
+				}
+
+			}
+
+			if ( filter == "pozitivno" ) {
+				printpdf(prevedi(sql_fill.value(sql_fill.record().indexOf("id")).toString()));
+			}
+		}
+	}
+	base.close();
+
+}
+
+void wid_racuni::on_btn_print_seznam_clicked() {
+
+}
+
+void wid_racuni::print(QString id) {
+
+}
+
+void wid_racuni::printpdf(QString id) {
 
 }
