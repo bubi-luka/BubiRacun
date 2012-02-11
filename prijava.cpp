@@ -76,7 +76,7 @@ prijava::prijava(QWidget *parent) :
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zacetek");
 	base.setDatabaseName(dbase_path);
 	base.database();
 	base.open();
@@ -88,6 +88,7 @@ prijava::prijava(QWidget *parent) :
 	}
 	else {
 		// the database is opened
+
 		QSqlQuery sql_create_table_kuponi;
 		sql_create_table_kuponi.prepare("CREATE TABLE IF NOT EXISTS kuponi ("
 										"id INTEGER PRIMARY KEY, "
@@ -108,6 +109,7 @@ prijava::prijava(QWidget *parent) :
 										"projekt TEXT)"
 										);
 		sql_create_table_projekt.exec();
+
 		QSqlQuery sql_check_projekt;
 		sql_check_projekt.prepare("SELECT * FROM sif_projekt");
 		sql_check_projekt.exec();
@@ -158,13 +160,13 @@ prijava::prijava(QWidget *parent) :
 			oknouporabnika->show();
 			QObject::connect(this, SIGNAL(prenos1(QString)),
 					   oknouporabnika , SLOT(prejem(QString)));
-			prijava::prenos1("Nov uporabnik");
+			prijava::prenos1("Nov zaposleni");
 		}
 
 		QSqlQuery sql_read_table_firms;
 		sql_read_table_firms.prepare("SELECT * FROM podjetje");
 		sql_read_table_firms.exec();
-		if (!sql_read_table_firms.next()) { // v bazi ni nobenega uporabnika programa, zazenemo vnosno okno za vnos uporabnika
+		if ( !sql_read_table_firms.next() ) { // v bazi ni nobenega uporabnika programa, zazenemo vnosno okno za vnos uporabnika
 			podjetje *oknopodjetja = new podjetje;
 			oknopodjetja->show();
 			QObject::connect(this, SIGNAL(prenos2(QString)),
