@@ -1857,7 +1857,7 @@ void racun::print(QString id) {
 		sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
 		sql_podjetje.exec();
 		if ( sql_podjetje.next() ) {
-			podjetje_logo = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logo")).toString());
+			podjetje_logo = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
 			podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
 			podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
 			podjetje_url = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString());
@@ -2007,8 +2007,8 @@ void racun::print(QString id) {
 
 // glava
 	// logotip podjetja
-		QImage logotip(QDir::homePath() + "/BubiRacun-Dokumenti/logo/benstat.png");
-		painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0, Qt::ColorOnly);
+		QImage logotip(podjetje_logo);
+		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 		pozicija = 10; // zaradi velikosti logotipa
 	// ime in naslov podjetja
@@ -2458,8 +2458,8 @@ void racun::print(QString id) {
 					i++;
 					// glava
 						// logotip podjetja
-							QImage logotip(QDir::homePath() + "/BubiRacun-Dokumenti/logo/benstat.png");
-							painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0, Qt::ColorOnly);
+							QImage logotip(podjetje_logo);
+							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 							pozicija = 10;
 						// ime in naslov podjetja
@@ -2633,8 +2633,8 @@ void racun::print(QString id) {
 			i++;
 			// glava
 				// logotip podjetja
-					QImage logotip(QDir::homePath() + "/BubiRacun-Dokumenti/logo/benstat.png");
-					painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0, Qt::ColorOnly);
+					QImage logotip(podjetje_logo);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -2931,8 +2931,8 @@ void racun::print(QString id) {
 				i++;
 				// glava
 					// logotip podjetja
-						QImage logotip(QDir::homePath() + "/BubiRacun-Dokumenti/logo/benstat.png");
-						painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0, Qt::ColorOnly);
+						QImage logotip(podjetje_logo);
+						painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 						pozicija = 10;
 					// ime in naslov podjetja
@@ -3043,8 +3043,8 @@ void racun::print(QString id) {
 			i++;
 			// glava
 				// logotip podjetja
-					QImage logotip(QDir::homePath() + "/BubiRacun-Dokumenti/logo/benstat.png");
-					painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0, Qt::ColorOnly);
+					QImage logotip(podjetje_logo);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
