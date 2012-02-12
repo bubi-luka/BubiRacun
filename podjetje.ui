@@ -80,9 +80,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-178</y>
+            <y>-292</y>
             <width>596</width>
-            <height>723</height>
+            <height>837</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -509,6 +509,73 @@
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>268</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QGroupBox" name="groupBox_5">
+             <property name="title">
+              <string>Logotip</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_15">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <item>
+                   <widget class="QPushButton" name="btn_logotip">
+                    <property name="text">
+                     <string>Naloži logotip</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="txt_logotip">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>txt_logotip</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="img_logotip">
+                  <property name="text">
+                   <string>img_logotip</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
                   <height>20</height>
                  </size>
                 </property>

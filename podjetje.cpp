@@ -6,6 +6,7 @@
 #include <QtSql>
 #include <QFileDialog>
 #include <QDir>
+#include <QPainter>
 
 #include "podjetje.h"
 #include "ui_podjetje.h"
@@ -37,6 +38,11 @@ podjetje::podjetje(QWidget *parent) :
 			ui->txt_skd_besedilo->clear();
 			ui->txt_posta->clear();
 			ui->txt_zavezanec->setText("");
+
+			ui->txt_logotip->setText("");
+			ui->img_logotip->setText("");
+
+	//		ui->txt_logotip->setVisible(false);
 
 		// lastnik
 			ui->txt_lastnik->clear();
@@ -333,13 +339,13 @@ void podjetje::on_btn_potrdi_clicked() {
 			}
 			if (ui->btn_potrdi->text() == "Vnesi podjetje") {
 			sql_vnesi.prepare("INSERT INTO podjetje (ime, polnoime, skd, skd_besedilo, url, maticna_stevilka, ddv_zavezanec, davcna, "
-												"tekoci_racun, naslov, naslov_st, posta, postna_stevilka, email, gsm, telefon, lastnik, kontaktna, odgovorna)"
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+												"tekoci_racun, naslov, naslov_st, posta, postna_stevilka, email, gsm, telefon, lastnik, kontaktna, odgovorna, logotip)"
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else {
 			sql_vnesi.prepare("UPDATE podjetje SET ime = ?, polnoime = ?, skd = ?, skd_besedilo = ?, url = ?, maticna_stevilka = ?, "
 												"ddv_zavezanec = ?, davcna = ?, tekoci_racun = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
-												"email = ?, gsm = ?, telefon = ?, lastnik = ?, kontaktna = ?, odgovorna = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+												"email = ?, gsm = ?, telefon = ?, lastnik = ?, kontaktna = ?, odgovorna = ?, logotip = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi.bindValue(0, pretvori(ui->txt_ime->text()));
 			sql_vnesi.bindValue(1, pretvori(ui->txt_polnoime->text()));
@@ -360,6 +366,7 @@ void podjetje::on_btn_potrdi_clicked() {
 			sql_vnesi.bindValue(16, pretvori(ui->txt_lastnik->currentText().left(ui->txt_lastnik->currentText().indexOf(")", 0))));
 			sql_vnesi.bindValue(17, pretvori(ui->txt_kontaktna->currentText().left(ui->txt_kontaktna->currentText().indexOf(")", 0))));
 			sql_vnesi.bindValue(18, pretvori(ui->txt_odgovorna->currentText().left(ui->txt_odgovorna->currentText().indexOf(")", 0))));
+			sql_vnesi.bindValue(19, pretvori(ui->txt_logotip->text()));
 			sql_vnesi.exec();
 		}
 		base.close();
@@ -404,6 +411,8 @@ void podjetje::on_btn_brisi_clicked() {
 	ui->txt_email->setText("");
 	ui->txt_telefon->setText("");
 	ui->txt_gsm->setText("");
+
+	ui->txt_logotip->setText("");
 
 	ui->txt_skd_besedilo->setCurrentIndex(0);
 	ui->txt_posta->setCurrentIndex(0);
@@ -485,6 +494,8 @@ void podjetje::prejem(QString besedilo) {
 				ui->txt_email->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("email")).toString()));
 				ui->txt_telefon->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("telefon")).toString()));
 				ui->txt_gsm->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("gsm")).toString()));
+
+				ui->txt_logotip->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("logotip")).toString()));
 
 				bool ok;
 				QSqlQuery sql_combo;
@@ -762,5 +773,36 @@ QString podjetje::pretvori(QString besedilo) {
 QString podjetje::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void podjetje::on_btn_logotip_clicked() {
+
+	// ustvariti pot do ustrezne mape
+	QDir mapa(QDir::homePath());
+	mapa.mkdir("BubiRacun-Dokumenti");
+	mapa.cd("BubiRacun-Dokumenti");
+	mapa.mkdir("logo");
+
+	QString pot_do_logotipa = "";
+	pot_do_logotipa = QFileDialog::getOpenFileName(this, "Izberite logotip podjetja", QDir::homePath(), "Slika (*.png *.jpg *.jpeg)");
+
+	QFile datoteka(pot_do_logotipa);
+	int pot = pot_do_logotipa.lastIndexOf("/");
+
+	pot_do_logotipa = pot_do_logotipa.right(pot_do_logotipa.length() - pot - 1);
+	pot_do_logotipa = QDir::homePath() + "/BubiRacun-Dokumenti/logo/" + pot_do_logotipa;
+
+	datoteka.copy(pot_do_logotipa);
+
+	ui->txt_logotip->setText(pot_do_logotipa);
+
+}
+
+void podjetje::on_txt_logotip_textChanged(QString besedilo) {
+
+	QImage logotip(besedilo);
+
+	ui->img_logotip->setPixmap(QPixmap::fromImage(logotip).scaledToHeight(70));
 
 }
