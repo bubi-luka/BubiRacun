@@ -2121,6 +2121,7 @@ void racun::print(QString id) {
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
+		besedilo = racun.readLine();
 		if ( narocnik_davcna != "" ) {
 			painter.setFont(debelo);
 			// dolocimo velikost kvadrata, ki ga tvori besedilo (davcna stevilka)
@@ -2365,7 +2366,7 @@ void racun::print(QString id) {
 		painter.setPen(*debel_svincnik);
 		painter.drawLine(0, pozicija, printer.width(), pozicija);
 		// nova vrstica
-		pozicija += razmik_med_vrsticami;
+		pozicija += razmik_med_vrsticami / 2;
 
 		// priprava baze in polnenje spremenljivk (razen storitve)
 		QSqlDatabase base_1 = QSqlDatabase::addDatabase("QSQLITE");
@@ -2586,7 +2587,7 @@ void racun::print(QString id) {
 				painter.drawText(QRectF(crta_7, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_cena_brez_ddv);
 
 				// nova pozicija = nova vrstica v tabeli
-				pozicija += visina_vrstice;
+				pozicija += visina_vrstice + razmik_med_vrsticami / 2;
 
 				trenutna_pozicija++;
 				if ( trenutna_pozicija < koncna_pozicija ) {
@@ -2594,8 +2595,8 @@ void racun::print(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 				}
-				// nova vrstica
-				pozicija += razmik_med_vrsticami;
+		//		// nova vrstica
+		//		pozicija += razmik_med_vrsticami;
 
 			} // while ( sql_storitve.next() )
 		} // base.isOpen()
