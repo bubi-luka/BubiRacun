@@ -40,6 +40,8 @@ private slots:
 
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
+	QString pretvori_v_double(QString besedilo);
+	QString pretvori_iz_double(QString besedilo);
 
 signals:
 	void prenos(QString beseda);
