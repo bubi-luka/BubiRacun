@@ -174,143 +174,6 @@ void racun::on_btn_izpisi_clicked() {
 	on_btn_sprejmi_clicked();
 
 	print(ui->txt_id->text());
-/*
-	// v string vsebina se shrani celotno besedilo enega prejetega racuna
-	QString vsebina;
-
-// odpri podatke o prejetem racunu
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		QSqlQuery sql_racun;
-		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
-		sql_racun.exec();
-		if ( sql_racun.next() ) {
-
-			// podatki o podjetju
-			QString kraj;
-			QString tekoci_racun;
-			QSqlQuery sql_podjetje;
-			sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
-			sql_podjetje.exec();
-			if ( sql_podjetje.next() ) {
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString()) + ";"); // kratki naziv podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString()) + ";"); // polni naziv podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString()) + " "); // naslov podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString()) + ", "); // naslov podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString()) + " "); // naslov podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString()) + ";"); // naslov podjetja
-				vsebina.append(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString()) + ";"); // davcna st. podjetja
-
-				// podatki za nadaljno obdelavo
-				kraj = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
-				tekoci_racun = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString());
-			}
-			else {
-				vsebina.append(";"); // kratki naziv podjetja
-				vsebina.append(";"); // polni naziv podjetja
-				vsebina.append(";"); // naslov podjetja
-				vsebina.append(";"); // davcna st. podjetja
-			}
-
-			// podatki o stranki
-			QSqlQuery sql_stranka;
-			sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stranka")).toString() + "'");
-			sql_stranka.exec();
-			if ( sql_stranka.next() ) {
-				if ( prevedi(sql_stranka.value(sql_stranka.record().indexOf("tip")).toString()) == "pravna" ) {
-					vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("ime")).toString()) + ";"); // ime stranke - podjetja
-					vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("priimek")).toString()) + ";"); // polno ime stranke - podjetja
-				}
-				else {
-					vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("ime")).toString()) + " "); // ime stranke - oseba
-					vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("priimek")).toString()) + ";"); // ime stranke - oseba
-					vsebina.append(";"); // prazna (polno ime) stranke - oseba
-				}
-				vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("naslov")).toString()) + " "); // naslov stranke
-				vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("naslov_st")).toString()) + ";"); // naslov stranke
-				vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("postna_stevilka")).toString()) + " "); // naslov stranke
-				vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("posta")).toString()) + ";"); // naslov stranke
-				vsebina.append(prevedi(sql_stranka.value(sql_stranka.record().indexOf("davcna")).toString()) + ";");
-			}
-
-			// podatki o racunu
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString()) + ";"); // racun, predracun
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("stevilka_racuna")).toString()) + ";"); // enako UPN sklicu
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datum_izdaje")).toString()) + ";"); // datum izdaje racuna
-			vsebina.append(kraj + ";"); // kraj izdaje racuna = kraj podjetja
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datum_pricetka")).toString()) + " - "); // obdobje storitve
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datum_konca")).toString()) + ";"); // obdobje storitve
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila")).toString()) + ";"); // datum roka placila
-			vsebina.append(tekoci_racun + ";"); // trr podjetja
-
-			// podatki o storitvah
-			QSqlQuery sql_storitve;
-			sql_storitve.prepare("SELECT * FROM opravila WHERE racun LIKE '" + sql_racun.value(sql_racun.record().indexOf("id")).toString() + "'");
-			sql_storitve.exec();
-			double znesekbrezddv;
-			double ddv20;
-			double ddv85;
-			double ddv00;
-			double popusti;
-			double znesek;
-			QString storitve;
-			while ( sql_storitve.next() ) {
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("storitev")).toString()) + ",");
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("ure")).toString()) + ",");
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("cena_ure")).toString()) + ",");
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popusti")).toString()) + ",");
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("ddv")).toString()) + ",");
-				storitve.append(prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesekbrezddv")).toString()) + ",");
-				storitve.append("\n");
-
-				znesekbrezddv = znesekbrezddv + prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesekbrezddv")).toString()).toDouble();
-				popusti = popusti + prevedi(sql_storitve.value(sql_storitve.record().indexOf("popusti")).toString()).toDouble();
-				znesek = znesek + prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesekskupaj")).toString()).toDouble();
-				if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("ddv")).toString()) == "20,0%" )
-					ddv20 = ddv20 + prevedi(sql_storitve.value(sql_storitve.record().indexOf("storitev")).toString()).toDouble();
-				if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("ddv")).toString()) == "8,5%" )
-					ddv85 = ddv85 + prevedi(sql_storitve.value(sql_storitve.record().indexOf("storitev")).toString()).toDouble();
-				if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("ddv")).toString()) == "0,0%" )
-					ddv00 = ddv00 + prevedi(sql_storitve.value(sql_storitve.record().indexOf("storitev")).toString()).toDouble();
-			}
-
-			// koncni znesek
-			vsebina += storitve + ";";
-			vsebina.append(QString::number(znesekbrezddv, 'f', 2) + ";");
-			vsebina.append(QString::number(ddv20, 'f', 2) + ";");
-			vsebina.append(QString::number(ddv85, 'f', 2) + ";");
-			vsebina.append(QString::number(ddv00, 'f', 2) + ";");
-			vsebina.append(QString::number(znesek, 'f', 2) + ";");
-
-			// podatki o izdajatelju racuna
-			vsebina.append(prevedi(sql_racun.value(sql_racun.record().indexOf("id")).toString())); // izdajatelj racuna
-		}
-	}
-	base.close();
-
-	QString pot_izvoza = QFileDialog::getSaveFileName(this, tr("Izberite kraj izvoza izdanega racuna"),
-														 QDir::homePath() + "/Documents/izdani-racuni.csv",
-														 "Urejena tekstovna datoteka (*.csv *.txt *.xml, xls, ods)");
-
-	QFile file1(pot_izvoza);
-	if (!file1.open(QIODevice::WriteOnly | QIODevice::Text))
-		return;
-	QTextStream out(&file1);
-	out << vsebina;
-	file1.close();
-*/
 
 }
 
@@ -854,7 +717,6 @@ void racun::prejem(QString besedilo) {
 		ui->btn_brisi_opravilo->setEnabled(false);
 
 		ui->rb_predplacilo->setEnabled(false);
-		ui->rb_predracun->setEnabled(false);
 		ui->rb_racun->setEnabled(false);
 		ui->rb_predracun->setChecked(true);
 
@@ -1022,14 +884,15 @@ void racun::prejem(QString besedilo) {
 				ui->txt_datum_izdaje_racuna->setEnabled(false);
 				ui->txt_rok_placila->setEnabled(false);
 				ui->txt_status_oddaje_racuna->setEnabled(false);
-				ui->txt_status_placila->setEnabled(false);
+				ui->txt_status_placila->setEnabled(true);					//
 				ui->txt_status_racunovodstva->setEnabled(false);
-				ui->txt_datum_oddaje_racuna->setEnabled(false);
+				ui->txt_status_oddaje_racuna->setEnabled(true);		//
+				ui->txt_datum_oddaje_racuna->setEnabled(true);		//
 				ui->txt_odstotek_avansa->setEnabled(false);
 				ui->txt_datum_placila_avansa->setEnabled(false);
 
 				ui->btn_izracunaj->setEnabled(false);
-				ui->btn_sprejmi->setEnabled(false);
+				ui->btn_sprejmi->setEnabled(true);								//
 				ui->btn_opravilo->setEnabled(false);
 				ui->btn_brisi_opravilo->setEnabled(false);
 			}
