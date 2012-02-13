@@ -71,6 +71,9 @@ prijava::prijava(QWidget *parent) :
 	vnesi_storitve();
 	vnesi_oddaja_racuna();
 
+	// posodobitev baze
+	posodobi_bazo();
+
 	ui->txt_uporabnik->setFocus();
 
 	QString app_path = QApplication::applicationDirPath();
@@ -2074,5 +2077,30 @@ QString prijava::pretvori(QString besedilo) {
 QString prijava::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+void prijava::posodobi_bazo() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery update;
+		update.prepare("ALTER TABLE opravila ADD COLUMN 'enota' TEXT");
+		update.exec();
+	}
+	base.close();
 
 }

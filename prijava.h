@@ -78,6 +78,9 @@ private slots:
 	void vnesi_storitve();
 	void vnesi_oddaja_racuna();
 
+	// posodobitev baze
+	void posodobi_bazo();
+
 signals:
 	void prenos1(QString besedilo);
 	void prenos2(QString besedilo);
