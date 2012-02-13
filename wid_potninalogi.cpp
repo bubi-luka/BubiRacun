@@ -984,1352 +984,1358 @@ void wid_potninalogi::print(QString id) {
 		QFont vstavljeno_besedilo("Arial", 10);
 		QFont stalno_besedilo("Arial", 10, QFont::Bold);
 
-	// narisemo glavo
-		QPen *svincnik = new QPen;
-
-		// dolocimo visino vrstice
-		besedilo = "To je testno besedilo";
-		painter.setFont(stalno_besedilo);
-		QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		visina_vrstice = velikost_besedila.height();
-		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_1; // razmik med vrsicami, za lazje branje dokumenta
-
-		// crta zgoraj
-		svincnik->setWidth(0.5);
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, 0, printer.width(), 0));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_polno_ime;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo odmik od crte
-		pozicija = razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami + printer.width() / 2, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta pod naslovom naloga
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() / 2, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami + printer.width() / 2;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = stevilka_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dodamo okvir besedila
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, 0, 0, pozicija)); // crta levo
-		painter.drawLine(QLine(printer.width() / 2, 0, printer.width() / 2, pozicija)); // crta sredina
-		painter.drawLine(QLine(printer.width(), 0, printer.width(), pozicija)); // crta desno
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija)); // crta spodaj
-
-	// podatki o prejemniku potnega naloga
-		// nastavimo nov razmik med vrsticami
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_ime + " " + prejemnik_priimek;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_naziv;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_naslov + " " + prejemnik_naslov_stevilka + ", " + prejemnik_postna_stevilka + " " + prejemnik_posta;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potovanje;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = namen_potnega_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = dnevi_potovanja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = "(" + prevozno_sredstvo + "): " + prejemnik_znamka_avtomobila + " " + prejemnik_model_avtomobila;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_polno_ime;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = cena_dnevnice.replace(".", ",") + " EUR";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + 15;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// manjka besedilo posebnih dodatkov, dokler ne izvemo, kaj to je...
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-	// tabela predujma
-		int prvotna_visina = pozicija; // ohranimo zacetno visino za prvo in drugo tretjino
-		int visina_sklopa = 0; // najprej narisemo desno tretjino, ki nosi najvec podatkov in je tudi najvisja
-
-		// prva vrstica je prazna
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Podpis odredbodajalca)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dve prazni vrstici
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Podpis prejemnika)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dolocimo koncno visino
-		visina_sklopa = pozicija;
-
-		// napisemo drugo tretjino
-		pozicija = prvotna_visina;
-
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// napisemo prvo tretjino
-		pozicija = prvotna_visina;
-
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-	// glava obracuna potnih stroskov
-		pozicija = visina_sklopa;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() - razmik_med_vrsticami, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta sredina
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_oseba_ime + " " + predlagatelj_oseba_priimek;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_posta + " " + predlagatelj_oseba_postna_stevilka;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta sredina
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// crti levo in desno
-		painter.drawLine(QLine(0, visina_sklopa, 0, pozicija)); // levo
-		painter.drawLine(QLine(printer.width(), visina_sklopa, printer.width(), pozicija)); // desno
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += razmik_med_vrsticami;
-
-	// obracun potnih stroskov
-		// nastavitev zacetne pozicije
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
-		prvotna_visina = pozicija;
-		double polje_1 = printer.width() * 7 / 8;
-		double polje_2 = printer.width() / 8;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Odsotnost)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(3 * polje_2 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dnevnice)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (cena dnevnic)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (skupaj)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, polje_2 * 5, pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Datum odhoda)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo
-		besedilo = datum_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (Ob)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dni)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (ur/minut)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Datum prihoda)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo
-		besedilo = datum_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (Ob)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dni)
-		besedilo = dnevi_potovanja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (ur/minut)
-		besedilo = QString::number(ure, 10) + " ur " + QString::number(minute, 10) + " minut";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dnevnice)
-		besedilo = stevilo_dnevnic;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (cena dnevnic)
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (skupaj)
-		besedilo = cena_dnevnice.replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// razmik med crtami
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// pokoncne crte
-		painter.drawLine(QLine(3 * polje_2, prvotna_visina, 3 * polje_2, pozicija));
-		painter.drawLine(QLine(5 * polje_2, prvotna_visina, 5 * polje_2, pozicija));
-		painter.drawLine(QLine(6 * polje_2, prvotna_visina, 6 * polje_2, pozicija));
-
-		prvotna_visina += visina_vrstice + razmik_med_vrsticami * 2;
-
-		painter.drawLine(QLine(1 * polje_2, prvotna_visina, 1 * polje_2, pozicija));
-		painter.drawLine(QLine(2 * polje_2, prvotna_visina, 2 * polje_2, pozicija));
-		painter.drawLine(QLine(4 * polje_2, prvotna_visina, 4 * polje_2, pozicija));
-
-		// vrnitev prvotne pozicije
-		prvotna_visina = prvotna_visina - visina_vrstice - razmik_med_vrsticami * 2 + 1;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (% zvisanja dnevnic)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = zvisanje_dnevnic;
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (skupaj)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = cena_dnevnice.replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (prevozni stroski)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo (št. km)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = razdalja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo (km x )
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = kilometrina;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo (EUR)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-
-		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo (relacija)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = relacija;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo (registracija)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_registrska_stevilka;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(kilometrina.toDouble() * razdalja.toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (drugi stroski)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// za vsak strosek dodamo novo vrstico
-		if ( ostali_stroski != "" ) {
-			do {
-				QString strosek = ostali_stroski.left(ostali_stroski.indexOf(";", 0));
-				ostali_stroski = ostali_stroski.right(ostali_stroski.length() - ostali_stroski.indexOf(";", 0) - 1);
-				QString ime_stroska = strosek.left(strosek.indexOf(",", 0));
-				QString vrednost_stroska = strosek.right(strosek.length() - strosek.indexOf(",", 0) - 1).replace(".", ",") + " EUR";
-				// nastavimo tip pisave
-				painter.setFont(vstavljeno_besedilo);
-				// narisemo besedilo
-				painter.drawText(polje_2 * 2, pozicija, polje_2 * 6, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, ime_stroska);
-				// narisemo besedilo
-				painter.drawText(polje_2 * 6, pozicija, polje_2 * 7, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, vrednost_stroska);
-				// nastavimo razmik med crto
-				pozicija += visina_vrstice + visina_vrstice * faktor_razmika_med_vrsticami_2;
-			} while ( ostali_stroski.indexOf(";", 0) != -1 );
-			// postavimo pozicijo na prejsnjo vrstico
-			pozicija -= visina_vrstice - visina_vrstice * faktor_razmika_med_vrsticami_2;
+		// narisemo glavo
+			QPen *svincnik = new QPen;
+
+			// dolocimo visino vrstice
+			besedilo = "To je testno besedilo";
+			painter.setFont(stalno_besedilo);
+			QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			visina_vrstice = velikost_besedila.height();
+			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_1; // razmik med vrsicami, za lazje branje dokumenta
+
+			// crta zgoraj
+			svincnik->setWidth(0.5);
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, 0, printer.width(), 0));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
 			// nastavimo besedilo
-			besedilo = znesek_drugih_stroskov.replace(".", ",");
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_polno_ime;
 			// nastavimo tip pisave
 			painter.setFont(vstavljeno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo odmik od crte
+			pozicija = razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami + printer.width() / 2, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta pod naslovom naloga
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() / 2, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami + printer.width() / 2;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = stevilka_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dodamo okvir besedila
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, 0, 0, pozicija)); // crta levo
+			painter.drawLine(QLine(printer.width() / 2, 0, printer.width() / 2, pozicija)); // crta sredina
+			painter.drawLine(QLine(printer.width(), 0, printer.width(), pozicija)); // crta desno
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija)); // crta spodaj
+
+		// podatki o prejemniku potnega naloga
+			// nastavimo nov razmik med vrsticami
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_ime + " " + prejemnik_priimek;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_naziv;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_naslov + " " + prejemnik_naslov_stevilka + ", " + prejemnik_postna_stevilka + " " + prejemnik_posta;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potovanje;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = namen_potnega_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = dnevi_potovanja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = "(" + prevozno_sredstvo + "): " + prejemnik_znamka_avtomobila + " " + prejemnik_model_avtomobila;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_polno_ime;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = cena_dnevnice.replace(".", ",") + " EUR";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + 15;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// manjka besedilo posebnih dodatkov, dokler ne izvemo, kaj to je...
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+		// tabela predujma
+			int prvotna_visina = pozicija; // ohranimo zacetno visino za prvo in drugo tretjino
+			int visina_sklopa = 0; // najprej narisemo desno tretjino, ki nosi najvec podatkov in je tudi najvisja
+
+			// prva vrstica je prazna
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Podpis odredbodajalca)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dve prazni vrstici
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Podpis prejemnika)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dolocimo koncno visino
+			visina_sklopa = pozicija;
+
+			// napisemo drugo tretjino
+			pozicija = prvotna_visina;
+
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// napisemo prvo tretjino
+			pozicija = prvotna_visina;
+
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+		// glava obracuna potnih stroskov
+			pozicija = visina_sklopa;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() - razmik_med_vrsticami, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta sredina
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_oseba_ime + " " + predlagatelj_oseba_priimek;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_posta + " " + predlagatelj_oseba_postna_stevilka;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta sredina
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// crti levo in desno
+			painter.drawLine(QLine(0, visina_sklopa, 0, pozicija)); // levo
+			painter.drawLine(QLine(printer.width(), visina_sklopa, printer.width(), pozicija)); // desno
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += razmik_med_vrsticami;
+
+		// obracun potnih stroskov
+			// nastavitev zacetne pozicije
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
+			prvotna_visina = pozicija;
+			double polje_1 = printer.width() * 7 / 8;
+			double polje_2 = printer.width() / 8;
+			double polje_3 = polje_2 / 2; // dnevi ne potrebujejo toliko prostora, ure/minute pa več
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Odsotnost)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(3 * polje_2 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dnevnice)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (cena dnevnic)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (skupaj)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, polje_2 * 5, pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Datum odhoda)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo
+			besedilo = datum_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (Ob)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dni)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (ur/minut)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Datum prihoda)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo
+			besedilo = datum_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (Ob)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dni)
+			besedilo = dnevi_potovanja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (ur/minut)
+			besedilo = QString::number(ure, 10) + " ur " + QString::number(minute, 10) + " minut";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dnevnice)
+			besedilo = stevilo_dnevnic;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (cena dnevnic)
+			if ( stevilo_dnevnic .toDouble() == 0.00 ) {
+				besedilo = "0,00";
+			}
+			else {
+				besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
+			}
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (skupaj)
+			besedilo = cena_dnevnice.replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// razmik med crtami
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// pokoncne crte
+			painter.drawLine(QLine(3 * polje_2, prvotna_visina, 3 * polje_2, pozicija));
+			painter.drawLine(QLine(5 * polje_2, prvotna_visina, 5 * polje_2, pozicija));
+			painter.drawLine(QLine(6 * polje_2, prvotna_visina, 6 * polje_2, pozicija));
+
+			prvotna_visina += visina_vrstice + razmik_med_vrsticami * 2;
+
+			painter.drawLine(QLine(1 * polje_2, prvotna_visina, 1 * polje_2, pozicija));
+			painter.drawLine(QLine(2 * polje_2, prvotna_visina, 2 * polje_2, pozicija));
+			painter.drawLine(QLine(4 * polje_2 - polje_3, prvotna_visina, 4 * polje_2 - polje_3, pozicija));
+
+			// vrnitev prvotne pozicije
+			prvotna_visina = prvotna_visina - visina_vrstice - razmik_med_vrsticami * 2 + 1;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (% zvisanja dnevnic)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = zvisanje_dnevnic;
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
 			// nastavimo polozaj na listu, kjer zapisemo besedilo
 			sirina_besedila = polje_1 + razmik_med_vrsticami;
 			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 			// narisemo besedilo
 			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		}
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (skupaj)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = cena_dnevnice.replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (skupaj v znesku)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, polje_1, 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (prevozni stroski)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo (št. km)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = razdalja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo (km x )
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = kilometrina;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo (EUR)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
 
-		// nastavimo besedilo (ostane za izplacilo)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// nastavimo besedilo (relacija)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = relacija;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
-		// pokoncne crte
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, prvotna_visina, 0, pozicija)); // levo
-		painter.drawLine(QLine(polje_1, prvotna_visina, polje_1, pozicija)); // sredina
-		painter.drawLine(QLine(printer.width(), prvotna_visina, printer.width(), pozicija)); // desno
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-	// noga
-		// nastavimo nov razmik
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (registracija)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_registrska_stevilka;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(kilometrina.toDouble() * razdalja.toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// zapomnimo si zgornjo visino
-		prvotna_visina = pozicija;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// leva tretjina
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_posta + " ";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (drugi stroski)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// za vsak strosek dodamo novo vrstico
+			if ( ostali_stroski != "" ) {
+				do {
+					QString strosek = ostali_stroski.left(ostali_stroski.indexOf(";", 0));
+					ostali_stroski = ostali_stroski.right(ostali_stroski.length() - ostali_stroski.indexOf(";", 0) - 1);
+					QString ime_stroska = strosek.left(strosek.indexOf(",", 0));
+					QString vrednost_stroska = strosek.right(strosek.length() - strosek.indexOf(",", 0) - 1).replace(".", ",") + " EUR";
+					// nastavimo tip pisave
+					painter.setFont(vstavljeno_besedilo);
+					// narisemo besedilo
+					painter.drawText(polje_2 * 2, pozicija, polje_2 * 6, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, ime_stroska);
+					// narisemo besedilo
+					painter.drawText(polje_2 * 6, pozicija, polje_2 * 7, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, vrednost_stroska);
+					// nastavimo razmik med crto
+					pozicija += visina_vrstice + visina_vrstice * faktor_razmika_med_vrsticami_2;
+				} while ( ostali_stroski.indexOf(";", 0) != -1 );
+				// postavimo pozicijo na prejsnjo vrstico
+				pozicija -= visina_vrstice - visina_vrstice * faktor_razmika_med_vrsticami_2;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+				// nastavimo besedilo
+				besedilo = znesek_drugih_stroskov.replace(".", ",");
+				// nastavimo tip pisave
+				painter.setFont(vstavljeno_besedilo);
+				// nastavimo polozaj na listu, kjer zapisemo besedilo
+				sirina_besedila = polje_1 + razmik_med_vrsticami;
+				velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// narisemo besedilo
+				painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			}
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (skupaj v znesku)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, polje_1, 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Likvidator)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (ostane za izplacilo)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// pokoncne crte
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, prvotna_visina, 0, pozicija)); // levo
+			painter.drawLine(QLine(polje_1, prvotna_visina, polje_1, pozicija)); // sredina
+			painter.drawLine(QLine(printer.width(), prvotna_visina, printer.width(), pozicija)); // desno
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		// noga
+			// nastavimo nov razmik
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
+			// zapomnimo si zgornjo visino
+			prvotna_visina = pozicija;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// leva tretjina
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Blagajnik)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_posta + " ";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// napisemo drugo tretjino
-		pozicija = prvotna_visina;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
 
-		// napisemo tretjo tretjino
-		pozicija = prvotna_visina;
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (Likvidator)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Predlagatelj racuna)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo (Odredbodajalec)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (Blagajnik)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// napisemo drugo tretjino
+			pozicija = prvotna_visina;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Prejemnik)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// napisemo tretjo tretjino
+			pozicija = prvotna_visina;
+
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Predlagatelj racuna)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Odredbodajalec)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo odmik od crte
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Prejemnik)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		painter.end();
 
@@ -2651,1352 +2657,1358 @@ void wid_potninalogi::printpdf(QString id) {
 		QFont vstavljeno_besedilo("Arial", 10);
 		QFont stalno_besedilo("Arial", 10, QFont::Bold);
 
-	// narisemo glavo
-		QPen *svincnik = new QPen;
-
-		// dolocimo visino vrstice
-		besedilo = "To je testno besedilo";
-		painter.setFont(stalno_besedilo);
-		QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		visina_vrstice = velikost_besedila.height();
-		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_1; // razmik med vrsicami, za lazje branje dokumenta
-
-		// crta zgoraj
-		svincnik->setWidth(0.5);
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, 0, printer.width(), 0));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_polno_ime;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo odmik od crte
-		pozicija = razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami + printer.width() / 2, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta pod naslovom naloga
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() / 2, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami + printer.width() / 2;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = stevilka_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dodamo okvir besedila
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, 0, 0, pozicija)); // crta levo
-		painter.drawLine(QLine(printer.width() / 2, 0, printer.width() / 2, pozicija)); // crta sredina
-		painter.drawLine(QLine(printer.width(), 0, printer.width(), pozicija)); // crta desno
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija)); // crta spodaj
-
-	// podatki o prejemniku potnega naloga
-		// nastavimo nov razmik med vrsticami
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_ime + " " + prejemnik_priimek;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_naziv;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_naslov + " " + prejemnik_naslov_stevilka + ", " + prejemnik_postna_stevilka + " " + prejemnik_posta;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potovanje;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = namen_potnega_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = dnevi_potovanja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = "(" + prevozno_sredstvo + "): " + prejemnik_znamka_avtomobila + " " + prejemnik_model_avtomobila;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_polno_ime;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = cena_dnevnice.replace(".", ",") + " EUR";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + 15;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// manjka besedilo posebnih dodatkov, dokler ne izvemo, kaj to je...
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-	// tabela predujma
-		int prvotna_visina = pozicija; // ohranimo zacetno visino za prvo in drugo tretjino
-		int visina_sklopa = 0; // najprej narisemo desno tretjino, ki nosi najvec podatkov in je tudi najvisja
-
-		// prva vrstica je prazna
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Podpis odredbodajalca)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dve prazni vrstici
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Podpis prejemnika)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// dolocimo koncno visino
-		visina_sklopa = pozicija;
-
-		// napisemo drugo tretjino
-		pozicija = prvotna_visina;
-
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// napisemo prvo tretjino
-		pozicija = prvotna_visina;
-
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-	// glava obracuna potnih stroskov
-		pozicija = visina_sklopa;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() - razmik_med_vrsticami, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta sredina
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_oseba_ime + " " + predlagatelj_oseba_priimek;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_posta + " " + predlagatelj_oseba_postna_stevilka;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta sredina
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// crti levo in desno
-		painter.drawLine(QLine(0, visina_sklopa, 0, pozicija)); // levo
-		painter.drawLine(QLine(printer.width(), visina_sklopa, printer.width(), pozicija)); // desno
-
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += razmik_med_vrsticami;
-
-	// obracun potnih stroskov
-		// nastavitev zacetne pozicije
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
-		prvotna_visina = pozicija;
-		double polje_1 = printer.width() * 7 / 8;
-		double polje_2 = printer.width() / 8;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Odsotnost)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(3 * polje_2 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dnevnice)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (cena dnevnic)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (skupaj)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
-
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, polje_2 * 5, pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Datum odhoda)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo
-		besedilo = datum_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (Ob)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_odhoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dni)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (ur/minut)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (Datum prihoda)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo
-		besedilo = datum_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (Ob)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = ura_prihoda;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dni)
-		besedilo = dnevi_potovanja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (ur/minut)
-		besedilo = QString::number(ure, 10) + " ur " + QString::number(minute, 10) + " minut";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (dnevnice)
-		besedilo = stevilo_dnevnic;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (cena dnevnic)
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nastavimo besedilo (skupaj)
-		besedilo = cena_dnevnice.replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// razmik med crtami
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// pokoncne crte
-		painter.drawLine(QLine(3 * polje_2, prvotna_visina, 3 * polje_2, pozicija));
-		painter.drawLine(QLine(5 * polje_2, prvotna_visina, 5 * polje_2, pozicija));
-		painter.drawLine(QLine(6 * polje_2, prvotna_visina, 6 * polje_2, pozicija));
-
-		prvotna_visina += visina_vrstice + razmik_med_vrsticami * 2;
-
-		painter.drawLine(QLine(1 * polje_2, prvotna_visina, 1 * polje_2, pozicija));
-		painter.drawLine(QLine(2 * polje_2, prvotna_visina, 2 * polje_2, pozicija));
-		painter.drawLine(QLine(4 * polje_2, prvotna_visina, 4 * polje_2, pozicija));
-
-		// vrnitev prvotne pozicije
-		prvotna_visina = prvotna_visina - visina_vrstice - razmik_med_vrsticami * 2 + 1;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (% zvisanja dnevnic)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = zvisanje_dnevnic;
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (skupaj)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = cena_dnevnice.replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (prevozni stroski)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo (št. km)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = razdalja;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo (km x )
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = kilometrina;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo (EUR)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-
-		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo (relacija)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = relacija;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-
-		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// nastavimo besedilo (registracija)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = prejemnik_registrska_stevilka;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(kilometrina.toDouble() * razdalja.toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
-
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
-
-		// nastavimo besedilo (drugi stroski)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(razmik_med_vrsticami, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// za vsak strosek dodamo novo vrstico
-		if ( ostali_stroski != "" ) {
-			do {
-				QString strosek = ostali_stroski.left(ostali_stroski.indexOf(";", 0));
-				ostali_stroski = ostali_stroski.right(ostali_stroski.length() - ostali_stroski.indexOf(";", 0) - 1);
-				QString ime_stroska = strosek.left(strosek.indexOf(",", 0));
-				QString vrednost_stroska = strosek.right(strosek.length() - strosek.indexOf(",", 0) - 1).replace(".", ",") + " EUR";
-				// nastavimo tip pisave
-				painter.setFont(vstavljeno_besedilo);
-				// narisemo besedilo
-				painter.drawText(polje_2 * 2, pozicija, polje_2 * 6, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, ime_stroska);
-				// narisemo besedilo
-				painter.drawText(polje_2 * 6, pozicija, polje_2 * 7, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, vrednost_stroska);
-				// nastavimo razmik med crto
-				pozicija += visina_vrstice + visina_vrstice * faktor_razmika_med_vrsticami_2;
-			} while ( ostali_stroski.indexOf(";", 0) != -1 );
-			// postavimo pozicijo na prejsnjo vrstico
-			pozicija -= visina_vrstice - visina_vrstice * faktor_razmika_med_vrsticami_2;
+		// narisemo glavo
+			QPen *svincnik = new QPen;
+
+			// dolocimo visino vrstice
+			besedilo = "To je testno besedilo";
+			painter.setFont(stalno_besedilo);
+			QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			visina_vrstice = velikost_besedila.height();
+			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_1; // razmik med vrsicami, za lazje branje dokumenta
+
+			// crta zgoraj
+			svincnik->setWidth(0.5);
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, 0, printer.width(), 0));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
 			// nastavimo besedilo
-			besedilo = znesek_drugih_stroskov.replace(".", ",");
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_polno_ime;
 			// nastavimo tip pisave
 			painter.setFont(vstavljeno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, printer.width() / 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo odmik od crte
+			pozicija = razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami + printer.width() / 2, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta pod naslovom naloga
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() / 2, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami + printer.width() / 2;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = stevilka_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dodamo okvir besedila
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, 0, 0, pozicija)); // crta levo
+			painter.drawLine(QLine(printer.width() / 2, 0, printer.width() / 2, pozicija)); // crta sredina
+			painter.drawLine(QLine(printer.width(), 0, printer.width(), pozicija)); // crta desno
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija)); // crta spodaj
+
+		// podatki o prejemniku potnega naloga
+			// nastavimo nov razmik med vrsticami
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_ime + " " + prejemnik_priimek;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_naziv;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_naslov + " " + prejemnik_naslov_stevilka + ", " + prejemnik_postna_stevilka + " " + prejemnik_posta;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potovanje;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = namen_potnega_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = dnevi_potovanja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = "(" + prevozno_sredstvo + "): " + prejemnik_znamka_avtomobila + " " + prejemnik_model_avtomobila;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_polno_ime;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = cena_dnevnice.replace(".", ",") + " EUR";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + 15;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// manjka besedilo posebnih dodatkov, dokler ne izvemo, kaj to je...
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+		// tabela predujma
+			int prvotna_visina = pozicija; // ohranimo zacetno visino za prvo in drugo tretjino
+			int visina_sklopa = 0; // najprej narisemo desno tretjino, ki nosi najvec podatkov in je tudi najvisja
+
+			// prva vrstica je prazna
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Podpis odredbodajalca)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dve prazni vrstici
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() * 2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Podpis prejemnika)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// dolocimo koncno visino
+			visina_sklopa = pozicija;
+
+			// napisemo drugo tretjino
+			pozicija = prvotna_visina;
+
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// napisemo prvo tretjino
+			pozicija = prvotna_visina;
+
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+		// glava obracuna potnih stroskov
+			pozicija = visina_sklopa;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() - razmik_med_vrsticami, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta sredina
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_oseba_ime + " " + predlagatelj_oseba_priimek;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_posta + " " + predlagatelj_oseba_postna_stevilka;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta sredina
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// crti levo in desno
+			painter.drawLine(QLine(0, visina_sklopa, 0, pozicija)); // levo
+			painter.drawLine(QLine(printer.width(), visina_sklopa, printer.width(), pozicija)); // desno
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += razmik_med_vrsticami;
+
+		// obracun potnih stroskov
+			// nastavitev zacetne pozicije
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_1;
+			prvotna_visina = pozicija;
+			double polje_1 = printer.width() * 7 / 8;
+			double polje_2 = printer.width() / 8;
+			double polje_3 = polje_2 / 2; // dnevi ne potrebujejo toliko prostora, ure/minute pa več
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Odsotnost)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(3 * polje_2 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dnevnice)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (cena dnevnic)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (skupaj)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, polje_2 * 5, pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Datum odhoda)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo
+			besedilo = datum_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (Ob)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_odhoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dni)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (ur/minut)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Datum prihoda)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo
+			besedilo = datum_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 + sirina_besedila, pozicija, 2 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (Ob)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_2 * 2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = ura_prihoda;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, 3 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dni)
+			besedilo = dnevi_potovanja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (ur/minut)
+			besedilo = QString::number(ure, 10) + " ur " + QString::number(minute, 10) + " minut";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (dnevnice)
+			besedilo = stevilo_dnevnic;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (cena dnevnic)
+			if ( stevilo_dnevnic .toDouble() == 0.00 ) {
+				besedilo = "0,00";
+			}
+			else {
+				besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
+			}
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 6 + sirina_besedila, pozicija, 7 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// nastavimo besedilo (skupaj)
+			besedilo = cena_dnevnice.replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			// narisemo besedilo
+			painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+			// razmik med crtami
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// pokoncne crte
+			painter.drawLine(QLine(3 * polje_2, prvotna_visina, 3 * polje_2, pozicija));
+			painter.drawLine(QLine(5 * polje_2, prvotna_visina, 5 * polje_2, pozicija));
+			painter.drawLine(QLine(6 * polje_2, prvotna_visina, 6 * polje_2, pozicija));
+
+			prvotna_visina += visina_vrstice + razmik_med_vrsticami * 2;
+
+			painter.drawLine(QLine(1 * polje_2, prvotna_visina, 1 * polje_2, pozicija));
+			painter.drawLine(QLine(2 * polje_2, prvotna_visina, 2 * polje_2, pozicija));
+			painter.drawLine(QLine(4 * polje_2 - polje_3, prvotna_visina, 4 * polje_2 - polje_3, pozicija));
+
+			// vrnitev prvotne pozicije
+			prvotna_visina = prvotna_visina - visina_vrstice - razmik_med_vrsticami * 2 + 1;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (% zvisanja dnevnic)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = zvisanje_dnevnic;
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
 			// nastavimo polozaj na listu, kjer zapisemo besedilo
 			sirina_besedila = polje_1 + razmik_med_vrsticami;
 			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 			// narisemo besedilo
 			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		}
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (skupaj)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = cena_dnevnice.replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (skupaj v znesku)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, polje_1, 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// razmik med crtami
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (prevozni stroski)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo (št. km)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = razdalja;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo (km x )
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = kilometrina;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo (EUR)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
 
-		// nastavimo besedilo (ostane za izplacilo)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		// nastavimo besedilo
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = polje_1 + razmik_med_vrsticami;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
+			// nastavimo besedilo (relacija)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = relacija;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
-		// pokoncne crte
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, prvotna_visina, 0, pozicija)); // levo
-		painter.drawLine(QLine(polje_1, prvotna_visina, polje_1, pozicija)); // sredina
-		painter.drawLine(QLine(printer.width(), prvotna_visina, printer.width(), pozicija)); // desno
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-	// noga
-		// nastavimo nov razmik
-		razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (registracija)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 2 * polje_2 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = prejemnik_registrska_stevilka;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(kilometrina.toDouble() * razdalja.toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// zapomnimo si zgornjo visino
-		prvotna_visina = pozicija;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// leva tretjina
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = predlagatelj_podjetje_posta + " ";
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo besedilo
-		besedilo = datum_naloga;
-		// nastavimo tip pisave
-		painter.setFont(vstavljeno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (drugi stroski)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(razmik_med_vrsticami, pozicija, polje_2 * 2, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// za vsak strosek dodamo novo vrstico
+			if ( ostali_stroski != "" ) {
+				do {
+					QString strosek = ostali_stroski.left(ostali_stroski.indexOf(";", 0));
+					ostali_stroski = ostali_stroski.right(ostali_stroski.length() - ostali_stroski.indexOf(";", 0) - 1);
+					QString ime_stroska = strosek.left(strosek.indexOf(",", 0));
+					QString vrednost_stroska = strosek.right(strosek.length() - strosek.indexOf(",", 0) - 1).replace(".", ",") + " EUR";
+					// nastavimo tip pisave
+					painter.setFont(vstavljeno_besedilo);
+					// narisemo besedilo
+					painter.drawText(polje_2 * 2, pozicija, polje_2 * 6, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, ime_stroska);
+					// narisemo besedilo
+					painter.drawText(polje_2 * 6, pozicija, polje_2 * 7, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, vrednost_stroska);
+					// nastavimo razmik med crto
+					pozicija += visina_vrstice + visina_vrstice * faktor_razmika_med_vrsticami_2;
+				} while ( ostali_stroski.indexOf(";", 0) != -1 );
+				// postavimo pozicijo na prejsnjo vrstico
+				pozicija -= visina_vrstice - visina_vrstice * faktor_razmika_med_vrsticami_2;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+				// nastavimo besedilo
+				besedilo = znesek_drugih_stroskov.replace(".", ",");
+				// nastavimo tip pisave
+				painter.setFont(vstavljeno_besedilo);
+				// nastavimo polozaj na listu, kjer zapisemo besedilo
+				sirina_besedila = polje_1 + razmik_med_vrsticami;
+				velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// narisemo besedilo
+				painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			}
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// nastavimo polozaj na listu, kjer zapisemo besedilo
-		sirina_besedila = 0;
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// narisemo besedilo
-		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo (skupaj v znesku)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, polje_1, 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Likvidator)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// razmik med crtami
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (ostane za izplacilo)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, visina_vrstice, Qt::AlignRight | Qt::TextWordWrap, besedilo);
+			// nastavimo besedilo
+			besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = polje_1 + razmik_med_vrsticami;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width(), pozicija));
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// pokoncne crte
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, prvotna_visina, 0, pozicija)); // levo
+			painter.drawLine(QLine(polje_1, prvotna_visina, polje_1, pozicija)); // sredina
+			painter.drawLine(QLine(printer.width(), prvotna_visina, printer.width(), pozicija)); // desno
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		// noga
+			// nastavimo nov razmik
+			razmik_med_vrsticami = visina_vrstice * faktor_razmika_med_vrsticami_2;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
+			// zapomnimo si zgornjo visino
+			prvotna_visina = pozicija;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// leva tretjina
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Blagajnik)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = predlagatelj_podjetje_posta + " ";
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = datum_naloga;
+			// nastavimo tip pisave
+			painter.setFont(vstavljeno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// napisemo drugo tretjino
-		pozicija = prvotna_visina;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nekaj praznih vrstic
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
 
-		// napisemo tretjo tretjino
-		pozicija = prvotna_visina;
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (Likvidator)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Predlagatelj racuna)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// prazna vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// crta zgoraj
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(0, pozicija, printer.width() / 3, pozicija));
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
 
-		// nastavimo besedilo (Odredbodajalec)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo (Blagajnik)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width() / 3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// napisemo drugo tretjino
+			pozicija = prvotna_visina;
 
-		// crta zgoraj
-		painter.setPen(*svincnik);
-		painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+			// nekaj praznih vrstic
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo odmik od crte
-		pozicija += razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo (Prejemnik)
-		besedilo = potni_nalog.readLine();
-		// nastavimo tip pisave
-		painter.setFont(stalno_besedilo);
-		// narisemo besedilo
-		painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// nastavimo novo pozicijo besedila
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+			// nastavimo besedilo
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(0, pozicija, printer.width(), visina_vrstice, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// napisemo tretjo tretjino
+			pozicija = prvotna_visina;
+
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Predlagatelj racuna)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// prazna vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Odredbodajalec)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// nastavimo odmik od crte
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// crta zgoraj
+			painter.setPen(*svincnik);
+			painter.drawLine(QLine(printer.width() *2 / 3, pozicija, printer.width(), pozicija));
+
+			// nastavimo odmik od crte
+			pozicija += razmik_med_vrsticami;
+
+			// nastavimo besedilo (Prejemnik)
+			besedilo = potni_nalog.readLine();
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// narisemo besedilo
+			painter.drawText(printer.width() * 2 / 3, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo novo pozicijo besedila
+			pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		painter.end();
 
