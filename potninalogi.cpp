@@ -691,9 +691,7 @@ void potninalogi::on_btn_sprejmi_clicked() {
 				sql_vnesi_uporabnika.bindValue(20, pretvori("0"));
 			}
 
-			indeks = indeks.left(indeks.indexOf(") ", 0));
-			indeks = pretvori(indeks);
-			sql_vnesi_uporabnika.bindValue(21, indeks);
+			sql_vnesi_uporabnika.bindValue(21, vApp->firm());
 
 			indeks = prevedi(ui->txt_predlagatelj_izbira_oseba->currentText());
 			indeks = indeks.left(indeks.indexOf(") ", 0));

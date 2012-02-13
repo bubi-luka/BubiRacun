@@ -2,6 +2,8 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QPrinter>
+#include <QPrintDialog>
+#include <QFileDialog>
 
 #include "wid_prejetiracuni.h"
 #include "ui_wid_prejetiracuni.h"
@@ -582,13 +584,13 @@ void wid_prejetiracuni::print(QString id) {
 
 	QPrinter printer;
 
-//	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-//	dialog->setWindowTitle(tr("Natisni prejet racun"));
+	QPrintDialog *dialog = new QPrintDialog(&printer, this);
+	dialog->setWindowTitle(tr("Natisni prejet racun"));
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
-//	if (dialog->exec() == QDialog::Accepted) {
+	if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
 
 		if (! painter.begin(&printer))  { // failed to open file
@@ -736,7 +738,7 @@ void wid_prejetiracuni::print(QString id) {
 		pozicija += velikost_besedila.height();
 
 		painter.end();
-//	}
+	}
 
 }
 
@@ -748,6 +750,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 	QString izdajatelj_racuna = "";
 	QString zadeva = "";
 	QString placnik = "";
+	QString placnik_logotip = "";
 	QString projekt = "";
 	QString datum_prejema = "";
 	QString datum_placila = "";
@@ -821,6 +824,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 			sql_placnik.exec();
 			if ( sql_placnik.next() ) {
 				placnik += prevedi(sql_placnik.value(sql_placnik.record().indexOf("polnoime")).toString());
+				placnik_logotip = prevedi(sql_placnik.value(sql_placnik.record().indexOf("logotip")).toString());
 			}
 
 			QSqlQuery sql_projekt;
@@ -841,9 +845,17 @@ void wid_prejetiracuni::printpdf(QString id) {
 		*/
 
 	// ustvariti pot do ustrezne mape
-		QDir mapa(QDir::homePath());
-		mapa.mkdir("BubiRacun-Dokumenti");
-		mapa.cd("BubiRacun-Dokumenti");
+		QString mapa_za_shranjevanje = "";
+		mapa_za_shranjevanje = placnik_logotip.left(placnik_logotip.lastIndexOf("/")); // izreze logotip
+		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																														 "Izberite mapo za shranjevanje dokumentov",
+																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+		if ( mapa_za_shranjevanje == "" ) {
+			return;
+		}
+
+		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("prejeti-racuni");
 		mapa.cd("prejeti-racuni");
 		mapa.mkdir(datum_placila.right(4));

@@ -3,6 +3,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPainter>
+#include <QFileDialog>
 
 #include "wid_potninalogi.h"
 #include "ui_wid_potninalogi.h"
@@ -957,14 +958,14 @@ void wid_potninalogi::print(QString id) {
 	// podatki o printerju
 
 	QPrinter printer;
-//	printer.setPaperSize(QPrinter::A4);
-//	printer.setOrientation(QPrinter::Portrait);
+	printer.setPaperSize(QPrinter::A4);
+	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
-//	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-//	dialog->setWindowTitle(tr("Print Document"));
+	QPrintDialog *dialog = new QPrintDialog(&printer, this);
+	dialog->setWindowTitle(tr("Print Document"));
 
-//	if (dialog->exec() == QDialog::Accepted) {
+	if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
 
 		if (! painter.begin(&printer))  { // failed to open file
@@ -2339,7 +2340,7 @@ void wid_potninalogi::print(QString id) {
 
 		painter.end();
 
-//	}
+	}
 
 }
 
@@ -2374,6 +2375,7 @@ void wid_potninalogi::printpdf(QString id) {
 	QString predlagatelj_podjetje_naslov_st;
 	QString predlagatelj_podjetje_postna_st;
 	QString predlagatelj_podjetje_posta;
+	QString predlagatelj_podjetje_logotip;
 
 	// podatki o predlagatelju - oseba
 	QString predlagatelj_oseba_ime;
@@ -2474,6 +2476,7 @@ void wid_potninalogi::printpdf(QString id) {
 					predlagatelj_podjetje_naslov_st = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("naslov_st")).toString());
 					predlagatelj_podjetje_postna_st = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("postna_stevilka")).toString());
 					predlagatelj_podjetje_posta = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("posta")).toString());
+					predlagatelj_podjetje_logotip = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("logotip")).toString());
 				}
 
 				// podatki o predlagatelju - oseba
@@ -2616,9 +2619,17 @@ void wid_potninalogi::printpdf(QString id) {
 		*/
 
 	// ustvariti pot do ustrezne mape
-		QDir mapa(QDir::homePath());
-		mapa.mkdir("BubiRacun-Dokumenti");
-		mapa.cd("BubiRacun-Dokumenti");
+		QString mapa_za_shranjevanje = "";
+		mapa_za_shranjevanje = predlagatelj_podjetje_logotip.left(predlagatelj_podjetje_logotip.lastIndexOf("/")); // izreze logotip
+		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																														 "Izberite mapo za shranjevanje dokumentov",
+																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+		if ( mapa_za_shranjevanje == "" ) {
+			return;
+		}
+
+		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("potni-nalogi");
 		mapa.cd("potni-nalogi");
 		mapa.mkdir(datum_naloga.right(4));

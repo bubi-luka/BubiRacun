@@ -4,6 +4,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDir>
+#include <QFileDialog>
 
 #include "wid_racuni.h"
 #include "ui_wid_racuni.h"
@@ -1012,13 +1013,13 @@ void wid_racuni::print(QString id) {
 
 	QPrinter printer;
 
-//	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-//	dialog->setWindowTitle(tr("Natisni racun"));
+	QPrintDialog *dialog = new QPrintDialog(&printer, this);
+	dialog->setWindowTitle(tr("Natisni racun"));
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
-//	 if (dialog->exec() == QDialog::Accepted) {
+	 if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
 
 		if (! painter.begin(&printer))  { // failed to open file
@@ -2195,7 +2196,7 @@ void wid_racuni::print(QString id) {
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		painter.end();
-//	}
+	}
 
 }
 
@@ -2408,9 +2409,17 @@ void wid_racuni::printpdf(QString id) {
 		*/
 
 	// ustvariti pot do ustrezne mape
-		QDir mapa(QDir::homePath());
-		mapa.mkdir("BubiRacun-Dokumenti");
-		mapa.cd("BubiRacun-Dokumenti");
+		QString mapa_za_shranjevanje = "";
+		mapa_za_shranjevanje = podjetje_logo.left(podjetje_logo.lastIndexOf("/")); // izreze logotip
+		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																														 "Izberite mapo za shranjevanje dokumentov",
+																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+		if ( mapa_za_shranjevanje == "" ) {
+			return;
+		}
+
+		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("izdani-racuni");
 		mapa.cd("izdani-racuni");
 		mapa.mkdir(racun_datum_izdaje.right(4));
