@@ -1732,7 +1732,7 @@ void racun::print(QString id) {
 			podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
 			podjetje_trr = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString());
 			podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString());
-			if ( podjetje_telefon == "" ) {
+			if ( podjetje_telefon == "+(0)/--" ) {
 				podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
 			}
 
