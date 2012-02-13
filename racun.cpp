@@ -885,7 +885,7 @@ void racun::prejem(QString besedilo) {
 				ui->txt_rok_placila->setEnabled(false);
 				ui->txt_status_oddaje_racuna->setEnabled(false);
 				ui->txt_status_placila->setEnabled(true);					//
-				ui->txt_status_racunovodstva->setEnabled(false);
+				ui->txt_status_racunovodstva->setEnabled(true);		//
 				ui->txt_status_oddaje_racuna->setEnabled(true);		//
 				ui->txt_datum_oddaje_racuna->setEnabled(true);		//
 				ui->txt_odstotek_avansa->setEnabled(false);
@@ -912,7 +912,7 @@ void racun::prejem(QString besedilo) {
 				ui->txt_rok_placila->setEnabled(false);
 				ui->txt_status_oddaje_racuna->setEnabled(false);
 				ui->txt_status_placila->setEnabled(false);
-				ui->txt_status_racunovodstva->setEnabled(false);
+				ui->txt_status_racunovodstva->setEnabled(true);		//
 				ui->txt_datum_oddaje_racuna->setEnabled(false);
 				ui->txt_odstotek_avansa->setEnabled(false);
 			//		ui->txt_datum_placila_avansa->setEnabled(false);
@@ -1148,8 +1148,8 @@ void racun::on_rb_predracun_toggled() {
 		ui->label_10->setHidden(false);
 		ui->txt_status_placila->setHidden(true);
 		ui->label_6->setHidden(true);
-		ui->txt_status_racunovodstva->setHidden(true);
-		ui->label_7->setHidden(true);
+		ui->txt_status_racunovodstva->setHidden(false);
+		ui->label_7->setHidden(false);
 
 		ui->txt_odstotek_avansa->setEnabled(true);
 
