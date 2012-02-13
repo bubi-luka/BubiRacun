@@ -1962,6 +1962,7 @@ void potninalogi::print(QString id) {
 		prvotna_visina = pozicija;
 		double polje_1 = printer.width() * 7 / 8;
 		double polje_2 = printer.width() / 8;
+		double polje_3 = polje_2 / 2; // dnevi ne potrebujejo toliko prostora, ure/minute pa več
 
 		// crta zgoraj
 		painter.setPen(*svincnik);
@@ -2004,7 +2005,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
+		painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice * 2, Qt::AlignJustify | Qt::AlignVCenter | Qt::TextWordWrap, besedilo);
 
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
@@ -2060,7 +2061,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// nastavimo besedilo (ur/minut)
 		besedilo = potni_nalog.readLine();
@@ -2069,7 +2070,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
@@ -2125,7 +2126,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		painter.drawText(polje_2 * 3 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila - polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// nastavimo besedilo (ur/minut)
 		besedilo = QString::number(ure, 10) + " ur " + QString::number(minute, 10) + " minut";
@@ -2134,7 +2135,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(4 * polje_2 + sirina_besedila, pozicija, 5 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// nastavimo besedilo (dnevnice)
 		besedilo = stevilo_dnevnic;
@@ -2146,7 +2147,12 @@ void potninalogi::print(QString id) {
 		painter.drawText(polje_2 * 5 + sirina_besedila, pozicija, 6 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// nastavimo besedilo (cena dnevnic)
-		besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
+		if ( stevilo_dnevnic .toDouble() == 0.00 ) {
+			besedilo = "0,00";
+		}
+		else {
+			besedilo = QString::number(cena_dnevnice.replace(",", ".").toDouble() / stevilo_dnevnic.toDouble(), 'f', 2).replace(".", ",");
+		}
 		// nastavimo tip pisave
 		painter.setFont(vstavljeno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
@@ -2161,7 +2167,7 @@ void potninalogi::print(QString id) {
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = razmik_med_vrsticami;
 		// narisemo besedilo
-		painter.drawText(polje_2 * 7 + sirina_besedila, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		painter.drawText(polje_2 * 7 + sirina_besedila + 5, pozicija, 8 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
 		// razmik med crtami
 		pozicija += visina_vrstice + razmik_med_vrsticami;
@@ -2175,7 +2181,7 @@ void potninalogi::print(QString id) {
 
 		painter.drawLine(QLine(1 * polje_2, prvotna_visina, 1 * polje_2, pozicija));
 		painter.drawLine(QLine(2 * polje_2, prvotna_visina, 2 * polje_2, pozicija));
-		painter.drawLine(QLine(4 * polje_2, prvotna_visina, 4 * polje_2, pozicija));
+		painter.drawLine(QLine(4 * polje_2 - polje_3, prvotna_visina, 4 * polje_2 - polje_3, pozicija));
 
 		// vrnitev prvotne pozicije
 		prvotna_visina = prvotna_visina - visina_vrstice - razmik_med_vrsticami * 2 + 1;
