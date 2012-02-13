@@ -187,8 +187,8 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 		ui->txt_izberi_osebo->setHidden(true);
 		ui->txt_izberi_projekt->setHidden(true);
 
-		// omogocimo urejanje projektov
-		ui->cb_projekt->setChecked(true);
+		// onemogocimo urejanje projektov
+		ui->cb_projekt->setChecked(false);
 
 }
 
@@ -508,6 +508,7 @@ void prejetiracuni::on_cb_projekt_toggled(bool stanje) {
 	else {
 		ui->txt_izberi_projekt->setHidden(true);
 		ui->txt_projekt->setHidden(false);
+		ui->txt_projekt->setText("");
 	}
 
 }
@@ -597,6 +598,13 @@ void prejetiracuni::prejem(QString besedilo) {
 																	 prevedi(sql_projekt.value(sql_projekt.record().indexOf("naslov_projekta")).toString()));
 				}
 				ui->txt_izberi_projekt->setCurrentIndex(ui->txt_izberi_projekt->findText(ui->txt_projekt->text()));
+
+				if ( ui->txt_projekt->text() == "" ) {
+					ui->cb_projekt->setChecked(false);
+				}
+				else {
+					ui->cb_projekt->setChecked(true);
+				}
 
 				ui->txt_znesek_brez_ddv_0->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_00")).toString()));
 				ui->txt_znesek_brez_ddv_85->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_85")).toString()));
