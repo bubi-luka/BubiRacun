@@ -2100,6 +2100,11 @@ void prijava::posodobi_bazo() {
 		QSqlQuery update;
 		update.prepare("ALTER TABLE opravila ADD COLUMN 'enota' TEXT");
 		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'priloge' TEXT");
+		update.exec();
+		update.clear();
 	}
 	base.close();
 

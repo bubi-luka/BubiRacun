@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>709</width>
-    <height>757</height>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,8 +26,8 @@
       <attribute name="title">
        <string>Podatki o nalogu</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Podatki o nalogu</string>
@@ -134,23 +134,26 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="1">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="title">
+          <string>Priloge (vsaka v svojo vrstico</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QPlainTextEdit" name="txt_priloge">
+            <property name="plainText">
+             <string>txt_priloge</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string>Opombe</string>
@@ -180,7 +183,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_6">
          <property name="title">
           <string>Stroški</string>
@@ -262,7 +265,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="3" column="0" colspan="2">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -305,7 +308,7 @@
                <x>0</x>
                <y>0</y>
                <width>641</width>
-               <height>187</height>
+               <height>149</height>
               </rect>
              </property>
             </widget>
