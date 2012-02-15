@@ -64,6 +64,11 @@ racun::racun(QWidget *parent) :
 
 		ui->tbl_opravila->clear();
 
+		ui->tbl_vse_opombe->clear();
+		ui->tbl_vnesene_opombe->clear();
+		ui->txt_vse_opombe->setText("");
+		ui->txt_vnesene_opombe->setText("");
+
 		// onemogoci polja
 		ui->txt_id->setEnabled(false);
 		ui->txt_projekt_id->setEnabled(false);
@@ -153,6 +158,14 @@ racun::racun(QWidget *parent) :
 			}
 			sql_fill_combo.clear();
 
+			sql_fill_combo.prepare("SELECT * FROM sif_opombe_pri_racunih");
+			sql_fill_combo.exec();
+			while (sql_fill_combo.next()) {
+				ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + "," +
+																		prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString()) + ",");
+			}
+			sql_fill_combo.clear();
+
 		}
 		base.close();
 
@@ -164,6 +177,8 @@ racun::racun(QWidget *parent) :
 		ui->tab_racuni->setCurrentIndex(0);
 
 		ui->btn_sprejmi->setText("Vnesi racun");
+
+		napolni_vse_opombe();
 
 }
 
@@ -591,14 +606,14 @@ void racun::on_btn_sprejmi_clicked() {
 			if (ui->btn_sprejmi->text() == "Vnesi racun") { // nov vnos se neobstojecega (pred)racuna
 				sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
 																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-																	"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa) "
-																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe) "
+																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojec vnos
 				sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
 																	"avtor_oseba = ?, datum_pricetka = ?, datum_konca = ?, datum_izdaje = ?, datum_placila = ?, "
 																	"status_placila = ?, status_racunovodstva = ?, avans = ?, odstotek_avansa = ?, status_oddaje_racuna = ?, "
-																	"datum_oddaje_racuna = ?, stara_stevilka_racuna = ?, sklic = ?, datum_placila_avansa = ? "
+																	"datum_oddaje_racuna = ?, stara_stevilka_racuna = ?, sklic = ?, datum_placila_avansa = ?, opombe = ? "
 																	"WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 
@@ -632,6 +647,7 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 			sql_vnesi_projekt.bindValue(17, pretvori(ui->txt_sklic->text()));
 			sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
+			sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_vnesene_opombe->text()));
 
 			sql_vnesi_projekt.exec();
 
@@ -973,6 +989,7 @@ void racun::prejem(QString besedilo) {
 				ui->txt_odstotek_avansa->setText(pretvori_iz_double(prevedi(pretvori_iz_double(sql_napolni.value(sql_napolni.record().indexOf("odstotek_avansa")).toString()))) + " %");
 
 				ui->txt_sklic->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("sklic")).toString()));
+				ui->txt_vnesene_opombe->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opombe")).toString()));
 			}
 
 			// odpri izdelavo racuna in predplacilnega racuna, ce so pogoji za to ustrezni
@@ -1095,9 +1112,22 @@ void racun::prejem(QString besedilo) {
 
 		ui->btn_sprejmi->setText("Popravi vnos");
 
+		QString opomba = ui->txt_vnesene_opombe->text();
+		QString nova_opomba = opomba + ",";
+		QString id = "";
+		for ( int a = 0; a <= opomba.count(",,"); a++ ) { // zavrti zanko za vsak id
+			id = nova_opomba.left(nova_opomba.indexOf(",,", 0) + 1);
+			nova_opomba = nova_opomba.right(nova_opomba.length() - id.length());
+
+			ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
+		}
+
 	}
 
 	izracunaj();
+
+	napolni_vnesene_opombe();
+	napolni_vse_opombe();
 
 	/*
 	if ( ui->txt_status_predracuna->currentText() == "Potrjen" ) {
@@ -1610,19 +1640,6 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 		ui->txt_status_predracuna->setEnabled(false);
 		ui->txt_datum_oddaje_racuna->setEnabled(false);
 	}
-
-}
-
-void racun::on_txt_status_predracuna_currentIndexChanged() {
-
-//	if ( ui->txt_status_predracuna->currentText() == "Potrjen" ) {
-//		ui->btn_racun->setEnabled(true);
-//		ui->btn_predplacilni_racun->setEnabled(true);
-//	}
-//	else {
-//		ui->btn_racun->setEnabled(false);
-//		ui->btn_predplacilni_racun->setEnabled(false);
-//	}
 
 }
 
@@ -3208,6 +3225,233 @@ void racun::print(QString id) {
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		painter.end();
+	}
+
+}
+
+void racun::on_txt_vse_opombe_textChanged() {
+
+	if ( ui->btn_sprejmi->text() != "Odpiram" ) {
+		napolni_vse_opombe();
+	}
+
+}
+
+void racun::on_txt_vnesene_opombe_textChanged() {
+
+	if ( ui->btn_sprejmi->text() != "Odpiram" ) {
+		napolni_vnesene_opombe();
+	}
+
+}
+
+void racun::napolni_vse_opombe() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		QString opombe = ui->txt_vse_opombe->text().replace(",,", ",");
+		QString preostanek_opombe = opombe;
+		QString id = "";
+
+		// clear previous content
+		ui->tbl_vse_opombe->clear();
+
+		for (int i = 0; i <= 1; i++) {
+			ui->tbl_vse_opombe->removeColumn(0);
+		}
+
+		QSqlQuery sql_clear;
+		sql_clear.prepare("SELECT * FROM sif_opombe_pri_racunih");
+		sql_clear.exec();
+		while (sql_clear.next()) {
+			ui->tbl_vse_opombe->removeRow(0);
+		}
+		sql_clear.clear();
+
+		// start filling the table
+		ui->tbl_vse_opombe->insertColumn(0);
+		ui->tbl_vse_opombe->insertColumn(1);
+
+		QTableWidgetItem *naslov0 = new QTableWidgetItem;
+		QTableWidgetItem *naslov1 = new QTableWidgetItem;
+
+		naslov0->setText("ID");
+		naslov1->setText("Naslov");
+
+		ui->tbl_vse_opombe->setHorizontalHeaderItem(0, naslov0);
+		ui->tbl_vse_opombe->setHorizontalHeaderItem(1, naslov1);
+
+		int row = 0;
+		for ( int a = 0; a < opombe.count(","); a++ ) {
+			preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
+			int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
+			id = preostanek_opombe.left(vejica); // dobimo id opombe
+			preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - id.length() ); // opombe skrajsamo za dolzino enega id-ja
+
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(id) + "' ORDER BY id ASC");
+			sql_fill.exec();
+
+			if (sql_fill.next()) {
+				ui->tbl_vse_opombe->insertRow(row);
+				ui->tbl_vse_opombe->setRowHeight(row, 20);
+				int col = 0;
+				int i = 0;
+				QString polja[2] = {"id", "naslov"};
+
+				while (col <= 1) {
+
+					QTableWidgetItem *celica = new QTableWidgetItem;
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					ui->tbl_vse_opombe->setItem(row, col, celica);
+
+					col++;
+					i++;
+
+				}
+			}
+			row++;
+		}
+	}
+	base.close();
+
+}
+
+void racun::napolni_vnesene_opombe() {
+
+	QString opombe = ui->txt_vnesene_opombe->text().replace(",,", ",");
+	QString preostanek_opombe = opombe;
+	QString id = "";
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// the database is opened
+
+		// clear previous content
+		ui->tbl_vnesene_opombe->clear();
+
+		for (int i = 0; i <= 1; i++) {
+			ui->tbl_vnesene_opombe->removeColumn(0);
+		}
+
+		QSqlQuery sql_clear;
+		sql_clear.prepare("SELECT * FROM sif_opombe_pri_racunih");
+		sql_clear.exec();
+		while (sql_clear.next()) {
+			ui->tbl_vnesene_opombe->removeRow(0);
+		}
+
+		// start filling the table
+		ui->tbl_vnesene_opombe->insertColumn(0);
+		ui->tbl_vnesene_opombe->insertColumn(1);
+
+		QTableWidgetItem *naslov0 = new QTableWidgetItem;
+		QTableWidgetItem *naslov1 = new QTableWidgetItem;
+
+		naslov0->setText("ID");
+		naslov1->setText("Naslov");
+
+		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(0, naslov0);
+		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(1, naslov1);
+
+		int row = 0;
+		for ( int a = 0; a < opombe.count(","); a++ ) {
+			preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
+			int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
+			id = preostanek_opombe.left(vejica); // dobimo id opombe
+			preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - id.length() ); // opombe skrajsamo za dolzino enega id-ja
+
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(id) + "' ORDER BY id ASC");
+			sql_fill.exec();
+
+			if (sql_fill.next()) {
+				ui->tbl_vnesene_opombe->insertRow(row);
+				ui->tbl_vnesene_opombe->setRowHeight(row, 20);
+				int col = 0;
+				int i = 0;
+				QString polja[2] = {"id", "naslov"};
+
+				while (col <= 1) {
+
+					QTableWidgetItem *celica = new QTableWidgetItem;
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					ui->tbl_vnesene_opombe->setItem(row, col, celica);
+
+					col++;
+					i++;
+
+				}
+			}
+			row++;
+		}
+	}
+	base.close();
+
+}
+
+void racun::on_tbl_vse_opombe_doubleClicked() {
+
+	QString id = "," + ui->tbl_vse_opombe->selectedItems().takeAt(0)->text() + ",";
+
+	if ( ui->txt_vse_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
+		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
+	}
+	else { // jo odstrani
+		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
+	}
+
+	if ( ui->txt_vnesene_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
+		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text() + id);
+	}
+	else { // jo odstrani
+		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text().remove(id));
+	}
+
+}
+
+void racun::on_tbl_vnesene_opombe_doubleClicked() {
+
+	QString id = "," + ui->tbl_vnesene_opombe->selectedItems().takeAt(0)->text() + ",";
+
+	if ( ui->txt_vse_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
+		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
+	}
+	else { // jo odstrani
+		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
+	}
+
+	if ( ui->txt_vnesene_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
+		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text() + id);
+	}
+	else { // jo odstrani
+		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text().remove(id));
 	}
 
 }

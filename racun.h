@@ -33,7 +33,6 @@ private slots:
 	void on_txt_odstotek_avansa_editingFinished();
 	void on_txt_datum_izdaje_racuna_dateChanged();
 	void on_txt_status_oddaje_racuna_currentIndexChanged();
-	void on_txt_status_predracuna_currentIndexChanged();
 
 	void on_rb_predracun_toggled();
 	void on_rb_predplacilo_toggled();
@@ -44,6 +43,13 @@ private slots:
 	void on_tbl_zapisi_2_doubleClicked();
 	void napolni_zapise();
 	void on_cb_stara_stevilka_racuna_toggled();
+
+	void on_txt_vse_opombe_textChanged();
+	void on_txt_vnesene_opombe_textChanged();
+	void on_tbl_vse_opombe_doubleClicked();
+	void on_tbl_vnesene_opombe_doubleClicked();
+	void napolni_vse_opombe();
+	void napolni_vnesene_opombe();
 
 	void keyPressEvent(QKeyEvent *event);
 

@@ -721,7 +721,8 @@ void prijava::tabela_racuni() {
 														 "avans TEXT, "
 														 "datum_placila_avansa TEXT, "
 														 "status_oddaje_racuna TEXT, "
-														 "datum_oddaje_racuna TEXT)"
+														 "datum_oddaje_racuna TEXT, "
+														 "opombe TEXT)"
 										);
 		sql_create_table.exec();
 	}
@@ -2135,6 +2136,11 @@ void prijava::posodobi_bazo() {
 		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'priloge' TEXT");
 		update.exec();
 		update.clear();
+
+		update.prepare("ALTER TABLE racuni ADD COLUMN 'opombe' TEXT");
+		update.exec();
+		update.clear();
+
 	}
 	base.close();
 

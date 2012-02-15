@@ -109,6 +109,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_naslov</tabstop>
+  <tabstop>txt_besedilo</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+  <tabstop>btn_izhod</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
