@@ -220,6 +220,17 @@ projekti::~projekti()
 
 }
 
+void projekti::on_txt_status_projekta_currentIndexChanged() {
+
+	if ( ui->txt_status_projekta->currentText().left(6) == "Zaklju" ) { // Zakljuceno
+		ui->label_6->setText("Datum konca dela:");
+	}
+	else {
+		ui->label_6->setText("Predviden datum konca dela:");
+	}
+
+}
+
 void projekti::keyPressEvent(QKeyEvent *event) {
 	if (event->key() == Qt::Key_Return)
 	{

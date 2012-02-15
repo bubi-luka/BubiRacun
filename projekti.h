@@ -21,8 +21,8 @@ private slots:
 	void on_btn_sprejmi_clicked();
 
 	void on_txt_stranka_currentIndexChanged(QString besedilo);
-
 	void on_txt_stranka_id_textChanged(QString besedilo);
+	void on_txt_status_projekta_currentIndexChanged();
 
 	void keyPressEvent(QKeyEvent *event);
 
