@@ -2082,7 +2082,7 @@ void racun::print(QString id) {
 // glava
 	// logotip podjetja
 		QImage logotip(podjetje_logo);
-		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 		pozicija = 10; // zaradi velikosti logotipa
 	// ime in naslov podjetja
@@ -2122,7 +2122,7 @@ void racun::print(QString id) {
 		painter.setPen(*tanek_svincnik);
 		painter.drawLine(0, pozicija, printer.width(), pozicija);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 	// noga
 		// crta nad nogo
@@ -2167,7 +2167,7 @@ void racun::print(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 		// nastavi parametre
 		painter.setFont(normalno);
@@ -2193,7 +2193,7 @@ void racun::print(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_postna_stevilka + " " + narocnik_naslov_posta);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 6 + razmik_med_vrsticami * 6;
 
 		besedilo = racun.readLine();
 		if ( narocnik_davcna != "" ) {
@@ -2366,7 +2366,7 @@ void racun::print(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
-		pozicija += razmik_med_vrsticami;
+		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		// crta pod podatki
 		painter.setPen(*debel_svincnik);
@@ -2534,7 +2534,7 @@ void racun::print(QString id) {
 					// glava
 						// logotip podjetja
 							QImage logotip(podjetje_logo);
-							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 							pozicija = 10;
 						// ime in naslov podjetja
@@ -2574,8 +2574,7 @@ void racun::print(QString id) {
 							painter.setPen(*tanek_svincnik);
 							painter.drawLine(0, pozicija, printer.width(), pozicija);
 							// nova vrstica
-							pozicija += visina_vrstice + razmik_med_vrsticami * 2;
-
+							pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 							// st. strani
 
 							// dolocimo velikost kvadrata, ki ga tvori besedilo (st. strani)
@@ -2709,7 +2708,7 @@ void racun::print(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -2749,7 +2748,7 @@ void racun::print(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
@@ -3043,7 +3042,7 @@ void racun::print(QString id) {
 						// glava
 							// logotip podjetja
 								QImage logotip(podjetje_logo);
-								painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+								painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 								pozicija = 10;
 							// ime in naslov podjetja
@@ -3083,7 +3082,7 @@ void racun::print(QString id) {
 								painter.setPen(*tanek_svincnik);
 								painter.drawLine(0, pozicija, printer.width(), pozicija);
 								// nova vrstica
-								pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+								pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 								// st. strani
 
@@ -3145,7 +3144,7 @@ void racun::print(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -3185,7 +3184,7 @@ void racun::print(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
