@@ -635,6 +635,20 @@ void racun::on_btn_sprejmi_clicked() {
 
 			sql_vnesi_projekt.exec();
 
+			if ( ui->rb_predracun->isChecked() && ui->txt_id->text() != "" ) {
+				QSqlQuery sql_poisci_otroke;
+				sql_poisci_otroke.prepare("SELECT * FROM racuni WHERE stevilka_starsa LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_poisci_otroke.exec();
+				while ( sql_poisci_otroke.next() ) {
+					QSqlQuery sql_spremeni_datum;
+					sql_spremeni_datum.prepare("UPDATE racuni SET datum_placila_avansa = ? WHERE id LIKE '" +
+																		 sql_poisci_otroke.value(sql_poisci_otroke.record().indexOf("id")).toString() + "'");
+					sql_spremeni_datum.bindValue(0, pretvori(ui->txt_datum_placila_avansa->text()));
+					sql_spremeni_datum.exec();
+					sql_spremeni_datum.clear();
+				} // while ( sql_poisci_otroke.next() )
+			} // if ( ui->rb_predracun->isChecked() && ui->txt_id->text() != "" )
+
 		} // else ( base.isOpen() )
 
 		base.close();
