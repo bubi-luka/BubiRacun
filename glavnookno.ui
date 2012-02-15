@@ -167,8 +167,15 @@
     <addaction name="separator"/>
     <addaction name="action_asovnice"/>
    </widget>
+   <widget class="QMenu" name="menu_ifranti">
+    <property name="title">
+     <string>Šifranti</string>
+    </property>
+    <addaction name="actionOpombe_pri_ra_unih"/>
+   </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
+   <addaction name="menu_ifranti"/>
    <addaction name="menuIzpisi"/>
    <addaction name="menuNastavitve"/>
    <addaction name="menuPomo"/>
@@ -245,6 +252,11 @@
    </property>
    <property name="text">
     <string>Časovnice</string>
+   </property>
+  </action>
+  <action name="actionOpombe_pri_ra_unih">
+   <property name="text">
+    <string>Opombe pri računih</string>
    </property>
   </action>
  </widget>

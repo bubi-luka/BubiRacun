@@ -15,6 +15,7 @@
 #include "wid_projekti.h"
 #include "wid_kuponi.h"
 #include "wid_racuni.h"
+#include "wid_opombepriracunih.h"
 #include "vizitka.h"
 #include "varnost.h"
 #include "kodiranje.h"
@@ -191,6 +192,15 @@ void GlavnoOkno::on_actionPopusti_triggered() {
 
 	popusti *okno_popusti = new popusti;
 	okno_popusti->show();
+
+}
+
+void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
+
+	wid_opombepriracunih *widopo = new wid_opombepriracunih;
+	ui->scrollArea->setWidget(widopo);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Opombe pri racunih!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Opombe pri racunih");
 
 }
 

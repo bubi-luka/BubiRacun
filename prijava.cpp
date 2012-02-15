@@ -52,6 +52,7 @@ prijava::prijava(QWidget *parent) :
 	tabela_predracuni();
 	tabela_storitev();
 	tabela_oddaje_racuna();
+	tabela_opombe_pri_racunih();
 
 	// vnese podatke v tabele
 	vnesi_skd();
@@ -1268,6 +1269,35 @@ void prijava::tabela_oddaje_racuna() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_status_oddaje_racuna ("
 														 "id INTEGER PRIMARY KEY, "
 														 "status TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_opombe_pri_racunih() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_opombe_pri_racunih ("
+														 "id INTEGER PRIMARY KEY, "
+														 "naslov TEXT, "
+														 "besedilo TEXT)"
 										 );
 		sql_create_table.exec();
 	}
