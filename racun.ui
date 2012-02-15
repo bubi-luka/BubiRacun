@@ -935,6 +935,33 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="btn_predplacilni_racun">
+       <property name="text">
+        <string>Izdelaj predplačilni račun</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_racun">
+       <property name="text">
+        <string>Izdelaj račun</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_12">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="btn_izpisi">
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>

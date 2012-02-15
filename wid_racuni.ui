@@ -111,6 +111,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Izbris računa</string>
        </property>

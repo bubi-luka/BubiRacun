@@ -22,6 +22,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		// disable and hide
 		ui->txt_stprojekta->setEnabled(false);
 		ui->txt_stprojekta->setVisible(false);
+		ui->btn_brisi->setEnabled(false);
+		ui->btn_brisi->setVisible(false);
 
 		// napolni filtrirne spustne sezname
 		QString gumb = ui->btn_nov->text();
