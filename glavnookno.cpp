@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QtSql>
 #include <QMessageBox>
+#include <QColorGroup>
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
@@ -72,6 +73,10 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	ui->actionPoslovanje->setEnabled(false);
 	ui->actionPrihodek->setEnabled(false);
 	ui->actionIzdatek->setEnabled(false);
+
+	// skrijemo polja, ki jih ne potrebujemo
+	ui->txt_pozicija->setVisible(false);
+	ui->txt_uporabnik->setVisible(false);
 
 }
 
@@ -236,9 +241,11 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
 		if (vApp->state() == pretvori("public") ) {
 			vApp->set_state(pretvori("private"));
+			ui->txt_pozicija->setVisible(false);
 		}
 		else {
 			vApp->set_state(pretvori("public"));
+			ui->txt_pozicija->setVisible(true);
 		}
 
 	}
