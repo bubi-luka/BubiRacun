@@ -2,6 +2,8 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QPrinter>
+#include <QPrintDialog>
+#include <QFileDialog>
 
 #include "wid_prejetiracuni.h"
 #include "ui_wid_prejetiracuni.h"
@@ -404,6 +406,13 @@ void wid_prejetiracuni::on_btn_refresh_clicked() {
 
 void wid_prejetiracuni::on_btn_print_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -485,11 +494,18 @@ void wid_prejetiracuni::on_btn_print_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_prejetiracuni::on_btn_print_pdf_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -571,7 +587,7 @@ void wid_prejetiracuni::on_btn_print_pdf_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_prejetiracuni::on_btn_print_seznam_clicked() {
@@ -582,13 +598,13 @@ void wid_prejetiracuni::print(QString id) {
 
 	QPrinter printer;
 
-//	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-//	dialog->setWindowTitle(tr("Natisni prejet racun"));
+	QPrintDialog *dialog = new QPrintDialog(&printer, this);
+	dialog->setWindowTitle(tr("Natisni prejet racun"));
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
-//	if (dialog->exec() == QDialog::Accepted) {
+	if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
 
 		if (! painter.begin(&printer))  { // failed to open file
@@ -628,7 +644,7 @@ void wid_prejetiracuni::print(QString id) {
 		datum_placila = "Datum placila racuna: ";
 		rok_placila = "Rok placila racuna: ";
 		znesek_brez_ddv_00 = "Znesek brez DDV 0,0%: ";
-		znesek_brez_ddv_85 = "Znesek brez DDV 8,5%; ";
+		znesek_brez_ddv_85 = "Znesek brez DDV 8,5%: ";
 		znesek_brez_ddv_20 = "Znesek brez DDV 20,0%: ";
 		znesek_ddv = "Znesek DDV: ";
 		znesek = "Koncni znesek: ";
@@ -667,9 +683,24 @@ void wid_prejetiracuni::print(QString id) {
 				datum_prejema += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_prejema")).toString());;
 				datum_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_placila")).toString());
 				rok_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("rok_placila")).toString());
-				znesek_brez_ddv_00 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()).replace(".", ",") + " EUR";
-				znesek_brez_ddv_85 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()).replace(".", ",") + " EUR";
-				znesek_brez_ddv_20 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()).replace(".", ",") + " EUR";
+				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()) == "0.00" ) {
+					znesek_brez_ddv_00 = "";
+				}
+				else {
+					znesek_brez_ddv_00 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()).replace(".", ",") + " EUR";
+				}
+				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()) == "0.00" ) {
+					znesek_brez_ddv_85 = "";
+				}
+				else {
+					znesek_brez_ddv_85 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()).replace(".", ",") + " EUR";
+				}
+				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()) == "0.00" ) {
+					znesek_brez_ddv_20 = "";
+				}
+				else {
+					znesek_brez_ddv_20 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()).replace(".", ",") + " EUR";
+				}
 				znesek_ddv += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_ddv")).toString()).replace(".", ",") + " EUR";
 				znesek += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek")).toString()).replace(".", ",") + " EUR";
 
@@ -719,15 +750,21 @@ void wid_prejetiracuni::print(QString id) {
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
 		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
 		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-		pozicija += velikost_besedila.height();
+		if ( znesek_brez_ddv_00 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
+			pozicija += velikost_besedila.height();
+		}
+		if ( znesek_brez_ddv_85 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
+			pozicija += velikost_besedila.height();
+		}
+		if ( znesek_brez_ddv_20 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
+			pozicija += velikost_besedila.height();
+		}
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
 		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
 		pozicija += velikost_besedila.height();
@@ -736,7 +773,7 @@ void wid_prejetiracuni::print(QString id) {
 		pozicija += velikost_besedila.height();
 
 		painter.end();
-//	}
+	}
 
 }
 
@@ -748,6 +785,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 	QString izdajatelj_racuna = "";
 	QString zadeva = "";
 	QString placnik = "";
+	QString placnik_logotip = "";
 	QString projekt = "";
 	QString datum_prejema = "";
 	QString datum_placila = "";
@@ -771,7 +809,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 	datum_placila = "Datum placila racuna: ";
 	rok_placila = "Rok placila racuna: ";
 	znesek_brez_ddv_00 = "Znesek brez DDV 0,0%: ";
-	znesek_brez_ddv_85 = "Znesek brez DDV 8,5%; ";
+	znesek_brez_ddv_85 = "Znesek brez DDV 8,5%: ";
 	znesek_brez_ddv_20 = "Znesek brez DDV 20,0%: ";
 	znesek_ddv = "Znesek DDV: ";
 	znesek = "Koncni znesek: ";
@@ -810,9 +848,24 @@ void wid_prejetiracuni::printpdf(QString id) {
 			datum_prejema += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_prejema")).toString());;
 			datum_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_placila")).toString());
 			rok_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("rok_placila")).toString());
-			znesek_brez_ddv_00 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()).replace(".", ",") + " EUR";
-			znesek_brez_ddv_85 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()).replace(".", ",") + " EUR";
-			znesek_brez_ddv_20 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()).replace(".", ",") + " EUR";
+			if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()) == "0.00" ) {
+				znesek_brez_ddv_00 = "";
+			}
+			else {
+				znesek_brez_ddv_00 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()).replace(".", ",") + " EUR";
+			}
+			if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()) == "0.00" ) {
+				znesek_brez_ddv_85 = "";
+			}
+			else {
+				znesek_brez_ddv_85 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()).replace(".", ",") + " EUR";
+			}
+			if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()) == "0.00" ) {
+				znesek_brez_ddv_20 = "";
+			}
+			else {
+				znesek_brez_ddv_20 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()).replace(".", ",") + " EUR";
+			}
 			znesek_ddv += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_ddv")).toString()).replace(".", ",") + " EUR";
 			znesek += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek")).toString()).replace(".", ",") + " EUR";
 
@@ -821,6 +874,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 			sql_placnik.exec();
 			if ( sql_placnik.next() ) {
 				placnik += prevedi(sql_placnik.value(sql_placnik.record().indexOf("polnoime")).toString());
+				placnik_logotip = prevedi(sql_placnik.value(sql_placnik.record().indexOf("logotip")).toString());
 			}
 
 			QSqlQuery sql_projekt;
@@ -841,9 +895,17 @@ void wid_prejetiracuni::printpdf(QString id) {
 		*/
 
 	// ustvariti pot do ustrezne mape
-		QDir mapa(QDir::homePath());
-		mapa.mkdir("BubiRacun-Dokumenti");
-		mapa.cd("BubiRacun-Dokumenti");
+		QString mapa_za_shranjevanje = "";
+		mapa_za_shranjevanje = placnik_logotip.left(placnik_logotip.lastIndexOf("/")); // izreze logotip
+		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																														 "Izberite mapo za shranjevanje dokumentov",
+																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+		if ( mapa_za_shranjevanje == "" ) {
+			return;
+		}
+
+		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("prejeti-racuni");
 		mapa.cd("prejeti-racuni");
 		mapa.mkdir(datum_placila.right(4));
@@ -900,15 +962,21 @@ void wid_prejetiracuni::printpdf(QString id) {
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
 		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
 		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-		pozicija += velikost_besedila.height();
+		if ( znesek_brez_ddv_00 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
+			pozicija += velikost_besedila.height();
+		}
+		if ( znesek_brez_ddv_85 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
+			pozicija += velikost_besedila.height();
+		}
+		if ( znesek_brez_ddv_20 != "" ) {
+			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
+			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
+			pozicija += velikost_besedila.height();
+		}
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
 		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
 		pozicija += velikost_besedila.height();
@@ -917,6 +985,7 @@ void wid_prejetiracuni::printpdf(QString id) {
 		pozicija += velikost_besedila.height();
 
 		painter.end();
+
 //	}
 
 }

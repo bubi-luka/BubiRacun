@@ -111,6 +111,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_brisi">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Izbris računa</string>
        </property>
@@ -137,7 +140,7 @@
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
+      <enum>QAbstractItemView::MultiSelection</enum>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>

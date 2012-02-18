@@ -1,37 +1,38 @@
-#ifndef STROSKI_H
-#define STROSKI_H
+#ifndef SIF_DNEVNICE_H
+#define SIF_DNEVNICE_H
 
 #include <QDialog>
 
 namespace Ui {
-    class stroski;
+    class sif_dnevnice;
 }
 
-class stroski : public QDialog
+class sif_dnevnice : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit stroski(QWidget *parent = 0);
-    ~stroski();
+    explicit sif_dnevnice(QWidget *parent = 0);
+    ~sif_dnevnice();
 
 private slots:
 	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
 	void on_btn_sprejmi_clicked();
+
+	void on_txt_dnevnica_1_textChanged();
+	void on_txt_dnevnica_2_textChanged();
+	void on_txt_dnevnica_3_textChanged();
+
 	void keyPressEvent(QKeyEvent *event);
 
-	void prejem(QString besedilo);
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
-
-signals:
-	void poslji(QString beseda);
+	void prejem();
 
 private:
-    Ui::stroski *ui;
+    Ui::sif_dnevnice *ui;
 };
 
-#endif // STROSKI_H
+#endif // SIF_DNEVNICE_H

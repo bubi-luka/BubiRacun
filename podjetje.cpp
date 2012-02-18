@@ -778,20 +778,26 @@ QString podjetje::prevedi(QString besedilo) {
 
 void podjetje::on_btn_logotip_clicked() {
 
+	// izberi sliko za logotip
+	QString pot_do_logotipa = "";
+	pot_do_logotipa = QFileDialog::getOpenFileName(this, "Izberite logotip podjetja", QDir::homePath(), "Slika (*.png *.jpg *.jpeg)");
+	QFile datoteka(pot_do_logotipa);
+
+	// izberi mapo za shranjevanje logotipa
+	QString mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																													 "Izberite mapo za shranjevanje dokumentov",
+																													 QDir::homePath(), QFileDialog::ShowDirsOnly);
+
 	// ustvariti pot do ustrezne mape
-	QDir mapa(QDir::homePath());
+	QDir mapa(mapa_za_shranjevanje);
 	mapa.mkdir("BubiRacun-Dokumenti");
 	mapa.cd("BubiRacun-Dokumenti");
 	mapa.mkdir("logo");
 
-	QString pot_do_logotipa = "";
-	pot_do_logotipa = QFileDialog::getOpenFileName(this, "Izberite logotip podjetja", QDir::homePath(), "Slika (*.png *.jpg *.jpeg)");
-
-	QFile datoteka(pot_do_logotipa);
 	int pot = pot_do_logotipa.lastIndexOf("/");
 
 	pot_do_logotipa = pot_do_logotipa.right(pot_do_logotipa.length() - pot - 1);
-	pot_do_logotipa = QDir::homePath() + "/BubiRacun-Dokumenti/logo/" + pot_do_logotipa;
+	pot_do_logotipa = mapa_za_shranjevanje + "/BubiRacun-Dokumenti/logo/" + pot_do_logotipa;
 
 	datoteka.copy(pot_do_logotipa);
 

@@ -106,6 +106,10 @@ projekti::projekti(QWidget *parent) :
 	ui->txt_stranka_id->setHidden(true);
 	ui->txt_id_zapisa->setHidden(true);
 
+	// skrij polja z urami dela
+	ui->label_47->setVisible(false);
+	ui->txt_st_ur_dela->setVisible(false);
+
 	// napolni tabele in spustne sezname
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -217,6 +221,17 @@ projekti::projekti(QWidget *parent) :
 projekti::~projekti()
 {
 	delete ui;
+
+}
+
+void projekti::on_txt_status_projekta_currentIndexChanged() {
+
+	if ( ui->txt_status_projekta->currentText().left(6) == "Zaklju" ) { // Zakljuceno
+		ui->label_6->setText("Datum konca dela:");
+	}
+	else {
+		ui->label_6->setText("Predviden datum konca dela:");
+	}
 
 }
 
@@ -346,6 +361,7 @@ void projekti::on_btn_sprejmi_clicked() {
 		msgbox.setText("Dolocena polja niso pravilno izpolnjena");
 		msgbox.exec();
 	}
+
 }
 
 void projekti::prejem(QString besedilo) {
@@ -605,23 +621,22 @@ void projekti::izracunaj() {
 		QSqlQuery sql_racun;
 
 		// vsota izdanih racunov
-		sql_racun.prepare("SELECT * FROM racuni WHERE stranka LIKE '" + pretvori(ui->txt_stranka_id->text()) + "'");
+		sql_racun.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori("3") + "'");
 		sql_racun.exec();
 		while ( sql_racun.next() ) {
 			QSqlQuery sql_opravilo;
-			sql_opravilo.prepare("SELECT * FROM opravila WHERE racun LIKE '" + sql_racun.value(sql_racun.record().indexOf("stracuna")).toString() + "'");
+			sql_opravilo.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_racun.value(sql_racun.record().indexOf("id")).toString() + "'");
 			sql_opravilo.exec();
 			while ( sql_opravilo.next() ) {
-				d_znesekbrezddv = d_znesekbrezddv + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesekbrezddv")).toString()).toDouble();
-				d_ddv = d_ddv + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesekddv")).toString()).toDouble();
-				d_popusti = d_popusti + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("popusti")).toString()).toDouble();
-				d_znesek = d_znesek + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesekskupaj")).toString()).toDouble();
+				d_znesekbrezddv = d_znesekbrezddv + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_koncni")).toString()).toDouble();
+				d_ddv = d_ddv + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_ddv")).toString()).toDouble();
+				d_popusti = d_popusti + prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_popustov")).toString()).toDouble();
 			}
 		}
 		ui->txt_izdani_brez_ddv->setText(QString::number(d_znesekbrezddv, 'f', 2));
 		ui->txt_izdani_ddv->setText(QString::number(d_ddv, 'f', 2));
 		ui->txt_izdani_popusti->setText(QString::number(d_popusti, 'f', 2));
-		ui->txt_izdani_placilo->setText(QString::number(d_znesek, 'f', 2));
+		ui->txt_izdani_placilo->setText(QString::number(d_znesekbrezddv + d_ddv, 'f', 2));
 
 		// vsota prejetih racunov
 
@@ -822,7 +837,7 @@ void projekti::napolni_podatke() {
 		ure = 0.0;
 
 		// preveri izdane racune
-		sql_napolni.prepare("SELECT * FROM izdani_racuni WHERE stevilka_projekta LIKE '" + pretvori(ui->txt_id->text()) + "'");
+		sql_napolni.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori("3") + "'");
 		sql_napolni.exec();
 		while ( sql_napolni.next() ) {
 			i++;
@@ -830,8 +845,9 @@ void projekti::napolni_podatke() {
 			sql_racuni.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("id")).toString() + "'");
 			sql_racuni.exec();
 			while ( sql_racuni.next() ) {
-				znesek += prevedi(sql_racuni.value(sql_racuni.record().indexOf("znesek_skupaj")).toString()).toDouble();
-				ure += prevedi(sql_racuni.value(sql_racuni.record().indexOf("ure")).toString()).toDouble();
+				znesek += prevedi(sql_racuni.value(sql_racuni.record().indexOf("znesek_koncni")).toString()).toDouble() +
+									prevedi(sql_racuni.value(sql_racuni.record().indexOf("znesek_ddv")).toString()).toDouble();
+				ure += prevedi(sql_racuni.value(sql_racuni.record().indexOf("ur_dela")).toString()).toDouble();
 			}
 		}
 
@@ -1354,7 +1370,6 @@ void projekti::on_txt_popust_kupon_textChanged(QString besedilo) {
 	izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 5);
 
 }
-
 
 void projekti::on_txt_popust_fb1_editingFinished() {
 
