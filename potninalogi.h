@@ -33,6 +33,9 @@ private slots:
 	void sprejmist();
 	void sprejmipot();
 	void izracun();
+
+	QString pretvori_v_double(QString besedilo);
+	QString pretvori_iz_double(QString besedilo);
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 

@@ -386,7 +386,7 @@ void wid_racuni::napolni() {
 						while ( sql_kodiraj.next() ) {
 							znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() * 1.2;
 						}
-						celica->setText(QString::number(znesek, 'f', 2) + " EUR");
+						celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
 					}
 					else if ( polja[i] == "se_placati" ) {
 						QSqlQuery sql_kodiraj;
@@ -398,7 +398,7 @@ void wid_racuni::napolni() {
 							znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() * 1.2;
 						}
 						znesek -= prevedi(sql_fill.value(sql_fill.record().indexOf("avans")).toString()).toDouble();
-						celica->setText(QString::number(znesek, 'f', 2) + " EUR");
+						celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
 					}
 					else {
 						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -515,6 +515,13 @@ void wid_racuni::on_btn_refresh_clicked() {
 
 void wid_racuni::on_btn_print_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -630,11 +637,18 @@ void wid_racuni::on_btn_print_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_racuni::on_btn_print_pdf_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -750,7 +764,7 @@ void wid_racuni::on_btn_print_pdf_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 QString wid_racuni::pretvori_v_double(QString besedilo) {
@@ -1649,6 +1663,13 @@ void wid_racuni::print(QString id) {
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		// vcasih poda negativni predznak pred zneskom 0,00
+		if ( skupaj_se_za_placati == "-0,00 EUR" ) {
+			skupaj_se_za_placati = "0,00 EUR";
+		}
+		if ( skupaj_se_za_placati_ddv == "-0,00 EUR" ) {
+			skupaj_se_za_placati_ddv = "0,00 EUR";
+		}
 
 		// preveri, ali je morda potreben preskok na novo stran
 		if( pozicija + 250 >= printer.height() ) {
@@ -2429,8 +2450,19 @@ void wid_racuni::printpdf(QString id) {
 		}
 
 		QDir mapa(mapa_za_shranjevanje);
+		mapa.mkdir("izdani-predracuni");
+		mapa.mkdir("izdani-predplacilni-racuni");
 		mapa.mkdir("izdani-racuni");
-		mapa.cd("izdani-racuni");
+		if ( racun_tip == "1" ) {
+			mapa.cd("izdani-predracuni");
+		}
+		else if ( racun_tip == "2" ) {
+			mapa.cd("izdani-predplacilni-racuni");
+		}
+		else if ( racun_tip == "3" ) {
+			mapa.cd("izdani-racuni");
+		}
+		else
 		mapa.mkdir(racun_datum_izdaje.right(4));
 		mapa.cd(racun_datum_izdaje.right(4));
 
@@ -3091,6 +3123,13 @@ void wid_racuni::printpdf(QString id) {
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		// vcasih poda negativni predznak pred zneskom 0,00
+		if ( skupaj_se_za_placati == "-0,00 EUR" ) {
+			skupaj_se_za_placati = "0,00 EUR";
+		}
+		if ( skupaj_se_za_placati_ddv == "-0,00 EUR" ) {
+			skupaj_se_za_placati_ddv = "0,00 EUR";
+		}
 
 		// preveri, ali je morda potreben preskok na novo stran
 		if( pozicija + 250 >= printer.height() ) {

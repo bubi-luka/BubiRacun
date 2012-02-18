@@ -406,6 +406,13 @@ void wid_prejetiracuni::on_btn_refresh_clicked() {
 
 void wid_prejetiracuni::on_btn_print_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -487,11 +494,18 @@ void wid_prejetiracuni::on_btn_print_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_prejetiracuni::on_btn_print_pdf_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -573,7 +587,7 @@ void wid_prejetiracuni::on_btn_print_pdf_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_prejetiracuni::on_btn_print_seznam_clicked() {

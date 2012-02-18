@@ -195,6 +195,9 @@ border:0;</string>
      <string>Šifranti</string>
     </property>
     <addaction name="actionOpombe_pri_ra_unih"/>
+    <addaction name="separator"/>
+    <addaction name="actionKilometrina"/>
+    <addaction name="actionDnevnice"/>
    </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
@@ -280,6 +283,16 @@ border:0;</string>
   <action name="actionOpombe_pri_ra_unih">
    <property name="text">
     <string>Opombe pri računih</string>
+   </property>
+  </action>
+  <action name="actionKilometrina">
+   <property name="text">
+    <string>Kilometrina</string>
+   </property>
+  </action>
+  <action name="actionDnevnice">
+   <property name="text">
+    <string>Dnevnice</string>
    </property>
   </action>
  </widget>

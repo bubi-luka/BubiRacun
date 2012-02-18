@@ -29,7 +29,9 @@ HEADERS += \
     popusti.h \
     wid_casovnice.h \
     opombepriracunih.h \
-    wid_opombepriracunih.h
+    wid_opombepriracunih.h \
+    sif_kilometrina.h \
+    sif_dnevnice.h
 
 SOURCES += \
     main.cpp \
@@ -62,7 +64,9 @@ SOURCES += \
     popusti.cpp \
     wid_casovnice.cpp \
     opombepriracunih.cpp \
-    wid_opombepriracunih.cpp
+    wid_opombepriracunih.cpp \
+    sif_kilometrina.cpp \
+    sif_dnevnice.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -92,7 +96,9 @@ FORMS += \
     popusti.ui \
     wid_casovnice.ui \
     opombepriracunih.ui \
-    wid_opombepriracunih.ui
+    wid_opombepriracunih.ui \
+    sif_kilometrina.ui \
+    sif_dnevnice.ui
 
 QT += sql
 
@@ -117,6 +123,12 @@ OTHER_FILES += \
     racun-besedilo-predracun.csv \
     racun-besedilo-predplacilo.csv \
     racun-besedilo-racun.csv
+
+
+
+
+
+
 
 
 

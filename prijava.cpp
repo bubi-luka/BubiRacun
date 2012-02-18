@@ -53,6 +53,8 @@ prijava::prijava(QWidget *parent) :
 	tabela_storitev();
 	tabela_oddaje_racuna();
 	tabela_opombe_pri_racunih();
+	tabela_dnevnice();
+	tabela_kilometrina();
 
 	// vnese podatke v tabele
 	vnesi_skd();
@@ -442,7 +444,9 @@ void prijava::tabela_potni_nalogi() {
 														 "skupaj_dnevi TEXT, "
 														 "skupaj_ure TEXT, "
 														 "priznana_dnevnica TEXT, "
-														 "cena_dnevnice TEXT, "
+														 "cena_dnevnice_6_8 TEXT, "
+														 "cena_dnevnice_8_12 TEXT, "
+														 "cena_dnevnice_12_24 TEXT, "
 														 "dnevnica_6_8 TEXT, "
 														 "dnevnica_8_12 TEXT, "
 														 "dnevnica_12_24 TEXT, "
@@ -1306,6 +1310,69 @@ void prijava::tabela_opombe_pri_racunih() {
 
 }
 
+
+void prijava::tabela_dnevnice() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_dnevnice ("
+														 "id INTEGER PRIMARY KEY, "
+														 "dnevnica_1 TEXT, "
+														 "dnevnica_2 TEXT, "
+														 "dnevnica_3 TEXT, "
+														 "datum TEXT, "
+														 "avtor_oseba TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
+void prijava::tabela_kilometrina() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_kilometrina ("
+														 "id INTEGER PRIMARY KEY, "
+														 "kilometrina TEXT, "
+														 "datum TEXT, "
+														 "avtor_oseba TEXT)"
+										 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
 // vnese podatke v tabele
 void prijava::vnesi_skd() {
 
@@ -2138,6 +2205,18 @@ void prijava::posodobi_bazo() {
 		update.clear();
 
 		update.prepare("ALTER TABLE racuni ADD COLUMN 'opombe' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_6_8' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_8_12' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_12_24' TEXT");
 		update.exec();
 		update.clear();
 

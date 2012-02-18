@@ -60,6 +60,8 @@ private slots:
 	void tabela_storitev();
 	void tabela_oddaje_racuna();
 	void tabela_opombe_pri_racunih();
+	void tabela_dnevnice();
+	void tabela_kilometrina();
 
 	// vnese podatke v tabele
 	void vnesi_skd();

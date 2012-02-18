@@ -8,6 +8,8 @@
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
+#include "sif_dnevnice.h"
+#include "sif_kilometrina.h"
 #include "wid_uporabnik.h"
 #include "wid_podjetje.h"
 #include "wid_potninalogi.h"
@@ -206,6 +208,21 @@ void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
 	ui->scrollArea->setWidget(widopo);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Opombe pri racunih!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Opombe pri racunih");
+
+}
+
+
+void GlavnoOkno::on_actionKilometrina_triggered() {
+
+	sif_kilometrina *odpri = new sif_kilometrina;
+	odpri->show();
+
+}
+
+void GlavnoOkno::on_actionDnevnice_triggered() {
+
+	sif_dnevnice *odpri = new sif_dnevnice;
+	odpri->show();
 
 }
 

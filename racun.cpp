@@ -818,13 +818,13 @@ void racun::napolni() {
 					celica->setText(QString::number(urna_postavka * ( 1 + podrazitev / 100 ), 'f', 2).replace(".", ",") + " EUR");
 				}
 				else if ( polja[col] == "znesek_popustov" ) {
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " EUR");
 				}
 				else if ( polja[col] == "znesek_ddv" ) {
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " EUR");
 				}
 				else if ( polja[col] == "znesek_koncni" ) {
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + " EUR");
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " EUR");
 				}
 				else {
 					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -2699,6 +2699,13 @@ void racun::print(QString id) {
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		// vcasih poda negativni predznak pred zneskom 0,00
+		if ( skupaj_se_za_placati == "-0,00 EUR" ) {
+			skupaj_se_za_placati = "0,00 EUR";
+		}
+		if ( skupaj_se_za_placati_ddv == "-0,00 EUR" ) {
+			skupaj_se_za_placati_ddv = "0,00 EUR";
+		}
 
 		// preveri, ali je morda potreben preskok na novo stran
 		if( pozicija + 250 >= printer.height() ) {

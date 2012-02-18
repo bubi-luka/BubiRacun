@@ -89,7 +89,12 @@ void wid_stroski::napolni() {
 			while (col <= 2) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[i] == "cena" ) {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " EUR");
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_stroski->setItem(row, col, celica);
 
 				col++;

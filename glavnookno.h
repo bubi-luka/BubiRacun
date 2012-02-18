@@ -29,6 +29,8 @@ private slots:
 	void on_actionPopusti_triggered();
 	void on_action_asovnice_triggered();
 	void on_actionOpombe_pri_ra_unih_triggered();
+	void on_actionKilometrina_triggered();
+	void on_actionDnevnice_triggered();
 	void varnost_id_changed();
 	void keyPressEvent(QKeyEvent *event);
 
