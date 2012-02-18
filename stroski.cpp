@@ -26,9 +26,6 @@ stroski::stroski(QWidget *parent) :
 	ui->txt_id->setDisabled(true);
 	ui->txt_nalog->setDisabled(true);
 
-	// validate numbers
-	QDoubleValidator *validator = new QDoubleValidator(0, 999999, 2, this);
-	ui->txt_cena->setValidator(validator);
 }
 
 stroski::~stroski()
@@ -51,7 +48,6 @@ void stroski::on_btn_brisi_clicked() {
 void stroski::on_btn_sprejmi_clicked() {
 
 	QString napaka = "";
-	ui->txt_cena->setText(QString::number(ui->txt_cena->text().replace(",", ".").toDouble(), 'f', 2));
 /*
 	// nastavitev polja za napako
 	QFont font_error;
@@ -111,7 +107,7 @@ void stroski::on_btn_sprejmi_clicked() {
 			}
 			sql_vnesi_kupon.bindValue(0, pretvori(ui->txt_nalog->text()));
 			sql_vnesi_kupon.bindValue(1, pretvori(ui->txt_strosek->text()));
-			sql_vnesi_kupon.bindValue(2, pretvori(ui->txt_cena->text()));
+			sql_vnesi_kupon.bindValue(2, pretvori(pretvori_v_double(pretvori_iz_double(pretvori_v_double(ui->txt_cena->text())))));
 			sql_vnesi_kupon.exec();
 		}
 		base.close();
@@ -174,7 +170,7 @@ void stroski::prejem(QString besedilo) {
 				ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
 				ui->txt_nalog->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("potninalog")).toString()));
 				ui->txt_strosek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("strosek")).toString()));
-				ui->txt_cena->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena")).toString()));
+				ui->txt_cena->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena")).toString())));
 			}
 		}
 		base.close();
@@ -190,5 +186,54 @@ QString stroski::pretvori(QString besedilo) {
 QString stroski::prevedi(QString besedilo) {
 
 	return kodiranje().odkodiraj(besedilo);
+
+}
+
+QString stroski::pretvori_v_double(QString besedilo) {
+
+	/*
+	* pretvarja znake v format double
+	* prejme poljubni format, vrne double
+	*/
+
+	besedilo.replace(",", "."); // zamenja decimalno piko (double) za vejiso (SI)
+	besedilo.remove(QRegExp("[^0-9.]")); // odstrani vse znake razen stevilk in decimalne vejice
+
+	return besedilo;
+
+}
+
+QString stroski::pretvori_iz_double(QString besedilo) {
+
+	/*
+	* pretvarja stevilke v valuto, primerno za obdelavo naprej
+	* ni nujno, da je vhodna stevilka resnicno double, lahko gre za drugacno obliko
+	*/
+
+	besedilo.replace(".", ","); // zamenja decimalno piko (double) za vejiso (SI)
+	besedilo.remove(QRegExp("[^0-9,]")); // odstrani vse znake razen stevilk in decimalne vejice
+
+	while ( besedilo.left(1) == "0" ) { // odstranimo vse vodilne nicle
+		besedilo.remove(0,1);
+	}
+	if ( besedilo == "" ) { // ce je polje prazno, dodamo vrednost 0,00
+		besedilo.append("0");
+	}
+	if ( besedilo.left(1) == "," ) { // ce besedilo nima vodilne nicle, pa je pricakovana, jo dodamo
+		besedilo.prepend("0");
+	}
+	if ( besedilo.right(1) == "," ) { // ce ima besedilo decimalno locilo, za njim pa nic, dodamo 00
+		besedilo.append("00");
+	}
+	if ( besedilo.right(2).left(1) == "," ) { // ce ima besedilo decimalno locilo, za njim pa nic, dodamo 00
+		besedilo.append("0");
+	}
+	if ( !besedilo.contains(",") ) { // ce je celo stevilo dodamo decimalno locilo in vrednost 00
+		besedilo.append(",00");
+	}
+
+	besedilo.append(" EUR"); // doda oznako za evre
+
+	return besedilo;
 
 }

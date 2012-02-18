@@ -91,6 +91,29 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>15</width>
+          <height>15</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>15</width>
+          <height>15</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 170, 255);
+background-color: rgb(255, 170, 255);
+border:0;</string>
+        </property>
         <property name="text">
          <string>Pomen se bo pokazal s časom</string>
         </property>
@@ -167,8 +190,18 @@
     <addaction name="separator"/>
     <addaction name="action_asovnice"/>
    </widget>
+   <widget class="QMenu" name="menu_ifranti">
+    <property name="title">
+     <string>Šifranti</string>
+    </property>
+    <addaction name="actionOpombe_pri_ra_unih"/>
+    <addaction name="separator"/>
+    <addaction name="actionKilometrina"/>
+    <addaction name="actionDnevnice"/>
+   </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
+   <addaction name="menu_ifranti"/>
    <addaction name="menuIzpisi"/>
    <addaction name="menuNastavitve"/>
    <addaction name="menuPomo"/>
@@ -245,6 +278,21 @@
    </property>
    <property name="text">
     <string>Časovnice</string>
+   </property>
+  </action>
+  <action name="actionOpombe_pri_ra_unih">
+   <property name="text">
+    <string>Opombe pri računih</string>
+   </property>
+  </action>
+  <action name="actionKilometrina">
+   <property name="text">
+    <string>Kilometrina</string>
+   </property>
+  </action>
+  <action name="actionDnevnice">
+   <property name="text">
+    <string>Dnevnice</string>
    </property>
   </action>
  </widget>

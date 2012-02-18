@@ -4,9 +4,12 @@
 #include <QKeyEvent>
 #include <QtSql>
 #include <QMessageBox>
+#include <QColorGroup>
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
+#include "sif_dnevnice.h"
+#include "sif_kilometrina.h"
 #include "wid_uporabnik.h"
 #include "wid_podjetje.h"
 #include "wid_potninalogi.h"
@@ -15,6 +18,7 @@
 #include "wid_projekti.h"
 #include "wid_kuponi.h"
 #include "wid_racuni.h"
+#include "wid_opombepriracunih.h"
 #include "vizitka.h"
 #include "varnost.h"
 #include "kodiranje.h"
@@ -71,6 +75,10 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	ui->actionPoslovanje->setEnabled(false);
 	ui->actionPrihodek->setEnabled(false);
 	ui->actionIzdatek->setEnabled(false);
+
+	// skrijemo polja, ki jih ne potrebujemo
+	ui->txt_pozicija->setVisible(false);
+	ui->txt_uporabnik->setVisible(false);
 
 }
 
@@ -194,6 +202,30 @@ void GlavnoOkno::on_actionPopusti_triggered() {
 
 }
 
+void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
+
+	wid_opombepriracunih *widopo = new wid_opombepriracunih;
+	ui->scrollArea->setWidget(widopo);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Opombe pri racunih!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Opombe pri racunih");
+
+}
+
+
+void GlavnoOkno::on_actionKilometrina_triggered() {
+
+	sif_kilometrina *odpri = new sif_kilometrina;
+	odpri->show();
+
+}
+
+void GlavnoOkno::on_actionDnevnice_triggered() {
+
+	sif_dnevnice *odpri = new sif_dnevnice;
+	odpri->show();
+
+}
+
 void GlavnoOkno::varnost_id_changed() {
 
 }
@@ -226,9 +258,11 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
 		if (vApp->state() == pretvori("public") ) {
 			vApp->set_state(pretvori("private"));
+			ui->txt_pozicija->setVisible(false);
 		}
 		else {
 			vApp->set_state(pretvori("public"));
+			ui->txt_pozicija->setVisible(true);
 		}
 
 	}

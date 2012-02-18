@@ -30,6 +30,7 @@ opravila::opravila(QWidget *parent) :
 
 		ui->txt_skupina->clear();
 		ui->txt_storitev->clear();
+		ui->txt_enota->clear();
 		ui->txt_urna_postavka_brez_ddv->setText("");
 		ui->txt_ddv->clear();
 		ui->txt_urna_postavka->setText("");
@@ -121,6 +122,7 @@ opravila::opravila(QWidget *parent) :
 			// baza je odprta
 
 			// napolni spustne sezname
+			ui->txt_enota->addItem("");
 			ui->txt_ddv->addItem("");
 			ui->txt_ddv->addItem("20,0 %");
 			ui->txt_ddv->addItem("8,5 %");
@@ -129,11 +131,15 @@ opravila::opravila(QWidget *parent) :
 			ui->txt_skupina->addItem("");
 
 			QSqlQuery sql_fill;
-			sql_fill.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '%" + pretvori("BenSTUDENT").right(6) + "'");
+			sql_fill.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '%" + pretvori("BenSTUDENT").right(6) + "'"); // right(6) je zaradi sumnikov!!!
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
 				if ( ui->txt_skupina->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString())) == -1 ) {
 					ui->txt_skupina->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString()));
+				}
+				QString enota = prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString());
+				if ( ui->txt_enota->findText(enota) == -1 ) {
+					ui->txt_enota->addItem(enota);
 				}
 			}
 			sql_fill.clear();
@@ -213,8 +219,8 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 																 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni) "
-																 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
+																 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_opravilo.prepare("UPDATE opravila SET stevilka_stranke = ?, stevilka_projekta = ?, stevilka_racuna = ?, tip_racuna = ?, "
@@ -222,7 +228,7 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 																	 "ddv = ?, popust_fb1 = ?, popust_fb2 = ?, popust_komb1 = ?, popust_komb2 = ?, popust_stranka = ?, "
 																	 "popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, podrazitev_hitrost = ?, "
 																	 "podrazitev_zapleti = ?, pribitek_vikend = ?, pribitek_hitrost = ?, pribitek_zapleti = ?, tip_ur = ?, "
-																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ? "
+																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ?, enota = ? "
 																	 "WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_opravilo.bindValue(0, pretvori(ui->txt_id_stranka->text()));
@@ -264,21 +270,21 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 			}
 			if ( ui->rb_predracun->isChecked() ) {
 				sql_vnesi_opravilo.bindValue(22, pretvori("predracun"));
-				sql_vnesi_opravilo.bindValue(23, pretvori(ui->txt_predracun->text()));
+				sql_vnesi_opravilo.bindValue(23, pretvori(pretvori_v_double(ui->txt_predracun->text())));
 			}
 			else if ( ui->rb_casovnice->isChecked() ){
 				sql_vnesi_opravilo.bindValue(22, pretvori("casovnice"));
-				sql_vnesi_opravilo.bindValue(23, pretvori(ui->txt_casovnice->text()));
+				sql_vnesi_opravilo.bindValue(23, pretvori(pretvori_v_double(ui->txt_casovnice->text())));
 			}
 			else if ( ui->rb_rocni_vnos->isChecked() ) {
 				sql_vnesi_opravilo.bindValue(22, pretvori("rocno"));
-				sql_vnesi_opravilo.bindValue(23, pretvori(ui->txt_rocni_vnos->text()));
+				sql_vnesi_opravilo.bindValue(23, pretvori(pretvori_v_double(ui->txt_rocni_vnos->text())));
 			}
 			else {
 				sql_vnesi_opravilo.bindValue(22, pretvori(""));
 				sql_vnesi_opravilo.bindValue(23, pretvori(""));
 			}
-			sql_vnesi_opravilo.bindValue(24, pretvori(ui->txt_rocni_vnos->text()));
+			sql_vnesi_opravilo.bindValue(24, pretvori(pretvori_v_double(ui->txt_rocni_vnos->text())));
 			// izracuna znesek popustov
 			double popusti = 0.0;
 			popusti = pretvori_v_double(ui->txt_nova_urna_postavka_brez_ddv->text()).toDouble();
@@ -288,6 +294,7 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 			sql_vnesi_opravilo.bindValue(25, pretvori(pretvori_v_double(QString::number(popusti, 'f', 2))));
 			sql_vnesi_opravilo.bindValue(26, pretvori(pretvori_v_double(ui->txt_znesek_ddv_na_racunu->text())));
 			sql_vnesi_opravilo.bindValue(27, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_na_racunu->text())));
+			sql_vnesi_opravilo.bindValue(28, pretvori(ui->txt_enota->currentText()));
 			sql_vnesi_opravilo.exec();
 
 			// send signal to reload widget
@@ -355,10 +362,11 @@ void opravila::prejem(QString beseda) {
 				ui->txt_id_tip->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()));
 				ui->txt_skupina->setCurrentIndex(ui->txt_skupina->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_skupina")).toString())));
 				ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
-				ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()));
+				ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()).replace(".", ",") + " EUR");
 				ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %"));
-				ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()));
+				ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()).replace(".", ",") + " EUR");
 				ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("rocni_vnos_ur")).toString()));
+				ui->txt_enota->setCurrentIndex(ui->txt_enota->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("enota")).toString())));
 
 				// izbira popustov
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_fb1")).toString()) != "0.0" ) {
@@ -432,15 +440,15 @@ void opravila::prejem(QString beseda) {
 				// oznacitev obracuna ur
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "predracun" ) {
 					ui->rb_predracun->setChecked(true);
-					ui->txt_predracun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+					ui->txt_predracun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()).replace(".", ","));
 				}
 				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "casovnice" ) {
 					ui->rb_casovnice->setChecked(true);
-					ui->txt_casovnice->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+					ui->txt_casovnice->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()).replace(".", ","));
 				}
 				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_ur")).toString()) == "rocno" ) {
 					ui->rb_rocni_vnos->setChecked(true);
-					ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()));
+					ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ur_dela")).toString()).replace(".", ","));
 				}
 			}
 		}
@@ -478,6 +486,7 @@ void opravila::on_txt_skupina_currentIndexChanged() {
 
 	// pocisti storitve
 	ui->txt_storitev->clear();
+	ui->txt_enota->setCurrentIndex(0);
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -516,6 +525,7 @@ void opravila::on_txt_skupina_currentIndexChanged() {
 void opravila::on_txt_storitev_currentIndexChanged() {
 
 	// pocisti polja
+	ui->txt_enota->setCurrentIndex(0);
 	ui->txt_urna_postavka_brez_ddv->setText("");
 	ui->txt_ddv->setCurrentIndex(0);
 	ui->txt_urna_postavka->setText("");
@@ -541,6 +551,7 @@ void opravila::on_txt_storitev_currentIndexChanged() {
 										 "storitev LIKE '" + pretvori(ui->txt_storitev->currentText()) + "'");
 		sql_fill.exec();
 		if ( sql_fill.next() ) {
+			ui->txt_enota->setCurrentIndex(ui->txt_enota->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString())));
 			ui->txt_urna_postavka_brez_ddv->setText(pretvori_iz_double(QString::number(prevedi(sql_fill.value(sql_fill.record().indexOf("urna_postavka")).toString()).toDouble(), 'f', 2)) + " EUR");
 			ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("ddv")).toString().replace(".", ",").append(" %"))));
 		}
@@ -696,13 +707,13 @@ void opravila::izracunaj_racun() {
 
 	// napisi ustrezno stevilo opravljenih ur
 	if ( ui->rb_predracun->isChecked() ) {
-		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_predracun->text());
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_predracun->text().replace(".", ","));
 	}
 	else if ( ui->rb_casovnice->isChecked() ) {
-		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_casovnice->text());
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_casovnice->text().replace(".", ","));
 	}
 	else if ( ui->rb_rocni_vnos->isChecked() ) {
-		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_rocni_vnos->text());
+		ui->txt_stevilo_opravljenih_ur->setText(ui->txt_rocni_vnos->text().replace(".", ","));
 	}
 
 	// napisi ustrezen ddv

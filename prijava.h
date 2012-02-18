@@ -59,6 +59,9 @@ private slots:
 	void tabela_predracuni();
 	void tabela_storitev();
 	void tabela_oddaje_racuna();
+	void tabela_opombe_pri_racunih();
+	void tabela_dnevnice();
+	void tabela_kilometrina();
 
 	// vnese podatke v tabele
 	void vnesi_skd();
@@ -77,6 +80,9 @@ private slots:
 	void vnesi_predracune();
 	void vnesi_storitve();
 	void vnesi_oddaja_racuna();
+
+	// posodobitev baze
+	void posodobi_bazo();
 
 signals:
 	void prenos1(QString besedilo);

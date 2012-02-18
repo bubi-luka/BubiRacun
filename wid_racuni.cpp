@@ -4,6 +4,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDir>
+#include <QFileDialog>
 
 #include "wid_racuni.h"
 #include "ui_wid_racuni.h"
@@ -21,6 +22,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		// disable and hide
 		ui->txt_stprojekta->setEnabled(false);
 		ui->txt_stprojekta->setVisible(false);
+		ui->btn_brisi->setEnabled(false);
+		ui->btn_brisi->setVisible(false);
 
 		// napolni filtrirne spustne sezname
 		QString gumb = ui->btn_nov->text();
@@ -383,7 +386,7 @@ void wid_racuni::napolni() {
 						while ( sql_kodiraj.next() ) {
 							znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() * 1.2;
 						}
-						celica->setText(QString::number(znesek, 'f', 2) + " EUR");
+						celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
 					}
 					else if ( polja[i] == "se_placati" ) {
 						QSqlQuery sql_kodiraj;
@@ -395,7 +398,7 @@ void wid_racuni::napolni() {
 							znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() * 1.2;
 						}
 						znesek -= prevedi(sql_fill.value(sql_fill.record().indexOf("avans")).toString()).toDouble();
-						celica->setText(QString::number(znesek, 'f', 2) + " EUR");
+						celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
 					}
 					else {
 						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -445,26 +448,8 @@ void wid_racuni::on_btn_brisi_clicked() {
 		msgbox.exec();
 	}
 	else {
-		QString tip_racuna = "";
-		QString id_predracuna = "";
-
-		QSqlQuery sql_racun;
-		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
-		sql_racun.exec();
-		if ( sql_racun.next() ) {
-			tip_racuna = sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString();
-			id_predracuna = sql_racun.value(sql_racun.record().indexOf("stevilka_racuna")).toString();
-		}
-		sql_racun.clear();
-		sql_racun.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
-		sql_racun.exec();
-		if ( sql_racun.next() ) {
-			id_predracuna = sql_racun.value(sql_racun.record().indexOf("id")).toString();
-		}
-		sql_racun.clear();
-
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id_predracuna) + "' AND tip_racuna LIKE '" + tip_racuna + "'");
+		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
 		sql_brisi.clear();
 
@@ -530,6 +515,13 @@ void wid_racuni::on_btn_refresh_clicked() {
 
 void wid_racuni::on_btn_print_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -645,11 +637,18 @@ void wid_racuni::on_btn_print_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
 
 void wid_racuni::on_btn_print_pdf_clicked() {
 
+	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+	for( int i = 0; i < selectedList.count(); i++) {
+		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+	}
+
+	/*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -765,9 +764,8 @@ void wid_racuni::on_btn_print_pdf_clicked() {
 		}
 	}
 	base.close();
-
+*/
 }
-
 
 QString wid_racuni::pretvori_v_double(QString besedilo) {
 
@@ -910,7 +908,7 @@ void wid_racuni::print(QString id) {
 			podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
 			podjetje_trr = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString());
 			podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString());
-			if ( podjetje_telefon == "" ) {
+			if ( podjetje_telefon == "+(0)/--" ) {
 				podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
 			}
 
@@ -1012,13 +1010,13 @@ void wid_racuni::print(QString id) {
 
 	QPrinter printer;
 
-//	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-//	dialog->setWindowTitle(tr("Natisni racun"));
+	QPrintDialog *dialog = new QPrintDialog(&printer, this);
+	dialog->setWindowTitle(tr("Natisni racun"));
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
 
-//	 if (dialog->exec() == QDialog::Accepted) {
+	 if (dialog->exec() == QDialog::Accepted) {
 		QPainter painter;
 
 		if (! painter.begin(&printer))  { // failed to open file
@@ -1047,7 +1045,7 @@ void wid_racuni::print(QString id) {
 // glava
 	// logotip podjetja
 		QImage logotip(podjetje_logo);
-		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 		pozicija = 10; // zaradi velikosti logotipa
 	// ime in naslov podjetja
@@ -1087,7 +1085,7 @@ void wid_racuni::print(QString id) {
 		painter.setPen(*tanek_svincnik);
 		painter.drawLine(0, pozicija, printer.width(), pozicija);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 	// noga
 		// crta nad nogo
@@ -1098,14 +1096,14 @@ void wid_racuni::print(QString id) {
 		painter.setFont(malo);
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 		velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																									 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																									 " " + podjetje_naslov_posta);
+																									 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																									 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height();
 		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-										 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+										 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 										 " " + podjetje_naslov_posta);
 
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -1132,7 +1130,7 @@ void wid_racuni::print(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 		// nastavi parametre
 		painter.setFont(normalno);
@@ -1158,7 +1156,7 @@ void wid_racuni::print(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_postna_stevilka + " " + narocnik_naslov_posta);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 6 + razmik_med_vrsticami * 6;
 
 		besedilo = racun.readLine();
 		if ( narocnik_davcna != "" ) {
@@ -1331,7 +1329,7 @@ void wid_racuni::print(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
-		pozicija += razmik_med_vrsticami;
+		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		// crta pod podatki
 		painter.setPen(*debel_svincnik);
@@ -1499,7 +1497,7 @@ void wid_racuni::print(QString id) {
 					// glava
 						// logotip podjetja
 							QImage logotip(podjetje_logo);
-							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 							pozicija = 10;
 						// ime in naslov podjetja
@@ -1539,7 +1537,7 @@ void wid_racuni::print(QString id) {
 							painter.setPen(*tanek_svincnik);
 							painter.drawLine(0, pozicija, printer.width(), pozicija);
 							// nova vrstica
-							pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+							pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 							// st. strani
 
@@ -1565,14 +1563,14 @@ void wid_racuni::print(QString id) {
 							painter.setFont(malo);
 							// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 							velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																														 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																														 " " + podjetje_naslov_posta);
+																														 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																														 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 							// nastavimo parametre
 							visina_vrstice = velikost_besedila.height();
 							razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 							// natisnemo besedilo
 							painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-															 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+															 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 															 " " + podjetje_naslov_posta);
 
 							// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -1665,6 +1663,13 @@ void wid_racuni::print(QString id) {
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		// vcasih poda negativni predznak pred zneskom 0,00
+		if ( skupaj_se_za_placati == "-0,00 EUR" ) {
+			skupaj_se_za_placati = "0,00 EUR";
+		}
+		if ( skupaj_se_za_placati_ddv == "-0,00 EUR" ) {
+			skupaj_se_za_placati_ddv = "0,00 EUR";
+		}
 
 		// preveri, ali je morda potreben preskok na novo stran
 		if( pozicija + 250 >= printer.height() ) {
@@ -1674,7 +1679,7 @@ void wid_racuni::print(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -1714,7 +1719,7 @@ void wid_racuni::print(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
@@ -1740,14 +1745,14 @@ void wid_racuni::print(QString id) {
 					painter.setFont(malo);
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 					velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																												 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																												 " " + podjetje_naslov_posta);
+																												 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																												 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 					// nastavimo parametre
 					visina_vrstice = velikost_besedila.height();
 					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 					// natisnemo besedilo
 					painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+													 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 													 " " + podjetje_naslov_posta);
 
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -1951,129 +1956,155 @@ void wid_racuni::print(QString id) {
 			pozicija += razmik_med_vrsticami * 2 + visina_vrstice;
 		}
 
-	// opombe
-		int stevilo_opomb = 0;
-		if ( racun_tip == "1" ) {
-			stevilo_opomb = 4;
-		}
-		if ( racun_tip == "2" ) {
-			stevilo_opomb = 7;
-		}
-		if ( racun_tip == "3" ) {
-			stevilo_opomb = 1;
-		}
-
-		for ( int a = 0; a < stevilo_opomb; a++ ) {
-			// preveri, ce je morda potreben preskok na novo stran
-			if( pozicija + 60 >= printer.height() ) {
-				printer.newPage();
-				pozicija = 0;
-				i++;
-				// glava
-					// logotip podjetja
-						QImage logotip(podjetje_logo);
-						painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
-
-						pozicija = 10;
-					// ime in naslov podjetja
-						painter.setFont(debelo);
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_kratki);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_kratki);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, polni naziv)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_polni);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, ulica)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, pos)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
-						// nova vrstica
-						pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
-
-						// crta pod glavo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, pozicija, printer.width(), pozicija);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami * 2;
-
-						// st. strani
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (st. strani)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
-						// nova vrstica
-						pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
-
-						// crta pod glavo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, pozicija, printer.width(), pozicija);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami * 2;
-
-					// noga
-						// crta nad nogo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, printer.height() - 20, printer.width(), printer.height() - 25);
-
-						// podatki o podjetju
-						painter.setFont(malo);
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																													 " " + podjetje_naslov_posta);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-														 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-														 " " + podjetje_naslov_posta);
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						velikost_besedila = painter.boundingRect(0, printer.height() - 15 + visina_vrstice, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_url +
-																													 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, printer.height() - 15 + visina_vrstice, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_url +
-														 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+		// opombe
+			// priprava baze in polnenje storitve
+			QSqlDatabase base_2 = QSqlDatabase::addDatabase("QSQLITE");
+			base_2.setDatabaseName(dbase_path);
+			base_2.database();
+			base_2.open();
+			if(base_2.isOpen() != true){
+				QMessageBox msgbox;
+				msgbox.setText("Baze ni bilo moc odpreti");
+				msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+				msgbox.exec();
 			}
+			else {
+				// baza je odprta
 
-			painter.setFont(malo);
-			besedilo = racun.readLine();
-			// dolocimo velikost kvadrata, ki ga tvori besedilo (opomba 1)
-			velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// nastavimo parametre
-			visina_vrstice = velikost_besedila.height();
-			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-			// natisnemo besedilo
-			painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// nova vrstica
-			pozicija += visina_vrstice + razmik_med_vrsticami;
-			// preveri, ali je morda potreben preskok na novo stran
+				QString opombe = "";
+				QString preostanek_opombe = "";
+				QString ident = "";
+
+				QString beseda = "";
+
+				QSqlQuery sql_opombe;
+				sql_opombe.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+				sql_opombe.exec();
+				if ( sql_opombe.next() ) {
+					opombe = prevedi(sql_opombe.value(sql_opombe.record().indexOf("opombe")).toString()).replace(",,", ",");
+				}
+
+				preostanek_opombe = opombe;
+				for ( int a = 1; a < opombe.count(","); a++ ) {
+					preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
+					int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
+					ident = preostanek_opombe.left(vejica); // dobimo id opombe
+					preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - ident.length() ); // opombe skrajsamo za dolzino enega id-ja
+
+					QSqlQuery sql_besedilo;
+					sql_besedilo.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(ident) + "'");
+					sql_besedilo.exec();
+					if ( sql_besedilo.next() ) {
+						beseda = QString::number(a, 10) + ") " +
+										 prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("besedilo")).toString());
+					}
+
+					painter.setFont(malo);
+					// dolocimo velikost kvadrata, ki ga tvori besedilo (opomba)
+					velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, beseda);
+					// nastavimo parametre
+					visina_vrstice = velikost_besedila.height();
+					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+					// preveri, ce je morda potreben preskok na novo stran
+					if( pozicija + 30 + visina_vrstice >= printer.height() ) {
+							printer.newPage();
+							pozicija = 0;
+							i++;
+							// glava
+								// logotip podjetja
+									QImage logotip(podjetje_logo);
+									painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+
+									pozicija = 10;
+								// ime in naslov podjetja
+									painter.setFont(debelo);
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_kratki);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_kratki);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, polni naziv)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_polni);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, ulica)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, pos)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// crta pod glavo
+									painter.setPen(*tanek_svincnik);
+									painter.drawLine(0, pozicija, printer.width(), pozicija);
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// st. strani
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (st. strani)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// crta pod glavo
+									painter.setPen(*tanek_svincnik);
+									painter.drawLine(0, pozicija, printer.width(), pozicija);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+
+									// podatki o podjetju
+									painter.setFont(malo);
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
+																																 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																																 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
+																	 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+																	 " " + podjetje_naslov_posta);
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									velikost_besedila = painter.boundingRect(0, printer.height() - 15 + visina_vrstice, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_url +
+																																 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, printer.height() - 15 + visina_vrstice, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_url +
+																	 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+						}
+					// natisnemo besedilo
+					painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, beseda);
+					// nova vrstica
+					pozicija += visina_vrstice + razmik_med_vrsticami;
+
+				}
+
 			}
+			base_2.close();
 
-		pozicija += visina_vrstice + 2 * razmik_med_vrsticami;
+			pozicija += visina_vrstice + 2 * razmik_med_vrsticami;
 
 	// podpis
 		// preveri, ali je morda potreben preskok na novo stran
@@ -2084,7 +2115,7 @@ void wid_racuni::print(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -2124,7 +2155,7 @@ void wid_racuni::print(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
@@ -2150,14 +2181,14 @@ void wid_racuni::print(QString id) {
 					painter.setFont(malo);
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 					velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																												 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																												 " " + podjetje_naslov_posta);
+																												 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																												 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 					// nastavimo parametre
 					visina_vrstice = velikost_besedila.height();
 					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 					// natisnemo besedilo
 					painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+													 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 													 " " + podjetje_naslov_posta);
 
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -2195,7 +2226,7 @@ void wid_racuni::print(QString id) {
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		painter.end();
-//	}
+	}
 
 }
 
@@ -2301,7 +2332,7 @@ void wid_racuni::printpdf(QString id) {
 			podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
 			podjetje_trr = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString());
 			podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString());
-			if ( podjetje_telefon == "" ) {
+			if ( podjetje_telefon == "+(0)/--" ) {
 				podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
 			}
 
@@ -2408,11 +2439,30 @@ void wid_racuni::printpdf(QString id) {
 		*/
 
 	// ustvariti pot do ustrezne mape
-		QDir mapa(QDir::homePath());
-		mapa.mkdir("BubiRacun-Dokumenti");
-		mapa.cd("BubiRacun-Dokumenti");
+		QString mapa_za_shranjevanje = "";
+		mapa_za_shranjevanje = podjetje_logo.left(podjetje_logo.lastIndexOf("/")); // izreze logotip
+		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+																														 "Izberite mapo za shranjevanje dokumentov",
+																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+		if ( mapa_za_shranjevanje == "" ) {
+			return;
+		}
+
+		QDir mapa(mapa_za_shranjevanje);
+		mapa.mkdir("izdani-predracuni");
+		mapa.mkdir("izdani-predplacilni-racuni");
 		mapa.mkdir("izdani-racuni");
-		mapa.cd("izdani-racuni");
+		if ( racun_tip == "1" ) {
+			mapa.cd("izdani-predracuni");
+		}
+		else if ( racun_tip == "2" ) {
+			mapa.cd("izdani-predplacilni-racuni");
+		}
+		else if ( racun_tip == "3" ) {
+			mapa.cd("izdani-racuni");
+		}
+		else
 		mapa.mkdir(racun_datum_izdaje.right(4));
 		mapa.cd(racun_datum_izdaje.right(4));
 
@@ -2455,7 +2505,7 @@ void wid_racuni::printpdf(QString id) {
 // glava
 	// logotip podjetja
 		QImage logotip(podjetje_logo);
-		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 		pozicija = 10; // zaradi velikosti logotipa
 	// ime in naslov podjetja
@@ -2495,7 +2545,7 @@ void wid_racuni::printpdf(QString id) {
 		painter.setPen(*tanek_svincnik);
 		painter.drawLine(0, pozicija, printer.width(), pozicija);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 	// noga
 		// crta nad nogo
@@ -2506,14 +2556,14 @@ void wid_racuni::printpdf(QString id) {
 		painter.setFont(malo);
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 		velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																									 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																									 " " + podjetje_naslov_posta);
+																									 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																									 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height();
 		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-										 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+										 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 										 " " + podjetje_naslov_posta);
 
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -2540,7 +2590,7 @@ void wid_racuni::printpdf(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 		// nastavi parametre
 		painter.setFont(normalno);
@@ -2566,7 +2616,7 @@ void wid_racuni::printpdf(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_postna_stevilka + " " + narocnik_naslov_posta);
 		// nova vrstica
-		pozicija += visina_vrstice + razmik_med_vrsticami;
+		pozicija += visina_vrstice * 6 + razmik_med_vrsticami * 6;
 
 		besedilo = racun.readLine();
 		if ( narocnik_davcna != "" ) {
@@ -2739,7 +2789,7 @@ void wid_racuni::printpdf(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
-		pozicija += razmik_med_vrsticami;
+		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		// crta pod podatki
 		painter.setPen(*debel_svincnik);
@@ -2907,7 +2957,7 @@ void wid_racuni::printpdf(QString id) {
 					// glava
 						// logotip podjetja
 							QImage logotip(podjetje_logo);
-							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+							painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 							pozicija = 10;
 						// ime in naslov podjetja
@@ -2947,7 +2997,7 @@ void wid_racuni::printpdf(QString id) {
 							painter.setPen(*tanek_svincnik);
 							painter.drawLine(0, pozicija, printer.width(), pozicija);
 							// nova vrstica
-							pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+							pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 							// st. strani
 
@@ -2973,14 +3023,14 @@ void wid_racuni::printpdf(QString id) {
 							painter.setFont(malo);
 							// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 							velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																														 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																														 " " + podjetje_naslov_posta);
+																														 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																														 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 							// nastavimo parametre
 							visina_vrstice = velikost_besedila.height();
 							razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 							// natisnemo besedilo
 							painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-															 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+															 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 															 " " + podjetje_naslov_posta);
 
 							// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -3073,6 +3123,13 @@ void wid_racuni::printpdf(QString id) {
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		// vcasih poda negativni predznak pred zneskom 0,00
+		if ( skupaj_se_za_placati == "-0,00 EUR" ) {
+			skupaj_se_za_placati = "0,00 EUR";
+		}
+		if ( skupaj_se_za_placati_ddv == "-0,00 EUR" ) {
+			skupaj_se_za_placati_ddv = "0,00 EUR";
+		}
 
 		// preveri, ali je morda potreben preskok na novo stran
 		if( pozicija + 250 >= printer.height() ) {
@@ -3082,7 +3139,7 @@ void wid_racuni::printpdf(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -3122,7 +3179,7 @@ void wid_racuni::printpdf(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
@@ -3148,14 +3205,14 @@ void wid_racuni::printpdf(QString id) {
 					painter.setFont(malo);
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 					velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																												 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																												 " " + podjetje_naslov_posta);
+																												 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																												 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 					// nastavimo parametre
 					visina_vrstice = velikost_besedila.height();
 					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 					// natisnemo besedilo
 					painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+													 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 													 " " + podjetje_naslov_posta);
 
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
@@ -3359,129 +3416,155 @@ void wid_racuni::printpdf(QString id) {
 			pozicija += razmik_med_vrsticami * 2 + visina_vrstice;
 		}
 
-	// opombe
-		int stevilo_opomb = 0;
-		if ( racun_tip == "1" ) {
-			stevilo_opomb = 4;
-		}
-		if ( racun_tip == "2" ) {
-			stevilo_opomb = 7;
-		}
-		if ( racun_tip == "3" ) {
-			stevilo_opomb = 1;
-		}
-
-		for ( int a = 0; a < stevilo_opomb; a++ ) {
-			// preveri, ce je morda potreben preskok na novo stran
-			if( pozicija + 60 >= printer.height() ) {
-				printer.newPage();
-				pozicija = 0;
-				i++;
-				// glava
-					// logotip podjetja
-						QImage logotip(podjetje_logo);
-						painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
-
-						pozicija = 10;
-					// ime in naslov podjetja
-						painter.setFont(debelo);
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_kratki);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_kratki);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, polni naziv)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_polni);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, ulica)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami;
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, pos)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
-						// nova vrstica
-						pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
-
-						// crta pod glavo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, pozicija, printer.width(), pozicija);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami * 2;
-
-						// st. strani
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (st. strani)
-						velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
-						// nova vrstica
-						pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
-
-						// crta pod glavo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, pozicija, printer.width(), pozicija);
-						// nova vrstica
-						pozicija += visina_vrstice + razmik_med_vrsticami * 2;
-
-					// noga
-						// crta nad nogo
-						painter.setPen(*tanek_svincnik);
-						painter.drawLine(0, printer.height() - 20, printer.width(), printer.height() - 25);
-
-						// podatki o podjetju
-						painter.setFont(malo);
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																													 " " + podjetje_naslov_posta);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-														 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-														 " " + podjetje_naslov_posta);
-
-						// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
-						velikost_besedila = painter.boundingRect(0, printer.height() - 15 + visina_vrstice, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_url +
-																													 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
-						// nastavimo parametre
-						visina_vrstice = velikost_besedila.height();
-						razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-						// natisnemo besedilo
-						painter.drawText(QRectF(0, printer.height() - 15 + visina_vrstice, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_url +
-														 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+		// opombe
+			// priprava baze in polnenje storitve
+			QSqlDatabase base_2 = QSqlDatabase::addDatabase("QSQLITE");
+			base_2.setDatabaseName(dbase_path);
+			base_2.database();
+			base_2.open();
+			if(base_2.isOpen() != true){
+				QMessageBox msgbox;
+				msgbox.setText("Baze ni bilo moc odpreti");
+				msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+				msgbox.exec();
 			}
+			else {
+				// baza je odprta
 
-			painter.setFont(malo);
-			besedilo = racun.readLine();
-			// dolocimo velikost kvadrata, ki ga tvori besedilo (opomba 1)
-			velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// nastavimo parametre
-			visina_vrstice = velikost_besedila.height();
-			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
-			// natisnemo besedilo
-			painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// nova vrstica
-			pozicija += visina_vrstice + razmik_med_vrsticami;
-			// preveri, ali je morda potreben preskok na novo stran
+				QString opombe = "";
+				QString preostanek_opombe = "";
+				QString ident = "";
+
+				QString beseda = "";
+
+				QSqlQuery sql_opombe;
+				sql_opombe.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+				sql_opombe.exec();
+				if ( sql_opombe.next() ) {
+					opombe = prevedi(sql_opombe.value(sql_opombe.record().indexOf("opombe")).toString()).replace(",,", ",");
+				}
+
+				preostanek_opombe = opombe;
+				for ( int a = 1; a < opombe.count(","); a++ ) {
+					preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
+					int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
+					ident = preostanek_opombe.left(vejica); // dobimo id opombe
+					preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - ident.length() ); // opombe skrajsamo za dolzino enega id-ja
+
+					QSqlQuery sql_besedilo;
+					sql_besedilo.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(ident) + "'");
+					sql_besedilo.exec();
+					if ( sql_besedilo.next() ) {
+						beseda = QString::number(a, 10) + ") " +
+										 prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("besedilo")).toString());
+					}
+
+					painter.setFont(malo);
+					// dolocimo velikost kvadrata, ki ga tvori besedilo (opomba)
+					velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, beseda);
+					// nastavimo parametre
+					visina_vrstice = velikost_besedila.height();
+					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+					// preveri, ce je morda potreben preskok na novo stran
+					if( pozicija + 30 + visina_vrstice >= printer.height() ) {
+							printer.newPage();
+							pozicija = 0;
+							i++;
+							// glava
+								// logotip podjetja
+									QImage logotip(podjetje_logo);
+									painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+
+									pozicija = 10;
+								// ime in naslov podjetja
+									painter.setFont(debelo);
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_kratki);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_kratki);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, polni naziv)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_polni);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, ulica)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_ulica + " " + podjetje_naslov_stevilka);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami;
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, pos)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// crta pod glavo
+									painter.setPen(*tanek_svincnik);
+									painter.drawLine(0, pozicija, printer.width(), pozicija);
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// st. strani
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (st. strani)
+									velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, "Stran: " + QString::number(i, 10));
+									// nova vrstica
+									pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
+									// crta pod glavo
+									painter.setPen(*tanek_svincnik);
+									painter.drawLine(0, pozicija, printer.width(), pozicija);
+									// nova vrstica
+									pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+
+									// podatki o podjetju
+									painter.setFont(malo);
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
+																																 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																																 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
+																	 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+																	 " " + podjetje_naslov_posta);
+
+									// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
+									velikost_besedila = painter.boundingRect(0, printer.height() - 15 + visina_vrstice, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_url +
+																																 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+									// nastavimo parametre
+									visina_vrstice = velikost_besedila.height();
+									razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+									// natisnemo besedilo
+									painter.drawText(QRectF(0, printer.height() - 15 + visina_vrstice, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_url +
+																	 " | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv);
+						}
+					// natisnemo besedilo
+					painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, beseda);
+					// nova vrstica
+					pozicija += visina_vrstice + razmik_med_vrsticami;
+
+				}
+
 			}
+			base_2.close();
 
-		pozicija += visina_vrstice + 2 * razmik_med_vrsticami;
+			pozicija += visina_vrstice + 2 * razmik_med_vrsticami;
 
 	// podpis
 		// preveri, ali je morda potreben preskok na novo stran
@@ -3492,7 +3575,7 @@ void wid_racuni::printpdf(QString id) {
 			// glava
 				// logotip podjetja
 					QImage logotip(podjetje_logo);
-					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+					painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
 					pozicija = 10;
 				// ime in naslov podjetja
@@ -3532,7 +3615,7 @@ void wid_racuni::printpdf(QString id) {
 					painter.setPen(*tanek_svincnik);
 					painter.drawLine(0, pozicija, printer.width(), pozicija);
 					// nova vrstica
-					pozicija += visina_vrstice + razmik_med_vrsticami * 2;
+					pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 					// st. strani
 
@@ -3558,14 +3641,14 @@ void wid_racuni::printpdf(QString id) {
 					painter.setFont(malo);
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
 					velikost_besedila = painter.boundingRect(0, printer.height() - 15, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_polni +
-																												 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
-																												 " " + podjetje_naslov_posta);
+																												 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " +
+																												 podjetje_naslov_postna_stevilka + " " + podjetje_naslov_posta);
 					// nastavimo parametre
 					visina_vrstice = velikost_besedila.height();
 					razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 					// natisnemo besedilo
 					painter.drawText(QRectF(0, printer.height() - 15, printer.width(), visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, podjetje_polni +
-													 " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
+													 " | " + podjetje_kratki + " | " + podjetje_naslov_ulica + " " + podjetje_naslov_stevilka + ", " + podjetje_naslov_postna_stevilka +
 													 " " + podjetje_naslov_posta);
 
 					// dolocimo velikost kvadrata, ki ga tvori besedilo (podjetje, kratki naziv)
