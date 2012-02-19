@@ -645,8 +645,13 @@ void wid_racuni::on_btn_print_pdf_clicked() {
 	QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
 
 	for( int i = 0; i < selectedList.count(); i++) {
-		print(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
+		printpdf(ui->tbl_racuni->item(selectedList.at(i).row(), 0)->text());
 	}
+
+	QMessageBox konec;
+	konec.setText("Shranjevanje dokumentov v PDF je koncano!");
+	konec.setInformativeText("Shranjenih je " + QString::number(selectedList.count(), 10) + " dokumentov!");
+	konec.exec();
 
 	/*
 	QString app_path = QApplication::applicationDirPath();
@@ -2442,12 +2447,12 @@ void wid_racuni::printpdf(QString id) {
 		QString mapa_za_shranjevanje = "";
 		mapa_za_shranjevanje = podjetje_logo.left(podjetje_logo.lastIndexOf("/")); // izreze logotip
 		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
-		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
-																														 "Izberite mapo za shranjevanje dokumentov",
-																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
-		if ( mapa_za_shranjevanje == "" ) {
-			return;
-		}
+//		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+//																														 "Izberite mapo za shranjevanje dokumentov",
+//																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+//		if ( mapa_za_shranjevanje == "" ) {
+//			return;
+//		}
 
 		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("izdani-predracuni");
@@ -2462,7 +2467,6 @@ void wid_racuni::printpdf(QString id) {
 		else if ( racun_tip == "3" ) {
 			mapa.cd("izdani-racuni");
 		}
-		else
 		mapa.mkdir(racun_datum_izdaje.right(4));
 		mapa.cd(racun_datum_izdaje.right(4));
 
