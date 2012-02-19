@@ -245,6 +245,11 @@ void wid_potninalogi::on_btn_print_pdf_clicked() {
 		printpdf(ui->tbl_potninalogi->item(selectedList.at(i).row(), 0)->text());
 	}
 
+	QMessageBox konec;
+	konec.setText("Shranjevanje dokumentov v PDF je koncano!");
+	konec.setInformativeText("Shranjenih je " + QString::number(selectedList.count(), 10) + " dokumentov!");
+	konec.exec();
+
 /*
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -2850,12 +2855,12 @@ void wid_potninalogi::printpdf(QString id) {
 		QString mapa_za_shranjevanje = "";
 		mapa_za_shranjevanje = predlagatelj_podjetje_logotip.left(predlagatelj_podjetje_logotip.lastIndexOf("/")); // izreze logotip
 		mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
-		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
-																														 "Izberite mapo za shranjevanje dokumentov",
-																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
-		if ( mapa_za_shranjevanje == "" ) {
-			return;
-		}
+//		mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
+//																														 "Izberite mapo za shranjevanje dokumentov",
+//																														 mapa_za_shranjevanje, QFileDialog::ShowDirsOnly);
+//		if ( mapa_za_shranjevanje == "" ) {
+//			return;
+//		}
 
 		QDir mapa(mapa_za_shranjevanje);
 		mapa.mkdir("potni-nalogi");

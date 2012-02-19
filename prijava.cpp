@@ -19,9 +19,6 @@ prijava::prijava(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	// ustvari varnostno kopijo
-	varnostna_kopija();
-
 	// ustvari tabele
 	tabela_podjetje();
 	tabela_uporabnik();
@@ -261,6 +258,9 @@ void prijava::on_btn_prijavi_clicked() {
 					vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
 				}
 
+				// ustvari varnostno kopijo
+				varnostna_kopija();
+
 				// prikazi glavno okno
 				GlavnoOkno *glavnookno = new GlavnoOkno;
 				glavnookno->showMaximized();
@@ -287,24 +287,91 @@ void prijava::varnostna_kopija() {
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
-	QFile f_baza;
-	f_baza.setFileName(dbase_path);
-
-	QDir direktorij;
-	direktorij.setPath(QDir::homePath() + "/.BubiRacun");
-	if ( !direktorij.exists() ) {
-		direktorij.mkdir(QDir::homePath() + "/.BubiRacun");
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
 	}
+	else {
+		// baza je odprta
 
-	direktorij.setPath(QDir::homePath() + "/.BubiRacun/kopija");
-	if ( !direktorij.exists() ) {
-		direktorij.mkdir(QDir::homePath() + "/.BubiRacun/kopija");
-	}
+		QString predlagatelj_podjetje_logotip = "";
 
-	int i = 1;
-	while ( !f_baza.copy(QDir::homePath() + "/.BubiRacun/kopija/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck") ) {
-		i++;
+		// v bazi poiscemo pot do logotipa
+		QSqlQuery sql_podjetje;
+		sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
+		sql_podjetje.exec();
+		if ( sql_podjetje.next() ) {
+			predlagatelj_podjetje_logotip = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
+		}
+
+		if ( predlagatelj_podjetje_logotip != "" ) { // varnostno kopiranje podatkov izvedemo zgolj v primeru, da obstaja logotip podjetja
+			QString mapa_za_shranjevanje = "";
+			mapa_za_shranjevanje = predlagatelj_podjetje_logotip.left(predlagatelj_podjetje_logotip.lastIndexOf("/")); // izreze logotip
+			mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+
+			// ustvari mapo za shranjevanje baze podatkov
+
+			QDir mapa(mapa_za_shranjevanje);
+			if ( mapa.exists() ) {
+				mapa.mkdir("arhiv"); // osnovna mapa
+				mapa.cd("arhiv");
+				mapa.mkdir("dnevni"); // dnevni back-up
+				mapa.mkdir("mesecni"); // mesecni back-up
+
+				/**
+					* naredi mesecni arhiv
+					* pogleda, ali ze obstaja arhivska datoteka za tekoci mesec
+					* ce obstaja, jo izbrise in napravi novo za tekoci mesec
+					* ce ne obstaja to pomeni, da smo na zacetku meseca
+					* sedaj naredi novi mesecni arhiv in hkrati izbrise dnevni arhiv "prejsnjega"
+					* meseca, ki sedaj ni vec aktualen (drugace bomo kmalu imeli nepregledno mnozico baz)
+					* to pa ni smiselno
+					**/
+				QFile f_baza_org;
+				f_baza_org.setFileName(dbase_path);
+				QFile f_baza_mesec;
+				f_baza_mesec.setFileName(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+
+				if ( f_baza_mesec.exists() ) { // ce obstaja, smo v tekocem mesecu in zgolj zbrisemo trenutno bazo in jo nadomestimo z novo
+					f_baza_mesec.remove();
+					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+				}
+				else { // gre za nov mesec, baze ne brisemo, brisemo pa vse baze v arhivu za
+					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+
+					// poiscemo vse baze iz dnevnega arhiva
+					mapa.cd("dnevni");
+
+					QStringList seznam_arhiva = mapa.entryList();
+
+					for ( int a = 0; a < seznam_arhiva.size(); a++ ) {
+						QFile f_arhiv;
+						f_arhiv.setFileName(mapa_za_shranjevanje + "/arhiv/dnevni/" + seznam_arhiva.at(a).toUtf8());
+						f_arhiv.remove();
+					}
+
+				}
+
+				/**
+					* naredimo dnevni arhiv tako, da shranimo bazo kot datoteko s tekoco zadnjo
+					* identifikacijsko stevilko
+					* arhiv je samo za tekoci mesec, za prejsnje datoteke izbrisemo
+					**/
+				int i = 1;
+				while ( !f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/dnevni/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck") ) {
+					i++;
+				}
+			}
+
+		}
 	}
+	base.close();
 
 }
 
