@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>666</width>
-    <height>753</height>
+    <height>771</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_potni_stroski">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -72,7 +72,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Datum naloga</string>
+               <string>Datum izdaje naloga</string>
               </property>
              </widget>
             </item>
@@ -140,7 +140,7 @@
        <item row="0" column="1">
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
-          <string>Priloge (vsaka v svojo vrstico</string>
+          <string>Priloge (vsaka v svojo vrstico)</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -290,8 +290,8 @@
          <property name="title">
           <string>Potovanje</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
            <widget class="QScrollArea" name="wid_pot">
             <property name="minimumSize">
              <size>
@@ -314,7 +314,7 @@
             </widget>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item>
            <layout class="QFormLayout" name="formLayout_4">
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -419,16 +419,6 @@
               </item>
              </layout>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_19">
-              <property name="text">
-               <string>Dnevnice</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
             <item row="8" column="0">
              <widget class="QLabel" name="label_20">
               <property name="text">
@@ -460,109 +450,134 @@
              </widget>
             </item>
             <item row="6" column="1">
-             <layout class="QGridLayout" name="gridLayout_8">
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="txt_dnevnica_6_8">
-                <property name="text">
-                 <string>txt_dnevnica_6_8</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_44">
-                <property name="text">
-                 <string>Število</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>Dnevnica 8 - 12 ur</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_43">
-                <property name="text">
-                 <string>Zajtrk</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLineEdit" name="txt_dnevnica_12_24">
-                <property name="text">
-                 <string>txt_dnevnica_12_24</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QCheckBox" name="txt_zajtrk_8_12">
-                <property name="text">
-                 <string>txt_zajtrk_8_12</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="3">
-               <widget class="QCheckBox" name="txt_zajtrk_12_24">
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>txt_zajtrk_12_24</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLineEdit" name="txt_dnevnica_8_12">
-                <property name="text">
-                 <string>txt_dnevnica_8_12</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Dnevnica 12 - 24 ur</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_27">
-                <property name="text">
-                 <string>Dnevnica 6 - 8 ur</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_45">
-                <property name="text">
-                 <string>Cena</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="txt_cena_dnevnice_6_8">
-                <property name="text">
-                 <string>txt_cena_dnevnice_6_8</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QLineEdit" name="txt_cena_dnevnice_8_12">
-                <property name="text">
-                 <string>txt_cena_dnevnice_8_12</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QLineEdit" name="txt_cena_dnevnice_12_24">
-                <property name="text">
-                 <string>txt_cena_dnevnice_12_24</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <widget class="QGroupBox" name="gb_dnevnica">
+              <property name="title">
+               <string/>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="txt_dnevnica_6_8">
+                   <property name="text">
+                    <string>txt_dnevnica_6_8</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_44">
+                   <property name="text">
+                    <string>Število</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_30">
+                   <property name="text">
+                    <string>Dnevnica 8 - 12 ur</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_43">
+                   <property name="text">
+                    <string>Zajtrk</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QLineEdit" name="txt_dnevnica_12_24">
+                   <property name="text">
+                    <string>txt_dnevnica_12_24</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QCheckBox" name="txt_zajtrk_8_12">
+                   <property name="text">
+                    <string>txt_zajtrk_8_12</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QCheckBox" name="txt_zajtrk_12_24">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="text">
+                    <string>txt_zajtrk_12_24</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QLineEdit" name="txt_dnevnica_8_12">
+                   <property name="text">
+                    <string>txt_dnevnica_8_12</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="label_31">
+                   <property name="text">
+                    <string>Dnevnica 12 - 24 ur</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_27">
+                   <property name="text">
+                    <string>Dnevnica 6 - 8 ur</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_45">
+                   <property name="text">
+                    <string>Cena</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="txt_cena_dnevnice_6_8">
+                   <property name="text">
+                    <string>txt_cena_dnevnice_6_8</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLineEdit" name="txt_cena_dnevnice_8_12">
+                   <property name="text">
+                    <string>txt_cena_dnevnice_8_12</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLineEdit" name="txt_cena_dnevnice_12_24">
+                   <property name="text">
+                    <string>txt_cena_dnevnice_12_24</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Dnevnice</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

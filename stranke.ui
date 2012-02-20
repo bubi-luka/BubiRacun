@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_stranka">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -82,7 +82,7 @@
             <x>0</x>
             <y>0</y>
             <width>659</width>
-            <height>892</height>
+            <height>923</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -325,6 +325,16 @@
                   </property>
                  </widget>
                 </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="txt_id">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>txt_id</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label">
                   <property name="text">
@@ -363,30 +373,6 @@
                  <widget class="QLabel" name="label_3">
                   <property name="text">
                    <string>Naslov</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="label_4">
-                  <property name="text">
-                   <string>Davčna številka</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QLineEdit" name="txt_davcna">
-                  <property name="text">
-                   <string>txt_davcna</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="txt_id">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>txt_id</string>
                   </property>
                  </widget>
                 </item>
@@ -488,6 +474,64 @@
                      <string>txt_postna_stevilka</string>
                     </property>
                    </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>Davčna številka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QLineEdit" name="txt_davcna">
+                  <property name="text">
+                   <string>txt_davcna</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_47">
+                  <property name="text">
+                   <string>Je davčni zavezanec?</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_5">
+                  <item>
+                   <spacer name="horizontalSpacer_16">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cb_davcni_zavezanec">
+                    <property name="text">
+                     <string>cb_davcni_zavezanec</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>

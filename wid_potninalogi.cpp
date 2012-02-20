@@ -643,7 +643,7 @@ void wid_potninalogi::on_btn_brisi_clicked() {
 	}
 	else {
 		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM pot WHERE potninalog LIKE '" + pretvori(stnaloga) + "'");
+		sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + pretvori(stnaloga) + "'");
 		sql_brisi.exec();
 		sql_brisi.clear();
 

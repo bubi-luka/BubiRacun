@@ -20,6 +20,8 @@ private slots:
 	void on_btn_brisi_clicked();
 	void on_btn_sprejmi_clicked();
 
+	void on_txt_pricetek_dateChanged();
+
 	void on_txt_stranka_currentIndexChanged(QString besedilo);
 	void on_txt_stranka_id_textChanged(QString besedilo);
 	void on_txt_status_projekta_currentIndexChanged();
@@ -58,6 +60,7 @@ private slots:
 
 	void izracunaj_popuste(double vrednost, int polje);
 	void izracunaj();
+	void stevilka_racuna();
 
 	void on_btn_vnesi_zapis_clicked();
 	void on_btn_pocisti_clicked();

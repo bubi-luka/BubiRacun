@@ -273,8 +273,8 @@ void racun::on_btn_racun_clicked() {
 																	 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																	 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																	 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni) "
-																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
+																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
 			sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
 			sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -303,6 +303,7 @@ void racun::on_btn_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(25, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_popustov")).toString());
 			sql_kopiraj_opravila.bindValue(26, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_ddv")).toString());
 			sql_kopiraj_opravila.bindValue(27, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_koncni")).toString());
+			sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
 			sql_kopiraj_opravila.exec();
 		}
 
@@ -397,8 +398,8 @@ void racun::on_btn_predplacilni_racun_clicked() {
 																	 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																	 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																	 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni) "
-																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
+																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
 			sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
 			sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -427,6 +428,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(25, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_popustov")).toString());
 			sql_kopiraj_opravila.bindValue(26, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_ddv")).toString());
 			sql_kopiraj_opravila.bindValue(27, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_koncni")).toString());
+			sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
 			sql_kopiraj_opravila.exec();
 		}
 
@@ -1870,6 +1872,7 @@ void racun::print(QString id) {
 	QString narocnik_naslov_stevilka = "";
 	QString narocnik_naslov_postna_stevilka = "";
 	QString narocnik_naslov_posta = "";
+	QString narocnik_davcni_zavezanec = "";
 	QString narocnik_davcna = "";
 
 	QString racun_tip = "";
@@ -1880,6 +1883,7 @@ void racun::print(QString id) {
 	QString racun_avans = "";
 	QString racun_znesek_avansa = "";
 	QString racun_rok_placila = "";
+	QString racun_datum_placila_avansa = "";
 	QString racun_stevilka_sklica = "";
 	QString racun_opombe = "";
 
@@ -1897,6 +1901,7 @@ void racun::print(QString id) {
 	QString skupaj_ddv_od_osnove_00 = "";
 	QString skupaj_znesek = "";
 	QString skupaj_znesek_avansa = "";
+	QString skupaj_znesek_avansa_brez_ddv = "";
 	QString skupaj_ddv_avansa = "";
 	QString skupaj_se_za_placati = "";
 	QString skupaj_se_za_placati_ddv = "";
@@ -1907,6 +1912,7 @@ void racun::print(QString id) {
 	double skupajddvodosnove00 = 0.0;
 	double skupajznesek = 0.0;
 	double skupajznesekavansa = 0.0;
+	double skupajznesekavansabrezddv = 0.0;
 	double skupajddvavansa = 0.0;
 	double skupajsezaplacati = 0.0;
 	double skupajsezaplacatiddv = 0.0;
@@ -1970,7 +1976,8 @@ void racun::print(QString id) {
 			racun_rok_izvedbe = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_konca")).toString());
 			racun_avans = prevedi(sql_racun.value(sql_racun.record().indexOf("odstotek_avansa")).toString());
 			racun_znesek_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("avans")).toString());
-			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
+			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila")).toString());
+			racun_datum_placila_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
 			racun_stevilka_sklica = prevedi(sql_racun.value(sql_racun.record().indexOf("sklic")).toString());
 			racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
 
@@ -2003,7 +2010,12 @@ void racun::print(QString id) {
 		if ( sql_narocnik.next() ) {
 			if ( prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString()) == "2" ) { // pravna
 				narocnik = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString());
-				narocnik_davcna = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString());
+				if ( prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString()) == "0" ) { // ni davcni zavezanec
+					narocnik_davcna = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString());
+				}
+				else {
+					narocnik_davcna = "SI" + prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString());
+				}
 			}
 			else {
 				narocnik = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
@@ -2047,8 +2059,6 @@ void racun::print(QString id) {
 
 	QPrintDialog *dialog = new QPrintDialog(&printer, this);
 	dialog->setWindowTitle(tr("Natisni racun"));
-//	printer.setOutputFormat(QPrinter::PdfFormat);
-//	printer.setOutputFileName("nonwritable.pdf");
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
@@ -2064,7 +2074,6 @@ void racun::print(QString id) {
 		int i = 1;
 		double pozicija = 0;
 		double visina_vrstice = 0;
-		double sirina_besedila = 0;
 		double razmik_med_vrsticami = 0;
 		double faktor_razmika_med_vrsticami_1 = 0.3; // pri tabelah
 		double faktor_razmika_med_vrsticami_2 = 0.1; // pri besedilu
@@ -2207,6 +2216,7 @@ void racun::print(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
+		double pozicija_spodaj = pozicija; // postavimo višino, ki ustreza crti pod podatki (pred)racuna
 
 	// podatki o (pred)racunu
 		pozicija = pozicija_zgoraj;
@@ -2315,7 +2325,12 @@ void racun::print(QString id) {
 		painter.drawText(QRectF(printer.width() / 2, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
 		painter.setFont(normalno);
-		painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
+		if ( racun_tip != "2" ) {
+			painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
+		}
+		else {
+			painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_placila_avansa);
+		}
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
@@ -2367,6 +2382,10 @@ void racun::print(QString id) {
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
 		pozicija += visina_vrstice + razmik_med_vrsticami;
+
+		if ( pozicija < pozicija_spodaj ) {
+			pozicija = pozicija_spodaj + razmik_med_vrsticami;
+		}
 
 		// crta pod podatki
 		painter.setPen(*debel_svincnik);
@@ -2473,6 +2492,9 @@ void racun::print(QString id) {
 				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
 											 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
 
+				if ( storitev_ime.right(2) == ": " ) {
+					storitev_ime = storitev_ime.left(storitev_ime.length() - 2);
+				}
 				storitev_enota = prevedi(sql_storitve.value(sql_storitve.record().indexOf("enota")).toString());
 
 				storitev_kolicina = prevedi(sql_storitve.value(sql_storitve.record().indexOf("ur_dela")).toString()).replace(".", ",");
@@ -2697,6 +2719,8 @@ void racun::print(QString id) {
 		racun_avans = racun_avans.replace(".", ",") + " % ";
 		skupajddvavansa = 16.66667 / 100 * pretvori_v_double(racun_znesek_avansa).toDouble();
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
+		skupajznesekavansabrezddv = pretvori_v_double(racun_znesek_avansa).toDouble() - skupajddvavansa;
+		skupaj_znesek_avansa_brez_ddv = QString::number(skupajznesekavansabrezddv, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati = QString::number(skupajznesek - pretvori_v_double(racun_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR";
 		skupaj_se_za_placati_ddv = QString::number(skupajddvodosnove20 - skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
 		// vcasih poda negativni predznak pred zneskom 0,00
@@ -2929,7 +2953,7 @@ void racun::print(QString id) {
 			painter.drawText(QRectF(printer.width() * 3 / 5, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 			// natisnemo besedilo
 			painter.setFont(normalno);
-			painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
+			painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa_brez_ddv);
 			// nova vrstica
 			pozicija += visina_vrstice;
 
