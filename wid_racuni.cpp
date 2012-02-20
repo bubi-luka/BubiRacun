@@ -943,7 +943,8 @@ void wid_racuni::print(QString id) {
 			racun_rok_izvedbe = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_konca")).toString());
 			racun_avans = prevedi(sql_racun.value(sql_racun.record().indexOf("odstotek_avansa")).toString());
 			racun_znesek_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("avans")).toString());
-			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
+			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila")).toString());
+			racun_datum_placila_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
 			racun_stevilka_sklica = prevedi(sql_racun.value(sql_racun.record().indexOf("sklic")).toString());
 			racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
 
@@ -2388,7 +2389,8 @@ void wid_racuni::printpdf(QString id) {
 			racun_rok_izvedbe = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_konca")).toString());
 			racun_avans = prevedi(sql_racun.value(sql_racun.record().indexOf("odstotek_avansa")).toString());
 			racun_znesek_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("avans")).toString());
-			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
+			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila")).toString());
+			racun_datum_placila_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
 			racun_stevilka_sklica = prevedi(sql_racun.value(sql_racun.record().indexOf("sklic")).toString());
 			racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
 
