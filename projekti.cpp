@@ -127,28 +127,6 @@ projekti::projekti(QWidget *parent) :
 	else {
 		// baza je odprta
 
-		// vnesi stevilko projekta
-		QString leto = QDate::currentDate().toString("yyyy");
-		int i = 1;
-		QString stevilka = "";
-
-		QSqlQuery sql_insert_stnaloga;
-		sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
-		sql_insert_stnaloga.exec();
-		while (sql_insert_stnaloga.next()) {
-			i++;
-		}
-		if ( i < 10 ) {
-			stevilka = "00" + QString::number(i, 10);
-		}
-		else if ( i < 100 ) {
-			stevilka = "0" + QString::number(i, 10);
-		}
-		else {
-			stevilka = "" + QString::number(i, 10);
-		}
-		ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
-
 		// napolni spustne sezname
 		ui->txt_status_projekta->addItem("");
 		ui->txt_stranka->addItem("");
@@ -164,9 +142,9 @@ projekti::projekti(QWidget *parent) :
 		sql_fill_combo.prepare("SELECT * FROM stranke");
 		sql_fill_combo.exec();
 		while (sql_fill_combo.next()) {
-			if (prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("tip")).toString()) == "fizicna" ) {
+			if (prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("tip")).toString()) == "1" ) {
 				ui->txt_stranka->addItem(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString() + ") "
-										 + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()) + ", "
+										 + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()) + " "
 										 + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
 			}
 			else {
@@ -213,6 +191,8 @@ projekti::projekti(QWidget *parent) :
 
 	}
 	base.close();
+
+	stevilka_racuna();
 
 	napolni_podatke();
 
@@ -1639,5 +1619,57 @@ void projekti::on_btn_pocisti_clicked() {
 	ui->btn_vnesi_zapis->setText("Vnesi zapis");
 
 	napolni_zapise();
+
+}
+
+void projekti::on_txt_pricetek_dateChanged() {
+
+	stevilka_racuna();
+
+}
+
+void projekti::stevilka_racuna() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		// vnesi stevilko projekta
+		QString leto = ui->txt_pricetek->text().right(4);
+
+		int i = 1;
+		QString stevilka = "";
+
+		QSqlQuery sql_insert_stnaloga;
+		sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
+		sql_insert_stnaloga.exec();
+		while (sql_insert_stnaloga.next()) {
+			i++;
+		}
+		if ( i < 10 ) {
+			stevilka = "00" + QString::number(i, 10);
+		}
+		else if ( i < 100 ) {
+			stevilka = "0" + QString::number(i, 10);
+		}
+		else {
+			stevilka = "" + QString::number(i, 10);
+		}
+		ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
+
+	}
+	base.close();
 
 }

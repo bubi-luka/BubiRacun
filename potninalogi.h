@@ -22,6 +22,7 @@ private slots:
 	void on_txt_predlagatelj_izbira_oseba_currentIndexChanged();
 	void on_txt_prejemnik_izbira_osebe_currentIndexChanged();
 	void on_txt_prevoz_currentIndexChanged(int index);
+	void on_txt_datum_naloga_dateChanged();
 	void on_btn_sprejmi_clicked();
 	void keyPressEvent(QKeyEvent *event);
 
@@ -33,6 +34,7 @@ private slots:
 	void sprejmist();
 	void sprejmipot();
 	void izracun();
+	void stevilka_racuna();
 
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);

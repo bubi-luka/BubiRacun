@@ -75,9 +75,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 		ui->txt_status_placila->addItem("");
 		ui->txt_status_racunovodstva->addItem("");
 
-		// dobimo tekoce leto za uporabo pri stevilki racuna
-		QString leto = QDate::currentDate().toString("yyyy");
-
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
 
@@ -93,26 +90,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 		}
 		else {
 			// baza je odprta
-
-			// pridobi naslednjo prosto stevilko vnosa in jo uredi glede na navodila
-			int i = 1;
-			QString stevilka = "";
-			QSqlQuery sql_insert_stnaloga;
-			sql_insert_stnaloga.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_vnosa LIKE '" + pretvori("PR-" + leto) + "%'");
-			sql_insert_stnaloga.exec();
-			while (sql_insert_stnaloga.next()) {
-				i++;
-			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_vnosa->setText("PR-" + leto + "-" + stevilka);
 
 			// napolni spustne sezname
 			QSqlQuery sql_fill;
@@ -175,6 +152,9 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 
 		}
 		base.close();
+
+		// nastavi stevilko prejetega racuna
+		stevilka_racuna();
 
 		// nastavimo spustne sezname na ustrezna zacetna polja
 		ui->txt_posta->setCurrentIndex(0);
@@ -1004,5 +984,57 @@ void prejetiracuni::print(QString id) {
 
 		painter.end();
 	}
+
+}
+
+void prejetiracuni::on_txt_datum_prejema_dateChanged() {
+
+	stevilka_racuna();
+
+}
+
+void prejetiracuni::stevilka_racuna() {
+
+	// dobimo tekoce leto za uporabo pri stevilki racuna
+	QString leto = ui->txt_datum_prejema->text().right(4);
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		// pridobi naslednjo prosto stevilko vnosa in jo uredi glede na navodila
+		int i = 1;
+		QString stevilka = "";
+		QSqlQuery sql_insert_stnaloga;
+		sql_insert_stnaloga.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_vnosa LIKE '" + pretvori("PR-" + leto) + "%'");
+		sql_insert_stnaloga.exec();
+		while (sql_insert_stnaloga.next()) {
+			i++;
+		}
+		if ( i < 10 ) {
+			stevilka = "00" + QString::number(i, 10);
+		}
+		else if ( i < 100 ) {
+			stevilka = "0" + QString::number(i, 10);
+		}
+		else {
+			stevilka = "" + QString::number(i, 10);
+		}
+		ui->txt_stevilka_vnosa->setText("PR-" + leto + "-" + stevilka);
+
+	}
+	base.close();
 
 }
