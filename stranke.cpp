@@ -108,6 +108,8 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_id->setDisabled(true);
 		ui->txt_kontaktna->setVisible(false);
 		ui->label_8->setVisible(false);
+		ui->label_47->setVisible(false);
+		ui->cb_davcni_zavezanec->setVisible(false);
 		ui->txt_davcna->setVisible(false);
 		ui->label_4->setVisible(false);
 		ui->txt_vir_kupon->setVisible(false);
