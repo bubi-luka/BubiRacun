@@ -26,6 +26,7 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_naslov_st->setText("");
 		ui->txt_posta->clear();
 		ui->txt_postna_stevilka->setText("");
+		ui->cb_davcni_zavezanec->setText("");
 		ui->txt_davcna->setText("");
 		ui->txt_kontaktna->setText("");
 		ui->txt_telefon->setText("");
@@ -538,6 +539,8 @@ void stranke::on_rb_fizicna_toggled(bool stanje) {
 		ui->txt_kontaktna->setHidden(true);
 		ui->label_11->setHidden(false);
 		ui->txt_ustanova->setHidden(false);
+		ui->label_47->setHidden(true);
+		ui->cb_davcni_zavezanec->setHidden(true);
 		ui->txt_davcna->setHidden(true);
 		ui->label_4->setHidden(true);
 	}
@@ -548,6 +551,8 @@ void stranke::on_rb_fizicna_toggled(bool stanje) {
 		ui->txt_kontaktna->setHidden(false);
 		ui->label_11->setHidden(true);
 		ui->txt_ustanova->setHidden(true);
+		ui->label_47->setHidden(false);
+		ui->cb_davcni_zavezanec->setHidden(false);
 		ui->txt_davcna->setHidden(false);
 		ui->label_4->setHidden(false);
 	}
@@ -1013,8 +1018,8 @@ void stranke::on_btn_vnesi_clicked() {
 																	"kontakt, telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, "
 																	"placilnost, vir, vir_id, vir_kupon, vir_ime, vir_besedilo, pop_facebook_1, pop_facebook_2, "
 																	"pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_kupon, pop_akcija, pop_vsi_facebook, "
-																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba, davcni_zavezanec) "
+																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_stranko.prepare("UPDATE stranke SET ime = ?, priimek = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
@@ -1023,7 +1028,7 @@ void stranke::on_btn_vnesi_clicked() {
 																	"vir_kupon = ?, vir_ime = ?, vir_besedilo = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
 																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_kupon = ?, pop_akcija = ?, "
 																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
-																	"avtor_podjetje = ?, avtor_oseba = ? WHERE id "
+																	"avtor_podjetje = ?, avtor_oseba = ?, davcni_zavezanec = ? WHERE id "
 																	"LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_stranko.bindValue(0, pretvori(ui->txt_ime->text()));
@@ -1099,6 +1104,12 @@ void stranke::on_btn_vnesi_clicked() {
 
 			sql_vnesi_stranko.bindValue(35, pretvori(vApp->firm()));
 			sql_vnesi_stranko.bindValue(36, pretvori(vApp->id()));
+			if ( ui->cb_davcni_zavezanec->isChecked() ) {
+				sql_vnesi_stranko.bindValue(37, pretvori("1"));
+			}
+			else {
+				sql_vnesi_stranko.bindValue(37, pretvori("0"));
+			}
 
 			sql_vnesi_stranko.exec();
 
@@ -1178,6 +1189,12 @@ void stranke::prejem(QString besedilo) {
 				ui->txt_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov")).toString()));
 				ui->txt_naslov_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naslov_st")).toString()));
 				ui->txt_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("postna_stevilka")).toString()));
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("davcni_zavezanec")).toString()) == "0" ) {
+					ui->cb_davcni_zavezanec->setChecked(false);
+				}
+				else {
+					ui->cb_davcni_zavezanec->setChecked(true);
+				}
 				ui->txt_davcna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("davcna")).toString()));
 				ui->txt_kontaktna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("kontakt")).toString()));
 				ui->txt_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));

@@ -604,6 +604,7 @@ void prijava::tabela_stranke() {
 														 "naslov_st TEXT, "
 														 "posta TEXT, "
 														 "postna_stevilka TEXT, "
+														 "davcni_zavezanec TEXT, "
 														 "davcna TEXT, "
 														 "kontakt TEXT, "
 														 "telefon TEXT, "
@@ -2217,6 +2218,10 @@ void prijava::posodobi_bazo() {
 		update.clear();
 
 		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_12_24' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE stranke ADD COLUMN 'davcni_zavezanec' TEXT");
 		update.exec();
 		update.clear();
 
