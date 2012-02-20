@@ -114,11 +114,14 @@ potninalogi::potninalogi(QWidget *parent) :
 		ui->txt_registrska_stevilka->setEnabled(false);
 
 		// nastavi privzete vrednosti
-		ui->txt_priznana_dnevnica->setChecked(true);
+		ui->txt_priznana_dnevnica->setChecked(false);
 		ui->cb_predlagatelj_oseba->setChecked(false);
 
 		// skrij neuporabljena polja
 		ui->txt_predlagatelj_izbira_oseba->setHidden(true);
+
+		ui->label_19->setVisible(false);
+		ui->gb_dnevnica->setVisible(false);
 
 		ui->txt_znamka_avtomobila->setHidden(true);
 		ui->txt_registrska_stevilka->setHidden(true);
@@ -988,29 +991,39 @@ void potninalogi::izracun() {
 
 		if ( ure >= 12 ) {
 			ui->txt_dnevnica_12_24->setText(QString::number(ui->txt_skupaj_dnevi->text().toInt() + 1, 10));
+			ui->label_19->setVisible(true);
+			ui->gb_dnevnica->setVisible(true);
 		}
 		else if ( ure >= 8 ) {
 			ui->txt_dnevnica_8_12->setText("1");
+			ui->label_19->setVisible(true);
+			ui->gb_dnevnica->setVisible(true);
 		}
 		else if ( ure >= 6 ) {
 			ui->txt_dnevnica_6_8->setText("1");
+			ui->label_19->setVisible(true);
+			ui->gb_dnevnica->setVisible(true);
+		}
+		else {
+			ui->label_19->setVisible(false);
+			ui->gb_dnevnica->setVisible(false);
 		}
 
 		// izracun dnevnic
 		if ( ui->txt_priznana_dnevnica->isChecked() ) {
 			double cenadnevnice = 0;
-			cenadnevnice = 7.45 * ui->txt_dnevnica_6_8->text().toDouble();
+			cenadnevnice = ui->txt_cena_dnevnice_6_8->text().toDouble() * ui->txt_dnevnica_6_8->text().toDouble();
 			if ( ui->txt_zajtrk_8_12->isChecked() ) {
-				cenadnevnice = cenadnevnice + 10.68 * ui->txt_dnevnica_8_12->text().toDouble() * 0.85;
+				cenadnevnice = cenadnevnice + ui->txt_cena_dnevnice_8_12->text().toDouble() * ui->txt_dnevnica_8_12->text().toDouble() * 0.85;
 			}
 			else {
-				cenadnevnice = cenadnevnice + 10.68 * ui->txt_dnevnica_8_12->text().toDouble();
+				cenadnevnice = cenadnevnice + ui->txt_cena_dnevnice_8_12->text().toDouble() * ui->txt_dnevnica_8_12->text().toDouble();
 			}
 			if ( ui->txt_zajtrk_12_24->isChecked() ) {
-				cenadnevnice = cenadnevnice + 21.39 * ui->txt_dnevnica_12_24->text().toDouble() * 0.90;
+				cenadnevnice = cenadnevnice + ui->txt_cena_dnevnice_12_24->text().toDouble() * ui->txt_dnevnica_12_24->text().toDouble() * 0.90;
 			}
 			else {
-				cenadnevnice = cenadnevnice + 21.39 * ui->txt_dnevnica_12_24->text().toDouble();
+				cenadnevnice = cenadnevnice + ui->txt_cena_dnevnice_12_24->text().toDouble() * ui->txt_dnevnica_12_24->text().toDouble();
 			}
 			ui->txt_cena_dnevnic->setText(QString::number(cenadnevnice, 'f', 2));
 		}
@@ -1053,6 +1066,15 @@ void potninalogi::sprejmipot() {
 void potninalogi::on_txt_priznana_dnevnica_toggled() {
 
 	izracun();
+
+	if ( ui->txt_priznana_dnevnica->isChecked() ) {
+		ui->label_19->setVisible(true);
+		ui->gb_dnevnica->setVisible(true);
+	}
+	else {
+		ui->label_19->setVisible(false);
+		ui->gb_dnevnica->setVisible(false);
+	}
 
 }
 
