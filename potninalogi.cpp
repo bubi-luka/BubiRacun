@@ -155,26 +155,6 @@ potninalogi::potninalogi(QWidget *parent) :
 		else {
 			// baza je odprta
 
-			// zapisi stevilko potnega naloga
-			int i = 1;
-			QString stevilka = "";
-			QSqlQuery sql_insert_stnaloga;
-			sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
-			sql_insert_stnaloga.exec();
-			while (sql_insert_stnaloga.next()) {
-				i++;
-			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
-
 			QSqlQuery sql_dnevnice;
 			sql_dnevnice.prepare("SELECT * FROM sif_dnevnice");
 			sql_dnevnice.exec();
@@ -241,6 +221,8 @@ potninalogi::potninalogi(QWidget *parent) :
 			sql_fill_combo.clear();
 		}
 		base.close();
+
+		stevilka_racuna();
 
 		ui->tab_potni_stroski->setCurrentIndex(0);
 
@@ -2909,5 +2891,56 @@ void potninalogi::print(QString id) {
 		painter.end();
 
 	}
+
+}
+
+void potninalogi::on_txt_datum_naloga_dateChanged() {
+
+	stevilka_racuna();
+
+}
+
+void potninalogi::stevilka_racuna() {
+
+	QString leto = ui->txt_datum_naloga->text().right(4);
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		// zapisi stevilko potnega naloga
+		int i = 1;
+		QString stevilka = "";
+		QSqlQuery sql_insert_stnaloga;
+		sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
+		sql_insert_stnaloga.exec();
+		while (sql_insert_stnaloga.next()) {
+			i++;
+		}
+		if ( i < 10 ) {
+			stevilka = "00" + QString::number(i, 10);
+		}
+		else if ( i < 100 ) {
+			stevilka = "0" + QString::number(i, 10);
+		}
+		else {
+			stevilka = "" + QString::number(i, 10);
+		}
+		ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
+
+	}
+	base.close();
 
 }

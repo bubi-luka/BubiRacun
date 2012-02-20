@@ -38,6 +38,8 @@ private slots:
 
 	void on_txt_naziv_podjetja_kratki_editingFinished();
 
+	void on_txt_datum_prejema_dateChanged();
+
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
@@ -45,6 +47,7 @@ private slots:
 
 	void prejem(QString besedilo);
 	void izracunaj();
+	void stevilka_racuna();
 	void print(QString id);
 
 signals:
