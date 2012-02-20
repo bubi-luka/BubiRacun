@@ -2059,8 +2059,6 @@ void racun::print(QString id) {
 
 	QPrintDialog *dialog = new QPrintDialog(&printer, this);
 	dialog->setWindowTitle(tr("Natisni racun"));
-//	printer.setOutputFormat(QPrinter::PdfFormat);
-//	printer.setOutputFileName("nonwritable.pdf");
 	printer.setPaperSize(QPrinter::A4);
 	printer.setOrientation(QPrinter::Portrait);
 	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
@@ -2386,7 +2384,7 @@ void racun::print(QString id) {
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		if ( pozicija < pozicija_spodaj ) {
-			pozicija = pozicija_spodaj;
+			pozicija = pozicija_spodaj + razmik_med_vrsticami;
 		}
 
 		// crta pod podatki
