@@ -752,7 +752,7 @@ void potninalogi::prejem(QString besedilo) {
 		ui->wid_st->setEnabled(false);
 	}
 	else {
-		ui->btn_sprejmi->setText("Popravi potni nalog");
+		ui->btn_sprejmi->setText("Polnim");
 		ui->btn_izvozi->setEnabled(true);
 		ui->wid_pot->setEnabled(true);
 		ui->wid_st->setEnabled(true);
@@ -878,6 +878,8 @@ void potninalogi::prejem(QString besedilo) {
 		}
 		base.close();
 	}
+
+	ui->btn_sprejmi->setText("Popravi potni nalog");
 
 	// insert widgets
 	wid_stroski *widst = new wid_stroski;
@@ -1150,28 +1152,28 @@ void potninalogi::print(QString id) {
 		* Nastavimo spremenljivke, ki jih bomo uporabili v dokumentu
 		**/
 	// podatki o potnem nalogu
-	QString stevilka_naloga;
-	QString datum_naloga;
-	QString namen_potnega_naloga;
-	QString prevozno_sredstvo;
-	QString cena_dnevnice_6_8;
-	QString cena_dnevnice_8_12;
-	QString cena_dnevnice_12_24;
-	QString stevilo_dnevnic_6_8;
-	QString stevilo_dnevnic_8_12;
-	QString stevilo_dnevnic_12_24;
-	QString stroski_skupaj;
-	QString razdalja;
-	QString kilometrina;
-	QString ostali_stroski;
-	QString znesek_drugih_stroskov;
+	QString stevilka_naloga = "";
+	QString datum_naloga = "";
+	QString namen_potnega_naloga = "";
+	QString prevozno_sredstvo = "";
+	QString cena_dnevnice_6_8 = "0.00";
+	QString cena_dnevnice_8_12 = "0.00";
+	QString cena_dnevnice_12_24 = "0.00";
+	QString stevilo_dnevnic_6_8 = "0";
+	QString stevilo_dnevnic_8_12 = "0";
+	QString stevilo_dnevnic_12_24 = "0";
+	QString stroski_skupaj = "";
+	QString razdalja = "0";
+	QString kilometrina = "";
+	QString ostali_stroski = "";
+	QString znesek_drugih_stroskov = "";
 	QString zvisanje_dnevnic = "0";
 	QString priloge = "";
-	QString stevilo_dnevnic_1 = "";
-	QString stevilo_dnevnic_2 = "";
-	QString cena_dnevnic_1 = "";
-	QString cena_dnevnic_2 = "";
-	QString cena_dnevnic = "";
+	QString stevilo_dnevnic_1 = "0";
+	QString stevilo_dnevnic_2 = "0";
+	QString cena_dnevnic_1 = "0.00";
+	QString cena_dnevnic_2 = "0.00";
+	QString cena_dnevnic = "0.00";
 
 	// podatki o predlagatelju - podjetje
 	QString predlagatelj_podjetje_ime;
@@ -1248,13 +1250,27 @@ void potninalogi::print(QString id) {
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
 
 				prevozno_sredstvo = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prevozno_sredstvo")).toString());
-				cena_dnevnice_6_8 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_6_8")).toString());
-				cena_dnevnice_8_12 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_8_12")).toString());
-				cena_dnevnice_12_24 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_12_24")).toString());
 
-				stevilo_dnevnic_6_8 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_6_8")).toString());
-				stevilo_dnevnic_8_12 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_8_12")).toString());
-				stevilo_dnevnic_12_24 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_12_24")).toString());
+				if ( prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("priznana_dnevnica")).toString()) != "0" ) {
+					cena_dnevnice_6_8 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_6_8")).toString());
+					cena_dnevnice_8_12 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_8_12")).toString());
+					cena_dnevnice_12_24 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnice_12_24")).toString());
+
+					stevilo_dnevnic_6_8 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_6_8")).toString());
+					stevilo_dnevnic_8_12 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_8_12")).toString());
+					stevilo_dnevnic_12_24 = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("dnevnica_12_24")).toString());
+				}
+
+				if ( prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("zajtrk_8_12")).toString()) != "0" ) {
+					double cenadnevnice = 0.0;
+					cenadnevnice = cena_dnevnice_8_12.toDouble() * 0.85;
+					cena_dnevnice_8_12 = QString::number(cenadnevnice, 'f', 2);
+				}
+				if ( prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("zajtrk_12_24")).toString()) != "0" ) {
+					double cenadnevnice = 0.0;
+					cenadnevnice = cena_dnevnice_12_24.toDouble() * 0.90;
+					cena_dnevnice_12_24 = QString::number(cenadnevnice, 'f', 2);
+				}
 
 				stroski_skupaj = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stroski_skupaj")).toString());
 				razdalja = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("skupaj_kilometri")).toString()).replace(".", ",");
@@ -2110,7 +2126,7 @@ void potninalogi::print(QString id) {
 		// narisemo besedilo
 		painter.drawText(3 * polje_2 + sirina_besedila, pozicija, 4 * polje_2 - sirina_besedila, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
-		if ( stevilo_dnevnic_1 == "" ) { // ce ni dnevnic ali je samo ena, potem so napisi prek dveh vrstic, v nasprotnem primeru samo prek ene
+		if ( stevilo_dnevnic_1 == "0" ) { // ce ni dnevnic ali je samo ena, potem so napisi prek dveh vrstic, v nasprotnem primeru samo prek ene
 			// nastavimo besedilo (dnevnice)
 			besedilo = potni_nalog.readLine() + " ";
 			// nastavimo tip pisave
@@ -2239,7 +2255,7 @@ void potninalogi::print(QString id) {
 		// narisemo besedilo
 		painter.drawText(4 * polje_2 + sirina_besedila - polje_3, pozicija, 5 * polje_2 - sirina_besedila + polje_3, visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
-		if ( stevilo_dnevnic_1 != "" ) { // obstajata dva razlicna tipa dnevnic
+		if ( stevilo_dnevnic_1 != "0" ) { // obstajata dva razlicna tipa dnevnic
 			// nastavimo besedilo (dnevnice_1)
 			besedilo = stevilo_dnevnic_1.replace(".", ",");
 			// nastavimo tip pisave
@@ -2924,45 +2940,47 @@ void potninalogi::on_txt_datum_naloga_dateChanged() {
 
 void potninalogi::stevilka_racuna() {
 
+	if ( ui->btn_sprejmi->text() != "Polnim" ) {
 	QString leto = ui->txt_datum_naloga->text().right(4);
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
-		// zapisi stevilko potnega naloga
-		int i = 1;
-		QString stevilka = "";
-		QSqlQuery sql_insert_stnaloga;
-		sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
-		sql_insert_stnaloga.exec();
-		while (sql_insert_stnaloga.next()) {
-			i++;
-		}
-		if ( i < 10 ) {
-			stevilka = "00" + QString::number(i, 10);
-		}
-		else if ( i < 100 ) {
-			stevilka = "0" + QString::number(i, 10);
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
 		else {
-			stevilka = "" + QString::number(i, 10);
-		}
-		ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
+			// baza je odprta
 
+			// zapisi stevilko potnega naloga
+			int i = 1;
+			QString stevilka = "";
+			QSqlQuery sql_insert_stnaloga;
+			sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
+			sql_insert_stnaloga.exec();
+			while (sql_insert_stnaloga.next()) {
+				i++;
+			}
+			if ( i < 10 ) {
+				stevilka = "00" + QString::number(i, 10);
+			}
+			else if ( i < 100 ) {
+				stevilka = "0" + QString::number(i, 10);
+			}
+			else {
+				stevilka = "" + QString::number(i, 10);
+			}
+			ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
+
+		}
+		base.close();
 	}
-	base.close();
 
 }

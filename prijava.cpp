@@ -826,8 +826,10 @@ void prijava::tabela_opravila() {
 														 "stevilka_projekta TEXT, "
 														 "stevilka_racuna TEXT, "
 														 "tip_racuna TEXT, "
+														 "opravilo_sklop TEXT, "
 														 "opravilo_skupina TEXT, "
 														 "opravilo_storitev TEXT, "
+														 "opravilo_rocno TEXT, "
 														 "urna_postavka_brez_ddv TEXT, "
 														 "urna_postavka_z_ddv TEXT, "
 														 "ddv TEXT, "
@@ -2265,6 +2267,14 @@ void prijava::posodobi_bazo() {
 		// baza je odprta
 		QSqlQuery update;
 		update.prepare("ALTER TABLE opravila ADD COLUMN 'enota' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_sklop' TEXT");
+		update.exec();
+		update.clear();
+
+		update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_rocno' TEXT");
 		update.exec();
 		update.clear();
 

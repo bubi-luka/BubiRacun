@@ -192,9 +192,9 @@ projekti::projekti(QWidget *parent) :
 	}
 	base.close();
 
-	stevilka_racuna();
-
 	napolni_podatke();
+
+//	stevilka_racuna();
 
 }
 
@@ -354,7 +354,7 @@ void projekti::prejem(QString besedilo) {
 		ui->wid_potni_nalogi->setEnabled(false);
 	}
 	else {
-		ui->btn_sprejmi->setText("Popravi vnos");
+		ui->btn_sprejmi->setText("Polnim");
 		ui->wid_prejeti_racuni->setEnabled(true);
 		ui->wid_izdani_racuni->setEnabled(true);
 		ui->wid_potni_nalogi->setEnabled(true);
@@ -510,6 +510,7 @@ void projekti::prejem(QString besedilo) {
 
 		napolni_zapise(); // napolni opombe in zapise
 
+		ui->btn_sprejmi->setText("Popravi vnos");
 	}
 
 }
@@ -1630,46 +1631,48 @@ void projekti::on_txt_pricetek_dateChanged() {
 
 void projekti::stevilka_racuna() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+	if ( ui->btn_sprejmi->text() != "Polnim" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
-		// vnesi stevilko projekta
-		QString leto = ui->txt_pricetek->text().right(4);
-
-		int i = 1;
-		QString stevilka = "";
-
-		QSqlQuery sql_insert_stnaloga;
-		sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
-		sql_insert_stnaloga.exec();
-		while (sql_insert_stnaloga.next()) {
-			i++;
-		}
-		if ( i < 10 ) {
-			stevilka = "00" + QString::number(i, 10);
-		}
-		else if ( i < 100 ) {
-			stevilka = "0" + QString::number(i, 10);
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
 		else {
-			stevilka = "" + QString::number(i, 10);
-		}
-		ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
+			// baza je odprta
 
+			// vnesi stevilko projekta
+			QString leto = ui->txt_pricetek->text().right(4);
+
+			int i = 1;
+			QString stevilka = "";
+
+			QSqlQuery sql_insert_stnaloga;
+			sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
+			sql_insert_stnaloga.exec();
+			while (sql_insert_stnaloga.next()) {
+				i++;
+			}
+			if ( i < 10 ) {
+				stevilka = "00" + QString::number(i, 10);
+			}
+			else if ( i < 100 ) {
+				stevilka = "0" + QString::number(i, 10);
+			}
+			else {
+				stevilka = "" + QString::number(i, 10);
+			}
+			ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
+
+		}
+		base.close();
 	}
-	base.close();
 
 }

@@ -273,8 +273,8 @@ void racun::on_btn_racun_clicked() {
 																	 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																	 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																	 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
-																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
+																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
 			sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
 			sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -304,6 +304,8 @@ void racun::on_btn_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(26, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_ddv")).toString());
 			sql_kopiraj_opravila.bindValue(27, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_koncni")).toString());
 			sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
+			sql_kopiraj_opravila.bindValue(29, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_sklop")).toString());
+			sql_kopiraj_opravila.bindValue(30, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_rocno")).toString());
 			sql_kopiraj_opravila.exec();
 		}
 
@@ -398,8 +400,8 @@ void racun::on_btn_predplacilni_racun_clicked() {
 																	 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																	 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																	 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
-																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
+																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
 			sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
 			sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -429,6 +431,8 @@ void racun::on_btn_predplacilni_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(26, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_ddv")).toString());
 			sql_kopiraj_opravila.bindValue(27, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_koncni")).toString());
 			sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
+			sql_kopiraj_opravila.bindValue(29, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_sklop")).toString());
+			sql_kopiraj_opravila.bindValue(30, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_rocno")).toString());
 			sql_kopiraj_opravila.exec();
 		}
 
@@ -792,7 +796,12 @@ void racun::napolni() {
 				QTableWidgetItem *celica = new QTableWidgetItem;
 				if ( polja[col] == "opravilo_storitev" ) {
 					QString storitev = "";
-					storitev = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString());
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("opravilo_rocno")).toString()) == "" ) {
+						storitev = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString());
+					}
+					else {
+						storitev = prevedi(sql_fill.value(sql_fill.record().indexOf("opravilo_rocno")).toString());
+					}
 					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("pribitek_vikend")).toString()) == "1" ) {
 						storitev += " - Delo med vikendom";
 					}
@@ -2489,12 +2498,23 @@ void racun::print(QString id) {
 			sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) + "'");
 			sql_storitve.exec();
 			while ( sql_storitve.next() ) {
-				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
-											 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+				if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_sklop")).toString()) == "Ostalo" ||
+						 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") {
+					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+				}
+				else if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString()) == "Ostalo" ) {
+					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+												 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+				}
+				else {
+					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+												 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+				}
 
 				if ( storitev_ime.right(2) == ": " ) {
 					storitev_ime = storitev_ime.left(storitev_ime.length() - 2);
 				}
+
 				storitev_enota = prevedi(sql_storitve.value(sql_storitve.record().indexOf("enota")).toString());
 
 				storitev_kolicina = prevedi(sql_storitve.value(sql_storitve.record().indexOf("ur_dela")).toString()).replace(".", ",");
