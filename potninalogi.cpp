@@ -877,9 +877,10 @@ void potninalogi::prejem(QString besedilo) {
 			}
 		}
 		base.close();
+
+		ui->btn_sprejmi->setText("Popravi potni nalog");
 	}
 
-	ui->btn_sprejmi->setText("Popravi potni nalog");
 
 	// insert widgets
 	wid_stroski *widst = new wid_stroski;

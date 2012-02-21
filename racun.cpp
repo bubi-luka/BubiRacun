@@ -203,6 +203,8 @@ void racun::on_btn_izhod_clicked() {
 
 void racun::on_btn_racun_clicked() {
 
+	QString stevilka_racuna_org = ui->txt_stevilka_racuna->text();
+
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -274,7 +276,7 @@ void racun::on_btn_racun_clicked() {
 																	 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																	 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
 																	 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
-																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
 			sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
 			sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -314,6 +316,7 @@ void racun::on_btn_racun_clicked() {
 
 	// ponastavimo na predracun
 	ui->rb_predracun->setChecked(true);
+	ui->txt_stevilka_racuna->setText(stevilka_racuna_org);
 
 	// onemogocimo gumb
 	ui->btn_racun->setEnabled(false);
@@ -321,6 +324,8 @@ void racun::on_btn_racun_clicked() {
 }
 
 void racun::on_btn_predplacilni_racun_clicked() {
+
+	QString stevilka_racuna_org = ui->txt_stevilka_racuna->text();
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -441,6 +446,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
 
 	// ponastavimo na predracun
 	ui->rb_predracun->setChecked(true);
+	ui->txt_stevilka_racuna->setText(stevilka_racuna_org);
 
 	// onemogocimo gumb
 	ui->btn_predplacilni_racun->setEnabled(false);
@@ -565,6 +571,8 @@ void racun::on_txt_projekt_id_textChanged() {
 
 // ne preverja obveznih polj
 void racun::on_btn_sprejmi_clicked() {
+
+	izracunaj();
 
 	QString napaka = "";
 /*
