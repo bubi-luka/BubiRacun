@@ -27,7 +27,9 @@ opravila::opravila(QWidget *parent) :
 		ui->txt_racun->setText("");
 		ui->txt_id_tip->setText("");
 		ui->txt_tip->setText("");
+		ui->txt_rocni_vnos_storitve->setText("");
 
+		ui->txt_sklop->clear();
 		ui->txt_skupina->clear();
 		ui->txt_storitev->clear();
 		ui->txt_enota->clear();
@@ -104,6 +106,8 @@ opravila::opravila(QWidget *parent) :
 		ui->txt_id_projekt->setHidden(true);
 		ui->txt_id_racun->setHidden(true);
 		ui->txt_id_tip->setHidden(true);
+		ui->label_53->setHidden(true);
+		ui->txt_rocni_vnos_storitve->setHidden(true);
 
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -122,20 +126,19 @@ opravila::opravila(QWidget *parent) :
 			// baza je odprta
 
 			// napolni spustne sezname
+			ui->txt_sklop->addItem("");
 			ui->txt_enota->addItem("");
 			ui->txt_ddv->addItem("");
 			ui->txt_ddv->addItem("20,0 %");
 			ui->txt_ddv->addItem("8,5 %");
 			ui->txt_ddv->addItem("0,0 %");
 
-			ui->txt_skupina->addItem("");
-
 			QSqlQuery sql_fill;
-			sql_fill.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '%" + pretvori("BenSTUDENT").right(6) + "'"); // right(6) je zaradi sumnikov!!!
+			sql_fill.prepare("SELECT * FROM sif_storitve");
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
-				if ( ui->txt_skupina->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString())) == -1 ) {
-					ui->txt_skupina->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString()));
+				if ( ui->txt_sklop->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("sklop")).toString())) == -1 ) {
+					ui->txt_sklop->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("sklop")).toString()));
 				}
 				QString enota = prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString());
 				if ( ui->txt_enota->findText(enota) == -1 ) {
@@ -143,6 +146,7 @@ opravila::opravila(QWidget *parent) :
 				}
 			}
 			sql_fill.clear();
+			ui->txt_sklop->addItem("Ostalo");
 
 			sql_fill.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '%" + pretvori("max_pop_facebook") + "'");
 			sql_fill.exec();
@@ -219,8 +223,8 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 																 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
 																 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
 																 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota) "
-																 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
+																 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_opravilo.prepare("UPDATE opravila SET stevilka_stranke = ?, stevilka_projekta = ?, stevilka_racuna = ?, tip_racuna = ?, "
@@ -228,15 +232,21 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 																	 "ddv = ?, popust_fb1 = ?, popust_fb2 = ?, popust_komb1 = ?, popust_komb2 = ?, popust_stranka = ?, "
 																	 "popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, podrazitev_hitrost = ?, "
 																	 "podrazitev_zapleti = ?, pribitek_vikend = ?, pribitek_hitrost = ?, pribitek_zapleti = ?, tip_ur = ?, "
-																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ?, enota = ? "
-																	 "WHERE id LIKE '" + ui->txt_id->text() + "'");
+																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ?, enota = ?, "
+																	 "opravilo_sklop = ?, opravilo_rocno = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_opravilo.bindValue(0, pretvori(ui->txt_id_stranka->text()));
 			sql_vnesi_opravilo.bindValue(1, pretvori(ui->txt_id_projekt->text()));
 			sql_vnesi_opravilo.bindValue(2, pretvori(ui->txt_id_racun->text()));
 			sql_vnesi_opravilo.bindValue(3, pretvori(ui->txt_id_tip->text()));
-			sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
-			sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_storitev->currentText()));
+			if ( ui->txt_sklop->currentText() != "Ostalo" && ui->txt_skupina->currentText() != "Ostalo" && ui->txt_storitev->currentText() != "Ostalo" ) {
+				sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
+				sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_storitev->currentText()));
+			}
+			else { // ce je katerikoli od spustnih seznamov "Ostalo"
+				sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
+				sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_storitev->currentText()));
+			}
 			sql_vnesi_opravilo.bindValue(6, pretvori(pretvori_v_double(ui->txt_urna_postavka_brez_ddv->text())));
 			sql_vnesi_opravilo.bindValue(7, pretvori(pretvori_v_double(ui->txt_urna_postavka->text())));
 			sql_vnesi_opravilo.bindValue(8, pretvori(pretvori_v_double(ui->txt_ddv->currentText())));
@@ -295,6 +305,8 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 			sql_vnesi_opravilo.bindValue(26, pretvori(pretvori_v_double(ui->txt_znesek_ddv_na_racunu->text())));
 			sql_vnesi_opravilo.bindValue(27, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_na_racunu->text())));
 			sql_vnesi_opravilo.bindValue(28, pretvori(ui->txt_enota->currentText()));
+			sql_vnesi_opravilo.bindValue(29, pretvori(ui->txt_sklop->currentText()));
+			sql_vnesi_opravilo.bindValue(30, pretvori(ui->txt_rocni_vnos_storitve->text()));
 			sql_vnesi_opravilo.exec();
 
 			// send signal to reload widget
@@ -360,8 +372,11 @@ void opravila::prejem(QString beseda) {
 				ui->txt_id_projekt->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_projekta")).toString()));
 				ui->txt_id_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_racuna")).toString()));
 				ui->txt_id_tip->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()));
+				ui->txt_sklop->setCurrentIndex(ui->txt_sklop->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_sklop")).toString())));
 				ui->txt_skupina->setCurrentIndex(ui->txt_skupina->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_skupina")).toString())));
 				ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
+				ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
+				ui->txt_rocni_vnos_storitve->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_rocno")).toString()));
 				ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()).replace(".", ",") + " EUR");
 				ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %"));
 				ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()).replace(".", ",") + " EUR");
@@ -482,43 +497,103 @@ void opravila::on_btn_izracunaj_clicked() {
 
 }
 
+void opravila::on_txt_sklop_currentIndexChanged() {
+
+	// pocisti storitve
+	ui->txt_skupina->clear();
+	ui->txt_storitev->clear();
+	ui->txt_enota->setCurrentIndex(0);
+	ui->label_53->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setText("");
+
+	if ( ui->txt_sklop->currentText() != "" && ui->txt_sklop->currentText() != "Ostalo" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
+
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
+		}
+		else {
+			// baza je odprta
+
+			// napolni spustne sezname
+			ui->txt_skupina->addItem("");
+
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '" + pretvori(ui->txt_sklop->currentText()) + "'");
+			sql_fill.exec();
+			while ( sql_fill.next() ) {
+				if ( ui->txt_skupina->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString())) == -1 ) {
+					ui->txt_skupina->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("skupina")).toString()));
+				}
+			}
+			sql_fill.clear();
+
+		}
+		base.close();
+
+		ui->txt_skupina->addItem("Ostalo");
+	}
+	else if ( ui->txt_sklop->currentText() == "Ostalo" ) {
+		ui->label_53->setHidden(false);
+		ui->txt_rocni_vnos_storitve->setHidden(false);
+	}
+
+}
+
 void opravila::on_txt_skupina_currentIndexChanged() {
 
 	// pocisti storitve
 	ui->txt_storitev->clear();
 	ui->txt_enota->setCurrentIndex(0);
+	ui->label_53->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setText("");
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+	if ( ui->txt_skupina->currentText() != "" && ui->txt_skupina->currentText() != "Ostalo" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
-		// napolni spustne sezname
-		ui->txt_storitev->addItem("");
-
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "'");
-		sql_fill.exec();
-		while ( sql_fill.next() ) {
-			if ( ui->txt_storitev->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString())) == -1 ) {
-				ui->txt_storitev->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString()));
-			}
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
-		sql_fill.clear();
+		else {
+			// baza je odprta
+			ui->txt_storitev->addItem("");
 
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "'");
+			sql_fill.exec();
+			while ( sql_fill.next() ) {
+				if ( ui->txt_storitev->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString())) == -1 ) {
+					ui->txt_storitev->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString()));
+				}
+			}
+			sql_fill.clear();
+		}
+		base.close();
+
+		ui->txt_storitev->addItem("Ostalo");
 	}
-	base.close();
+	else if ( ui->txt_skupina->currentText() == "Ostalo" ) {
+		ui->label_53->setHidden(false);
+		ui->txt_rocni_vnos_storitve->setHidden(false);
+	}
 
 }
 
@@ -529,36 +604,45 @@ void opravila::on_txt_storitev_currentIndexChanged() {
 	ui->txt_urna_postavka_brez_ddv->setText("");
 	ui->txt_ddv->setCurrentIndex(0);
 	ui->txt_urna_postavka->setText("");
+	ui->label_53->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setHidden(true);
+	ui->txt_rocni_vnos_storitve->setText("");
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+	if ( ui->txt_storitev->currentText() != "" && ui->txt_storitev->currentText() != "Ostalo" ) {
+		QString app_path = QApplication::applicationDirPath();
+		QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("111Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "' AND "
-										 "storitev LIKE '" + pretvori(ui->txt_storitev->currentText()) + "'");
-		sql_fill.exec();
-		if ( sql_fill.next() ) {
-			ui->txt_enota->setCurrentIndex(ui->txt_enota->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString())));
-			ui->txt_urna_postavka_brez_ddv->setText(pretvori_iz_double(QString::number(prevedi(sql_fill.value(sql_fill.record().indexOf("urna_postavka")).toString()).toDouble(), 'f', 2)) + " EUR");
-			ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("ddv")).toString().replace(".", ",").append(" %"))));
+		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+		base.setDatabaseName(dbase_path);
+		base.database();
+		base.open();
+		if(base.isOpen() != true){
+			QMessageBox msgbox;
+			msgbox.setText("111Baze ni bilo moc odpreti");
+			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+			msgbox.exec();
 		}
-		sql_fill.clear();
+		else {
+			// baza je odprta
 
+			QSqlQuery sql_fill;
+			sql_fill.prepare("SELECT * FROM sif_storitve WHERE skupina LIKE '" + pretvori(ui->txt_skupina->currentText()) + "' AND "
+											 "storitev LIKE '" + pretvori(ui->txt_storitev->currentText()) + "'");
+			sql_fill.exec();
+			if ( sql_fill.next() ) {
+				ui->txt_enota->setCurrentIndex(ui->txt_enota->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString())));
+				ui->txt_urna_postavka_brez_ddv->setText(pretvori_iz_double(QString::number(prevedi(sql_fill.value(sql_fill.record().indexOf("urna_postavka")).toString()).toDouble(), 'f', 2)) + " EUR");
+				ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("ddv")).toString().replace(".", ",").append(" %"))));
+			}
+			sql_fill.clear();
+
+		}
+		base.close();
 	}
-	base.close();
+	else if ( ui->txt_storitev->currentText() == "Ostalo" ) {
+		ui->label_53->setHidden(false);
+		ui->txt_rocni_vnos_storitve->setHidden(false);
+	}
 
 }
 

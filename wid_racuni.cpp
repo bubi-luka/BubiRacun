@@ -1456,12 +1456,23 @@ void wid_racuni::print(QString id) {
 			 sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) + "'");
 			 sql_storitve.exec();
 			 while ( sql_storitve.next() ) {
-				 storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
-												prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+				 if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_sklop")).toString()) == "Ostalo" ||
+							prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") {
+					 storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+				 }
+				 else if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString()) == "Ostalo" ) {
+					 storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+													prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+				 }
+				 else {
+					 storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+													prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+				 }
 
 				 if ( storitev_ime.right(2) == ": " ) {
 					 storitev_ime = storitev_ime.left(storitev_ime.length() - 2);
 				 }
+
 				 storitev_enota = prevedi(sql_storitve.value(sql_storitve.record().indexOf("enota")).toString());
 
 				 storitev_kolicina = prevedi(sql_storitve.value(sql_storitve.record().indexOf("ur_dela")).toString()).replace(".", ",");
@@ -2937,12 +2948,23 @@ void wid_racuni::printpdf(QString id) {
 		sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) + "'");
 		sql_storitve.exec();
 		while ( sql_storitve.next() ) {
-			storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
-										 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+			if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_sklop")).toString()) == "Ostalo" ||
+					 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") {
+				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+			}
+			else if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString()) == "Ostalo" ) {
+				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+											 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
+			}
+			else {
+				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
+											 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+			}
 
 			if ( storitev_ime.right(2) == ": " ) {
 				storitev_ime = storitev_ime.left(storitev_ime.length() - 2);
 			}
+
 			storitev_enota = prevedi(sql_storitve.value(sql_storitve.record().indexOf("enota")).toString());
 
 			storitev_kolicina = prevedi(sql_storitve.value(sql_storitve.record().indexOf("ur_dela")).toString()).replace(".", ",");

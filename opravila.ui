@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
-    <height>757</height>
+    <width>912</width>
+    <height>817</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -295,30 +295,10 @@
          <property name="title">
           <string>Storitev</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_37">
           <item>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="4">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>DDV</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="5">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Urna postavka z DDV</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
+            <item row="0" column="1">
              <widget class="QLabel" name="label">
               <property name="text">
                <string>Skupina</string>
@@ -328,7 +308,7 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="0" column="2">
              <widget class="QLabel" name="label_2">
               <property name="text">
                <string>Storitev</string>
@@ -338,17 +318,7 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Urna postavka brez DDV</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
+            <item row="1" column="2">
              <widget class="QComboBox" name="txt_storitev">
               <property name="minimumSize">
                <size>
@@ -363,7 +333,17 @@
               </item>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_51">
+              <property name="text">
+               <string>Enota</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
              <widget class="QComboBox" name="txt_skupina">
               <property name="minimumSize">
                <size>
@@ -378,61 +358,222 @@
               </item>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QLineEdit" name="txt_urna_postavka_brez_ddv">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_52">
               <property name="text">
-               <string>txt_urna_postavka_brez_ddv</string>
+               <string>Tip</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QComboBox" name="txt_ddv">
-              <property name="maximumSize">
+            <item row="1" column="0">
+             <widget class="QComboBox" name="txt_sklop">
+              <property name="minimumSize">
                <size>
-                <width>100</width>
-                <height>16777215</height>
+                <width>150</width>
+                <height>0</height>
                </size>
               </property>
               <item>
                <property name="text">
-                <string>txt_ddv</string>
+                <string>txt_sklop</string>
                </property>
               </item>
              </widget>
             </item>
-            <item row="1" column="5">
-             <widget class="QLineEdit" name="txt_urna_postavka">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>txt_urna_postavka</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_51">
-              <property name="text">
-               <string>Enota</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
+            <item row="3" column="0">
              <widget class="QComboBox" name="txt_enota">
               <item>
                <property name="text">
                 <string>txt_enota</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Urna postavka brez DDV</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>DDV</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="6">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Urna postavka z DDV</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txt_urna_postavka_brez_ddv">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>txt_urna_postavka_brez_ddv</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_45">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_35">
+              <item>
+               <spacer name="horizontalSpacer_54">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QComboBox" name="txt_ddv">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>txt_ddv</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_55">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="6">
+             <layout class="QHBoxLayout" name="horizontalLayout_36">
+              <item>
+               <spacer name="horizontalSpacer_56">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txt_urna_postavka">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>txt_urna_postavka</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_57">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="6">
+             <widget class="QLabel" name="label_53">
+              <property name="text">
+               <string>Ročni vnos storitve</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="6">
+             <widget class="QLineEdit" name="txt_rocni_vnos_storitve">
+              <property name="text">
+               <string>txt_rocni_vnos_storitve</string>
+              </property>
              </widget>
             </item>
            </layout>

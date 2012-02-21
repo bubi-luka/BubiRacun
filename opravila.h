@@ -25,6 +25,7 @@ private slots:
 
 	void on_btn_izracunaj_clicked();
 
+	void on_txt_sklop_currentIndexChanged();
 	void on_txt_skupina_currentIndexChanged();
 	void on_txt_storitev_currentIndexChanged();
 
