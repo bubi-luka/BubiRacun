@@ -199,6 +199,8 @@ void opravila::on_btn_brisi_clicked() { // dokler ne definiramo gumba, bo prazno
 
 void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 
+	izracunaj_racun();
+
 	QString napaka = "";
 
 	QString app_path = QApplication::applicationDirPath();
