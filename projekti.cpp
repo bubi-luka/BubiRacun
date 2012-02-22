@@ -91,20 +91,21 @@ projekti::projekti(QWidget *parent) :
 		ui->tab_projekti->setCurrentIndex(0);
 
 	// onemogoci polja
-	ui->txt_id->setEnabled(false);
-	ui->txt_stranka_id->setEnabled(false);
+		ui->txt_id->setEnabled(false);
+		ui->txt_stevilka_projekta->setEnabled(false);
+		ui->txt_stranka_id->setEnabled(false);
 //	ui->txt_konec->setEnabled(false);
 //	ui->txt_pricetek->setEnabled(false);
-	ui->txt_izdani_brez_ddv->setEnabled(false);
-	ui->txt_izdani_ddv->setEnabled(false);
-	ui->txt_izdani_popusti->setEnabled(false);
-	ui->txt_izdani_placilo->setEnabled(false);
-	ui->txt_prejeti_brez_ddv->setEnabled(false);
-	ui->txt_prejeti_ddv->setEnabled(false);
-	ui->txt_prejeti_placilo->setEnabled(false);
+		ui->txt_izdani_brez_ddv->setEnabled(false);
+		ui->txt_izdani_ddv->setEnabled(false);
+		ui->txt_izdani_popusti->setEnabled(false);
+		ui->txt_izdani_placilo->setEnabled(false);
+		ui->txt_prejeti_brez_ddv->setEnabled(false);
+		ui->txt_prejeti_ddv->setEnabled(false);
+		ui->txt_prejeti_placilo->setEnabled(false);
 
-	ui->txt_stranka_id->setHidden(true);
-	ui->txt_id_zapisa->setHidden(true);
+		ui->txt_stranka_id->setHidden(true);
+		ui->txt_id_zapisa->setHidden(true);
 
 	// skrij polja z urami dela
 	ui->label_47->setVisible(false);
@@ -352,12 +353,14 @@ void projekti::prejem(QString besedilo) {
 		ui->wid_prejeti_racuni->setEnabled(false);
 		ui->wid_izdani_racuni->setEnabled(false);
 		ui->wid_potni_nalogi->setEnabled(false);
+		ui->txt_pricetek->setEnabled(true);
 	}
 	else {
 		ui->btn_sprejmi->setText("Polnim");
 		ui->wid_prejeti_racuni->setEnabled(true);
 		ui->wid_izdani_racuni->setEnabled(true);
 		ui->wid_potni_nalogi->setEnabled(true);
+		ui->txt_pricetek->setEnabled(false);
 		// besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -1651,25 +1654,46 @@ void projekti::stevilka_racuna() {
 			// vnesi stevilko projekta
 			QString leto = ui->txt_pricetek->text().right(4);
 
-			int i = 1;
-			QString stevilka = "";
+			bool tvori = true; // tvorimo stevilko naloga
+			QString stara_stevilka_naloga = "";
+			if ( ui->txt_id->text() != "") {
+				QSqlQuery sql_stara_stevilka;
+				sql_stara_stevilka.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_stara_stevilka.exec();
+				if ( sql_stara_stevilka.next() ) {
+					stara_stevilka_naloga = prevedi(sql_stara_stevilka.value(sql_stara_stevilka.record().indexOf("stevilka_projekta")).toString());
+					if ( stara_stevilka_naloga.left(7).right(4) == leto ) {
+						ui->txt_stevilka_projekta->setText(stara_stevilka_naloga);
+						tvori = false;
+					}
+				}
+			}
 
-			QSqlQuery sql_insert_stnaloga;
-			sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
-			sql_insert_stnaloga.exec();
-			while (sql_insert_stnaloga.next()) {
+			// zapisi stevilko potnega naloga
+			if ( tvori == true ) {
+				int i = 0;
+				QString stevilka = "";
+
+				QSqlQuery sql_insert_stnaloga;
+				sql_insert_stnaloga.prepare("SELECT * FROM projekti WHERE stevilka_projekta LIKE '" + pretvori("SP-" + leto) + "%'");
+				sql_insert_stnaloga.exec();
+				while (sql_insert_stnaloga.next()) {
+					i = pretvori(sql_insert_stnaloga.value(sql_insert_stnaloga.record().indexOf("stevilka_projekta")).toString()).right(3).toInt();
+				}
+
 				i++;
+
+				if ( i < 10 ) {
+					stevilka = "00" + QString::number(i, 10);
+				}
+				else if ( i < 100 ) {
+					stevilka = "0" + QString::number(i, 10);
+				}
+				else {
+					stevilka = "" + QString::number(i, 10);
+				}
+				ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
 			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_projekta->setText("SP-" + leto + "-" + stevilka);
 
 		}
 		base.close();

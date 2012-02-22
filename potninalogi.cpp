@@ -78,6 +78,9 @@ potninalogi::potninalogi(QWidget *parent) :
 		ui->txt_registrska_stevilka->setText("");
 
 		// onemogocimo dolocena polja
+		ui->txt_id->setEnabled(false);
+		ui->txt_stevilka_naloga->setEnabled(false);
+
 		ui->txt_cena_prevoza->setEnabled(false);
 		ui->txt_cena_dnevnic->setEnabled(false);
 		ui->txt_ostali_stroski->setEnabled(false);
@@ -750,12 +753,14 @@ void potninalogi::prejem(QString besedilo) {
 		ui->btn_izvozi->setEnabled(false); // nalog je potrebno najprej shraniti, sele nato ga lahko tiskamo
 		ui->wid_pot->setEnabled(false);
 		ui->wid_st->setEnabled(false);
+		ui->txt_datum_naloga->setEnabled(true);
 	}
 	else {
 		ui->btn_sprejmi->setText("Polnim");
 		ui->btn_izvozi->setEnabled(true);
 		ui->wid_pot->setEnabled(true);
 		ui->wid_st->setEnabled(true);
+		ui->txt_datum_naloga->setEnabled(false);
 		// besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -2941,7 +2946,7 @@ void potninalogi::on_txt_datum_naloga_dateChanged() {
 
 void potninalogi::stevilka_racuna() {
 
-	if ( ui->btn_sprejmi->text() != "Polnim" ) {
+	if ( ui->btn_sprejmi->text() != "Polnim" ) { // da ne pade v neskoncno zanko
 	QString leto = ui->txt_datum_naloga->text().right(4);
 
 		QString app_path = QApplication::applicationDirPath();
@@ -2960,26 +2965,42 @@ void potninalogi::stevilka_racuna() {
 		else {
 			// baza je odprta
 
-			// zapisi stevilko potnega naloga
-			int i = 1;
-			QString stevilka = "";
-			QSqlQuery sql_insert_stnaloga;
-			sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
-			sql_insert_stnaloga.exec();
-			while (sql_insert_stnaloga.next()) {
-				i++;
+			bool tvori = true; // tvorimo stevilko naloga
+			QString stara_stevilka_naloga = "";
+			if ( ui->txt_id->text() != "") {
+				QSqlQuery sql_stara_stevilka;
+				sql_stara_stevilka.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_stara_stevilka.exec();
+				if ( sql_stara_stevilka.next() ) {
+					stara_stevilka_naloga = prevedi(sql_stara_stevilka.value(sql_stara_stevilka.record().indexOf("stevilka_naloga")).toString());
+					if ( stara_stevilka_naloga.left(7).right(4) == leto ) {
+						ui->txt_stevilka_naloga->setText(stara_stevilka_naloga);
+						tvori = false;
+					}
+				}
 			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
 
+			// zapisi stevilko potnega naloga
+			if ( tvori == true ) {
+				int i = 1;
+				QString stevilka = "";
+				QSqlQuery sql_insert_stnaloga;
+				sql_insert_stnaloga.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%'");
+				sql_insert_stnaloga.exec();
+				while (sql_insert_stnaloga.next()) {
+					i++;
+				}
+				if ( i < 10 ) {
+					stevilka = "00" + QString::number(i, 10);
+				}
+				else if ( i < 100 ) {
+					stevilka = "0" + QString::number(i, 10);
+				}
+				else {
+					stevilka = "" + QString::number(i, 10);
+				}
+				ui->txt_stevilka_naloga->setText("PN-" + leto + "-" + stevilka);
+			}
 		}
 		base.close();
 	}
