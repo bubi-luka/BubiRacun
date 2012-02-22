@@ -170,6 +170,10 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 		// onemogocimo urejanje projektov
 		ui->cb_projekt->setChecked(false);
 
+		// onemogocimo polja
+		ui->txt_id->setEnabled(false);
+		ui->txt_stevilka_vnosa->setEnabled(false);
+
 }
 
 prejetiracuni::~prejetiracuni()
@@ -522,10 +526,12 @@ void prejetiracuni::prejem(QString besedilo) {
 	if (besedilo == "Nov racun") {
 		ui->btn_sprejmi->setText("Vnesi racun");
 		ui->btn_izpisi->setEnabled(false);
+		ui->txt_datum_prejema->setEnabled(true);
 	}
 	else {
 		ui->btn_sprejmi->setText("Polnim");
 		ui->btn_izpisi->setEnabled(true);
+		ui->txt_datum_prejema->setEnabled(false);
 		// besedilo nosi ID ze obstojec racun, potrebno je napolniti polja
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
@@ -1017,25 +1023,43 @@ void prejetiracuni::stevilka_racuna() {
 		else {
 			// baza je odprta
 
-			// pridobi naslednjo prosto stevilko vnosa in jo uredi glede na navodila
-			int i = 1;
-			QString stevilka = "";
-			QSqlQuery sql_insert_stnaloga;
-			sql_insert_stnaloga.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_vnosa LIKE '" + pretvori("PR-" + leto) + "%'");
-			sql_insert_stnaloga.exec();
-			while (sql_insert_stnaloga.next()) {
-				i++;
+			bool tvori = true; // tvorimo stevilko naloga
+			QString stara_stevilka_naloga = "";
+			if ( ui->txt_id->text() != "") {
+				QSqlQuery sql_stara_stevilka;
+				sql_stara_stevilka.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_stara_stevilka.exec();
+				if ( sql_stara_stevilka.next() ) {
+					stara_stevilka_naloga = prevedi(sql_stara_stevilka.value(sql_stara_stevilka.record().indexOf("stevilka_vnosa")).toString());
+					if ( stara_stevilka_naloga.left(7).right(4) == leto ) {
+						ui->txt_stevilka_vnosa->setText(stara_stevilka_naloga);
+						tvori = false;
+					}
+				}
 			}
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
+
+			// zapisi stevilko potnega naloga
+			if ( tvori == true ) {
+				// pridobi naslednjo prosto stevilko vnosa in jo uredi glede na navodila
+				int i = 1;
+				QString stevilka = "";
+				QSqlQuery sql_insert_stnaloga;
+				sql_insert_stnaloga.prepare("SELECT * FROM prejeti_racuni WHERE stevilka_vnosa LIKE '" + pretvori("PR-" + leto) + "%'");
+				sql_insert_stnaloga.exec();
+				while (sql_insert_stnaloga.next()) {
+					i++;
+				}
+				if ( i < 10 ) {
+					stevilka = "00" + QString::number(i, 10);
+				}
+				else if ( i < 100 ) {
+					stevilka = "0" + QString::number(i, 10);
+				}
+				else {
+					stevilka = "" + QString::number(i, 10);
+				}
+				ui->txt_stevilka_vnosa->setText("PR-" + leto + "-" + stevilka);
 			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_stevilka_vnosa->setText("PR-" + leto + "-" + stevilka);
 
 		}
 		base.close();

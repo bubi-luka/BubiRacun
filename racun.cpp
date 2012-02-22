@@ -71,6 +71,8 @@ racun::racun(QWidget *parent) :
 
 		// onemogoci polja
 		ui->txt_id->setEnabled(false);
+		ui->txt_stevilka_racuna->setEnabled(false);
+		ui->txt_sklic->setEnabled(false);
 		ui->txt_projekt_id->setEnabled(false);
 		ui->txt_stranka_id->setEnabled(false);
 		ui->txt_znesek_ddv->setEnabled(false);
@@ -80,6 +82,14 @@ racun::racun(QWidget *parent) :
 		ui->txt_znesek_brez_ddv->setEnabled(false);
 		ui->txt_avans->setEnabled(false);
 		ui->txt_stara_stevilka_racuna->setEnabled(false);
+		ui->txt_status_predracuna->setEnabled(false);
+		ui->txt_datum_oddaje_racuna->setEnabled(false);
+		ui->txt_status_racunovodstva->setEnabled(false);
+		ui->txt_rok_placila->setEnabled(false);
+		ui->txt_odstotek_avansa->setEnabled(false);
+		ui->txt_datum_placila_avansa->setEnabled(false);
+		ui->txt_datum_izdaje_racuna->setEnabled(false);
+		ui->txt_status_placila->setEnabled(false);
 
 		ui->btn_predplacilni_racun->setEnabled(false);
 		ui->btn_racun->setEnabled(false);
@@ -225,7 +235,7 @@ void racun::on_btn_racun_clicked() {
 		ui->rb_racun->setChecked(true);
 
 		// na novo izracunamo stevilko racuna
-		stevilka_racuna();
+//		stevilka_racuna();
 
 		// vnesemo podatke
 		QSqlQuery sql_vnesi_projekt;
@@ -233,24 +243,24 @@ void racun::on_btn_racun_clicked() {
 															"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
 															"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa) "
 															"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_racuna->text()));
+		sql_vnesi_projekt.bindValue(0, pretvori(""));
 		sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
-		sql_vnesi_projekt.bindValue(2, pretvori(ui->txt_status_predracuna->currentText()));
+		sql_vnesi_projekt.bindValue(2, pretvori(""));
 		sql_vnesi_projekt.bindValue(3, pretvori(ui->txt_stranka_id->text()));
 		sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_projekt_id->text()));
 		sql_vnesi_projekt.bindValue(5, pretvori(vApp->id()));
 		sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_pricetek->text()));
 		sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_konec->text()));
-		sql_vnesi_projekt.bindValue(8, pretvori(ui->txt_datum_izdaje_racuna->text()));
-		sql_vnesi_projekt.bindValue(9, pretvori(ui->txt_rok_placila->text()));
-		sql_vnesi_projekt.bindValue(10, pretvori(ui->txt_status_placila->currentText()));
-		sql_vnesi_projekt.bindValue(11, pretvori(ui->txt_status_racunovodstva->currentText()));
+		sql_vnesi_projekt.bindValue(8, pretvori(""));
+		sql_vnesi_projekt.bindValue(9, pretvori(""));
+		sql_vnesi_projekt.bindValue(10, pretvori(""));
+		sql_vnesi_projekt.bindValue(11, pretvori(""));
 		sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_avans->text())));
 		sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_odstotek_avansa->text())));
-		sql_vnesi_projekt.bindValue(14, pretvori(ui->txt_status_oddaje_racuna->currentText()));
-		sql_vnesi_projekt.bindValue(15, pretvori(ui->txt_datum_oddaje_racuna->text()));
+		sql_vnesi_projekt.bindValue(14, pretvori(""));
+		sql_vnesi_projekt.bindValue(15, pretvori(""));
 		sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
-		sql_vnesi_projekt.bindValue(17, pretvori(ui->txt_sklic->text()));
+		sql_vnesi_projekt.bindValue(17, pretvori(""));
 		sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
 		sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
 
@@ -259,10 +269,9 @@ void racun::on_btn_racun_clicked() {
 		// poiscemo id pravkar vnesenega zapisa
 		QSqlQuery sql_nov_id;
 		QString nov_id = "";
-		sql_nov_id.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_stevilka_racuna->text()) +
-											 "' AND tip_racuna LIKE '" + pretvori("3") + "'");
+		sql_nov_id.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("3") + "' ORDER BY id ASC");
 		sql_nov_id.exec();
-		if ( sql_nov_id.next() ) {
+		while ( sql_nov_id.next() ) {
 			nov_id = prevedi(sql_nov_id.value(sql_nov_id.record().indexOf("id")).toString());
 		}
 		// kopira opravila iz predracuna v racun
@@ -1464,44 +1473,64 @@ void racun::stevilka_racuna() {
 
 			int max_st_racuna = 0;
 
-			// izracunamo zaporedno stevilko racuna v tekocem letu
-			QSqlQuery sql_stetje_racunov;
-			QString tip_racuna = "";
-			if ( ui->rb_predracun->isChecked() ) {
-				tip_racuna = "1";
-			}
-			else if ( ui->rb_predplacilo->isChecked() ) {
-				tip_racuna = "2";
-			}
-			else if ( ui->rb_racun->isChecked() ) {
-				tip_racuna = "3";
-			}
-
-			sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-																 "' AND tip_racuna LIKE '" + pretvori(tip_racuna) + "' ORDER BY stevilka_racuna ASC");
-			sql_stetje_racunov.exec();
-			while ( sql_stetje_racunov.next() ) {
-				int st_racuna = 0;
-				st_racuna = prevedi(sql_stetje_racunov.value(sql_stetje_racunov.record().indexOf("stevilka_racuna")).toString()).right(3).toInt();
-				if ( st_racuna > max_st_racuna ) {
-					max_st_racuna = st_racuna;
+			bool tvori = true; // tvorimo stevilko naloga
+			QString stara_stevilka_naloga = "";
+			if ( ui->txt_id->text() != "" ) {
+				if ( !ui->rb_predplacilo->isChecked() ) {
+					QSqlQuery sql_stara_stevilka;
+					sql_stara_stevilka.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+					sql_stara_stevilka.exec();
+					if ( sql_stara_stevilka.next() ) {
+						stara_stevilka_naloga = prevedi(sql_stara_stevilka.value(sql_stara_stevilka.record().indexOf("stevilka_racuna")).toString());
+						if ( stara_stevilka_naloga.left(2) == leto.right(2) ) {
+							ui->txt_stevilka_racuna->setText(stara_stevilka_naloga);
+							tvori = false;
+						}
+					}
 				}
 			}
-			max_st_racuna = max_st_racuna + 1;
-			QString st_racuna = QString::number(max_st_racuna, 10);
 
-			// iz stevilke racuna ustvarimo tromestno stevilko, pretvorjeno v besedo
-		//	racun = QString::number(i, 10);
-			if ( st_racuna.length() == 1 ) {
-				st_racuna = "00" + st_racuna;
+			// zapisi stevilko potnega naloga
+			if ( tvori == true ) {
+				// izracunamo zaporedno stevilko racuna v tekocem letu
+				QSqlQuery sql_stetje_racunov;
+				QString tip_racuna = "";
+				if ( ui->rb_predracun->isChecked() ) {
+					tip_racuna = "1";
+				}
+				else if ( ui->rb_predplacilo->isChecked() ) {
+					tip_racuna = "2";
+				}
+				else if ( ui->rb_racun->isChecked() ) {
+					tip_racuna = "3";
+				}
+
+				sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
+																	 "' AND tip_racuna LIKE '" + pretvori(tip_racuna) + "' ORDER BY stevilka_racuna ASC");
+				sql_stetje_racunov.exec();
+				while ( sql_stetje_racunov.next() ) {
+					int st_racuna = 0;
+					st_racuna = prevedi(sql_stetje_racunov.value(sql_stetje_racunov.record().indexOf("stevilka_racuna")).toString()).right(3).toInt();
+					if ( st_racuna > max_st_racuna ) {
+						max_st_racuna = st_racuna;
+					}
+				}
+				max_st_racuna = max_st_racuna + 1;
+				QString st_racuna = QString::number(max_st_racuna, 10);
+
+				// iz stevilke racuna ustvarimo tromestno stevilko, pretvorjeno v besedo
+			//	racun = QString::number(i, 10);
+				if ( st_racuna.length() == 1 ) {
+					st_racuna = "00" + st_racuna;
+				}
+				else if ( st_racuna.length() == 2 ) {
+					st_racuna = "0" + st_racuna;
+				}
+
+				// imamo dovolj podatkov za tvorbo stevilke racuna
+
+				ui->txt_stevilka_racuna->setText(leto.right(2) + st_racuna);
 			}
-			else if ( st_racuna.length() == 2 ) {
-				st_racuna = "0" + st_racuna;
-			}
-
-			// imamo dovolj podatkov za tvorbo stevilke racuna
-
-			ui->txt_stevilka_racuna->setText(leto.right(2) + st_racuna);
 
 			/**
 				*	Tvorimo stevilko sklica
@@ -1645,7 +1674,9 @@ void racun::stevilka_racuna() {
 
 void racun::on_txt_datum_izdaje_racuna_dateChanged() {
 
-	stevilka_racuna();
+	if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
+		stevilka_racuna();
+	}
 
 }
 
@@ -1654,10 +1685,25 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 	if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
 		ui->txt_status_predracuna->setEnabled(true);
 		ui->txt_datum_oddaje_racuna->setEnabled(true);
+		ui->txt_status_racunovodstva->setEnabled(true);
+		ui->txt_rok_placila->setEnabled(true);
+		ui->txt_odstotek_avansa->setEnabled(true);
+		ui->txt_datum_placila_avansa->setEnabled(true);
+		ui->txt_datum_izdaje_racuna->setEnabled(true);
+		ui->txt_status_placila->setEnabled(true);
+		stevilka_racuna();
 	}
 	else {
 		ui->txt_status_predracuna->setEnabled(false);
 		ui->txt_datum_oddaje_racuna->setEnabled(false);
+		ui->txt_status_racunovodstva->setEnabled(false);
+		ui->txt_rok_placila->setEnabled(false);
+		ui->txt_odstotek_avansa->setEnabled(false);
+		ui->txt_datum_placila_avansa->setEnabled(false);
+		ui->txt_datum_izdaje_racuna->setEnabled(false);
+		ui->txt_status_placila->setEnabled(false);
+		ui->txt_stevilka_racuna->setText("");
+		ui->txt_sklic->setText("");
 	}
 
 }

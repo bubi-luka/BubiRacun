@@ -114,6 +114,15 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		napolni();
 
 		ui->btn_nov->setText(gumb);
+
+		if ( vApp->permission() == pretvori("Administrator") ) {
+			ui->btn_brisi->setVisible(true);
+			ui->btn_brisi->setEnabled(true);
+		}
+		else {
+			ui->btn_brisi->setVisible(false);
+			ui->btn_brisi->setEnabled(false);
+		}
 }
 
 wid_racuni::~wid_racuni()
