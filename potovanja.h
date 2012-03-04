@@ -17,11 +17,21 @@ public:
 
 private slots:
 	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
+	void on_btn_nadaljuj_clicked();
 	void on_btn_sprejmi_clicked();
 	void keyPressEvent(QKeyEvent *event);
 
+	void on_txt_posta_currentIndexChanged(QString besedilo);
+	void on_txt_postna_stevilka_textChanged(QString besedilo);
+
+	void on_txt_kraj_prihoda_textChanged(QString besedilo);
+	void on_txt_naziv_ciljnega_podjetja_editingFinished();
+
 	void prejem(QString besedilo);
+	void shrani();
+
+	QString preveri_napake();
+
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 

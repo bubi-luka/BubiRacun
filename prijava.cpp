@@ -19,6 +19,9 @@ prijava::prijava(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	// ustvari tabelo s podatki o programu in bazi
+	glavna_tabela();
+
 	// ustvari tabele
 	tabela_podjetje();
 	tabela_uporabnik();
@@ -375,6 +378,38 @@ void prijava::varnostna_kopija() {
 
 }
 
+// ustvari tabelo s podatki o bazi in programu
+void prijava::glavna_tabela() {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+		QSqlQuery sql_create_table;
+		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS glavna ("	// ustvarimo tabelo, ce se ne obstaja
+														 "id INTEGER PRIMARY KEY, "							// kljuc
+														 "parameter TEXT, "											// ime parametra, katerega lastnosti shranjujemo ("verzija")
+														 "vrednost TEXT, "											// vrednost parametra ("1.0.0")
+														 "opis TEXT, "													// opis parametra ("Zadnja razlicica programa")
+														 "razlicica TEXT)"											// razlicica parametra ("5") - integer, stevilo sprememb parametra
+														 );
+		sql_create_table.exec();
+	}
+	base.close();
+
+}
+
 // ustvari tabele
 void prijava::tabela_podjetje() {
 
@@ -497,11 +532,13 @@ void prijava::tabela_potni_nalogi() {
 		sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potni_nalogi ("
 														 "id INTEGER PRIMARY KEY, "
 														 "stevilka_naloga TEXT, "
+														 "stevilka_dokumenta TEXT, "
 														 "datum_naloga TEXT, "
 														 "namen_naloga TEXT, "
 														 "naziv_ciljnega_podjetja TEXT, "
 														 "stevilka_projekta TEXT, "
 														 "opombe TEXT, "
+														 "priloge TEXT, "
 														 "cena_prevoza TEXT, "
 														 "cena_dnevnic TEXT, "
 														 "ostali_stroski TEXT, "
@@ -556,8 +593,13 @@ void prijava::tabela_potovanja() {
 														 "cas_odhoda TEXT, "
 														 "cas_prihoda TEXT, "
 														 "kilometri TEXT, "
-														 "naslov TEXT)"
-														);
+														 "naslov_ulica TEXT, "
+														 "naslov_stevilka TEXT, "
+														 "naslov_postna_stevilka TEXT, "
+														 "naslov_posta TEXT, "
+														 "naziv_ciljnega_podjetja TEXT, "
+														 "namen_potovanja TEXT)"
+														 );
 		sql_create_table.exec();
 	}
 	base.close();
@@ -2265,42 +2307,437 @@ void prijava::posodobi_bazo() {
 	}
 	else {
 		// baza je odprta
+
+		/**
+			* Preverimo stevilko razlicice programa, ki nam pove, ali je morda cas za
+			* kak prepis baze.
+			* Preverimo tudi stevilko razlicice baze, ki nam pove, ali je potrebno
+			* bazo posodobiti, dodati kak update, ...
+			* Max nam pove, da je prislo do tezkih sprememb v bazi. Pri teh spremembah
+			* se obicajno naredi izvoz in ponovni uvoz baze.
+			* Mid pove, da je prislo do prenosa polj med tabelami, zaradi cesar se
+			* mora del podatkov prenesti ali izvoziti in ponovno uvoziti v novo tabelo.
+			* Min pove, da so dolocena polja v tabeli ali dodana ali izbrisana,
+			* prepis podatkov ni potreben
+			**/
+
+		QString stevilka_programa = "";
+		int zaporedna_stevilka_stevilke_programa = 0;
+		int zaporedna_stevilka_stevilke_baze = 0;
+		int stevilka_baze_max = 0;
+		int stevilka_baze_mid = 0;
+		int stevilka_baze_min = 0;
+
+		QSqlQuery podatki;
+		podatki.prepare("SELECT * FROM glavna");
+		podatki.exec();
+		while ( podatki.next() ) {
+			if ( podatki.value(podatki.record().indexOf("parameter")).toString() == "Verzija programa" ) {
+				stevilka_programa = podatki.value(podatki.record().indexOf("vrednost")).toString();
+				zaporedna_stevilka_stevilke_programa = podatki.value(podatki.record().indexOf("razlicica")).toInt();
+			}
+			else if ( podatki.value(podatki.record().indexOf("parameter")).toString() == "Verzija baze" ) {
+				QString stevilka_baze = podatki.value(podatki.record().indexOf("vrednost")).toString();
+				zaporedna_stevilka_stevilke_baze = podatki.value(podatki.record().indexOf("razlicica")).toInt();
+				stevilka_baze_max = stevilka_baze.left(stevilka_baze.indexOf(".", 0)).toInt();
+				stevilka_baze = stevilka_baze.right(stevilka_baze.length() - stevilka_baze.indexOf(".", 0) - 1);
+				stevilka_baze_mid = stevilka_baze.left(stevilka_baze.indexOf(".", 0)).toInt();
+				stevilka_baze = stevilka_baze.right(stevilka_baze.length() - stevilka_baze.indexOf(".", 0) - 1);
+				stevilka_baze_min = stevilka_baze.left(stevilka_baze.indexOf(".", 0)).toInt();
+			}
+		}
+
 		QSqlQuery update;
-		update.prepare("ALTER TABLE opravila ADD COLUMN 'enota' TEXT");
-		update.exec();
-		update.clear();
 
-		update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_sklop' TEXT");
-		update.exec();
-		update.clear();
+		if ( stevilka_baze_max == 0 ) {
+			if ( stevilka_baze_mid == 0 ) {
+				if ( stevilka_baze_min == 0  ) {
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'enota' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_rocno' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_sklop' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'priloge' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'opravilo_rocno' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE racuni ADD COLUMN 'opombe' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'priloge' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_6_8' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE racuni ADD COLUMN 'opombe' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_8_12' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_6_8' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_12_24' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_8_12' TEXT");
+					update.exec();
+					update.clear();
 
-		update.prepare("ALTER TABLE stranke ADD COLUMN 'davcni_zavezanec' TEXT");
-		update.exec();
-		update.clear();
+					update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'cena_dnevnice_12_24' TEXT");
+					update.exec();
+					update.clear();
+
+					update.prepare("ALTER TABLE stranke ADD COLUMN 'davcni_zavezanec' TEXT");
+					update.exec();
+					update.clear();
+
+					update.prepare("INSERT INTO glavna (parameter, vrednost, opis, razlicica) VALUES (?, ?, ?, ?)");
+					update.bindValue(0, "Verzija programa");
+					update.bindValue(1, "0.5.0");
+					update.bindValue(2, "Stevilka trenutne razlicice programa");
+					update.bindValue(3, "1");
+					update.exec();
+					update.clear();
+
+					update.prepare("INSERT INTO glavna (parameter, vrednost, opis, razlicica) VALUES (?, ?, ?, ?)");
+					update.bindValue(0, "Verzija baze");
+					update.bindValue(1, "0.5.0");
+					update.bindValue(2, "Stevilka trenutne razlicice baze, ki je v uporabi");
+					update.bindValue(3, "1");
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
+			}
+			if ( stevilka_baze_mid == 5 ) {
+				if ( stevilka_baze_min == 0 ) {
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.0");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.0");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
+			}
+			if ( stevilka_baze_mid == 9 ) {
+				if ( stevilka_baze_min == 0 ) {
+					QSqlQuery sql_create_table;
+
+					// tvorimo backup tabelo potovanj, ki pa ze ima nova polja
+					sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potovanja_old ("
+																		"id INTEGER PRIMARY KEY, "
+																		"potni_nalog TEXT, "
+																		"kraj_odhoda TEXT, "
+																		"kraj_prihoda TEXT, "
+																		"cas_odhoda TEXT, "
+																		"cas_prihoda TEXT, "
+																		"kilometri TEXT, "
+																		"naslov_ulica TEXT, "
+																		"naslov_stevilka TEXT, "
+																		"naslov_postna_stevilka TEXT, "
+																		"naslov_posta TEXT, "
+																		"naziv_ciljnega_podjetja TEXT, "
+																		"namen_potovanja TEXT)"
+																		);
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// naredimo prepis podatkov o potovanjih iz stare tabele v backup tabelo
+					// pri cemer ze upostevamo nova polja za naslov
+					QSqlQuery sql_izbor;
+					sql_izbor.prepare("SELECT * FROM potovanja ORDER BY id ASC");
+					sql_izbor.exec();
+					while ( sql_izbor.next() ) {
+						QString naslov = prevedi(sql_izbor.value(sql_izbor.record().indexOf("naslov")).toString());
+						QString naslov_ulica = naslov.left(naslov.indexOf("\n"));
+						naslov = naslov.right(naslov.length() - 1 - naslov.indexOf("\n"));
+						QString naslov_stevilka = "";
+						QString naslov_postna_stevilka = naslov.left(4);
+						naslov = naslov.right(naslov.length() - 5);
+						QString naslov_posta = naslov;
+
+						QSqlQuery sql_prenos;
+						sql_prenos.prepare("INSERT INTO potovanja_old (potni_nalog, kraj_odhoda, kraj_prihoda, cas_odhoda, "
+															 "cas_prihoda, kilometri, naslov_ulica, naslov_stevilka, naslov_postna_stevilka, naslov_posta, "
+															 "naziv_ciljnega_podjetja, namen_potovanja) VALUES "
+															 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						sql_prenos.bindValue(0, sql_izbor.value(sql_izbor.record().indexOf("potni_nalog")).toString());
+						sql_prenos.bindValue(1, sql_izbor.value(sql_izbor.record().indexOf("kraj_odhoda")).toString());
+						sql_prenos.bindValue(2, sql_izbor.value(sql_izbor.record().indexOf("kraj_prihoda")).toString());
+						sql_prenos.bindValue(3, sql_izbor.value(sql_izbor.record().indexOf("cas_odhoda")).toString());
+						sql_prenos.bindValue(4, sql_izbor.value(sql_izbor.record().indexOf("cas_prihoda")).toString());
+						sql_prenos.bindValue(5, sql_izbor.value(sql_izbor.record().indexOf("kilometri")).toString());
+						sql_prenos.bindValue(6, pretvori(naslov_ulica));
+						sql_prenos.bindValue(7, pretvori(naslov_stevilka));
+						sql_prenos.bindValue(8, pretvori(naslov_postna_stevilka));
+						sql_prenos.bindValue(9, pretvori(naslov_posta));
+						sql_prenos.bindValue(10, "");
+						sql_prenos.bindValue(11, "");
+						sql_prenos.exec();
+						sql_prenos.clear();
+					}
+					sql_izbor.clear();
+
+					// izbrisemo staro tabelo
+					sql_create_table.prepare("DROP TABLE IF EXISTS potovanja");
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// v backup tabelo vnesemo podatke iz tabele potnih nalogov
+					sql_izbor.prepare("SELECT * FROM potni_nalogi");
+					sql_izbor.exec();
+					while ( sql_izbor.next() ) {
+						QSqlQuery sql_prenos;
+						sql_prenos.prepare("UPDATE potovanja_old SET naziv_ciljnega_podjetja = ?, namen_potovanja = ? WHERE potni_nalog LIKE '" +
+															 sql_izbor.value(sql_izbor.record().indexOf("stevilka_naloga")).toString() + "'");
+						sql_prenos.bindValue(0, sql_izbor.value(sql_izbor.record().indexOf("naziv_ciljnega_podjetja")).toString());
+						sql_prenos.bindValue(1, sql_izbor.value(sql_izbor.record().indexOf("namen_naloga")).toString());
+						sql_prenos.exec();
+						sql_prenos.clear();
+					}
+					sql_izbor.clear();
+
+					// tvorimo novo tabelo
+					sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potovanja ("
+																		"id INTEGER PRIMARY KEY, "
+																		"potni_nalog TEXT, "
+																		"kraj_odhoda TEXT, "
+																		"kraj_prihoda TEXT, "
+																		"cas_odhoda TEXT, "
+																		"cas_prihoda TEXT, "
+																		"kilometri TEXT, "
+																		"naslov_ulica TEXT, "
+																		"naslov_stevilka TEXT, "
+																		"naslov_postna_stevilka TEXT, "
+																		"naslov_posta TEXT, "
+																		"naziv_ciljnega_podjetja TEXT, "
+																		"namen_potovanja TEXT)"
+																		);
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// v novo tabelo prepisemo podatke iz backup tabele
+					sql_izbor.prepare("SELECT * FROM potovanja_old ORDER BY id ASC");
+					sql_izbor.exec();
+					while ( sql_izbor.next() ) {
+						QSqlQuery sql_prenos;
+						sql_prenos.prepare("INSERT INTO potovanja (potni_nalog, kraj_odhoda, kraj_prihoda, cas_odhoda, "
+															 "cas_prihoda, kilometri, naslov_ulica, naslov_stevilka, naslov_postna_stevilka, naslov_posta, "
+															 "naziv_ciljnega_podjetja, namen_potovanja) VALUES "
+															 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						sql_prenos.bindValue(0, sql_izbor.value(sql_izbor.record().indexOf("potni_nalog")).toString());
+						sql_prenos.bindValue(1, sql_izbor.value(sql_izbor.record().indexOf("kraj_odhoda")).toString());
+						sql_prenos.bindValue(2, sql_izbor.value(sql_izbor.record().indexOf("kraj_prihoda")).toString());
+						sql_prenos.bindValue(3, sql_izbor.value(sql_izbor.record().indexOf("cas_odhoda")).toString());
+						sql_prenos.bindValue(4, sql_izbor.value(sql_izbor.record().indexOf("cas_prihoda")).toString());
+						sql_prenos.bindValue(5, sql_izbor.value(sql_izbor.record().indexOf("kilometri")).toString());
+						sql_prenos.bindValue(6, sql_izbor.value(sql_izbor.record().indexOf("naslov_ulica")).toString());
+						sql_prenos.bindValue(7, sql_izbor.value(sql_izbor.record().indexOf("naslov_stevilka")).toString());
+						sql_prenos.bindValue(8, sql_izbor.value(sql_izbor.record().indexOf("naslov_postna_stevilka")).toString());
+						sql_prenos.bindValue(9, sql_izbor.value(sql_izbor.record().indexOf("naslov_posta")).toString());
+						sql_prenos.bindValue(10, sql_izbor.value(sql_izbor.record().indexOf("naziv_ciljnega_podjetja")).toString());
+						sql_prenos.bindValue(11, sql_izbor.value(sql_izbor.record().indexOf("namen_potovanja")).toString());
+						sql_prenos.exec();
+						sql_prenos.clear();
+					}
+					sql_izbor.clear();
+
+					// izbrisemo backup tabelo
+					sql_create_table.prepare("DROP TABLE IF EXISTS potovanja_old");
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// naredimo backup tabelo za potne naloge
+					sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potni_nalogi_old ("
+																	 "id INTEGER PRIMARY KEY, "
+																	 "stevilka_naloga TEXT, "
+																	 "stevilka_dokumenta TEXT, "
+																	 "datum_naloga TEXT, "
+																	 "namen_naloga TEXT, "
+																	 "naziv_ciljnega_podjetja TEXT, "
+																	 "stevilka_projekta TEXT, "
+																	 "opombe TEXT, "
+																	 "priloge TEXT, "
+																	 "cena_prevoza TEXT, "
+																	 "cena_dnevnic TEXT, "
+																	 "ostali_stroski TEXT, "
+																	 "stroski_skupaj TEXT, "
+																	 "skupaj_kilometri TEXT, "
+																	 "kilometrina TEXT, "
+																	 "skupaj_dnevi TEXT, "
+																	 "skupaj_ure TEXT, "
+																	 "priznana_dnevnica TEXT, "
+																	 "cena_dnevnice_6_8 TEXT, "
+																	 "cena_dnevnice_8_12 TEXT, "
+																	 "cena_dnevnice_12_24 TEXT, "
+																	 "dnevnica_6_8 TEXT, "
+																	 "dnevnica_8_12 TEXT, "
+																	 "dnevnica_12_24 TEXT, "
+																	 "zajtrk_8_12 TEXT, "
+																	 "zajtrk_12_24 TEXT, "
+																	 "predlagatelj_podjetje TEXT, "
+																	 "predlagatelj_oseba TEXT, "
+																	 "prejemnik_oseba TEXT, "
+																	 "prevozno_sredstvo TEXT)"
+																	);
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// prenesemo vse potne naloge iz stare tabele v backup tabelo
+					sql_izbor.prepare("SELECT * FROM potni_nalogi ORDER BY id ASC");
+					sql_izbor.exec();
+					while ( sql_izbor.next() ) {
+						QSqlQuery sql_prenos;
+						sql_prenos.prepare("INSERT INTO potni_nalogi_old (stevilka_naloga, datum_naloga, namen_naloga, naziv_ciljnega_podjetja, "
+															 "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
+															 "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
+															 "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje, "
+															 "predlagatelj_oseba, prejemnik_oseba, prevozno_sredstvo, priloge, stevilka_dokumenta) VALUES "
+															 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						sql_prenos.bindValue(0, sql_izbor.value(sql_izbor.record().indexOf("stevilka_naloga")).toString());
+						sql_prenos.bindValue(1, sql_izbor.value(sql_izbor.record().indexOf("datum_naloga")).toString());
+						sql_prenos.bindValue(2, sql_izbor.value(sql_izbor.record().indexOf("namen_naloga")).toString());
+						sql_prenos.bindValue(3, sql_izbor.value(sql_izbor.record().indexOf("naziv_ciljnega_podjetja")).toString());
+						sql_prenos.bindValue(4, sql_izbor.value(sql_izbor.record().indexOf("stevilka_projekta")).toString());
+						sql_prenos.bindValue(5, sql_izbor.value(sql_izbor.record().indexOf("opombe")).toString());
+						sql_prenos.bindValue(6, sql_izbor.value(sql_izbor.record().indexOf("cena_prevoza")).toString());
+						sql_prenos.bindValue(7, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnic")).toString());
+						sql_prenos.bindValue(8, sql_izbor.value(sql_izbor.record().indexOf("ostali_stroski")).toString());
+						sql_prenos.bindValue(9, sql_izbor.value(sql_izbor.record().indexOf("stroski_skupaj")).toString());
+						sql_prenos.bindValue(10, sql_izbor.value(sql_izbor.record().indexOf("skupaj_kilometri")).toString());
+						sql_prenos.bindValue(11, sql_izbor.value(sql_izbor.record().indexOf("kilometrina")).toString());
+						sql_prenos.bindValue(12, sql_izbor.value(sql_izbor.record().indexOf("skupaj_dnevi")).toString());
+						sql_prenos.bindValue(13, sql_izbor.value(sql_izbor.record().indexOf("skupaj_ure")).toString());
+						sql_prenos.bindValue(14, sql_izbor.value(sql_izbor.record().indexOf("priznana_dnevnica")).toString());
+						sql_prenos.bindValue(15, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_6_8")).toString());
+						sql_prenos.bindValue(16, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_8_12")).toString());
+						sql_prenos.bindValue(17, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_12_24")).toString());
+						sql_prenos.bindValue(18, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_6_8")).toString());
+						sql_prenos.bindValue(19, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_8_12")).toString());
+						sql_prenos.bindValue(20, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_12_24")).toString());
+						sql_prenos.bindValue(21, sql_izbor.value(sql_izbor.record().indexOf("zajtrk_8_12")).toString());
+						sql_prenos.bindValue(22, sql_izbor.value(sql_izbor.record().indexOf("zajtrk_12_24")).toString());
+						sql_prenos.bindValue(23, sql_izbor.value(sql_izbor.record().indexOf("predlagatelj_podjetje")).toString());
+						sql_prenos.bindValue(24, sql_izbor.value(sql_izbor.record().indexOf("predlagatelj_oseba")).toString());
+						sql_prenos.bindValue(25, sql_izbor.value(sql_izbor.record().indexOf("prejemnik_oseba")).toString());
+						sql_prenos.bindValue(26, sql_izbor.value(sql_izbor.record().indexOf("prevozno_sredstvo")).toString());
+						sql_prenos.bindValue(27, sql_izbor.value(sql_izbor.record().indexOf("priloge")).toString());
+						sql_prenos.bindValue(28, sql_izbor.value(sql_izbor.record().indexOf("stevilka_dokumenta")).toString());
+						sql_prenos.exec();
+						sql_prenos.clear();
+					}
+					sql_izbor.clear();
+
+					// izbrisemo staro tabelo potnih nalogov
+					sql_create_table.prepare("DROP TABLE IF EXISTS potni_nalogi");
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					// naredimo novo tabelo za potne naloge
+					sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potni_nalogi ("
+																	 "id INTEGER PRIMARY KEY, "
+																	 "stevilka_naloga TEXT, "
+																	 "stevilka_dokumenta TEXT, "
+																	 "datum_naloga TEXT, "
+																	 "stevilka_projekta TEXT, "
+																	 "opombe TEXT, "
+																	 "priloge TEXT, "
+																	 "cena_prevoza TEXT, "
+																	 "cena_dnevnic TEXT, "
+																	 "ostali_stroski TEXT, "
+																	 "stroski_skupaj TEXT, "
+																	 "skupaj_kilometri TEXT, "
+																	 "kilometrina TEXT, "
+																	 "skupaj_dnevi TEXT, "
+																	 "skupaj_ure TEXT, "
+																	 "priznana_dnevnica TEXT, "
+																	 "cena_dnevnice_6_8 TEXT, "
+																	 "cena_dnevnice_8_12 TEXT, "
+																	 "cena_dnevnice_12_24 TEXT, "
+																	 "dnevnica_6_8 TEXT, "
+																	 "dnevnica_8_12 TEXT, "
+																	 "dnevnica_12_24 TEXT, "
+																	 "zajtrk_8_12 TEXT, "
+																	 "zajtrk_12_24 TEXT, "
+																	 "predlagatelj_podjetje TEXT, "
+																	 "predlagatelj_oseba TEXT, "
+																	 "prejemnik_oseba TEXT, "
+																	 "prevozno_sredstvo TEXT)"
+																	);
+					sql_create_table.exec();
+
+					// prenesemo vse potne naloge iz backup tabele v novo tabelo
+					sql_izbor.prepare("SELECT * FROM potni_nalogi_old ORDER BY id ASC");
+					sql_izbor.exec();
+					while ( sql_izbor.next() ) {
+						QSqlQuery sql_prenos;
+						sql_prenos.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, "
+															 "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
+															 "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
+															 "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje, "
+															 "predlagatelj_oseba, prejemnik_oseba, prevozno_sredstvo, priloge, stevilka_dokumenta) VALUES "
+															 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						sql_prenos.bindValue(0, sql_izbor.value(sql_izbor.record().indexOf("stevilka_naloga")).toString());
+						sql_prenos.bindValue(1, sql_izbor.value(sql_izbor.record().indexOf("datum_naloga")).toString());
+						sql_prenos.bindValue(2, sql_izbor.value(sql_izbor.record().indexOf("stevilka_projekta")).toString());
+						sql_prenos.bindValue(3, sql_izbor.value(sql_izbor.record().indexOf("opombe")).toString());
+						sql_prenos.bindValue(4, sql_izbor.value(sql_izbor.record().indexOf("cena_prevoza")).toString());
+						sql_prenos.bindValue(5, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnic")).toString());
+						sql_prenos.bindValue(6, sql_izbor.value(sql_izbor.record().indexOf("ostali_stroski")).toString());
+						sql_prenos.bindValue(7, sql_izbor.value(sql_izbor.record().indexOf("stroski_skupaj")).toString());
+						sql_prenos.bindValue(8, sql_izbor.value(sql_izbor.record().indexOf("skupaj_kilometri")).toString());
+						sql_prenos.bindValue(9, sql_izbor.value(sql_izbor.record().indexOf("kilometrina")).toString());
+						sql_prenos.bindValue(10, sql_izbor.value(sql_izbor.record().indexOf("skupaj_dnevi")).toString());
+						sql_prenos.bindValue(11, sql_izbor.value(sql_izbor.record().indexOf("skupaj_ure")).toString());
+						sql_prenos.bindValue(12, sql_izbor.value(sql_izbor.record().indexOf("priznana_dnevnica")).toString());
+						sql_prenos.bindValue(13, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_6_8")).toString());
+						sql_prenos.bindValue(14, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_8_12")).toString());
+						sql_prenos.bindValue(15, sql_izbor.value(sql_izbor.record().indexOf("cena_dnevnice_12_24")).toString());
+						sql_prenos.bindValue(16, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_6_8")).toString());
+						sql_prenos.bindValue(17, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_8_12")).toString());
+						sql_prenos.bindValue(18, sql_izbor.value(sql_izbor.record().indexOf("dnevnica_12_24")).toString());
+						sql_prenos.bindValue(19, sql_izbor.value(sql_izbor.record().indexOf("zajtrk_8_12")).toString());
+						sql_prenos.bindValue(20, sql_izbor.value(sql_izbor.record().indexOf("zajtrk_12_24")).toString());
+						sql_prenos.bindValue(21, sql_izbor.value(sql_izbor.record().indexOf("predlagatelj_podjetje")).toString());
+						sql_prenos.bindValue(22, sql_izbor.value(sql_izbor.record().indexOf("predlagatelj_oseba")).toString());
+						sql_prenos.bindValue(23, sql_izbor.value(sql_izbor.record().indexOf("prejemnik_oseba")).toString());
+						sql_prenos.bindValue(24, sql_izbor.value(sql_izbor.record().indexOf("prevozno_sredstvo")).toString());
+						sql_prenos.bindValue(25, sql_izbor.value(sql_izbor.record().indexOf("priloge")).toString());
+						sql_prenos.bindValue(26, sql_izbor.value(sql_izbor.record().indexOf("stevilka_dokumenta")).toString());
+						sql_prenos.exec();
+						sql_prenos.clear();
+					}
+					sql_izbor.clear();
+
+					// izbrisemo backup tabelo potnih nalogov
+					sql_create_table.prepare("DROP TABLE IF EXISTS potni_nalogi_old");
+					sql_create_table.exec();
+					sql_create_table.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.1");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.1");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
+			}
+		}
 
 	}
 	base.close();

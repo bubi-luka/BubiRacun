@@ -29,9 +29,8 @@ potninalogi::potninalogi(QWidget *parent) :
 		// pocisti polja privzetih vrednosti
 		ui->txt_id->setText("");
 		ui->txt_stevilka_naloga->setText("");
+		ui->txt_stevilka_dokumenta->setText("");
 		ui->txt_datum_naloga->setDate(QDate::currentDate());
-		ui->txt_namen->clear();
-		ui->txt_naziv_ciljnega_podjetja->setText("");
 		ui->txt_stevilka_projekta->clear();
 		ui->txt_opombe->setPlainText("");
 		ui->txt_cena_prevoza->setText("");
@@ -178,21 +177,13 @@ potninalogi::potninalogi(QWidget *parent) :
 			}
 
 			// dodaj prazno vrstico spustnim seznamom
-			ui->txt_namen->addItem("");
-		//	ui->txt_stevilka_projekta->addItem("Prosim, izberite prejemnika");
+			//	ui->txt_stevilka_projekta->addItem("Prosim, izberite prejemnika");
 			ui->txt_predlagatelj_izbira_oseba->addItem("");
 			ui->txt_prejemnik_izbira_osebe->addItem("");
 			ui->txt_prevoz->addItem("");
 
 			// napolni spustne sezname
 			QSqlQuery sql_fill_combo;
-			sql_fill_combo.prepare("SELECT * FROM sif_namen_potnega_naloga");
-			sql_fill_combo.exec();
-			while (sql_fill_combo.next()) {
-				ui->txt_namen->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString()) + ") " +
-															 prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("namen")).toString()));
-			}
-			sql_fill_combo.clear();
 
 			// napolni prelagatelja - podjetje
 			sql_fill_combo.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
@@ -640,83 +631,78 @@ void potninalogi::on_btn_sprejmi_clicked() {
 			QSqlQuery sql_vnesi_uporabnika;
 			if (ui->btn_sprejmi->text() == "Vnesi potni nalog") { // vnesi novega uporabnika
 
-			sql_vnesi_uporabnika.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, namen_naloga, naziv_ciljnega_podjetja, "
+			sql_vnesi_uporabnika.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, "
 																	 "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
 																	 "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
 																	 "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje, "
-																	 "predlagatelj_oseba, prejemnik_oseba, prevozno_sredstvo, priloge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	 "predlagatelj_oseba, prejemnik_oseba, prevozno_sredstvo, priloge, stevilka_dokumenta) VALUES "
+																	 "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojeci vnos
-				sql_vnesi_uporabnika.prepare("UPDATE potni_nalogi SET stevilka_naloga = ?, datum_naloga = ?, namen_naloga = ?, "
-																		 "naziv_ciljnega_podjetja = ?, stevilka_projekta = ?, opombe = ?, cena_prevoza = ?, cena_dnevnic = ?, "
+				sql_vnesi_uporabnika.prepare("UPDATE potni_nalogi SET stevilka_naloga = ?, datum_naloga = ?, stevilka_projekta = ?, opombe = ?, cena_prevoza = ?, cena_dnevnic = ?, "
 																		 "ostali_stroski = ?, stroski_skupaj = ?, skupaj_kilometri = ?, kilometrina = ?, skupaj_dnevi = ?, "
 																		 "skupaj_ure = ?, priznana_dnevnica = ?, cena_dnevnice_6_8 = ?, cena_dnevnice_8_12 = ?, cena_dnevnice_12_24 = ?, "
 																		 "dnevnica_6_8 = ?, dnevnica_8_12 = ?, dnevnica_12_24 = ?, zajtrk_8_12 = ?, zajtrk_12_24 = ?, predlagatelj_podjetje = ?, "
-																		 "predlagatelj_oseba = ?, prejemnik_oseba = ?, prevozno_sredstvo = ?, priloge = ? WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+																		 "predlagatelj_oseba = ?, prejemnik_oseba = ?, prevozno_sredstvo = ?, priloge = ?, stevilka_dokumenta = ? WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
 			}
 			sql_vnesi_uporabnika.bindValue(0, pretvori(ui->txt_stevilka_naloga->text()));
 			sql_vnesi_uporabnika.bindValue(1, pretvori(ui->txt_datum_naloga->text()));
-			QString indeks;
-			indeks = prevedi(ui->txt_namen->currentText());
+			QString indeks = prevedi(ui->txt_stevilka_projekta->currentText());
 			indeks = indeks.left(indeks.indexOf(") ", 0));
 			indeks = pretvori(indeks);
 			sql_vnesi_uporabnika.bindValue(2, indeks);
-			sql_vnesi_uporabnika.bindValue(3, pretvori(ui->txt_naziv_ciljnega_podjetja->text()));
-			indeks = prevedi(ui->txt_stevilka_projekta->currentText());
-			indeks = indeks.left(indeks.indexOf(") ", 0));
-			indeks = pretvori(indeks);
-			sql_vnesi_uporabnika.bindValue(4, indeks);
-			sql_vnesi_uporabnika.bindValue(5, pretvori(ui->txt_opombe->toPlainText()));
-			sql_vnesi_uporabnika.bindValue(6, pretvori(pretvori_v_double(ui->txt_cena_prevoza->text())));
-			sql_vnesi_uporabnika.bindValue(7, pretvori(pretvori_v_double(ui->txt_cena_dnevnic->text())));
-			sql_vnesi_uporabnika.bindValue(8, pretvori(pretvori_v_double(ui->txt_ostali_stroski->text())));
-			sql_vnesi_uporabnika.bindValue(9, pretvori(pretvori_v_double(ui->txt_stroski_skupaj->text())));
-			sql_vnesi_uporabnika.bindValue(10, pretvori(pretvori_v_double(ui->txt_skupaj_kilometri->text())));
-			sql_vnesi_uporabnika.bindValue(11, pretvori(pretvori_v_double(ui->txt_kilometrina->text())));
-			sql_vnesi_uporabnika.bindValue(12, pretvori(ui->txt_skupaj_dnevi->text()));
-			sql_vnesi_uporabnika.bindValue(13, pretvori(ui->txt_skupaj_ure->text()));
+			sql_vnesi_uporabnika.bindValue(3, pretvori(ui->txt_opombe->toPlainText()));
+			sql_vnesi_uporabnika.bindValue(4, pretvori(pretvori_v_double(ui->txt_cena_prevoza->text())));
+			sql_vnesi_uporabnika.bindValue(5, pretvori(pretvori_v_double(ui->txt_cena_dnevnic->text())));
+			sql_vnesi_uporabnika.bindValue(6, pretvori(pretvori_v_double(ui->txt_ostali_stroski->text())));
+			sql_vnesi_uporabnika.bindValue(7, pretvori(pretvori_v_double(ui->txt_stroski_skupaj->text())));
+			sql_vnesi_uporabnika.bindValue(8, pretvori(pretvori_v_double(ui->txt_skupaj_kilometri->text())));
+			sql_vnesi_uporabnika.bindValue(9, pretvori(pretvori_v_double(ui->txt_kilometrina->text())));
+			sql_vnesi_uporabnika.bindValue(10, pretvori(ui->txt_skupaj_dnevi->text()));
+			sql_vnesi_uporabnika.bindValue(11, pretvori(ui->txt_skupaj_ure->text()));
 			if ( ui->txt_priznana_dnevnica->isChecked() ) {
-				sql_vnesi_uporabnika.bindValue(14, pretvori("1"));
+				sql_vnesi_uporabnika.bindValue(12, pretvori("1"));
 			}
 			else {
-				sql_vnesi_uporabnika.bindValue(14, pretvori("0"));
+				sql_vnesi_uporabnika.bindValue(12, pretvori("0"));
 			}
-			sql_vnesi_uporabnika.bindValue(15, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_6_8->text())));
-			sql_vnesi_uporabnika.bindValue(16, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_8_12->text())));
-			sql_vnesi_uporabnika.bindValue(17, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_12_24->text())));
-			sql_vnesi_uporabnika.bindValue(18, pretvori(pretvori_v_double(ui->txt_dnevnica_6_8->text())));
-			sql_vnesi_uporabnika.bindValue(19, pretvori(pretvori_v_double(ui->txt_dnevnica_8_12->text())));
-			sql_vnesi_uporabnika.bindValue(20, pretvori(pretvori_v_double(ui->txt_dnevnica_12_24->text())));
+			sql_vnesi_uporabnika.bindValue(13, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_6_8->text())));
+			sql_vnesi_uporabnika.bindValue(14, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_8_12->text())));
+			sql_vnesi_uporabnika.bindValue(15, pretvori(pretvori_v_double(ui->txt_cena_dnevnice_12_24->text())));
+			sql_vnesi_uporabnika.bindValue(16, pretvori(pretvori_v_double(ui->txt_dnevnica_6_8->text())));
+			sql_vnesi_uporabnika.bindValue(17, pretvori(pretvori_v_double(ui->txt_dnevnica_8_12->text())));
+			sql_vnesi_uporabnika.bindValue(18, pretvori(pretvori_v_double(ui->txt_dnevnica_12_24->text())));
 			if ( ui->txt_zajtrk_8_12->isChecked() ) {
-				sql_vnesi_uporabnika.bindValue(21, pretvori("1"));
+				sql_vnesi_uporabnika.bindValue(19, pretvori("1"));
 			}
 			else {
-				sql_vnesi_uporabnika.bindValue(21, pretvori("0"));
+				sql_vnesi_uporabnika.bindValue(19, pretvori("0"));
 			}
 			if ( ui->txt_zajtrk_12_24->isChecked() ) {
-				sql_vnesi_uporabnika.bindValue(22, pretvori("1"));
+				sql_vnesi_uporabnika.bindValue(20, pretvori("1"));
 			}
 			else {
-				sql_vnesi_uporabnika.bindValue(22, pretvori("0"));
+				sql_vnesi_uporabnika.bindValue(20, pretvori("0"));
 			}
 
-			sql_vnesi_uporabnika.bindValue(23, vApp->firm());
+			sql_vnesi_uporabnika.bindValue(21, vApp->firm());
 
 			indeks = prevedi(ui->txt_predlagatelj_izbira_oseba->currentText());
 			indeks = indeks.left(indeks.indexOf(") ", 0));
 			indeks = pretvori(indeks);
-			sql_vnesi_uporabnika.bindValue(24, indeks);
+			sql_vnesi_uporabnika.bindValue(22, indeks);
 
 			indeks = prevedi(ui->txt_prejemnik_izbira_osebe->currentText());
 			indeks = indeks.left(indeks.indexOf(") ", 0));
 			indeks = pretvori(indeks);
-			sql_vnesi_uporabnika.bindValue(25, indeks);
+			sql_vnesi_uporabnika.bindValue(23, indeks);
 
 			indeks = prevedi(ui->txt_prevoz->currentText());
 			indeks = indeks.left(indeks.indexOf(") ", 0));
 			indeks = pretvori(indeks);
-			sql_vnesi_uporabnika.bindValue(26, indeks);
-			sql_vnesi_uporabnika.bindValue(27, pretvori(ui->txt_priloge->toPlainText()));
+			sql_vnesi_uporabnika.bindValue(24, indeks);
+			sql_vnesi_uporabnika.bindValue(25, pretvori(ui->txt_priloge->toPlainText()));
+			sql_vnesi_uporabnika.bindValue(26, pretvori(ui->txt_stevilka_dokumenta->text()));
 			sql_vnesi_uporabnika.exec();
 
 			// send signal to reload widget
@@ -782,8 +768,8 @@ void potninalogi::prejem(QString besedilo) {
 			if (sql_napolni.next()) {
 				ui->txt_id->setText(sql_napolni.value(sql_napolni.record().indexOf("id")).toString());
 				ui->txt_stevilka_naloga->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString()));
+				ui->txt_stevilka_dokumenta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_dokumenta")).toString()));
 				ui->txt_datum_naloga->setDate(QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_naloga")).toString()), "dd'.'MM'.'yyyy"));
-				ui->txt_naziv_ciljnega_podjetja->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv_ciljnega_podjetja")).toString()));
 				ui->txt_opombe->setPlainText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opombe")).toString()));
 				ui->txt_cena_prevoza->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena_prevoza")).toString())));
 				ui->txt_cena_dnevnic->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena_dnevnic")).toString())));
@@ -829,13 +815,6 @@ void potninalogi::prejem(QString besedilo) {
 				}
 
 				QSqlQuery sql_combo;
-				sql_combo.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("namen_naloga")).toString() + "'");
-				sql_combo.exec();
-				if ( sql_combo.next() ) {
-					ui->txt_namen->setCurrentIndex(ui->txt_namen->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") " +
-																																 prevedi(sql_combo.value(sql_combo.record().indexOf("namen")).toString())));
-				}
-				sql_combo.clear();
 
 				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba")).toString() + "'");
 				sql_combo.exec();
@@ -1159,6 +1138,7 @@ void potninalogi::print(QString id) {
 		**/
 	// podatki o potnem nalogu
 	QString stevilka_naloga = "";
+	QString stevilka_dokumenta = "";
 	QString datum_naloga = "";
 	QString namen_potnega_naloga = "";
 	QString prevozno_sredstvo = "";
@@ -1251,6 +1231,7 @@ void potninalogi::print(QString id) {
 			sql_potni_nalog.exec();
 			if ( sql_potni_nalog.next() ) {
 				stevilka_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString());
+				stevilka_dokumenta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_dokumenta")).toString());
 				datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
 				namen_potnega_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen_naloga")).toString());
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
@@ -1615,7 +1596,7 @@ void potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice / 2 + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (Odrejam, da odpotuje:)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1637,7 +1618,7 @@ void potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (na delovnem mestu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1659,7 +1640,7 @@ void potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (stanujoc)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1681,7 +1662,7 @@ void potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (dne: ob: uri)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1730,12 +1711,21 @@ void potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (po nalogu/dokumentu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = 0;
+		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// narisemo besedilo
+		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+		// nastavimo besedilo
+		besedilo = stevilka_dokumenta;
+		// nastavimo tip pisave
+		painter.setFont(vstavljeno_besedilo);
+		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// narisemo besedilo
 		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);

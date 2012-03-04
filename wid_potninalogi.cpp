@@ -775,6 +775,7 @@ void wid_potninalogi::print(QString id) {
 		**/
 	// podatki o potnem nalogu
 	QString stevilka_naloga = "";
+	QString stevilka_dokumenta = "";
 	QString datum_naloga = "";
 	QString namen_potnega_naloga = "";
 	QString prevozno_sredstvo = "";
@@ -867,6 +868,7 @@ void wid_potninalogi::print(QString id) {
 			sql_potni_nalog.exec();
 			if ( sql_potni_nalog.next() ) {
 				stevilka_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString());
+				stevilka_dokumenta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_dokumenta")).toString());
 				datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
 				namen_potnega_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen_naloga")).toString());
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
@@ -1232,7 +1234,7 @@ void wid_potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice / 2 + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (Odrejam, da odpotuje:)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1254,7 +1256,7 @@ void wid_potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (na delovnem mestu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1276,7 +1278,7 @@ void wid_potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (stanujoc)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1298,7 +1300,7 @@ void wid_potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (dne: ob: uri)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -1347,12 +1349,21 @@ void wid_potninalogi::print(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (po nalogu/dokumentu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = 0;
+		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// narisemo besedilo
+		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+		// nastavimo besedilo
+		besedilo = stevilka_dokumenta;
+		// nastavimo tip pisave
+		painter.setFont(vstavljeno_besedilo);
+		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// narisemo besedilo
 		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
@@ -2567,6 +2578,7 @@ void wid_potninalogi::printpdf(QString id) {
 		**/
 	// podatki o potnem nalogu
 	QString stevilka_naloga = "";
+	QString stevilka_dokumenta = "";
 	QString datum_naloga = "";
 	QString namen_potnega_naloga = "";
 	QString prevozno_sredstvo = "";
@@ -2660,6 +2672,7 @@ void wid_potninalogi::printpdf(QString id) {
 			sql_potni_nalog.exec();
 			if ( sql_potni_nalog.next() ) {
 				stevilka_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString());
+				stevilka_dokumenta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_dokumenta")).toString());
 				datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
 				namen_potnega_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen_naloga")).toString());
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
@@ -3045,7 +3058,7 @@ void wid_potninalogi::printpdf(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice / 2 + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (Odrejam, da odpotuje:)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -3067,7 +3080,7 @@ void wid_potninalogi::printpdf(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (na delovnem mestu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -3089,7 +3102,7 @@ void wid_potninalogi::printpdf(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (stanujoc)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -3111,7 +3124,7 @@ void wid_potninalogi::printpdf(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (dne: ob: uri)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
@@ -3160,12 +3173,21 @@ void wid_potninalogi::printpdf(QString id) {
 		// nastavimo novo pozicijo besedila
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-		// nastavimo besedilo
+		// nastavimo besedilo (po nalogu/dokumentu)
 		besedilo = potni_nalog.readLine() + " ";
 		// nastavimo tip pisave
 		painter.setFont(stalno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		sirina_besedila = 0;
+		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// narisemo besedilo
+		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+		// nastavimo besedilo
+		besedilo = stevilka_dokumenta;
+		// nastavimo tip pisave
+		painter.setFont(vstavljeno_besedilo);
+		// nastavimo polozaj na listu, kjer zapisemo besedilo
 		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// narisemo besedilo
 		painter.drawText(sirina_besedila, pozicija, printer.width(), visina_vrstice, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
