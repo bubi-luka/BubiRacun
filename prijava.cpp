@@ -893,7 +893,8 @@ void prijava::tabela_opravila() {
 														 "rocni_vnos_ur TEXT, "
 														 "znesek_popustov TEXT, "
 														 "znesek_ddv TEXT, "
-														 "znesek_koncni TEXT)"
+														 "znesek_koncni TEXT, "
+														 "casovnice TEXT)"
 										);
 		sql_create_table.exec();
 	}
@@ -2735,6 +2736,25 @@ void prijava::posodobi_bazo() {
 
 					posodobi_bazo();
 
+				}
+				if ( stevilka_baze_min == 1 ) {
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'casovnice' TEXT");
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.2");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.2");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
 				}
 			}
 		}

@@ -239,7 +239,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>10</width>
+                  <width>15</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -2344,6 +2344,12 @@
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
         <widget class="QTableWidget" name="tbl_casovnice">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>tbl_casovnice</string>

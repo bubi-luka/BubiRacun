@@ -1447,6 +1447,7 @@ QString projekti::pretvori_iz_double(QString besedilo) {
 	besedilo.replace(".",",");
 
 	return besedilo;
+
 }
 
 void projekti::on_btn_vnesi_zapis_clicked() {
