@@ -28,6 +28,7 @@ private slots:
 	void on_txt_sklop_currentIndexChanged();
 	void on_txt_skupina_currentIndexChanged();
 	void on_txt_storitev_currentIndexChanged();
+	void on_txt_rocni_vnos_storitve_textChanged();
 
 	void on_txt_urna_postavka_brez_ddv_textChanged();
 	void on_txt_ddv_currentIndexChanged();
@@ -48,6 +49,7 @@ private slots:
 	void on_txt_predracun_textChanged();
 	void on_txt_casovnice_textChanged();
 	void on_txt_rocni_vnos_textChanged();
+	void on_txt_storitev_na_racunu_textChanged();
 
 	void on_cb_popust_fb1_toggled(bool stanje);
 	void on_cb_popust_fb2_toggled(bool stanje);
@@ -83,6 +85,7 @@ private slots:
 
 	void izracunaj_urno_postavko_z_ddv();
 	void napolni_polja();
+	void napolni_casovnice();
 	void izracunaj_racun();
 
 	QString pretvori_v_double(QString besedilo);

@@ -66,12 +66,8 @@ QString wid_casovnice::pretvori_v_double(QString besedilo) {
 	if ( besedilo.left(1) == "." ) { // ce besedilo nima vodilne nicle, pa je pricakovana, jo dodamo
 		besedilo.prepend("0");
 	}
-	if ( besedilo.right(1) == "." ) { // ce ima besedilo decimalno locilo, za njim pa nic, dodamo 0
-		besedilo.append("0");
-	}
-	if ( !besedilo.contains(".") ) { // ce je celo stevilo dodamo decimalno locilo in vrednost 0
-		besedilo.append(".0");
-	}
+
+	besedilo = QString::number(besedilo.toDouble(), 'f', 2);
 
 	return besedilo;
 
@@ -79,7 +75,6 @@ QString wid_casovnice::pretvori_v_double(QString besedilo) {
 
 QString wid_casovnice::pretvori_iz_double(QString besedilo) {
 
-	besedilo.append(" %");
 	besedilo.replace(".",",");
 
 	return besedilo;
@@ -265,7 +260,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 
 					// tenutno casovnico (seznam) razbijemo na datum in vrednost
 						QString seznam_datum = seznam.left(seznam.indexOf(","));
-						QString seznam_vrednost = seznam.right(seznam.length() - seznam.indexOf(",") - 1);
+						QString seznam_vrednost = pretvori_v_double(seznam.right(seznam.length() - seznam.indexOf(",") - 1));
 
 					// ce datum ze obstaja, ga izbrisemo - popravljeno vrednost smo zapisali na zacetku
 						if ( seznam_datum != datum) {
@@ -547,7 +542,7 @@ void wid_casovnice::napolni() {
 
 							// del seznama razbijemo na datum in vrednost
 							QString datum = del_seznama.left(del_seznama.indexOf(","));
-							QString vrednost = del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1);
+							QString vrednost = pretvori_iz_double(del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1));
 
 							// datum razbijemo na leto, mesec in dan
 							QString leto = datum.left(4);
