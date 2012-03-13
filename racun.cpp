@@ -35,8 +35,8 @@ racun::racun(QWidget *parent) :
 		ui->txt_stranka->clear();
 		ui->txt_projekt_id->setText("");
 		ui->txt_projekt->clear();
-		ui->txt_pricetek->setDate(QDate::currentDate());
-		ui->txt_konec->setDate(QDate::currentDate());
+		ui->txt_datum_pricetka->setDate(QDate::currentDate());
+		ui->txt_datum_zakljucka->setDate(QDate::currentDate());
 
 		ui->txt_avans->setText("");
 		ui->txt_se_placati->setText("");
@@ -94,10 +94,15 @@ racun::racun(QWidget *parent) :
 		ui->btn_predplacilni_racun->setEnabled(false);
 		ui->btn_racun->setEnabled(false);
 
+		ui->txt_vse_opombe->setHidden(true);
+		ui->txt_vnesene_opombe->setHidden(true);
+
 		// skrij polja
 		ui->txt_projekt_id->setVisible(false);
 		ui->txt_stranka_id->setVisible(false);
 		ui->txt_id_zapisa_2->setVisible(false);
+		ui->txt_datum_placila_avansa->setHidden(true);
+		ui->lbl_avans_placan->setHidden(true);
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -180,6 +185,7 @@ racun::racun(QWidget *parent) :
 		base.close();
 
 		// nastavi privzete vrednosti
+		ui->rb_predplacilo->setChecked(true);
 		ui->rb_predracun->setChecked(true);
 		ui->txt_status_placila->setCurrentIndex(1);
 		ui->txt_status_racunovodstva->setCurrentIndex(1);
@@ -249,8 +255,8 @@ void racun::on_btn_racun_clicked() {
 		sql_vnesi_projekt.bindValue(3, pretvori(ui->txt_stranka_id->text()));
 		sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_projekt_id->text()));
 		sql_vnesi_projekt.bindValue(5, pretvori(vApp->id()));
-		sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_pricetek->text()));
-		sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_konec->text()));
+		sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_datum_pricetka->text()));
+		sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_datum_zakljucka->text()));
 		sql_vnesi_projekt.bindValue(8, pretvori(""));
 		sql_vnesi_projekt.bindValue(9, pretvori(""));
 		sql_vnesi_projekt.bindValue(10, pretvori(""));
@@ -370,8 +376,8 @@ void racun::on_btn_predplacilni_racun_clicked() {
 		sql_vnesi_projekt.bindValue(3, pretvori(ui->txt_stranka_id->text()));
 		sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_projekt_id->text()));
 		sql_vnesi_projekt.bindValue(5, pretvori(vApp->id()));
-		sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_pricetek->text()));
-		sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_konec->text()));
+		sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_datum_pricetka->text()));
+		sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_datum_zakljucka->text()));
 
 		QDate datum = QDate::fromString(ui->txt_datum_placila_avansa->text(), "dd.MM.yyyy");
 		QString mesec = datum.toString("MM");
@@ -657,8 +663,8 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(3, pretvori(ui->txt_stranka_id->text()));
 			sql_vnesi_projekt.bindValue(4, pretvori(ui->txt_projekt_id->text()));
 			sql_vnesi_projekt.bindValue(5, pretvori(vApp->id()));
-			sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_pricetek->text()));
-			sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_konec->text()));
+			sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_datum_pricetka->text()));
+			sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_datum_zakljucka->text()));
 			sql_vnesi_projekt.bindValue(8, pretvori(ui->txt_datum_izdaje_racuna->text()));
 			sql_vnesi_projekt.bindValue(9, pretvori(ui->txt_rok_placila->text()));
 			sql_vnesi_projekt.bindValue(10, pretvori(ui->txt_status_placila->currentText()));
@@ -972,9 +978,9 @@ void racun::prejem(QString besedilo) {
 				}
 
 				QDate datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_pricetka")).toString()), "dd'.'MM'.'yyyy");
-				ui->txt_pricetek->setDate(datum);
+				ui->txt_datum_pricetka->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_konca")).toString()), "dd'.'MM'.'yyyy");
-				ui->txt_konec->setDate(datum);
+				ui->txt_datum_zakljucka->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_datum_izdaje_racuna->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila")).toString()), "dd'.'MM'.'yyyy");
@@ -1059,8 +1065,8 @@ void racun::prejem(QString besedilo) {
 				ui->txt_status_predracuna->setEnabled(false);
 				ui->txt_stranka->setEnabled(false);
 				ui->txt_projekt->setEnabled(false);
-				ui->txt_pricetek->setEnabled(false);
-				ui->txt_konec->setEnabled(false);
+				ui->txt_datum_pricetka->setEnabled(false);
+				ui->txt_datum_zakljucka->setEnabled(false);
 
 				ui->txt_sklic->setEnabled(false);
 				ui->txt_datum_izdaje_racuna->setEnabled(false);
@@ -1093,8 +1099,8 @@ void racun::prejem(QString besedilo) {
 					ui->txt_status_predracuna->setEnabled(false);
 					ui->txt_stranka->setEnabled(false);
 					ui->txt_projekt->setEnabled(false);
-					ui->txt_pricetek->setEnabled(false);
-					ui->txt_konec->setEnabled(false);
+					ui->txt_datum_pricetka->setEnabled(false);
+					ui->txt_datum_zakljucka->setEnabled(false);
 
 					ui->txt_sklic->setEnabled(false);
 					ui->txt_datum_izdaje_racuna->setEnabled(false);
@@ -1375,17 +1381,28 @@ void racun::on_rb_predracun_toggled() {
 
 	if ( ui->rb_predracun->isChecked() ) {
 		ui->txt_status_predracuna->setHidden(false);
-		ui->label_10->setHidden(false);
+		ui->lbl_status_predracuna->setHidden(false);
 		ui->txt_status_placila->setHidden(true);
-		ui->label_6->setHidden(true);
+		ui->lbl_status_placila->setHidden(true);
 		ui->txt_status_racunovodstva->setHidden(false);
-		ui->label_7->setHidden(false);
+		ui->lbl_status_racunovodstva->setHidden(false);
 
 		ui->txt_odstotek_avansa->setEnabled(true);
+		ui->txt_datum_pricetka->setHidden(true);
+		ui->lbl_datum_pricetka->setHidden(true);
 
 		ui->btn_racun->setVisible(true);
 		ui->btn_predplacilni_racun->setVisible(true);
 
+		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_stara_stevilka_racuna->setText(ui->lbl_stara_stevilka_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_datum_izdaje_racuna->setText(ui->lbl_datum_izdaje_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_datum_konca->setText("Predviden rok izvedbe");
+		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
+		ui->lbl_avans_placan->setText("Rok placila avansa");
 	}
 
 }
@@ -1394,17 +1411,28 @@ void racun::on_rb_predplacilo_toggled() {
 
 	if ( ui->rb_predplacilo->isChecked() ) {
 		ui->txt_status_predracuna->setHidden(true);
-		ui->label_10->setHidden(true);
+		ui->lbl_status_predracuna->setHidden(true);
 		ui->txt_status_placila->setHidden(false);
-		ui->label_6->setHidden(false);
+		ui->lbl_status_placila->setHidden(false);
 		ui->txt_status_racunovodstva->setHidden(false);
-		ui->label_7->setHidden(false);
+		ui->lbl_status_racunovodstva->setHidden(false);
 
 		ui->txt_odstotek_avansa->setEnabled(false);
+		ui->txt_datum_pricetka->setHidden(true);
+		ui->lbl_datum_pricetka->setHidden(true);
 
 		ui->btn_racun->setVisible(false);
 		ui->btn_predplacilni_racun->setVisible(false);
 
+		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_stara_stevilka_racuna->setText(ui->lbl_stara_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_datum_izdaje_racuna->setText(ui->lbl_datum_izdaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_datum_konca->setText("Predviden rok izvedbe");
+		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
+		ui->lbl_avans_placan->setText("Datum placila avansa");
 	}
 
 }
@@ -1413,17 +1441,28 @@ void racun::on_rb_racun_toggled() {
 
 	if ( ui->rb_racun->isChecked() ) {
 		ui->txt_status_predracuna->setHidden(true);
-		ui->label_10->setHidden(true);
+		ui->lbl_status_predracuna->setHidden(true);
 		ui->txt_status_placila->setHidden(false);
-		ui->label_6->setHidden(false);
+		ui->lbl_status_placila->setHidden(false);
 		ui->txt_status_racunovodstva->setHidden(false);
-		ui->label_7->setHidden(false);
+		ui->lbl_status_racunovodstva->setHidden(false);
 
 		ui->txt_odstotek_avansa->setEnabled(false);
+		ui->txt_datum_pricetka->setHidden(false);
+		ui->lbl_datum_pricetka->setHidden(false);
 
 		ui->btn_racun->setVisible(false);
 		ui->btn_predplacilni_racun->setVisible(false);
 
+		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_stara_stevilka_racuna->setText(ui->lbl_stara_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_datum_izdaje_racuna->setText(ui->lbl_datum_izdaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_datum_konca->setText("Datum zakljucka");
+		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+		ui->lbl_avans_placan->setText("Datum placila avansa");
 	}
 
 }
@@ -1434,6 +1473,15 @@ void racun::on_txt_odstotek_avansa_editingFinished() {
 
 	ui->txt_avans->setText(pretvori_iz_double(QString::number(pretvori_v_double(ui->txt_znesek->text()).toDouble() *
 																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
+
+	if ( ui->txt_odstotek_avansa->text() == "0,0 %" ) {
+		ui->txt_datum_placila_avansa->setHidden(true);
+		ui->lbl_avans_placan->setHidden(true);
+	}
+	else {
+		ui->txt_datum_placila_avansa->setHidden(false);
+		ui->lbl_avans_placan->setHidden(false);
+	}
 
 	izracunaj();
 
@@ -3430,6 +3478,8 @@ void racun::napolni_vse_opombe() {
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(1, naslov1);
 
+		ui->tbl_vse_opombe->setColumnWidth(0,35);
+
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
 			preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
@@ -3514,6 +3564,8 @@ void racun::napolni_vnesene_opombe() {
 
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(1, naslov1);
+
+		ui->tbl_vnesene_opombe->setColumnWidth(0,35);
 
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
