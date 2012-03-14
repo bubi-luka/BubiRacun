@@ -1198,26 +1198,54 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tab_potni_stroski</tabstop>
   <tabstop>txt_id</tabstop>
   <tabstop>txt_stevilka_naloga</tabstop>
+  <tabstop>txt_stevilka_dokumenta</tabstop>
   <tabstop>txt_datum_naloga</tabstop>
+  <tabstop>txt_stevilka_projekta</tabstop>
+  <tabstop>txt_priloge</tabstop>
+  <tabstop>txt_opombe</tabstop>
+  <tabstop>txt_cena_prevoza</tabstop>
+  <tabstop>txt_cena_dnevnic</tabstop>
+  <tabstop>txt_ostali_stroski</tabstop>
+  <tabstop>txt_stroski_skupaj</tabstop>
   <tabstop>wid_pot</tabstop>
   <tabstop>txt_skupaj_kilometri</tabstop>
   <tabstop>txt_kilometrina</tabstop>
   <tabstop>txt_skupaj_dnevi</tabstop>
   <tabstop>txt_skupaj_ure</tabstop>
   <tabstop>txt_priznana_dnevnica</tabstop>
+  <tabstop>txt_cena_dnevnice_6_8</tabstop>
+  <tabstop>txt_cena_dnevnice_8_12</tabstop>
+  <tabstop>txt_cena_dnevnice_12_24</tabstop>
   <tabstop>txt_dnevnica_6_8</tabstop>
   <tabstop>txt_dnevnica_8_12</tabstop>
-  <tabstop>txt_zajtrk_8_12</tabstop>
   <tabstop>txt_dnevnica_12_24</tabstop>
+  <tabstop>txt_zajtrk_8_12</tabstop>
   <tabstop>txt_zajtrk_12_24</tabstop>
   <tabstop>wid_st</tabstop>
-  <tabstop>txt_cena_prevoza</tabstop>
-  <tabstop>txt_cena_dnevnic</tabstop>
-  <tabstop>txt_ostali_stroski</tabstop>
-  <tabstop>txt_stroski_skupaj</tabstop>
-  <tabstop>txt_opombe</tabstop>
+  <tabstop>txt_predlagatelj_podjetje</tabstop>
+  <tabstop>txt_predlagatelj_naslov</tabstop>
+  <tabstop>txt_predlagatelj_naslov_st</tabstop>
+  <tabstop>txt_predlagatelj_posta</tabstop>
+  <tabstop>txt_predlagatelj_postna_stevilka</tabstop>
+  <tabstop>cb_predlagatelj_oseba</tabstop>
+  <tabstop>txt_predlagatelj_izbira_oseba</tabstop>
+  <tabstop>txt_predlagatelj_oseba</tabstop>
+  <tabstop>txt_predlagatelj_naziv</tabstop>
+  <tabstop>txt_prejemnik_izbira_osebe</tabstop>
+  <tabstop>txt_prejemnik_priimek</tabstop>
+  <tabstop>txt_prejemnik_ime</tabstop>
+  <tabstop>txt_prejemnik_naziv</tabstop>
+  <tabstop>txt_prejemnik_naslov</tabstop>
+  <tabstop>txt_prejemnik_naslov_st</tabstop>
+  <tabstop>txt_prejemnik_posta</tabstop>
+  <tabstop>txt_prejemnik_postna_stevilka</tabstop>
+  <tabstop>txt_prevoz</tabstop>
+  <tabstop>txt_znamka_avtomobila</tabstop>
+  <tabstop>txt_model_avtomobila</tabstop>
+  <tabstop>txt_registrska_stevilka</tabstop>
   <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>

@@ -124,6 +124,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_mesto</tabstop>
+  <tabstop>cb_pogodba</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>btn_min</tabstop>
+  <tabstop>tbl_uporabnik</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

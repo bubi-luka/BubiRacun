@@ -137,6 +137,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_stranka</tabstop>
+  <tabstop>cb_mesec</tabstop>
+  <tabstop>cb_leto</tabstop>
+  <tabstop>cb_projekt</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>tbl_projekti</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

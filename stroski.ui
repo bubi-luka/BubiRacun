@@ -156,6 +156,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_nalog</tabstop>
+  <tabstop>txt_strosek</tabstop>
+  <tabstop>txt_cena</tabstop>
+  <tabstop>btn_izhod</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

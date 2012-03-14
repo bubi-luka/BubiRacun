@@ -1357,61 +1357,142 @@ void projekti::on_txt_popust_kupon_textChanged(QString besedilo) {
 
 void projekti::on_txt_popust_fb1_editingFinished() {
 
-	ui->txt_popust_fb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb1->text())));
+	double popust = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_fb1->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_fb2_editingFinished() {
 
-	ui->txt_popust_fb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb2->text())));
+	double popust = pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_fb2->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_komb1_editingFinished() {
 
-	ui->txt_popust_komb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb1->text())));
+	double popust = pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_komb1->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_komb2_editingFinished() {
 
-	ui->txt_popust_komb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb2->text())));
+	double popust = pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_komb2->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_stalna_stranka_editingFinished() {
 
-	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+	double popust = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_kupon_editingFinished() {
 
-	ui->txt_popust_kupon->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_kupon->text())));
+	double popust = pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_kupon->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_popust_akcija_editingFinished() {
 
-	ui->txt_popust_akcija->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_akcija->text())));
+	double popust = pretvori_v_double(ui->txt_popust_akcija->text()).toDouble();
+
+	if ( popust > 100.0 ) {
+		popust = 100.0;
+	}
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_popust_akcija->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_podrazitev_vikend_editingFinished() {
 
-	ui->txt_podrazitev_vikend->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+	double popust = pretvori_v_double(ui->txt_podrazitev_vikend->text()).toDouble();
+
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_podrazitev_vikend->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_podrazitev_hitrost_editingFinished() {
 
-	ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+	double popust = pretvori_v_double(ui->txt_podrazitev_hitrost->text()).toDouble();
+
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
 void projekti::on_txt_podrazitev_zapleti_editingFinished() {
 
-	ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+	double popust = pretvori_v_double(ui->txt_podrazitev_zapleti->text()).toDouble();
+
+	if ( popust < 0.0 ) {
+		popust = 0.0;
+	}
+
+	ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 

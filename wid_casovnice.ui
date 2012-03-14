@@ -285,6 +285,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_aktivnost</tabstop>
+  <tabstop>txt_leto</tabstop>
+  <tabstop>txt_mesec</tabstop>
+  <tabstop>txt_avtor</tabstop>
+  <tabstop>txt_stranka</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_racun</tabstop>
+  <tabstop>tbl_casovnice</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

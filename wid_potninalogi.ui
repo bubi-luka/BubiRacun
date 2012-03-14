@@ -194,6 +194,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_mesec</tabstop>
+  <tabstop>cb_leto</tabstop>
+  <tabstop>cb_namen</tabstop>
+  <tabstop>cb_stranka</tabstop>
+  <tabstop>cb_kraj</tabstop>
+  <tabstop>cb_prevoz</tabstop>
+  <tabstop>txt_stprojekta</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>tbl_potninalogi</tabstop>
+  <tabstop>btn_refresh</tabstop>
+  <tabstop>btn_print</tabstop>
+  <tabstop>btn_print_pdf</tabstop>
+  <tabstop>btn_print_seznam</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

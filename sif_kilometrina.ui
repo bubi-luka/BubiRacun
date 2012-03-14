@@ -115,6 +115,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_kilometrina</tabstop>
+  <tabstop>txt_datum</tabstop>
+  <tabstop>btn_izhod</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

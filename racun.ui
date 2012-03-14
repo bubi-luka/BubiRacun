@@ -9,324 +9,466 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>920</width>
-    <height>732</height>
+    <width>757</width>
+    <height>763</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>BenRačun: Urejanje izdanega računa</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
        <string>Podatki o računu</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QHBoxLayout" name="horizontalLayout_12">
        <item>
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>ID</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_id">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>txt_id</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Tip računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>697</width>
+            <height>571</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <spacer name="horizontalSpacer_8">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>Podatki</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="rb_predracun">
-             <property name="text">
-              <string>Predračun</string>
-             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lbl_id">
+                  <property name="text">
+                   <string>ID</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lbl_tip_racuna">
+                  <property name="text">
+                   <string>Tip računa</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="lbl_stevilka_racuna">
+                  <property name="text">
+                   <string>Št. računa</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="lbl_stara_stevilka_racuna">
+                  <property name="text">
+                   <string>Stara številka računa</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="txt_id">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>txt_id</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                  <item>
+                   <spacer name="horizontalSpacer_8">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="rb_predracun">
+                    <property name="text">
+                     <string>Predračun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="rb_predplacilo">
+                    <property name="text">
+                     <string>Predplačilo</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="rb_racun">
+                    <property name="text">
+                     <string>Račun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_5">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="txt_stevilka_racuna">
+                  <property name="text">
+                   <string>txt_stevilka_racuna</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QCheckBox" name="cb_stara_stevilka_racuna">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="txt_stara_stevilka_racuna">
+                    <property name="text">
+                     <string>txt_stara_stevilka_racuna</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_15">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>79</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_11">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Stranka in projekt</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="rb_predplacilo">
-             <property name="text">
-              <string>Predplačilo</string>
-             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <layout class="QFormLayout" name="formLayout_4">
+                <property name="fieldGrowthPolicy">
+                 <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lbl_stranka">
+                  <property name="text">
+                   <string>Stranka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QLineEdit" name="txt_stranka_id">
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>txt_stranka_id</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="txt_stranka">
+                    <property name="minimumSize">
+                     <size>
+                      <width>250</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>txt_stranka</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lbl_projekt">
+                  <property name="text">
+                   <string>Projekt</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_7">
+                  <item>
+                   <widget class="QLineEdit" name="txt_projekt_id">
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>txt_projekt_id</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="txt_projekt">
+                    <property name="minimumSize">
+                     <size>
+                      <width>250</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>txt_projekt</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_14">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>234</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Statusi in datumi</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="rb_racun">
-             <property name="text">
-              <string>Račun</string>
-             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <layout class="QFormLayout" name="formLayout_5">
+                <property name="fieldGrowthPolicy">
+                 <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lbl_status_predracuna">
+                  <property name="text">
+                   <string>Status predračuna</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="txt_status_predracuna">
+                  <item>
+                   <property name="text">
+                    <string>txt_status_predracuna</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lbl_datum_izdaje_racuna">
+                  <property name="text">
+                   <string>Datum izdaje računa</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDateEdit" name="txt_datum_izdaje_racuna">
+                  <property name="displayFormat">
+                   <string>dd.MM.yyyy</string>
+                  </property>
+                  <property name="calendarPopup">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="lbl_datum_pricetka">
+                  <property name="text">
+                   <string>Datum pričetka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QDateEdit" name="txt_datum_pricetka">
+                  <property name="displayFormat">
+                   <string>dd.MM.yyyy</string>
+                  </property>
+                  <property name="calendarPopup">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="lbl_datum_konca">
+                  <property name="text">
+                   <string>Datum zaključka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QDateEdit" name="txt_datum_zakljucka">
+                  <property name="displayFormat">
+                   <string>dd.MM.yyyy</string>
+                  </property>
+                  <property name="calendarPopup">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="lbl_status_oddaje_racuna">
+                  <property name="text">
+                   <string>Status oddaje računa stranki</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QComboBox" name="txt_status_oddaje_racuna">
+                  <item>
+                   <property name="text">
+                    <string>txt_status_oddaje_racuna</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="lbl_datum_oddaje_racuna">
+                  <property name="text">
+                   <string>Datum oddaje računa stranki</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QDateEdit" name="txt_datum_oddaje_racuna">
+                  <property name="displayFormat">
+                   <string>dd.MM.yyyy</string>
+                  </property>
+                  <property name="calendarPopup">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="lbl_status_racunovodstva">
+                  <property name="text">
+                   <string>Status računovodstva</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QComboBox" name="txt_status_racunovodstva">
+                  <property name="minimumSize">
+                   <size>
+                    <width>250</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_status_racunovodstva</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_16">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>220</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Št. računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="txt_stevilka_racuna">
-           <property name="text">
-            <string>txt_stevilka_racuna</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>Status predračuna</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="txt_status_predracuna">
-           <item>
-            <property name="text">
-             <string>txt_status_predracuna</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Stranka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLineEdit" name="txt_stranka_id">
-             <property name="maximumSize">
-              <size>
-               <width>100</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>txt_stranka_id</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="txt_stranka">
-             <property name="minimumSize">
-              <size>
-               <width>250</width>
-               <height>0</height>
-              </size>
-             </property>
-             <item>
-              <property name="text">
-               <string>txt_stranka</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Projekt</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="QLineEdit" name="txt_projekt_id">
-             <property name="maximumSize">
-              <size>
-               <width>100</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>txt_projekt_id</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="txt_projekt">
-             <property name="minimumSize">
-              <size>
-               <width>250</width>
-               <height>0</height>
-              </size>
-             </property>
-             <item>
-              <property name="text">
-               <string>txt_projekt</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Datum pričetka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QDateEdit" name="txt_pricetek">
-           <property name="displayFormat">
-            <string>dd.MM.yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Datum zaključka</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QDateEdit" name="txt_konec">
-           <property name="displayFormat">
-            <string>dd.MM.yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_21">
-           <property name="text">
-            <string>Stara številka računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
-           <item>
-            <widget class="QCheckBox" name="cb_stara_stevilka_racuna">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="txt_stara_stevilka_racuna">
-             <property name="text">
-              <string>txt_stara_stevilka_racuna</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>131</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -334,14 +476,14 @@
       <attribute name="title">
        <string>Podatki o plačilu</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
         <layout class="QFormLayout" name="formLayout_3">
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_22">
+          <widget class="QLabel" name="lbl_sklic">
            <property name="text">
             <string>Sklic</string>
            </property>
@@ -355,30 +497,13 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Datum izdaje računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDateEdit" name="txt_datum_izdaje_racuna">
-           <property name="displayFormat">
-            <string>dd.MM.yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_12">
+          <widget class="QLabel" name="lbl_rok_placila">
            <property name="text">
             <string>Rok plačila</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QDateEdit" name="txt_rok_placila">
            <property name="displayFormat">
             <string>dd.MM.yyyy</string>
@@ -388,14 +513,14 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_6">
+         <item row="2" column="0">
+          <widget class="QLabel" name="lbl_status_placila">
            <property name="text">
             <string>Status plačila</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="2" column="1">
           <widget class="QComboBox" name="txt_status_placila">
            <property name="minimumSize">
             <size>
@@ -411,65 +536,27 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Status računovodstva</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="txt_status_racunovodstva">
-           <property name="minimumSize">
-            <size>
-             <width>250</width>
-             <height>0</height>
-            </size>
-           </property>
-           <item>
-            <property name="text">
-             <string>txt_status_racunovodstva</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Status oddaje računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QComboBox" name="txt_status_oddaje_racuna">
-           <item>
-            <property name="text">
-             <string>txt_status_oddaje_racuna</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_20">
+          <widget class="QLabel" name="lbl_odstotek_avansa">
            <property name="text">
             <string>Odstotek avansa</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="txt_odstotek_avansa">
            <property name="text">
             <string>txt_odstotek_avansa</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="label_23">
+         <item row="5" column="0">
+          <widget class="QLabel" name="lbl_avans_placan">
            <property name="text">
             <string>Avans plačan</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="1">
+         <item row="5" column="1">
           <widget class="QDateEdit" name="txt_datum_placila_avansa">
            <property name="displayFormat">
             <string>dd.MM.yyyy</string>
@@ -479,7 +566,7 @@
            </property>
           </widget>
          </item>
-         <item row="10" column="0">
+         <item row="6" column="0">
           <spacer name="verticalSpacer_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -492,26 +579,9 @@
            </property>
           </spacer>
          </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_19">
-           <property name="text">
-            <string>Datum oddaje računa</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QDateEdit" name="txt_datum_oddaje_racuna">
-           <property name="displayFormat">
-            <string>dd.MM.yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
-       <item>
+       <item row="0" column="1">
         <spacer name="horizontalSpacer_10">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -649,7 +719,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_68">
+          <widget class="QLabel" name="lbl_datum_in_ura_zapisa">
            <property name="text">
             <string>Datum in ura zapisa</string>
            </property>
@@ -663,7 +733,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_69">
+          <widget class="QLabel" name="lbl_naslov_zapisa">
            <property name="text">
             <string>Naslov</string>
            </property>
@@ -683,7 +753,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_70">
+          <widget class="QLabel" name="lbl_opis_zapisa">
            <property name="text">
             <string>Opis</string>
            </property>
@@ -759,7 +829,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_25">
+          <widget class="QLabel" name="lbl_pregled_nad_obstojecimi_opombami">
            <property name="text">
             <string>Pregled nad obstoječimi opombami</string>
            </property>
@@ -790,9 +860,12 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>170</width>
+           <width>50</width>
            <height>20</height>
           </size>
          </property>
@@ -808,7 +881,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_24">
+          <widget class="QLabel" name="lbl_pregled_nad_vnesenimi_opombami">
            <property name="text">
             <string>Pregled nad vnešenimi opombami</string>
            </property>
@@ -834,24 +907,11 @@
          </item>
         </layout>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_14">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>170</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
       <widget class="QGroupBox" name="groupBox_5">
@@ -875,42 +935,42 @@
         <item row="1" column="1">
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_14">
+           <widget class="QLabel" name="lbl_avans">
             <property name="text">
              <string>Avans</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="lbl_se_placati">
             <property name="text">
              <string>Še plačati</string>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QLabel" name="label_27">
+           <widget class="QLabel" name="lbl_popusti">
             <property name="text">
              <string>Popusti</string>
             </property>
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QLabel" name="label_16">
+           <widget class="QLabel" name="lbl_znesek_brez_ddv">
             <property name="text">
              <string>Znesek brez DDV</string>
             </property>
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QLabel" name="label_17">
+           <widget class="QLabel" name="lbl_znesek_ddv">
             <property name="text">
              <string>DDV</string>
             </property>
            </widget>
           </item>
           <item row="0" column="5">
-           <widget class="QLabel" name="label_18">
+           <widget class="QLabel" name="lbl_znesek">
             <property name="text">
              <string>Znesek za plačilo</string>
             </property>
@@ -1017,7 +1077,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="btn_izracunaj">
@@ -1098,15 +1158,45 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tab_racuni</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>txt_id</tabstop>
   <tabstop>rb_predracun</tabstop>
+  <tabstop>rb_predplacilo</tabstop>
   <tabstop>rb_racun</tabstop>
+  <tabstop>txt_stevilka_racuna</tabstop>
+  <tabstop>cb_stara_stevilka_racuna</tabstop>
+  <tabstop>txt_stara_stevilka_racuna</tabstop>
   <tabstop>txt_stranka_id</tabstop>
   <tabstop>txt_stranka</tabstop>
   <tabstop>txt_projekt_id</tabstop>
   <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_status_predracuna</tabstop>
+  <tabstop>txt_datum_izdaje_racuna</tabstop>
+  <tabstop>txt_datum_pricetka</tabstop>
+  <tabstop>txt_datum_zakljucka</tabstop>
+  <tabstop>txt_status_oddaje_racuna</tabstop>
+  <tabstop>txt_datum_oddaje_racuna</tabstop>
+  <tabstop>txt_status_racunovodstva</tabstop>
+  <tabstop>txt_sklic</tabstop>
+  <tabstop>txt_rok_placila</tabstop>
+  <tabstop>txt_status_placila</tabstop>
+  <tabstop>txt_odstotek_avansa</tabstop>
+  <tabstop>txt_datum_placila_avansa</tabstop>
   <tabstop>btn_opravilo</tabstop>
   <tabstop>btn_brisi_opravilo</tabstop>
   <tabstop>tbl_opravila</tabstop>
+  <tabstop>tbl_zapisi_2</tabstop>
+  <tabstop>txt_id_zapisa_2</tabstop>
+  <tabstop>txt_datum_zapisa_2</tabstop>
+  <tabstop>txt_naslov_zapisa_2</tabstop>
+  <tabstop>txt_opis_zapisa_2</tabstop>
+  <tabstop>btn_vnesi_zapis_2</tabstop>
+  <tabstop>btn_pocisti_2</tabstop>
+  <tabstop>txt_vse_opombe</tabstop>
+  <tabstop>txt_vnesene_opombe</tabstop>
+  <tabstop>tbl_vse_opombe</tabstop>
+  <tabstop>tbl_vnesene_opombe</tabstop>
   <tabstop>txt_avans</tabstop>
   <tabstop>txt_se_placati</tabstop>
   <tabstop>txt_popusti</tabstop>
@@ -1114,6 +1204,8 @@
   <tabstop>txt_znesek_ddv</tabstop>
   <tabstop>txt_znesek</tabstop>
   <tabstop>btn_izracunaj</tabstop>
+  <tabstop>btn_predplacilni_racun</tabstop>
+  <tabstop>btn_racun</tabstop>
   <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>
