@@ -76,6 +76,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>tbl_opombe</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

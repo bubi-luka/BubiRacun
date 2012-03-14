@@ -140,6 +140,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_datum</tabstop>
+  <tabstop>txt_dnevnica_1</tabstop>
+  <tabstop>txt_dnevnica_2</tabstop>
+  <tabstop>txt_dnevnica_3</tabstop>
+  <tabstop>btn_izhod</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -2415,10 +2415,73 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tab_opravila</tabstop>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_id_stranka</tabstop>
+  <tabstop>txt_stranka</tabstop>
+  <tabstop>txt_id_projekt</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_id_racun</tabstop>
+  <tabstop>txt_racun</tabstop>
+  <tabstop>txt_id_tip</tabstop>
+  <tabstop>txt_tip</tabstop>
+  <tabstop>txt_sklop</tabstop>
+  <tabstop>txt_skupina</tabstop>
+  <tabstop>txt_storitev</tabstop>
+  <tabstop>txt_rocni_vnos_storitve</tabstop>
+  <tabstop>txt_enota</tabstop>
+  <tabstop>txt_urna_postavka_brez_ddv</tabstop>
+  <tabstop>txt_ddv</tabstop>
+  <tabstop>txt_urna_postavka</tabstop>
+  <tabstop>rb_predracun</tabstop>
+  <tabstop>rb_casovnice</tabstop>
+  <tabstop>rb_rocni_vnos</tabstop>
+  <tabstop>txt_predracun</tabstop>
+  <tabstop>txt_casovnice</tabstop>
+  <tabstop>txt_rocni_vnos</tabstop>
+  <tabstop>cb_vikend</tabstop>
+  <tabstop>cb_hitrost</tabstop>
+  <tabstop>cb_zapleti</tabstop>
+  <tabstop>txt_storitev_pribitek</tabstop>
+  <tabstop>txt_pribitek</tabstop>
+  <tabstop>txt_nova_urna_postavka_brez_ddv</tabstop>
+  <tabstop>txt_novi_ddv</tabstop>
+  <tabstop>txt_nova_urna_postavka</tabstop>
+  <tabstop>txt_storitev_na_racunu</tabstop>
+  <tabstop>txt_urna_postavka_na_racunu</tabstop>
+  <tabstop>txt_stevilo_opravljenih_ur</tabstop>
+  <tabstop>txt_stopnja_ddv</tabstop>
+  <tabstop>txt_popusti</tabstop>
+  <tabstop>txt_znesek_brez_ddv_na_racunu</tabstop>
+  <tabstop>txt_znesek_ddv_na_racunu</tabstop>
+  <tabstop>txt_znesek_na_racunu</tabstop>
+  <tabstop>cb_popust_fb1</tabstop>
+  <tabstop>txt_popust_fb1</tabstop>
+  <tabstop>cb_popust_fb2</tabstop>
+  <tabstop>txt_popust_fb2</tabstop>
+  <tabstop>cb_popust_komb1</tabstop>
+  <tabstop>txt_popust_komb1</tabstop>
+  <tabstop>cb_popust_komb2</tabstop>
+  <tabstop>txt_popust_komb2</tabstop>
+  <tabstop>cb_popust_stalna</tabstop>
+  <tabstop>txt_popust_stalna_stranka</tabstop>
+  <tabstop>cb_popust_kupon</tabstop>
+  <tabstop>txt_popust_kupon</tabstop>
+  <tabstop>cb_popust_akcija</tabstop>
+  <tabstop>txt_popust_akcija</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_1</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_2</tabstop>
+  <tabstop>txt_popusti_skupaj_1</tabstop>
+  <tabstop>txt_popusti_skupaj_2</tabstop>
+  <tabstop>cb_podrazitev_vikend</tabstop>
+  <tabstop>txt_podrazitev_vikend</tabstop>
+  <tabstop>cb_podrazitev_hitrost</tabstop>
+  <tabstop>txt_podrazitev_hitrost</tabstop>
+  <tabstop>cb_podrazitev_zapleti</tabstop>
+  <tabstop>txt_podrazitev_zapleti</tabstop>
+  <tabstop>tbl_casovnice</tabstop>
   <tabstop>btn_izracunaj</tabstop>
   <tabstop>btn_sprejmi</tabstop>
-  <tabstop>btn_izhod</tabstop>
-  <tabstop>btn_brisi</tabstop>
  </tabstops>
  <resources/>
  <connections/>

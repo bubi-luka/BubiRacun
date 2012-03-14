@@ -193,6 +193,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>lineEdit_3</tabstop>
+  <tabstop>plainTextEdit</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>plainTextEdit_2</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -754,6 +754,13 @@
   <tabstop>txt_datum_prejema</tabstop>
   <tabstop>txt_datum_placila</tabstop>
   <tabstop>txt_rok_placila</tabstop>
+  <tabstop>txt_podjetje</tabstop>
+  <tabstop>cb_oseba</tabstop>
+  <tabstop>txt_oseba</tabstop>
+  <tabstop>txt_izberi_osebo</tabstop>
+  <tabstop>cb_projekt</tabstop>
+  <tabstop>txt_projekt</tabstop>
+  <tabstop>txt_izberi_projekt</tabstop>
   <tabstop>txt_znesek_brez_ddv_20</tabstop>
   <tabstop>txt_znesek_brez_ddv_85</tabstop>
   <tabstop>txt_znesek_brez_ddv_0</tabstop>

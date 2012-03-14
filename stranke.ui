@@ -80,7 +80,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-332</y>
             <width>659</width>
             <height>923</height>
            </rect>
@@ -2088,6 +2088,7 @@
   <tabstop>txt_naslov_st</tabstop>
   <tabstop>txt_posta</tabstop>
   <tabstop>txt_postna_stevilka</tabstop>
+  <tabstop>cb_davcni_zavezanec</tabstop>
   <tabstop>txt_davcna</tabstop>
   <tabstop>txt_kontaktna</tabstop>
   <tabstop>txt_telefon</tabstop>
@@ -2096,8 +2097,8 @@
   <tabstop>txt_spletna_stran</tabstop>
   <tabstop>txt_ustanova</tabstop>
   <tabstop>txt_opomba</tabstop>
-  <tabstop>btn_vnesi</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>txt_kupon</tabstop>
   <tabstop>txt_vir</tabstop>
   <tabstop>txt_vir_id</tabstop>
   <tabstop>txt_vir_kupon</tabstop>
@@ -2130,7 +2131,12 @@
   <tabstop>cb_podrazitev_zapleti</tabstop>
   <tabstop>txt_podrazitev_zapleti</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>cb_mesec</tabstop>
+  <tabstop>cb_leto</tabstop>
+  <tabstop>cb_projekt</tabstop>
   <tabstop>btn_novprojekt</tabstop>
+  <tabstop>tbl_projekti</tabstop>
+  <tabstop>btn_vnesi</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -1886,13 +1886,58 @@
   <tabstop>txt_pricetek</tabstop>
   <tabstop>txt_konec</tabstop>
   <tabstop>txt_status_projekta</tabstop>
-  <tabstop>wid_izdani_racuni</tabstop>
+  <tabstop>txt_st_izdanih_racunov</tabstop>
+  <tabstop>txt_st_prejetih_racunov</tabstop>
+  <tabstop>txt_znesek_izdanih_racunov</tabstop>
+  <tabstop>txt_znesek_prejetih_racunov</tabstop>
+  <tabstop>txt_potni_stroski</tabstop>
+  <tabstop>txt_znesek_skupaj</tabstop>
+  <tabstop>txt_st_potnih_nalogov</tabstop>
+  <tabstop>txt_st_ur_dela</tabstop>
+  <tabstop>tbl_zapisi</tabstop>
+  <tabstop>txt_id_zapisa</tabstop>
+  <tabstop>txt_datum_zapisa</tabstop>
+  <tabstop>txt_naslov_zapisa</tabstop>
+  <tabstop>txt_opis_zapisa</tabstop>
+  <tabstop>btn_vnesi_zapis</tabstop>
+  <tabstop>btn_pocisti</tabstop>
   <tabstop>txt_izdani_brez_ddv</tabstop>
   <tabstop>txt_izdani_ddv</tabstop>
   <tabstop>txt_izdani_popusti</tabstop>
   <tabstop>txt_izdani_placilo</tabstop>
+  <tabstop>wid_izdani_racuni</tabstop>
+  <tabstop>txt_prejeti_brez_ddv</tabstop>
+  <tabstop>txt_prejeti_ddv</tabstop>
+  <tabstop>txt_prejeti_placilo</tabstop>
+  <tabstop>wid_prejeti_racuni</tabstop>
+  <tabstop>wid_potni_nalogi</tabstop>
+  <tabstop>cb_popust_fb1</tabstop>
+  <tabstop>txt_popust_fb1</tabstop>
+  <tabstop>cb_popust_fb2</tabstop>
+  <tabstop>txt_popust_fb2</tabstop>
+  <tabstop>cb_popust_komb1</tabstop>
+  <tabstop>txt_popust_komb1</tabstop>
+  <tabstop>cb_popust_komb2</tabstop>
+  <tabstop>txt_popust_komb2</tabstop>
+  <tabstop>cb_popust_stalna</tabstop>
+  <tabstop>txt_popust_stalna_stranka</tabstop>
+  <tabstop>cb_popust_kupon</tabstop>
+  <tabstop>txt_popust_kupon</tabstop>
+  <tabstop>cb_popust_akcija</tabstop>
+  <tabstop>txt_popust_akcija</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_1</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_2</tabstop>
+  <tabstop>txt_popusti_skupaj_1</tabstop>
+  <tabstop>txt_popusti_skupaj_2</tabstop>
+  <tabstop>cb_podrazitev_vikend</tabstop>
+  <tabstop>txt_podrazitev_vikend</tabstop>
+  <tabstop>cb_podrazitev_hitrost</tabstop>
+  <tabstop>txt_podrazitev_hitrost</tabstop>
+  <tabstop>cb_podrazitev_zapleti</tabstop>
+  <tabstop>txt_podrazitev_zapleti</tabstop>
   <tabstop>btn_izracunaj</tabstop>
   <tabstop>btn_sprejmi</tabstop>
+  <tabstop>tab_projekti</tabstop>
  </tabstops>
  <resources/>
  <connections/>
