@@ -200,6 +200,21 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_racun</tabstop>
+  <tabstop>cb_mesec</tabstop>
+  <tabstop>cb_leto</tabstop>
+  <tabstop>cb_placilo</tabstop>
+  <tabstop>cb_racunovodstvo</tabstop>
+  <tabstop>txt_stprojekta</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>tbl_racuni</tabstop>
+  <tabstop>btn_refresh</tabstop>
+  <tabstop>btn_print</tabstop>
+  <tabstop>btn_print_pdf</tabstop>
+  <tabstop>btn_print_seznam</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

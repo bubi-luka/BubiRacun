@@ -28,6 +28,7 @@ private slots:
 
 	// ustvari varnostno kopijo
 	void varnostna_kopija();
+	void glavna_tabela();
 
 	// ustvari tabele
 	void tabela_podjetje();

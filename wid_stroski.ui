@@ -89,6 +89,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_stnaloga</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>btn_min</tabstop>
+  <tabstop>tbl_stroski</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -1370,6 +1370,8 @@
   <tabstop>txt_email</tabstop>
   <tabstop>txt_telefon</tabstop>
   <tabstop>txt_gsm</tabstop>
+  <tabstop>btn_logotip</tabstop>
+  <tabstop>txt_logotip</tabstop>
   <tabstop>txt_lastnik</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>txt_lastnik_ime</tabstop>

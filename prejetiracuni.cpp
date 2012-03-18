@@ -15,6 +15,7 @@
 #include "glavnookno.h"
 #include "kodiranje.h"
 #include "varnost.h"
+#include "tiskanje.h"
 
 prejetiracuni::prejetiracuni(QWidget *parent) :
     QDialog(parent),
@@ -189,9 +190,15 @@ void prejetiracuni::on_btn_izhod_clicked() {
 
 void prejetiracuni::on_btn_izpisi_clicked() {
 
+	// shranimo podatke
 	on_btn_sprejmi_clicked();
 
-	print(ui->txt_id->text());
+	// posljemo v tisk
+	tiskanje *print = new tiskanje;
+	print->show();
+	QObject::connect(this, SIGNAL(tiskaj(QString, QString, QString)),
+				 print , SLOT(prejem(QString, QString, QString)));
+	tiskaj("prejeti-racuni", ui->txt_id->text() + ",", "tisk"); // vrsta, id stevilke, format
 
 }
 
@@ -808,189 +815,6 @@ void prejetiracuni::on_txt_naziv_podjetja_kratki_editingFinished() {
 			}
 		}
 		base.close();
-	}
-
-}
-
-void prejetiracuni::print(QString id) {
-
-	QPrinter printer;
-
-	QPrintDialog *dialog = new QPrintDialog(&printer, this);
-	dialog->setWindowTitle(tr("Natisni prejet racun"));
-	printer.setPaperSize(QPrinter::A4);
-	printer.setOrientation(QPrinter::Portrait);
-	printer.setPageMargins(20, 20, 20, 20, QPrinter::Millimeter);
-
-	if (dialog->exec() == QDialog::Accepted) {
-		QPainter painter;
-
-		if (! painter.begin(&printer))  { // failed to open file
-			qWarning("Datoteke ni mozno shraniti, prosim uredite dovoljenje za pisanje!");
-			return;
-		}
-
-		// nastavi pisavo
-		painter.setFont(QFont("Arial", 12));
-
-		// spremenljivke
-		QString stevilka_vnosa = "";
-		QString stevilka_racuna = "";
-		QString izdajatelj_racuna = "";
-		QString zadeva = "";
-		QString placnik = "";
-		QString projekt = "";
-		QString datum_prejema = "";
-		QString datum_placila = "";
-		QString rok_placila = "";
-		QString znesek_brez_ddv_00 = "";
-		QString znesek_brez_ddv_85 = "";
-		QString znesek_brez_ddv_20 = "";
-		QString znesek_ddv = "";
-		QString znesek = "";
-
-		int pozicija = 0;
-
-		// napolnimo spremenljivke z besedilom
-		stevilka_vnosa = "Stevilka vnosa: ";
-		stevilka_racuna = "Stevilka prejetega racuna: ";
-		izdajatelj_racuna = "Izdajatelj racuna: ";
-		zadeva = "Zadeva: ";
-		placnik = "Placnik racuna: ";
-		projekt = "Stevilka projekta: ";
-		datum_prejema = "Datum prejema racuna: ";
-		datum_placila = "Datum placila racuna: ";
-		rok_placila = "Rok placila racuna: ";
-		znesek_brez_ddv_00 = "Znesek brez DDV 0,0%: ";
-		znesek_brez_ddv_85 = "Znesek brez DDV 8,5%: ";
-		znesek_brez_ddv_20 = "Znesek brez DDV 20,0%: ";
-		znesek_ddv = "Znesek DDV: ";
-		znesek = "Koncni znesek: ";
-
-		// odpremo bazo in napolnimo spremenljivke
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
-
-		/**
-			* na zacetku zberemo podatke o potnem nalogu, izdajatelju potnega naloga
-			* (podjetje, oseba), prejemniku potnega naloga ter opravljeni poti.
-			**/
-
-			// podatki o potnem nalogu
-			QSqlQuery sql_prejeti_racuni;
-			sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + pretvori(id) + "'");
-			sql_prejeti_racuni.exec();
-			if ( sql_prejeti_racuni.next() ) {
-				stevilka_vnosa += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("stevilka_vnosa")).toString());
-				stevilka_racuna += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("stevilka_racuna")).toString());
-				izdajatelj_racuna += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("izdajatelj_polni")).toString());
-				zadeva += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("zadeva")).toString());
-				datum_prejema += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_prejema")).toString());;
-				datum_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("datum_placila")).toString());
-				rok_placila += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("rok_placila")).toString());
-				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()) == "0.00" ) {
-					znesek_brez_ddv_00 = "";
-				}
-				else {
-					znesek_brez_ddv_00 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_00")).toString()).replace(".", ",") + " EUR";
-				}
-				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()) == "0.00" ) {
-					znesek_brez_ddv_85 = "";
-				}
-				else {
-					znesek_brez_ddv_85 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_85")).toString()).replace(".", ",") + " EUR";
-				}
-				if ( prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()) == "0.00" ) {
-					znesek_brez_ddv_20 = "";
-				}
-				else {
-					znesek_brez_ddv_20 += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_brez_ddv_20")).toString()).replace(".", ",") + " EUR";
-				}
-				znesek_ddv += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_ddv")).toString()).replace(".", ",") + " EUR";
-				znesek += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek")).toString()).replace(".", ",") + " EUR";
-
-				QSqlQuery sql_placnik;
-				sql_placnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("placnik_podjetje")).toString() + "'");
-				sql_placnik.exec();
-				if ( sql_placnik.next() ) {
-					placnik += prevedi(sql_placnik.value(sql_placnik.record().indexOf("polnoime")).toString());
-				}
-
-				QSqlQuery sql_projekt;
-				sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("stevilka_projekta")).toString() + "'");
-				sql_projekt.exec();
-				if ( sql_projekt.next() ) {
-					projekt += prevedi(sql_projekt.value(sql_projekt.record().indexOf("stevilka_projekta")).toString());
-				}
-
-			}
-		}
-		base.close();
-
-		// pripravimo dokument za tiskanje
-		QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, izdajatelj_racuna);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, izdajatelj_racuna);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, zadeva);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, zadeva);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, placnik);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, placnik);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, projekt);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, projekt);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, datum_prejema);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, datum_prejema);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, datum_placila);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, datum_placila);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, rok_placila);
-		pozicija += velikost_besedila.height();
-		if ( znesek_brez_ddv_00 != "" ) {
-			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_00);
-			pozicija += velikost_besedila.height();
-		}
-		if ( znesek_brez_ddv_85 != "" ) {
-			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_85);
-			pozicija += velikost_besedila.height();
-		}
-		if ( znesek_brez_ddv_20 != "" ) {
-			velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-			painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_brez_ddv_20);
-			pozicija += velikost_besedila.height();
-		}
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek_ddv);
-		pozicija += velikost_besedila.height();
-		velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, znesek);
-		painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, znesek);
-		pozicija += velikost_besedila.height();
-
-		painter.end();
 	}
 
 }

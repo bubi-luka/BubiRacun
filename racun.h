@@ -63,11 +63,11 @@ private slots:
 	void izracunaj();
 	void napolni();
 	void osvezi(QString beseda);
-	void print(QString id);
 
 signals:
 	void poslji(QString beseda);
 	void prenos(QString beseda);
+	void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
     Ui::racun *ui;

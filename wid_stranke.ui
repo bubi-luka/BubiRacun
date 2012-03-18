@@ -97,6 +97,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cb_fizicna</tabstop>
+  <tabstop>cb_pravna</tabstop>
+  <tabstop>btn_nov</tabstop>
+  <tabstop>btn_brisi</tabstop>
+  <tabstop>tbl_stranke</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

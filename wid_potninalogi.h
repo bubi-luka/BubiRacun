@@ -19,7 +19,6 @@ private slots:
 	void on_btn_refresh_clicked();
 	void on_btn_print_clicked();
 	void on_btn_print_pdf_clicked();
-	void on_btn_print_seznam_clicked();
 
 	void on_cb_mesec_currentIndexChanged();
 	void on_cb_leto_currentIndexChanged();
@@ -36,9 +35,6 @@ private slots:
 	void prejem(QString besedilo);
 	void napolni();
 
-	void print(QString id);
-	void printpdf(QString id);
-
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 	QString pretvori_v_double(QString besedilo);
@@ -47,6 +43,7 @@ private slots:
 signals:
 	void prenos(QString beseda);
 	void prenesi();
+	void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
     Ui::wid_potninalogi *ui;
