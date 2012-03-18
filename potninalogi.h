@@ -41,11 +41,10 @@ private slots:
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 
-	void print(QString id);
-
 signals:
 	void poslji(QString beseda);
 	void prenos(QString beseda);
+	void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
     Ui::potninalogi *ui;

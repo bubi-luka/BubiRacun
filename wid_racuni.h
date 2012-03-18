@@ -35,9 +35,6 @@ private slots:
 	void prejem(QString besedilo);
 	void napolni();
 
-	void print(QString id);
-	void printpdf(QString id);
-
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 	QString pretvori_v_double(QString besedilo);
@@ -46,6 +43,7 @@ private slots:
 signals:
 	void prenos(QString beseda);
 	void prenesi();
+	void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
     Ui::wid_racuni *ui;

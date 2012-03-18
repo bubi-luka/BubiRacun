@@ -48,10 +48,10 @@ private slots:
 	void prejem(QString besedilo);
 	void izracunaj();
 	void stevilka_racuna();
-	void print(QString id);
 
 signals:
 	void poslji(QString beseda);
+	void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
     Ui::prejetiracuni *ui;

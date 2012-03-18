@@ -31,7 +31,8 @@ HEADERS += \
     opombepriracunih.h \
     wid_opombepriracunih.h \
     sif_kilometrina.h \
-    sif_dnevnice.h
+    sif_dnevnice.h \
+    tiskanje.h
 
 SOURCES += \
     main.cpp \
@@ -66,7 +67,8 @@ SOURCES += \
     opombepriracunih.cpp \
     wid_opombepriracunih.cpp \
     sif_kilometrina.cpp \
-    sif_dnevnice.cpp
+    sif_dnevnice.cpp \
+    tiskanje.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -98,7 +100,8 @@ FORMS += \
     opombepriracunih.ui \
     wid_opombepriracunih.ui \
     sif_kilometrina.ui \
-    sif_dnevnice.ui
+    sif_dnevnice.ui \
+    tiskanje.ui
 
 QT += sql
 
@@ -122,7 +125,12 @@ OTHER_FILES += \
     status_oddaje_racuna.csv \
     racun-besedilo-predracun.csv \
     racun-besedilo-predplacilo.csv \
-    racun-besedilo-racun.csv
+    racun-besedilo-racun.csv \
+    potni-nalog-besedilo-glava.csv
+
+
+
+
 
 
 
