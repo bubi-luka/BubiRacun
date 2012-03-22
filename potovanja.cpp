@@ -216,6 +216,25 @@ void potovanja::on_txt_naziv_ciljnega_podjetja_editingFinished() {
 
 }
 
+void potovanja::on_txt_namen_currentIndexChanged() {
+
+	if ( ui->txt_namen->currentText().contains(") Povratek") ) {
+		ui->txt_naslov->setEnabled(false);
+		ui->txt_naslov_st->setEnabled(false);
+		ui->txt_posta->setEnabled(false);
+		ui->txt_postna_stevilka->setEnabled(false);
+		ui->txt_naziv_ciljnega_podjetja->setEnabled(false);
+	}
+	else {
+		ui->txt_naslov->setEnabled(true);
+		ui->txt_naslov_st->setEnabled(true);
+		ui->txt_posta->setEnabled(true);
+		ui->txt_postna_stevilka->setEnabled(true);
+		ui->txt_naziv_ciljnega_podjetja->setEnabled(true);
+	}
+
+}
+
 void potovanja::on_btn_nadaljuj_clicked() {
 
 	QString napaka = preveri_napake();
