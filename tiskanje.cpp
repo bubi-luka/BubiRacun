@@ -131,7 +131,18 @@ void tiskanje::on_btn_natisni_clicked() {
 
 		} // for ( int i = 1; i <= stevilo_dokumentov; i++ )
 
+		if ( ui->txt_format_tiskanja->text() == "pdf" ) {
+			QMessageBox sporocilo;
+			sporocilo.setText("Tiskanje v PDF format je koncano, \nustvarili ste " + QString::number(stevilo_dokumentov, 10) + " dokumentov.");
+			sporocilo.exec();
+		} // if ( ui->txt_format_tiskanja->text() == "pdf" )
+
 	}	// if ( stevilo_dokumentov != 0 )
+	else {
+		QMessageBox sporocilo;
+		sporocilo.setText("Ni dokumentov za tisk!");
+		sporocilo.exec();
+	}
 
 	close();
 
