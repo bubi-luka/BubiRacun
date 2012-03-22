@@ -3466,11 +3466,11 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
-		velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignLeft | Qt::TextWordWrap, besedilo);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
 		// natisnemo besedilo
-		painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
@@ -3636,7 +3636,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				}
 
 				// natisnemo besedilo
-				painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap | Qt::AlignVCenter, storitev_ime);
+				painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap | Qt::AlignVCenter, storitev_ime);
 
 				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
 				velikost_besedila = painter.boundingRect(crta_2, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_kolicina);
