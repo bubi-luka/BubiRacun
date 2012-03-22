@@ -831,7 +831,10 @@ void racun::napolni() {
 			while (col <= 7) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[col] == "opravilo_storitev" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[col] == "opravilo_storitev" ) {
 					QString storitev = "";
 					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("opravilo_rocno")).toString()) == "" ) {
 						storitev = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString());
@@ -1858,7 +1861,12 @@ void racun::napolni_zapise() {
 			while (col <= 2) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_zapisi_2->setItem(row, col, celica);
 
 				col++;
@@ -2057,7 +2065,12 @@ void racun::napolni_vse_opombe() {
 				while (col <= 1) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
 					ui->tbl_vse_opombe->setItem(row, col, celica);
 
 					col++;
@@ -2144,7 +2157,12 @@ void racun::napolni_vnesene_opombe() {
 				while (col <= 1) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
 					ui->tbl_vnesene_opombe->setItem(row, col, celica);
 
 					col++;

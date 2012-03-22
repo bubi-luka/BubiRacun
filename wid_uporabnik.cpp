@@ -187,7 +187,10 @@ void wid_uporabnik::napolni() {
 			while (col <= 8) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[i] == "pogodba" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "pogodba" ) {
 					QSqlQuery sql_besedilo;
 					sql_besedilo.prepare("SELECT * FROM sif_pogodbe WHERE id LIKE '" + pretvori(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) + "'");
 					sql_besedilo.exec();

@@ -351,7 +351,10 @@ void wid_racuni::napolni() {
 
 				while (col <= 9) {
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "tip_racuna" ) {
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else if ( polja[i] == "tip_racuna" ) {
 						if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
 							celica->setText("Predracun");
 						}

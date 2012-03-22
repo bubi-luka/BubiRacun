@@ -138,7 +138,10 @@ void wid_stranke::napolni() {
 				QTableWidgetItem *celica = new QTableWidgetItem;
 
 				// uredi sifrante
-				if ( polja[i] == "tip" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "tip" ) {
 					if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) {
 						celica->setText("Fizicna");
 					}

@@ -494,7 +494,10 @@ void wid_casovnice::napolni() {
 				while (col <= 4) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "stevilka_projekta" ) {
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(vnesi.value(vnesi.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else if ( polja[i] == "stevilka_projekta" ) {
 						QSqlQuery vnesi_projekt;
 						vnesi_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + vnesi.value(vnesi.record().indexOf(polja[i])).toString() + "'");
 						vnesi_projekt.exec();
