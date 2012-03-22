@@ -298,7 +298,12 @@ void wid_prejetiracuni::napolni() {
 				while (col <= 6) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
 					ui->tbl_racuni->setItem(row, col, celica);
 
 					col++;

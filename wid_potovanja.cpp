@@ -102,7 +102,10 @@ void wid_potovanja::napolni() {
 			while (col <= 5) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[i] == "kilometri" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "kilometri" ) {
 					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " km");
 				}
 				else {

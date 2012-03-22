@@ -395,7 +395,10 @@ void wid_potninalogi::napolni() {
 				while (col <= 11) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "prejemnik_oseba" ) {
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else if ( polja[i] == "prejemnik_oseba" ) {
 						QSqlQuery sql_besedilo;
 						sql_besedilo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 						sql_besedilo.exec();

@@ -114,7 +114,10 @@ void wid_podjetje::napolni() {
 			while (col <= 9) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[i] == "odgovorna" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "odgovorna" ) {
 					QSqlQuery sql_oseba;
 					sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 					sql_oseba.exec();

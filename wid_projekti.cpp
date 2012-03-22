@@ -260,7 +260,10 @@ void wid_projekti::napolni() {
 				while (col <= 6) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "stranka" ) {
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else if ( polja[i] == "stranka" ) {
 						QSqlQuery sql_stranka;
 						sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 						sql_stranka.exec();
