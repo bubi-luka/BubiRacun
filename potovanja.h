@@ -27,6 +27,8 @@ private slots:
 	void on_txt_kraj_prihoda_textChanged(QString besedilo);
 	void on_txt_naziv_ciljnega_podjetja_editingFinished();
 
+	void on_txt_namen_currentIndexChanged();
+
 	void prejem(QString besedilo);
 	void shrani();
 
