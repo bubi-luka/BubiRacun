@@ -207,7 +207,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 
 	if ( ui->cb_aktivnost->text() != "Vnasam" ) {
 			QString datum = ui->txt_leto->currentText() + "." + ui->txt_mesec->currentText().left(2) + ".";
-			int dan = stolpec - 3;
+			int dan = stolpec - 5;
 			if ( dan < 10 ) {
 				datum += "0";
 			}
@@ -420,7 +420,7 @@ void wid_casovnice::napolni() {
 		// clear previous content
 		ui->tbl_casovnice->clear();
 
-		for (int i = 0; i <= 36; i++) {
+		for (int i = 0; i <= 38; i++) {
 			ui->tbl_casovnice->removeColumn(0);
 		}
 
@@ -436,24 +436,37 @@ void wid_casovnice::napolni() {
 		ui->tbl_casovnice->insertColumn(1);
 		ui->tbl_casovnice->insertColumn(2);
 		ui->tbl_casovnice->insertColumn(3);
+		ui->tbl_casovnice->insertColumn(4);
+		ui->tbl_casovnice->insertColumn(5);
+
+		// set proper width to the first four columns
+
+		ui->tbl_casovnice->setColumnWidth(0, 35);
+		ui->tbl_casovnice->setColumnWidth(1, 35);
+		ui->tbl_casovnice->setColumnWidth(2, 200);
+		ui->tbl_casovnice->setColumnWidth(3, 400);
+		ui->tbl_casovnice->setColumnWidth(4, 60);
+		ui->tbl_casovnice->setColumnWidth(5, 60);
 
 		// start filling the table
 		QStringList naslovi;
 		naslovi.append("ID");
-		naslovi.append("Projekt");
 		naslovi.append("St. racuna");
+		naslovi.append("Projekt");
 		naslovi.append("Opravilo");
+		naslovi.append("Mesecno");
+		naslovi.append("Skupaj");
 
 		QString tekoce_leto = ui->txt_leto->currentText();
 		QString tekoci_mesec = ui->txt_mesec->currentText().left(2);
 
 		QDate pricetek = QDate::fromString("01." + tekoci_mesec + "." + tekoce_leto, "dd.MM.yyyy");
 
-		for ( int a = 4; a <= 36; a++ ) {
+		for ( int a = 6; a <= 38; a++ ) {
 			if ( pricetek.toString("MM") == tekoci_mesec ) {
 				ui->tbl_casovnice->insertColumn(a);
-				ui->tbl_casovnice->setColumnWidth(a, 35);
-				naslovi.append(QString::number(a - 3, 10));
+				ui->tbl_casovnice->setColumnWidth(a, 45);
+				naslovi.append(QString::number(a - 5, 10));
 				pricetek = pricetek.addDays(1);
 			}
 		}
@@ -489,9 +502,12 @@ void wid_casovnice::napolni() {
 				ui->tbl_casovnice->setRowHeight(row, 20);
 				int col = 0;
 				int i = 0;
-				QString polja[5] = {"id", "stevilka_projekta", "stevilka_racuna", "opravilo", "casovnice"};
+				QString polja[6] = {"id", "stevilka_racuna", "stevilka_projekta", "opravilo", "zdruzek", "casovnice"};
 
-				while (col <= 4) {
+				double d_mesec = 0.0;
+				double d_skupaj = 0.0;
+
+				while (col <= 5) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
 					if ( polja[i] == "id" ) {
@@ -534,6 +550,40 @@ void wid_casovnice::napolni() {
 
 						celica->setText(naslov);
 					}
+					else if ( polja[i] == "zdruzek" ) {
+						QString seznam_casovnic = vnesi.value(vnesi.record().indexOf("casovnice")).toString();
+						int max_casovnice = seznam_casovnic.count(";");
+
+						// za vsako casovnico na seznamu vnesi njeno vrednost v ustrezno polje
+						for ( int b = 1; b <= max_casovnice; b++ ) {
+							QString del_seznama = seznam_casovnic.left(seznam_casovnic.indexOf(";"));
+							seznam_casovnic = seznam_casovnic.right(seznam_casovnic.length() - seznam_casovnic.indexOf(";") - 1);
+
+							// del seznama razbijemo na datum in vrednost
+							QString datum = del_seznama.left(del_seznama.indexOf(","));
+							QString vrednost = pretvori_iz_double(del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1));
+
+							// datum razbijemo na leto, mesec in dan
+							QString leto = datum.left(4);
+							QString mesec = datum.right(6).left(2);
+
+							if ( ui->txt_leto->currentText() == leto && ui->txt_mesec->currentText().left(2) == mesec ) {
+								d_mesec += pretvori_v_double(vrednost).toDouble();
+							}
+							d_skupaj += pretvori_v_double(vrednost).toDouble();
+
+						}
+
+						QTableWidgetItem *t_mesec = new QTableWidgetItem;
+						t_mesec->setText(QString::number(d_mesec, 'f', 2));
+						ui->tbl_casovnice->setItem(row, 4, t_mesec);
+
+						QTableWidgetItem *t_skupaj = new QTableWidgetItem;
+						t_skupaj->setText(QString::number(d_skupaj, 'f', 2));
+						ui->tbl_casovnice->setItem(row, 5, t_skupaj);
+
+						celica->setText("");
+					}
 					else if ( polja[i] == "casovnice" ) {
 						QString seznam_casovnic = vnesi.value(vnesi.record().indexOf(polja[i])).toString();
 						int max_casovnice = seznam_casovnic.count(";");
@@ -555,7 +605,7 @@ void wid_casovnice::napolni() {
 							if ( ui->txt_leto->currentText() == leto && ui->txt_mesec->currentText().left(2) == mesec ) {
 								QTableWidgetItem *polje_v_tabeli = new QTableWidgetItem;
 								polje_v_tabeli->setText(vrednost);
-								ui->tbl_casovnice->setItem(row, dan.toInt() + 3, polje_v_tabeli);
+								ui->tbl_casovnice->setItem(row, dan.toInt() + 5, polje_v_tabeli);
 							}
 						}
 						celica->setText("");
