@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -865,7 +865,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>50</width>
+           <width>5</width>
            <height>20</height>
           </size>
          </property>
