@@ -2430,7 +2430,7 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 	QString placnik_logotip = "";
 
 	// napolnimo spremenljivke z besedilom
-	stevilka_vnosa = "Stevilka vnosa: ";
+//	stevilka_vnosa = "Stevilka vnosa: ";
 	stevilka_racuna = "Stevilka prejetega racuna: ";
 	izdajatelj_racuna = "Izdajatelj racuna: ";
 	zadeva = "Zadeva: ";
@@ -2600,8 +2600,8 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 	// pripravimo dokument za tiskanje
 	QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
 	pozicija += visina_glave + velikost_besedila.height();
-	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
-	pozicija += velikost_besedila.height();
+//	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
+//	pozicija += velikost_besedila.height();
 	velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
 	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
 	pozicija += velikost_besedila.height();
