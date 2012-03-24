@@ -2042,7 +2042,8 @@ void racun::napolni_vse_opombe() {
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(1, naslov1);
 
-		ui->tbl_vse_opombe->setColumnWidth(0,35);
+		ui->tbl_vse_opombe->setColumnWidth(0, 35);
+		ui->tbl_vse_opombe->setColumnWidth(1, ui->tbl_vse_opombe->width() - 65);
 
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
@@ -2134,7 +2135,8 @@ void racun::napolni_vnesene_opombe() {
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(1, naslov1);
 
-		ui->tbl_vnesene_opombe->setColumnWidth(0,35);
+		ui->tbl_vnesene_opombe->setColumnWidth(0, 35);
+		ui->tbl_vnesene_opombe->setColumnWidth(1, ui->tbl_vnesene_opombe->width() - 65);
 
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
