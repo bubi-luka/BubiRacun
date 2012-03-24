@@ -1928,8 +1928,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
-		painter.drawRect(0, pozicija, painter.window().width(), velikost_besedila.height() * 14 + razmik_med_vrsticami * 14);
-
 		// zapomnimo si zgornjo visino
 		prvotna_visina = pozicija;
 
