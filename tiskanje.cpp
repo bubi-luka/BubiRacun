@@ -131,7 +131,18 @@ void tiskanje::on_btn_natisni_clicked() {
 
 		} // for ( int i = 1; i <= stevilo_dokumentov; i++ )
 
+		if ( ui->txt_format_tiskanja->text() == "pdf" ) {
+			QMessageBox sporocilo;
+			sporocilo.setText("Tiskanje v PDF format je koncano, \nustvarili ste " + QString::number(stevilo_dokumentov, 10) + " dokumentov.");
+			sporocilo.exec();
+		} // if ( ui->txt_format_tiskanja->text() == "pdf" )
+
 	}	// if ( stevilo_dokumentov != 0 )
+	else {
+		QMessageBox sporocilo;
+		sporocilo.setText("Ni dokumentov za tisk!");
+		sporocilo.exec();
+	}
 
 	close();
 
@@ -1917,6 +1928,8 @@ void tiskanje::natisni_potni_nalog(QString id) {
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
+		painter.drawRect(0, pozicija, painter.window().width(), velikost_besedila.height() * 14 + razmik_med_vrsticami * 14);
+
 		// zapomnimo si zgornjo visino
 		prvotna_visina = pozicija;
 
@@ -2419,7 +2432,7 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 	QString placnik_logotip = "";
 
 	// napolnimo spremenljivke z besedilom
-	stevilka_vnosa = "Stevilka vnosa: ";
+//	stevilka_vnosa = "Stevilka vnosa: ";
 	stevilka_racuna = "Stevilka prejetega racuna: ";
 	izdajatelj_racuna = "Izdajatelj racuna: ";
 	zadeva = "Zadeva: ";
@@ -2589,8 +2602,8 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 	// pripravimo dokument za tiskanje
 	QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
 	pozicija += visina_glave + velikost_besedila.height();
-	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
-	pozicija += velikost_besedila.height();
+//	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
+//	pozicija += velikost_besedila.height();
 	velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
 	painter.drawText(QRectF(0, pozicija, printer.width(), velikost_besedila.height()), Qt::AlignJustify | Qt::TextWordWrap, stevilka_racuna);
 	pozicija += velikost_besedila.height();
@@ -3244,9 +3257,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		if ( narocnik_davcna != "" ) {
 			painter.setFont(debelo);
 			// dolocimo velikost kvadrata, ki ga tvori besedilo (davcna stevilka)
-			velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo + " ");
 			// natisnemo besedilo
-			painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo + " ");
 			painter.setFont(normalno);
 			painter.drawText(QRectF(velikost_besedila.width(), pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_davcna);
 			// nova vrstica
@@ -3466,11 +3479,11 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
-		velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignLeft | Qt::TextWordWrap, besedilo);
+		velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
 		// natisnemo besedilo
-		painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap, besedilo);
+		painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
@@ -3886,7 +3899,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			painter.setPen(*debel_svincnik);
 			painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
-			pozicija += razmik_med_vrsticami * 2 + visina_vrstice;
+			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
 		else if ( racun_tip == "1" ) {
 			besedilo = racun.readLine() + racun.readLine();
@@ -3965,7 +3978,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			painter.setPen(*debel_svincnik);
 			painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
-			pozicija += razmik_med_vrsticami * 2 + visina_vrstice;
+			pozicija += razmik_med_vrsticami + visina_vrstice;
+		}
+		if ( racun_tip == "2" ) {
+			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
 
 	// opombe
@@ -4096,8 +4112,8 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	// nastravitve
 	QFont debelo(ui->txt_druzina_pisave->currentText(), pretvori_v_double(ui->txt_velikost_vecja->text()).toDouble(), QFont::Bold);
 
-	QPen *debel_svincnik = new QPen;
-	debel_svincnik->setWidth(pretvori_v_int(ui->txt_crta_debela->text()).toInt());
+	QPen *tanek_svincnik = new QPen;
+	tanek_svincnik->setWidth(pretvori_v_int(ui->txt_crta_tanka->text()).toInt());
 
 	// priprava spremenljivk
 	QString podjetje_logo = "";
@@ -4180,7 +4196,7 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
 	// crta pod glavo
-	painter.setPen(*debel_svincnik);
+	painter.setPen(*tanek_svincnik);
 	painter.drawLine(0, pozicija, painter.window().width(), pozicija);
 
 	// nova vrstica
@@ -4323,8 +4339,8 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	pozicija += visina_vrstice + razmik_med_vrsticami * 2;
 
 	// crta nad podatki o strani
-	painter.setPen(*debel_svincnik);
-	painter.drawLine(0, painter.window().height() - pozicija, painter.window().width(), painter.window().height() - pozicija);
+//	painter.setPen(*tanek_svincnik);
+//	painter.drawLine(0, painter.window().height() - pozicija, painter.window().width(), painter.window().height() - pozicija);
 
 	// nastavimo novo pozicijo za pisanje
 	pozicija += razmik_med_vrsticami * 4;

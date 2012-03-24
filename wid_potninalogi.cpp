@@ -81,12 +81,16 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
 			sql_napolni.clear();
 
 			// filtriraj po namenu
+			QString s_povratek = "";
 			ui->cb_namen->addItem("");
 			sql_napolni.prepare("SELECT * FROM sif_namen_potnega_naloga");
 			sql_napolni.exec();
 			while ( sql_napolni.next() ) {
 				ui->cb_namen->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()) + ") " +
 															prevedi(sql_napolni.value(sql_napolni.record().indexOf("namen")).toString()));
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("namen")).toString()) == "Povratek" ) {
+					s_povratek = prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString());
+				}
 			}
 			sql_napolni.clear();
 
@@ -95,7 +99,14 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
 			sql_napolni.prepare("SELECT * FROM potni_nalogi WHERE predlagatelj_oseba LIKE '" + pretvori(vApp->id()) + "'");
 			sql_napolni.exec();
 			while ( sql_napolni.next() ) {
-				ui->cb_stranka->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv_ciljnega_podjetja")).toString()));
+				QSqlQuery sql_stranke;
+				sql_stranke.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString() + "'");
+				sql_stranke.exec();
+				while ( sql_stranke.next() ) {
+					if ( ui->cb_stranka->findText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("naziv_ciljnega_podjetja")).toString())) == -1 ) {
+						ui->cb_stranka->addItem(prevedi(sql_stranke.value(sql_stranke.record().indexOf("naziv_ciljnega_podjetja")).toString()));
+					}
+				}
 			}
 			sql_napolni.clear();
 
@@ -108,8 +119,10 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
 				sql_kraj.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString() + "'");
 				sql_kraj.exec();
 				while ( sql_kraj.next() ) {
-					if ( ui->cb_kraj->findText(prevedi(sql_kraj.value(sql_kraj.record().indexOf("kraj_prihoda")).toString())) == -1 ) {
-						ui->cb_kraj->addItem(prevedi(sql_kraj.value(sql_kraj.record().indexOf("kraj_prihoda")).toString()));
+					if ( ui->cb_kraj->findText(prevedi(sql_kraj.value(sql_kraj.record().indexOf("kraj_prihoda")).toString()), Qt::MatchFixedString) == -1 ) {
+						if ( prevedi(sql_kraj.value(sql_kraj.record().indexOf("namen_potovanja")).toString()) != s_povratek ) {
+							ui->cb_kraj->addItem(prevedi(sql_kraj.value(sql_kraj.record().indexOf("kraj_prihoda")).toString()));
+						}
 					}
 				}
 			}
@@ -334,14 +347,6 @@ void wid_potninalogi::napolni() {
 
 		QString stavek = "";
 
-		if ( ui->cb_namen->currentText() != "" ) {
-			stavek += " AND namen_naloga LIKE '" + pretvori(ui->cb_namen->currentText()).left(ui->cb_namen->currentText().indexOf(") ",0)) + "'";
-		}
-
-		if ( ui->cb_stranka->currentText() != "" ) {
-			stavek += " AND naziv_ciljnega_podjetja LIKE '" + pretvori(ui->cb_stranka->currentText()) + "'";
-		}
-
 		if ( ui->cb_prevoz->currentText() != "" ) {
 			stavek += " AND prevozno_sredstvo LIKE '" + pretvori(ui->cb_prevoz->currentText()).left(ui->cb_prevoz->currentText().indexOf(") ",0)) + "'";
 		}
@@ -383,6 +388,54 @@ void wid_potninalogi::napolni() {
 				}
 			}
 
+			// filtriramo glede na kraj prihoda
+			if ( filter == "pozitivno" ) { // filtriramo samo, ce datumi ustrezajo
+				// filtriraj glede na kraj prihoda
+				if ( ui->cb_kraj->currentText() != "" ) {
+					filter = "negativno"; // privzeto nastavimo na negativno vrednost, tako pozitivni zadetki lahko omogocijo pozitivni filter
+					QSqlQuery sql_filter;
+					sql_filter.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+					sql_filter.exec();
+					while ( sql_filter.next() ) {
+						if ( prevedi(sql_filter.value(sql_filter.record().indexOf("kraj_prihoda")).toString()).toLower() == ui->cb_kraj->currentText().toLower() ) {
+							filter = "pozitivno";
+						}
+					}
+				}
+			}
+
+			// filtriramo glede na namen potovanja
+			if ( filter == "pozitivno" ) { // filtriramo samo, ce datumi in kraj prihoda ustrezajo
+				// filtriraj glede na kraj prihoda
+				if ( ui->cb_namen->currentText() != "" ) {
+					filter = "negativno"; // privzeto nastavimo na negativno vrednost, tako pozitivni zadetki lahko omogocijo pozitivni filter
+					QSqlQuery sql_filter;
+					sql_filter.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+					sql_filter.exec();
+					while ( sql_filter.next() ) {
+						if ( ui->cb_namen->currentText().startsWith(prevedi(sql_filter.value(sql_filter.record().indexOf("namen_potovanja")).toString()) + ") ") ) {
+							filter = "pozitivno";
+						}
+					}
+				}
+			}
+
+			// filtriramo glede na stranko
+			if ( filter == "pozitivno" ) { // filtriramo samo, ce datumi in kraj prihoda ustrezajo
+				// filtriraj glede na kraj prihoda
+				if ( ui->cb_stranka->currentText() != "" ) {
+					filter = "negativno"; // privzeto nastavimo na negativno vrednost, tako pozitivni zadetki lahko omogocijo pozitivni filter
+					QSqlQuery sql_filter;
+					sql_filter.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+					sql_filter.exec();
+					while ( sql_filter.next() ) {
+						if ( prevedi(sql_filter.value(sql_filter.record().indexOf("naziv_ciljnega_podjetja")).toString()).toLower() == ui->cb_stranka->currentText().toLower() ) {
+							filter = "pozitivno";
+						}
+					}
+				}
+			}
+
 			if ( filter == "pozitivno" ) {
 				ui->tbl_potninalogi->insertRow(row);
 				ui->tbl_potninalogi->setRowHeight(row, 20);
@@ -395,7 +448,10 @@ void wid_potninalogi::napolni() {
 				while (col <= 11) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "prejemnik_oseba" ) {
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else if ( polja[i] == "prejemnik_oseba" ) {
 						QSqlQuery sql_besedilo;
 						sql_besedilo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 						sql_besedilo.exec();
@@ -405,21 +461,71 @@ void wid_potninalogi::napolni() {
 						}
 					}
 					else if ( polja[i] == "namen_naloga" ) {
-						QSqlQuery sql_besedilo;
-						sql_besedilo.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
-						sql_besedilo.exec();
-						if ( sql_besedilo.next() ) {
-							celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("namen")).toString()));
+						QString s_namen_naloga = "";
+
+						QSqlQuery sql_zdruzek;
+						sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+						sql_zdruzek.exec();
+						while ( sql_zdruzek.next() ) {
+							QSqlQuery sql_besedilo;
+							sql_besedilo.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE id LIKE '" + sql_zdruzek.value(sql_zdruzek.record().indexOf("namen_potovanja")).toString() + "'");
+							sql_besedilo.exec();
+							if ( sql_besedilo.next() ) {
+								if ( !s_namen_naloga.contains(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("namen")).toString()) + ", ") ) {
+									if ( prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("namen")).toString()) != "Povratek" ) {
+										s_namen_naloga += prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("namen")).toString()) + ", ";
+									}
+								}
+							}
 						}
+						celica->setText(s_namen_naloga.left(s_namen_naloga.length() - 2));
 					}
-	//				else if ( polja[i] == "kraj_prihoda" ) {
-	//					QSqlQuery sql_besedilo;
-	//					sql_besedilo.prepare("SELECT * FROM sif_namen_naloga WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
-	//					sql_besedilo.exec();
-	//					if ( sql_besedilo.next() ) {
-	//						celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("namen")).toString()));
-	//					}
-	//				}
+					else if ( polja[i] == "kraj_prihoda" ) {
+						QString s_kraj_prihoda = "";
+						QString s_povratek = "";
+
+						QSqlQuery sql_povratek;
+						sql_povratek.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE namen LIKE '" + pretvori("Povratek") + "'");
+						sql_povratek.exec();
+						if ( sql_povratek.next() ) {
+							s_povratek = prevedi(sql_povratek.value(sql_povratek.record().indexOf("id")).toString());
+						}
+
+						QSqlQuery sql_zdruzek;
+						sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+						sql_zdruzek.exec();
+						while ( sql_zdruzek.next() ) {
+							if ( !s_kraj_prihoda.contains(prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("kraj_prihoda")).toString()) + ", ") ) {
+								if ( prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("namen_potovanja")).toString()) != s_povratek ) {
+									s_kraj_prihoda += prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("kraj_prihoda")).toString()) + ", ";
+								}
+							}
+						}
+						celica->setText(s_kraj_prihoda.left(s_kraj_prihoda.length() - 2));
+					}
+					else if ( polja[i] == "naziv_ciljnega_podjetja" ) {
+						QString s_podjetje = "";
+						QString s_povratek = "";
+
+						QSqlQuery sql_povratek;
+						sql_povratek.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE namen LIKE '" + pretvori("Povratek") + "'");
+						sql_povratek.exec();
+						if ( sql_povratek.next() ) {
+							s_povratek = prevedi(sql_povratek.value(sql_povratek.record().indexOf("id")).toString());
+						}
+
+						QSqlQuery sql_zdruzek;
+						sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+						sql_zdruzek.exec();
+						while ( sql_zdruzek.next() ) {
+							if ( !s_podjetje.contains(prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("naziv_ciljnega_podjetja")).toString()) + ", ") ) {
+								if ( prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("namen_potovanja")).toString()) != s_povratek ) {
+									s_podjetje += prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("naziv_ciljnega_podjetja")).toString()) + ", ";
+								}
+							}
+						}
+						celica->setText(s_podjetje.left(s_podjetje.length() - 2));
+					}
 					else if ( polja[i] == "prevozno_sredstvo" ) {
 						QSqlQuery sql_besedilo;
 						sql_besedilo.prepare("SELECT * FROM sif_prevozna_sredstva WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");

@@ -781,11 +781,11 @@ void racun::napolni() {
 		naslov0->setText("ID");
 		naslov1->setText("Skupina");
 		naslov2->setText("Storitev");
-		naslov3->setText("Stevilo ur dela");
-		naslov4->setText("Urna postavka");
-		naslov5->setText("Popusti");
-		naslov6->setText("DDV");
-		naslov7->setText("Koncni znesek");
+		naslov3->setText("Koncni znesek");
+		naslov4->setText("Stevilo ur dela");
+		naslov5->setText("Urna postavka");
+		naslov6->setText("Popusti");
+		naslov7->setText("DDV");
 
 		ui->tbl_opravila->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_opravila->setHorizontalHeaderItem(1, naslov1);
@@ -826,12 +826,15 @@ void racun::napolni() {
 
 			int col = 0;
 			int i = 0;
-			QString polja[8] = {"id", "opravilo_skupina", "opravilo_storitev", "ur_dela", "urna_postavka", "znesek_popustov", "znesek_ddv", "znesek_koncni"};
+			QString polja[8] = {"id", "opravilo_skupina", "opravilo_storitev", "znesek_koncni", "ur_dela", "urna_postavka", "znesek_popustov", "znesek_ddv"};
 
 			while (col <= 7) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[col] == "opravilo_storitev" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[col] == "opravilo_storitev" ) {
 					QString storitev = "";
 					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("opravilo_rocno")).toString()) == "" ) {
 						storitev = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString());
@@ -1858,7 +1861,12 @@ void racun::napolni_zapise() {
 			while (col <= 2) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
 				ui->tbl_zapisi_2->setItem(row, col, celica);
 
 				col++;
@@ -2034,7 +2042,12 @@ void racun::napolni_vse_opombe() {
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vse_opombe->setHorizontalHeaderItem(1, naslov1);
 
-		ui->tbl_vse_opombe->setColumnWidth(0,35);
+		ui->tbl_vse_opombe->setColumnWidth(0, 35);
+		int sirina = 290;
+		if ( ui->tbl_vse_opombe->width() > sirina ) {
+			sirina = ui->tbl_vse_opombe->width() - 65;
+		}
+		ui->tbl_vse_opombe->setColumnWidth(1, sirina);
 
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
@@ -2057,7 +2070,12 @@ void racun::napolni_vse_opombe() {
 				while (col <= 1) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
 					ui->tbl_vse_opombe->setItem(row, col, celica);
 
 					col++;
@@ -2121,7 +2139,12 @@ void racun::napolni_vnesene_opombe() {
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_vnesene_opombe->setHorizontalHeaderItem(1, naslov1);
 
-		ui->tbl_vnesene_opombe->setColumnWidth(0,35);
+		ui->tbl_vnesene_opombe->setColumnWidth(0, 35);
+		int sirina = 290;
+		if ( ui->tbl_vnesene_opombe->width() > sirina ) {
+			sirina = ui->tbl_vnesene_opombe->width() - 65;
+		}
+		ui->tbl_vnesene_opombe->setColumnWidth(1, sirina);
 
 		int row = 0;
 		for ( int a = 0; a < opombe.count(","); a++ ) {
@@ -2144,7 +2167,12 @@ void racun::napolni_vnesene_opombe() {
 				while (col <= 1) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					if ( polja[i] == "id" ) {
+						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+					}
+					else {
+						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+					}
 					ui->tbl_vnesene_opombe->setItem(row, col, celica);
 
 					col++;

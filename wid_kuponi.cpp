@@ -98,7 +98,10 @@ void wid_kuponi::napolni() {
 			while (col <= 5) {
 
 				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[i] == "prejemnik" ) {
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "prejemnik" ) {
 					QSqlQuery sql_oseba;
 					sql_oseba.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
 					sql_oseba.exec();
