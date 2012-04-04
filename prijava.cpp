@@ -2210,7 +2210,7 @@ void prijava::vnesi_storitve() {
 		opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
 
 			QSqlQuery sql_check_table;
-			sql_check_table.prepare("SELECT * FROM sif_storitve WHERE storitev LIKE '" + pretvori(storitev) + "' AND skupina LIKE '" + pretvori(skupina) + "'");
+			sql_check_table.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '" + pretvori(sklop) + "' AND storitev LIKE '" + pretvori(storitev) + "' AND skupina LIKE '" + pretvori(skupina) + "'");
 			sql_check_table.exec();
 			if ( !sql_check_table.next() ) {
 				QSqlQuery sql_insert_data;

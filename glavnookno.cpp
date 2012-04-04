@@ -25,6 +25,9 @@
 #include "prijava.h"
 #include "popusti.h"
 #include "wid_casovnice.h"
+#include "wid_prihodki.h"
+//#include "wid_izdatki.h"
+//#include "wid_poslovanje.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -73,7 +76,6 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	ui->txt_pozicija->setText(prevedi(vApp->state()));
 
 	ui->actionPoslovanje->setEnabled(false);
-	ui->actionPrihodek->setEnabled(false);
 	ui->actionIzdatek->setEnabled(false);
 
 	// skrijemo polja, ki jih ne potrebujemo
@@ -211,6 +213,33 @@ void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
 
 }
 
+
+void GlavnoOkno::on_actionPrihodek_triggered() {
+
+	wid_prihodki *widpri = new wid_prihodki;
+	ui->scrollArea->setWidget(widpri);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled prihodkov poslovanja!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled prihodkov poslovanja");
+
+}
+
+void GlavnoOkno::on_actionIzdatek_triggered() {
+/*
+	wid_izdatki *widizd = new wid_izdatki;
+	ui->scrollArea->setWidget(widizd);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled poslovnih izdatkov!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled poslovnih izdatkov");
+*/
+}
+
+void GlavnoOkno::on_actionPoslovanje_triggered() {
+/*
+	wid_poslovanje *widpos = new wid_poslovanje;
+	ui->scrollArea->setWidget(widpos);
+	ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled poslovanja!");
+	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled poslovanja");
+*/
+}
 
 void GlavnoOkno::on_actionKilometrina_triggered() {
 
