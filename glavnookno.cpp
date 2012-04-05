@@ -26,7 +26,7 @@
 #include "popusti.h"
 #include "wid_casovnice.h"
 #include "wid_prihodki.h"
-//#include "wid_izdatki.h"
+#include "wid_izdatki.h"
 //#include "wid_poslovanje.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
@@ -76,7 +76,6 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	ui->txt_pozicija->setText(prevedi(vApp->state()));
 
 	ui->actionPoslovanje->setEnabled(false);
-	ui->actionIzdatek->setEnabled(false);
 
 	// skrijemo polja, ki jih ne potrebujemo
 	ui->txt_pozicija->setVisible(false);
@@ -224,12 +223,12 @@ void GlavnoOkno::on_actionPrihodek_triggered() {
 }
 
 void GlavnoOkno::on_actionIzdatek_triggered() {
-/*
+
 	wid_izdatki *widizd = new wid_izdatki;
 	ui->scrollArea->setWidget(widizd);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled poslovnih izdatkov!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled poslovnih izdatkov");
-*/
+
 }
 
 void GlavnoOkno::on_actionPoslovanje_triggered() {
