@@ -1,3 +1,5 @@
+#include <QPalette>
+
 #include "main.h"
 #include "prijava.h"
 #include "varnost.h"
@@ -14,4 +16,5 @@ int main(int argc, char *argv[])
 	prijava *okno_prijava = new prijava;
 	okno_prijava->show();
 	return app.exec();
+
 }
