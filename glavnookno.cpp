@@ -27,7 +27,7 @@
 #include "wid_casovnice.h"
 #include "wid_prihodki.h"
 #include "wid_izdatki.h"
-//#include "wid_poslovanje.h"
+#include "wid_poslovanje.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -74,8 +74,6 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 
 	ui->txt_uporabnik->setText(vApp->id());
 	ui->txt_pozicija->setText(prevedi(vApp->state()));
-
-	ui->actionPoslovanje->setEnabled(false);
 
 	// skrijemo polja, ki jih ne potrebujemo
 	ui->txt_pozicija->setVisible(false);
@@ -232,12 +230,12 @@ void GlavnoOkno::on_actionIzdatek_triggered() {
 }
 
 void GlavnoOkno::on_actionPoslovanje_triggered() {
-/*
+
 	wid_poslovanje *widpos = new wid_poslovanje;
 	ui->scrollArea->setWidget(widpos);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled poslovanja!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled poslovanja");
-*/
+
 }
 
 void GlavnoOkno::on_actionKilometrina_triggered() {

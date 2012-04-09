@@ -34,7 +34,8 @@ HEADERS += \
     sif_dnevnice.h \
     tiskanje.h \
     wid_prihodki.h \
-    wid_izdatki.h
+    wid_izdatki.h \
+    wid_poslovanje.h
 
 SOURCES += \
     main.cpp \
@@ -72,7 +73,8 @@ SOURCES += \
     sif_dnevnice.cpp \
     tiskanje.cpp \
     wid_prihodki.cpp \
-    wid_izdatki.cpp
+    wid_izdatki.cpp \
+    wid_poslovanje.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -107,7 +109,8 @@ FORMS += \
     sif_dnevnice.ui \
     tiskanje.ui \
     wid_prihodki.ui \
-    wid_izdatki.ui
+    wid_izdatki.ui \
+    wid_poslovanje.ui
 
 QT += sql
 
@@ -133,6 +136,9 @@ OTHER_FILES += \
     racun-besedilo-predplacilo.csv \
     racun-besedilo-racun.csv \
     potni-nalog-besedilo-glava.csv
+
+
+
 
 
 
