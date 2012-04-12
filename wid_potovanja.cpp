@@ -105,6 +105,9 @@ void wid_potovanja::napolni() {
 				if ( polja[i] == "id" ) {
 					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
 				}
+				else if ( polja[i] == "cas_odhoda" || polja[i] == "cas_prihoda") {
+					celica->setData(Qt::DisplayRole, QDateTime::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy HH':'mm"));
+				}
 				else if ( polja[i] == "kilometri" ) {
 					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " km");
 				}

@@ -89,6 +89,7 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_format_tiskanja->setHidden(true);
 
 		ui->tab_tiskanje->setCurrentIndex(0);
+
 }
 
 tiskanje::~tiskanje() {
@@ -241,10 +242,12 @@ void tiskanje::prejem(QString vrsta, QString stevilke, QString format) {
 	if ( vrsta == "potni-nalogi" ) {
 		ui->txt_crta_debela->setText("1");
 		ui->txt_velikost_vecja->setText("9");
+		ui->gb_ostalo->setHidden(false);
 	}
 	else {
 		ui->txt_crta_debela->setText("2");
 		ui->txt_velikost_vecja->setText("10");
+		ui->gb_ostalo->setHidden(true);
 	}
 
 }
@@ -2145,7 +2148,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		pozicija += velikost_besedila.height() + razmik_med_vrsticami;
 
 		// preskok na novo stran - Opombe
-		if ( ui->cb_opombe->isChecked() ) {
+		if ( ui->cb_opombe->isChecked() && opombe != "" ) {
 			printer.newPage();
 
 			// natisnemo novo glavo in nogo
