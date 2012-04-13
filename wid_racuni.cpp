@@ -354,6 +354,9 @@ void wid_racuni::napolni() {
 					if ( polja[i] == "id" ) {
 						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
 					}
+					else if ( polja[i] == "datum_izdaje" ) {
+						celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+					}
 					else if ( polja[i] == "tip_racuna" ) {
 						if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
 							celica->setText("Predracun");

@@ -1,21 +1,30 @@
 BenŠTUDENT,Splošno,Priprava na projekt,10.0,20.0,ura
+BenŠTUDENT,Splošno,Ostalo,,,
 BenŠTUDENT,BenANALITIK,Multivariantna analiza,19.5,20.0,ura
 BenŠTUDENT,BenANALITIK,Osnovna analiza,15.0,20.0,ura
+BenŠTUDENT,BenANALITIK,Ostalo,,,
 BenŠTUDENT,BenVPRAŠALNIK,Izdelava,15.0,20.0,ura
 BenŠTUDENT,BenVPRAŠALNIK,Povezava na benstat.si (1 mesec),30.0,20.0,anketa
 BenŠTUDENT,BenVPRAŠALNIK,Prispevek na benstat.si,40.0,20.0,anketa
 BenŠTUDENT,BenVPRAŠALNIK,Povezava na Facebook,0.0,20.0,anketa
+BenŠTUDENT,BenVPRAŠALNIK,Ostalo,,,
 BenŠTUDENT,BenOBLIKOVALEC - Tehnično urejanje,BenOSNOVNI,1.0,20.0,stran
 BenŠTUDENT,BenOBLIKOVALEC - Tehnično urejanje,BenNAPREDNI 1,1.25,20.0,stran
 BenŠTUDENT,BenOBLIKOVALEC - Tehnično urejanje,BenNAPREDNI 2,1.5,20.0,stran
 BenŠTUDENT,BenOBLIKOVALEC - Tehnično urejanje,BenDODATNI,5.0,20.0,element
+BenŠTUDENT,BenOBLIKOVALEC - Tehnično urejanje,Ostalo,,,
 BenŠTUDENT,BenOBLIKOVALEC - Lektoriranje,BenOSNOVNI,1.2,20.0,stran
 BenŠTUDENT,BenOBLIKOVALEC - Lektoriranje,BenNAPREDNI 1,1.5,20.0,stran
 BenŠTUDENT,BenOBLIKOVALEC - Lektoriranje,BenNAPREDNI 2,1.8,20.0,stran
+BenŠTUDENT,BenOBLIKOVALEC - Lektoriranje,Ostalo,,,
 BenŠTUDENT,BenTISKAR,Črno – beli tisk,0.04,20.0,stran
 BenŠTUDENT,BenTISKAR,Barvni tisk,0.5,20.0,stran
 BenŠTUDENT,BenTISKAR,Vezava,13.0,20.0,kos
-BenPODJETNIK,BenRAZISKOVALEC,,,,
-BenPODJETNIK,BenSVETOVALEC,,,,
-BenPODJETNIK,BenANALITIK,,,,
-BenPODJETNIK,BenANKETAR,,,,
+BenŠTUDENT,BenTISKAR,Ostalo,,,
+BenŠTUDENT,Ostalo,,,,
+BenPODJETNIK,BenRAZISKOVALEC,Ostalo,,,
+BenPODJETNIK,BenSVETOVALEC,Ostalo,,,
+BenPODJETNIK,BenANALITIK,Ostalo,,,
+BenPODJETNIK,BenANKETAR,Ostalo,,,
+BenPODJETNIK,Ostalo,,,,
+Ostalo,,,,,

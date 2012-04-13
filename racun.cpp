@@ -60,6 +60,7 @@ racun::racun(QWidget *parent) :
 		ui->txt_status_oddaje_racuna->clear();
 		ui->txt_datum_oddaje_racuna->setDate(QDate::currentDate());
 		ui->txt_datum_placila_avansa->setDate(QDate::currentDate());
+		ui->txt_datum_placila_racuna->setDate(QDate::currentDate());
 
 		ui->txt_odstotek_avansa->setText("0,0 %");
 
@@ -88,7 +89,8 @@ racun::racun(QWidget *parent) :
 		ui->txt_status_racunovodstva->setEnabled(false);
 		ui->txt_rok_placila->setEnabled(false);
 		ui->txt_odstotek_avansa->setEnabled(false);
-		ui->txt_datum_placila_avansa->setEnabled(false);
+//		ui->txt_datum_placila_avansa->setEnabled(false);
+//		ui->txt_datum_placila_racuna->setEnabled(false);
 		ui->txt_datum_izdaje_racuna->setEnabled(false);
 		ui->txt_status_placila->setEnabled(false);
 
@@ -102,8 +104,7 @@ racun::racun(QWidget *parent) :
 		ui->txt_projekt_id->setVisible(false);
 		ui->txt_stranka_id->setVisible(false);
 		ui->txt_id_zapisa_2->setVisible(false);
-		ui->txt_datum_placila_avansa->setHidden(true);
-		ui->lbl_avans_placan->setHidden(true);
+		ui->txt_datum_placila_racuna->setHidden(true);
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -261,8 +262,8 @@ void racun::on_btn_racun_clicked() {
 		QSqlQuery sql_vnesi_projekt;
 		sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
 															"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-															"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa) "
-															"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+															"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa, rok_placila) "
+															"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		sql_vnesi_projekt.bindValue(0, pretvori(""));
 		sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
 		sql_vnesi_projekt.bindValue(2, pretvori(""));
@@ -281,8 +282,9 @@ void racun::on_btn_racun_clicked() {
 		sql_vnesi_projekt.bindValue(15, pretvori(""));
 		sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 		sql_vnesi_projekt.bindValue(17, pretvori(""));
-		sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
+		sql_vnesi_projekt.bindValue(18, pretvori(""));
 		sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
+		sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
 
 		sql_vnesi_projekt.exec();
 
@@ -350,6 +352,9 @@ void racun::on_btn_racun_clicked() {
 	// onemogocimo gumb
 	ui->btn_racun->setEnabled(false);
 
+	// zapremo okno
+	close();
+
 }
 
 void racun::on_btn_predplacilni_racun_clicked() {
@@ -382,8 +387,8 @@ void racun::on_btn_predplacilni_racun_clicked() {
 		QSqlQuery sql_vnesi_projekt;
 		sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
 															"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-															"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa) "
-															"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+															"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa, rok_placila) "
+															"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_racuna->text()));
 		sql_vnesi_projekt.bindValue(1, pretvori("2")); // predplacilo (2), racun (3)
 		sql_vnesi_projekt.bindValue(2, pretvori(ui->txt_status_predracuna->currentText()));
@@ -406,12 +411,13 @@ void racun::on_btn_predplacilni_racun_clicked() {
 		sql_vnesi_projekt.bindValue(11, pretvori(ui->txt_status_racunovodstva->currentText()));
 		sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_avans->text())));
 		sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_odstotek_avansa->text())));
-		sql_vnesi_projekt.bindValue(14, pretvori(ui->txt_status_oddaje_racuna->currentText()));
+		sql_vnesi_projekt.bindValue(14, pretvori(""));
 		sql_vnesi_projekt.bindValue(15, pretvori(ui->txt_datum_oddaje_racuna->text()));
 		sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 		sql_vnesi_projekt.bindValue(17, pretvori(ui->txt_sklic->text()));
-		sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
+		sql_vnesi_projekt.bindValue(18, pretvori(""));
 		sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
+		sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
 
 		sql_vnesi_projekt.exec();
 
@@ -479,6 +485,9 @@ void racun::on_btn_predplacilni_racun_clicked() {
 
 	// onemogocimo gumb
 	ui->btn_predplacilni_racun->setEnabled(false);
+
+	// zapremo okno
+	close();
 
 }
 
@@ -649,14 +658,14 @@ void racun::on_btn_sprejmi_clicked() {
 			if (ui->btn_sprejmi->text() == "Vnesi racun") { // nov vnos se neobstojecega (pred)racuna
 				sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
 																	"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-																	"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe) "
-																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, rok_placila "
+																	") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojec vnos
 				sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
 																	"avtor_oseba = ?, datum_pricetka = ?, datum_konca = ?, datum_izdaje = ?, datum_placila = ?, "
 																	"status_placila = ?, status_racunovodstva = ?, avans = ?, odstotek_avansa = ?, status_oddaje_racuna = ?, "
-																	"datum_oddaje_racuna = ?, stara_stevilka_racuna = ?, sklic = ?, datum_placila_avansa = ?, opombe = ? "
+																	"datum_oddaje_racuna = ?, stara_stevilka_racuna = ?, sklic = ?, datum_placila_avansa = ?, opombe = ?, rok_placila = ? "
 																	"WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 
@@ -680,7 +689,7 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_datum_pricetka->text()));
 			sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_datum_zakljucka->text()));
 			sql_vnesi_projekt.bindValue(8, pretvori(ui->txt_datum_izdaje_racuna->text()));
-			sql_vnesi_projekt.bindValue(9, pretvori(ui->txt_rok_placila->text()));
+			sql_vnesi_projekt.bindValue(9, pretvori(ui->txt_datum_placila_racuna->text()));
 			sql_vnesi_projekt.bindValue(10, pretvori(ui->txt_status_placila->currentText()));
 			sql_vnesi_projekt.bindValue(11, pretvori(ui->txt_status_racunovodstva->currentText()));
 			sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_avans->text())));
@@ -689,19 +698,25 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(15, pretvori(ui->txt_datum_oddaje_racuna->text()));
 			sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 			sql_vnesi_projekt.bindValue(17, pretvori(ui->txt_sklic->text()));
-			sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
+			if ( ui->rb_predracun->isChecked() ) {
+				sql_vnesi_projekt.bindValue(18, pretvori(ui->txt_datum_placila_avansa->text()));
+			}
+			else {
+				sql_vnesi_projekt.bindValue(18, pretvori(""));
+			}
 			sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_vnesene_opombe->text()));
+			sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
 
 			sql_vnesi_projekt.exec();
 
-			if ( ui->rb_predracun->isChecked() && ui->txt_id->text() != "" ) {
+			if ( !ui->rb_predracun->isChecked() && ui->txt_id->text() != "" ) {
 				QSqlQuery sql_poisci_otroke;
-				sql_poisci_otroke.prepare("SELECT * FROM racuni WHERE stevilka_starsa LIKE '" + pretvori(ui->txt_id->text()) + "'");
+				sql_poisci_otroke.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
 				sql_poisci_otroke.exec();
 				while ( sql_poisci_otroke.next() ) {
 					QSqlQuery sql_spremeni_datum;
 					sql_spremeni_datum.prepare("UPDATE racuni SET datum_placila_avansa = ? WHERE id LIKE '" +
-																		 sql_poisci_otroke.value(sql_poisci_otroke.record().indexOf("id")).toString() + "'");
+																		 sql_poisci_otroke.value(sql_poisci_otroke.record().indexOf("stevilka_starsa")).toString() + "'");
 					sql_spremeni_datum.bindValue(0, pretvori(ui->txt_datum_placila_avansa->text()));
 					sql_spremeni_datum.exec();
 					sql_spremeni_datum.clear();
@@ -1000,12 +1015,10 @@ void racun::prejem(QString besedilo) {
 				ui->txt_datum_zakljucka->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_datum_izdaje_racuna->setDate(datum);
-				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila")).toString()), "dd'.'MM'.'yyyy");
+				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("rok_placila")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_rok_placila->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_oddaje_racuna")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_datum_oddaje_racuna->setDate(datum);
-				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila_avansa")).toString()), "dd'.'MM'.'yyyy");
-				ui->txt_datum_placila_avansa->setDate(datum);
 
 				QSqlQuery sql_combo;
 				sql_combo.prepare("SELECT * FROM sif_status_placila WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_placila")).toString() + "'");
@@ -1041,6 +1054,21 @@ void racun::prejem(QString besedilo) {
 
 				ui->txt_sklic->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("sklic")).toString()));
 				ui->txt_vnesene_opombe->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opombe")).toString()));
+
+				// napolni datum placila avansa
+				if ( sql_napolni.value(sql_napolni.record().indexOf("stevilka_starsa")).toString() == "" ) {
+					datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila_avansa")).toString()), "dd'.'MM'.'yyyy");
+					ui->txt_datum_placila_avansa->setDate(datum);
+				}
+				else {
+					QSqlQuery sql_avans;
+					sql_avans.prepare("SELECT * FROM racuni WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_starsa")).toString() + "'");
+					sql_avans.exec();
+					if ( sql_avans.next() ) {
+						datum = QDate::fromString(prevedi(sql_avans.value(sql_avans.record().indexOf("datum_placila_avansa")).toString()), "dd'.'MM'.'yyyy");
+						ui->txt_datum_placila_avansa->setDate(datum);
+					}
+				}
 			}
 
 			// odpri izdelavo racuna in predplacilnega racuna, ce so pogoji za to ustrezni
@@ -1089,7 +1117,7 @@ void racun::prejem(QString besedilo) {
 				ui->txt_datum_izdaje_racuna->setEnabled(false);
 				ui->txt_rok_placila->setEnabled(false);
 				ui->txt_status_oddaje_racuna->setEnabled(false);
-				ui->txt_status_placila->setEnabled(true);					//
+				ui->txt_status_placila->setEnabled(false);
 				ui->txt_status_racunovodstva->setEnabled(true);		//
 				ui->txt_status_oddaje_racuna->setEnabled(true);		//
 				ui->txt_datum_oddaje_racuna->setEnabled(true);		//
@@ -1100,6 +1128,13 @@ void racun::prejem(QString besedilo) {
 				ui->btn_sprejmi->setEnabled(true);								//
 				ui->btn_opravilo->setEnabled(false);
 				ui->btn_brisi_opravilo->setEnabled(false);
+
+				// zapri celo polje o placilu
+				ui->tab_racuni->removeTab(1);
+			}
+			// onemogoci polja pri racunu
+			if ( ui->rb_racun->isChecked() ) {
+				ui->txt_datum_placila_avansa->setEnabled(false);
 			}
 
 			// ce obstaja racun in predplacilni racun, onemogoci shranjevanje podatkov v predracun
@@ -1411,6 +1446,12 @@ void racun::on_rb_predracun_toggled() {
 		ui->btn_racun->setVisible(true);
 		ui->btn_predplacilni_racun->setVisible(true);
 
+		ui->lbl_avans_placan->setVisible(true);
+		ui->txt_datum_placila_avansa->setVisible(true);
+
+		ui->lbl_racun_placan->setVisible(false);
+		ui->txt_datum_placila_racuna->setVisible(false);
+
 		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" ra", " predra"));
 		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" ra", " predra"));
 		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
@@ -1419,7 +1460,6 @@ void racun::on_rb_predracun_toggled() {
 		ui->lbl_datum_konca->setText("Predviden rok izvedbe");
 		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
 		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" ra", " predra"));
-		ui->lbl_avans_placan->setText("Rok placila avansa");
 	}
 
 }
@@ -1441,6 +1481,12 @@ void racun::on_rb_predplacilo_toggled() {
 		ui->btn_racun->setVisible(false);
 		ui->btn_predplacilni_racun->setVisible(false);
 
+		ui->lbl_avans_placan->setVisible(true);
+		ui->txt_datum_placila_avansa->setVisible(true);
+
+		ui->lbl_racun_placan->setVisible(false);
+		ui->txt_datum_placila_racuna->setVisible(false);
+
 		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
 		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
 		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
@@ -1449,7 +1495,6 @@ void racun::on_rb_predplacilo_toggled() {
 		ui->lbl_datum_konca->setText("Predviden rok izvedbe");
 		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
 		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra").replace(" ra", " predplacilnega ra"));
-		ui->lbl_avans_placan->setText("Datum placila avansa");
 	}
 
 }
@@ -1471,6 +1516,12 @@ void racun::on_rb_racun_toggled() {
 		ui->btn_racun->setVisible(false);
 		ui->btn_predplacilni_racun->setVisible(false);
 
+		ui->lbl_avans_placan->setVisible(true);
+		ui->txt_datum_placila_avansa->setVisible(true);
+
+		ui->lbl_racun_placan->setVisible(true);
+		ui->txt_datum_placila_racuna->setVisible(true);
+
 		setWindowTitle(windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
 		ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
 		ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
@@ -1479,7 +1530,6 @@ void racun::on_rb_racun_toggled() {
 		ui->lbl_datum_konca->setText("Datum zakljucka");
 		ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
 		ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
-		ui->lbl_avans_placan->setText("Datum placila avansa");
 	}
 
 }

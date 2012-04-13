@@ -147,7 +147,6 @@ opravila::opravila(QWidget *parent) :
 				}
 			}
 			sql_fill.clear();
-			ui->txt_sklop->addItem("Ostalo");
 
 			sql_fill.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '%" + pretvori("max_pop_facebook") + "'");
 			sql_fill.exec();
@@ -550,7 +549,6 @@ void opravila::on_txt_sklop_currentIndexChanged() {
 		}
 		base.close();
 
-		ui->txt_skupina->addItem("Ostalo");
 	}
 	else if ( ui->txt_sklop->currentText() == "Ostalo" ) {
 		ui->label_53->setHidden(false);
@@ -598,7 +596,6 @@ void opravila::on_txt_skupina_currentIndexChanged() {
 		}
 		base.close();
 
-		ui->txt_storitev->addItem("Ostalo");
 	}
 	else if ( ui->txt_skupina->currentText() == "Ostalo" ) {
 		ui->label_53->setHidden(false);

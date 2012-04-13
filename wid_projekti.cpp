@@ -263,6 +263,9 @@ void wid_projekti::napolni() {
 					if ( polja[i] == "id" ) {
 						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
 					}
+					else if ( polja[i] == "pricetek_dela"  || polja[i] == "konec_dela") {
+						celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+					}
 					else if ( polja[i] == "stranka" ) {
 						QSqlQuery sql_stranka;
 						sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
