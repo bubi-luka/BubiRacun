@@ -26,8 +26,8 @@ wid_casovnice::wid_casovnice(QWidget *parent) :
 		ui->txt_projekt->clear();
 		ui->txt_racun->clear();
 
-		// nastavi privzeto polnenje samo aktivnih racunov
-		ui->cb_aktivnost->setChecked(true);
+		// nastavi privzeto polnenje vseh racunov
+		ui->cb_aktivnost->setChecked(false);
 
 		// napolnimo podatke
 		napolni_sezname();
