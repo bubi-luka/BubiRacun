@@ -89,6 +89,7 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_format_tiskanja->setHidden(true);
 
 		ui->tab_tiskanje->setCurrentIndex(0);
+
 }
 
 tiskanje::~tiskanje() {
@@ -241,10 +242,12 @@ void tiskanje::prejem(QString vrsta, QString stevilke, QString format) {
 	if ( vrsta == "potni-nalogi" ) {
 		ui->txt_crta_debela->setText("1");
 		ui->txt_velikost_vecja->setText("9");
+		ui->gb_ostalo->setHidden(false);
 	}
 	else {
 		ui->txt_crta_debela->setText("2");
 		ui->txt_velikost_vecja->setText("10");
+		ui->gb_ostalo->setHidden(true);
 	}
 
 }
@@ -2145,7 +2148,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		pozicija += velikost_besedila.height() + razmik_med_vrsticami;
 
 		// preskok na novo stran - Opombe
-		if ( ui->cb_opombe->isChecked() ) {
+		if ( ui->cb_opombe->isChecked() && opombe != "" ) {
 			printer.newPage();
 
 			// natisnemo novo glavo in nogo
@@ -3018,8 +3021,18 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			racun_rok_izvedbe = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_konca")).toString());
 			racun_avans = prevedi(sql_racun.value(sql_racun.record().indexOf("odstotek_avansa")).toString());
 			racun_znesek_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("avans")).toString());
-			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila")).toString());
-			racun_datum_placila_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
+			racun_rok_placila = prevedi(sql_racun.value(sql_racun.record().indexOf("rok_placila")).toString());
+			if ( sql_racun.value(sql_racun.record().indexOf("stevilka_starsa")).toString() == "" ) {
+				racun_datum_placila_avansa = prevedi(sql_racun.value(sql_racun.record().indexOf("datum_placila_avansa")).toString());
+			}
+			else {
+				QSqlQuery sql_stars;
+				sql_stars.prepare("SELECT * FROM racuni WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("stevilka_starsa")).toString() + "'");
+				sql_stars.exec();
+				if ( sql_stars.next() ) {
+					racun_datum_placila_avansa = prevedi(sql_stars.value(sql_stars.record().indexOf("datum_placila_avansa")).toString());
+				}
+			}
 			racun_stevilka_sklica = prevedi(sql_racun.value(sql_racun.record().indexOf("sklic")).toString());
 			racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
 

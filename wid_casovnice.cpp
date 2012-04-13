@@ -26,8 +26,8 @@ wid_casovnice::wid_casovnice(QWidget *parent) :
 		ui->txt_projekt->clear();
 		ui->txt_racun->clear();
 
-		// nastavi privzeto polnenje samo aktivnih racunov
-		ui->cb_aktivnost->setChecked(true);
+		// nastavi privzeto polnenje vseh racunov
+		ui->cb_aktivnost->setChecked(false);
 
 		// napolnimo podatke
 		napolni_sezname();
@@ -90,6 +90,10 @@ void wid_casovnice::on_cb_aktivnost_toggled() {
 void wid_casovnice::on_txt_leto_currentIndexChanged() {
 
 	if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
+		napolni();
+	}
+	else if ( ui->txt_leto->currentText() == "" ) {
+		ui->txt_mesec->setCurrentIndex(ui->txt_mesec->findText(""));
 		napolni();
 	}
 
@@ -392,7 +396,12 @@ void wid_casovnice::napolni_sezname() {
 
 	// izberi trenuten datum
 	ui->txt_leto->setCurrentIndex(ui->txt_leto->findText(QDate::currentDate().toString("yyyy")));
-	ui->txt_mesec->setCurrentIndex(ui->txt_mesec->findText(QDate::currentDate().toString("MM") + ")", Qt::MatchStartsWith));
+	if ( ui->txt_leto->currentText() != "" ) {
+		ui->txt_mesec->setCurrentIndex(ui->txt_mesec->findText(QDate::currentDate().toString("MM") + ")", Qt::MatchStartsWith));
+	}
+	else {
+		ui->txt_mesec->setCurrentIndex(ui->txt_mesec->findText(""));
+	}
 
 	ui->txt_avtor->setCurrentIndex(ui->txt_avtor->findText(vApp->id() + ") ", Qt::MatchStartsWith));
 
@@ -441,8 +450,8 @@ void wid_casovnice::napolni() {
 
 		// set proper width to the first four columns
 
-		ui->tbl_casovnice->setColumnWidth(0, 35);
-		ui->tbl_casovnice->setColumnWidth(1, 35);
+		ui->tbl_casovnice->setColumnWidth(0, 0);
+		ui->tbl_casovnice->setColumnWidth(1, 0);
 		ui->tbl_casovnice->setColumnWidth(2, 200);
 		ui->tbl_casovnice->setColumnWidth(3, 400);
 		ui->tbl_casovnice->setColumnWidth(4, 60);

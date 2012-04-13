@@ -451,6 +451,9 @@ void wid_potninalogi::napolni() {
 					if ( polja[i] == "id" ) {
 						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
 					}
+					else if ( polja[i] == "datum_naloga" ) {
+						celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+					}
 					else if ( polja[i] == "prejemnik_oseba" ) {
 						QSqlQuery sql_besedilo;
 						sql_besedilo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
