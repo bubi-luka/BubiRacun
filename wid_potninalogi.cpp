@@ -4,6 +4,7 @@
 #include <QPrintDialog>
 #include <QPainter>
 #include <QFileDialog>
+#include <QStyledItemDelegate>
 
 #include "wid_potninalogi.h"
 #include "ui_wid_potninalogi.h"
@@ -11,6 +12,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "datum.h"
 
 wid_potninalogi::wid_potninalogi(QWidget *parent) :
     QWidget(parent),
@@ -335,6 +337,11 @@ void wid_potninalogi::napolni() {
 		ui->tbl_potninalogi->setHorizontalHeaderItem(9, naslov9);
 		ui->tbl_potninalogi->setHorizontalHeaderItem(10, naslov10);
 		ui->tbl_potninalogi->setHorizontalHeaderItem(11, naslov11);
+
+		ui->tbl_potninalogi->setColumnWidth(0, 35);
+
+		datum *delegate = new datum(this);
+		ui->tbl_potninalogi->setItemDelegateForColumn(3, delegate);
 
 		QString projekt = "";
 

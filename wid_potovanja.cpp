@@ -6,6 +6,7 @@
 #include "potovanja.h"
 #include "kodiranje.h"
 #include "potninalogi.h"
+#include "datum.h"
 
 wid_potovanja::wid_potovanja(QWidget *parent) :
     QWidget(parent),
@@ -86,6 +87,12 @@ void wid_potovanja::napolni() {
 		ui->tbl_potovanja->setHorizontalHeaderItem(3, naslov3);
 		ui->tbl_potovanja->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_potovanja->setHorizontalHeaderItem(5, naslov5);
+
+		ui->tbl_potovanja->setColumnWidth(0, 35);
+
+		datum *delegate = new datum(this);
+		ui->tbl_potovanja->setItemDelegateForColumn(3, delegate);
+		ui->tbl_potovanja->setItemDelegateForColumn(4, delegate);
 
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");

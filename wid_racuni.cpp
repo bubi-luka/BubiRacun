@@ -13,6 +13,7 @@
 #include "potninalogi.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "datum.h"
 
 wid_racuni::wid_racuni(QWidget *parent) :
     QWidget(parent),
@@ -247,6 +248,11 @@ void wid_racuni::napolni() {
 		ui->tbl_racuni->setHorizontalHeaderItem(7, naslov7);
 		ui->tbl_racuni->setHorizontalHeaderItem(8, naslov8);
 		ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
+
+		ui->tbl_racuni->setColumnWidth(0, 35);
+
+		datum *delegate = new datum(this);
+		ui->tbl_racuni->setItemDelegateForColumn(3, delegate);
 
 		QString projekt = "";
 

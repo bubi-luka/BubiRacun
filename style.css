@@ -1,0 +1,9 @@
+QMainWindow::separator {
+	background:white;
+	}
+
+QLineEdit  {
+/*	background-color:red;
+	border:1px solid white;*/
+}
+

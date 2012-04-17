@@ -366,6 +366,8 @@ void stranke::napolni_projekte() {
 		ui->tbl_projekti->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_projekti->setHorizontalHeaderItem(5, naslov5);
 
+		ui->tbl_projekti->setColumnWidth(0, 35);
+
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM projekti WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "' AND stranka LIKE '" + pretvori(ui->txt_id->text()) + "'" + stavek);
 		sql_fill.exec();
