@@ -3045,7 +3045,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			sql_stars.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(racun_id_starsa) + "'");
 			sql_stars.exec();
 			if ( sql_stars.next() ) {
-				racun_stevilka_starsa = prevedi(sql_racun.value(sql_racun.record().indexOf("stevilka_racuna")).toString());
+				racun_stevilka_starsa = prevedi(sql_stars.value(sql_stars.record().indexOf("stevilka_racuna")).toString());
 			}
 		}
 

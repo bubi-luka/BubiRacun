@@ -162,7 +162,7 @@ void wid_uporabnik::napolni() {
 		ui->tbl_uporabnik->setHorizontalHeaderItem(6, naslov6);
 		ui->tbl_uporabnik->setHorizontalHeaderItem(7, naslov7);
 		ui->tbl_uporabnik->setHorizontalHeaderItem(8, naslov8);
-		ui->tbl_uporabnik->setColumnWidth(0, 20);
+		ui->tbl_uporabnik->setColumnWidth(0, 35);
 		ui->tbl_uporabnik->setColumnWidth(1, 60);
 		ui->tbl_uporabnik->setColumnWidth(2, 60);
 		ui->tbl_uporabnik->setColumnWidth(3, 60);

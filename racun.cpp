@@ -85,9 +85,9 @@ racun::racun(QWidget *parent) :
 		ui->txt_avans->setEnabled(false);
 		ui->txt_stara_stevilka_racuna->setEnabled(false);
 		ui->txt_status_predracuna->setEnabled(false);
-		ui->txt_datum_oddaje_racuna->setEnabled(false);
+//		ui->txt_datum_oddaje_racuna->setEnabled(false);
 		ui->txt_status_racunovodstva->setEnabled(false);
-		ui->txt_rok_placila->setEnabled(false);
+		// ui->txt_rok_placila->setEnabled(false);
 		ui->txt_odstotek_avansa->setEnabled(false);
 //		ui->txt_datum_placila_avansa->setEnabled(false);
 //		ui->txt_datum_placila_racuna->setEnabled(false);
@@ -1019,6 +1019,8 @@ void racun::prejem(QString besedilo) {
 				ui->txt_rok_placila->setDate(datum);
 				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_oddaje_racuna")).toString()), "dd'.'MM'.'yyyy");
 				ui->txt_datum_oddaje_racuna->setDate(datum);
+				datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila")).toString()), "dd'.'MM'.'yyyy");
+				ui->txt_datum_placila_racuna->setDate(datum);
 
 				QSqlQuery sql_combo;
 				sql_combo.prepare("SELECT * FROM sif_status_placila WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_placila")).toString() + "'");
@@ -1115,12 +1117,12 @@ void racun::prejem(QString besedilo) {
 
 				ui->txt_sklic->setEnabled(false);
 				ui->txt_datum_izdaje_racuna->setEnabled(false);
-				ui->txt_rok_placila->setEnabled(false);
+				// ui->txt_rok_placila->setEnabled(false);
 				ui->txt_status_oddaje_racuna->setEnabled(false);
 				ui->txt_status_placila->setEnabled(false);
 				ui->txt_status_racunovodstva->setEnabled(true);		//
 				ui->txt_status_oddaje_racuna->setEnabled(true);		//
-				ui->txt_datum_oddaje_racuna->setEnabled(true);		//
+//				ui->txt_datum_oddaje_racuna->setEnabled(true);		//
 				ui->txt_odstotek_avansa->setEnabled(false);
 				ui->txt_datum_placila_avansa->setEnabled(false);
 
@@ -1156,11 +1158,11 @@ void racun::prejem(QString besedilo) {
 
 					ui->txt_sklic->setEnabled(false);
 					ui->txt_datum_izdaje_racuna->setEnabled(false);
-					ui->txt_rok_placila->setEnabled(false);
+					// ui->txt_rok_placila->setEnabled(false);
 					ui->txt_status_oddaje_racuna->setEnabled(false);
 					ui->txt_status_placila->setEnabled(false);
 					ui->txt_status_racunovodstva->setEnabled(true);		//
-					ui->txt_datum_oddaje_racuna->setEnabled(false);
+//					ui->txt_datum_oddaje_racuna->setEnabled(false);
 					ui->txt_odstotek_avansa->setEnabled(false);
 				//		ui->txt_datum_placila_avansa->setEnabled(false);
 
@@ -1189,6 +1191,19 @@ void racun::prejem(QString besedilo) {
 
 		}
 		base.close();
+
+		// preveri polje avans in glede na to polje uskladi z avansom povezana polja
+		if ( ui->txt_odstotek_avansa->text() == "0,0 %" ) {
+			ui->txt_datum_placila_avansa->setHidden(true);
+			ui->lbl_avans_placan->setHidden(true);
+		}
+		else if ( ui->txt_odstotek_avansa->text() == "100,0 %" ) {
+			ui->txt_datum_placila_racuna->setEnabled(false);
+		}
+		else {
+			ui->txt_datum_placila_avansa->setHidden(false);
+			ui->lbl_avans_placan->setHidden(false);
+		}
 
 		napolni();
 
@@ -1539,11 +1554,15 @@ void racun::on_txt_odstotek_avansa_editingFinished() {
 	ui->txt_odstotek_avansa->setText(pretvori_iz_double(pretvori_v_double(ui->txt_odstotek_avansa->text())) + " %");
 
 	ui->txt_avans->setText(pretvori_iz_double(QString::number(pretvori_v_double(ui->txt_znesek->text()).toDouble() *
-																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
+																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 1)) + " EUR");
 
 	if ( ui->txt_odstotek_avansa->text() == "0,0 %" ) {
 		ui->txt_datum_placila_avansa->setHidden(true);
 		ui->lbl_avans_placan->setHidden(true);
+	}
+	else if ( ui->txt_odstotek_avansa->text() == "100,0 %" ) {
+		ui->txt_datum_placila_racuna->setEnabled(false);
+		ui->txt_datum_placila_racuna->setDate(ui->txt_datum_placila_avansa->date());
 	}
 	else {
 		ui->txt_datum_placila_avansa->setHidden(false);
@@ -1799,9 +1818,9 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
 	if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
 		ui->txt_status_predracuna->setEnabled(true);
-		ui->txt_datum_oddaje_racuna->setEnabled(true);
+//		ui->txt_datum_oddaje_racuna->setEnabled(true);
 		ui->txt_status_racunovodstva->setEnabled(true);
-		ui->txt_rok_placila->setEnabled(true);
+		// ui->txt_rok_placila->setEnabled(true);
 		ui->txt_odstotek_avansa->setEnabled(true);
 		ui->txt_datum_placila_avansa->setEnabled(true);
 		ui->txt_datum_izdaje_racuna->setEnabled(true);
@@ -1810,9 +1829,9 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 	}
 	else {
 		ui->txt_status_predracuna->setEnabled(false);
-		ui->txt_datum_oddaje_racuna->setEnabled(false);
+//		ui->txt_datum_oddaje_racuna->setEnabled(false);
 		ui->txt_status_racunovodstva->setEnabled(false);
-		ui->txt_rok_placila->setEnabled(false);
+		// ui->txt_rok_placila->setEnabled(false);
 		ui->txt_odstotek_avansa->setEnabled(false);
 		ui->txt_datum_placila_avansa->setEnabled(false);
 		ui->txt_datum_izdaje_racuna->setEnabled(false);

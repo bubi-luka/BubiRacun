@@ -736,6 +736,8 @@ void wid_prihodki::napolni_mesec_tabela() {
 		ui->tbl_storitve->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_storitve->setHorizontalHeaderItem(5, naslov5);
 
+		ui->tbl_storitve->setColumnWidth(0, 35);
+
 		/**
 			* 1) poiscemo racune, ki spadajo v dani okvir
 			* 2) shranimo id-je racunov v seznam
@@ -1137,6 +1139,8 @@ void wid_prihodki::napolni_letni_tabela() {
 		ui->tbl_storitve_3->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_storitve_3->setHorizontalHeaderItem(5, naslov5);
 
+		ui->tbl_storitve_3->setColumnWidth(0, 35);
+
 		/**
 			* 1) poiscemo racune, ki spadajo v dani okvir
 			* 2) shranimo id-je racunov v seznam
@@ -1535,6 +1539,8 @@ void wid_prihodki::napolni_skupni_tabela() {
 		ui->tbl_storitve_4->setHorizontalHeaderItem(3, naslov3);
 		ui->tbl_storitve_4->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_storitve_4->setHorizontalHeaderItem(5, naslov5);
+
+		ui->tbl_storitve_4->setColumnWidth(0, 35);
 
 		/**
 			* 1) poiscemo racune, ki spadajo v dani okvir

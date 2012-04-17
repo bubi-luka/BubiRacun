@@ -35,7 +35,8 @@ HEADERS += \
     tiskanje.h \
     wid_prihodki.h \
     wid_izdatki.h \
-    wid_poslovanje.h
+    wid_poslovanje.h \
+    datum.h
 
 SOURCES += \
     main.cpp \
@@ -135,7 +136,16 @@ OTHER_FILES += \
     racun-besedilo-predracun.csv \
     racun-besedilo-predplacilo.csv \
     racun-besedilo-racun.csv \
-    potni-nalog-besedilo-glava.csv
+    potni-nalog-besedilo-glava.csv \
+    style.css
+
+
+
+
+
+
+
+
 
 
 

@@ -99,6 +99,8 @@ void wid_podjetje::napolni() {
 		ui->tbl_podjetje->setHorizontalHeaderItem(8, naslov8);
 		ui->tbl_podjetje->setHorizontalHeaderItem(9, naslov9);
 
+		ui->tbl_podjetje->setColumnWidth(0, 35);
+
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM podjetje");
 		sql_fill.exec();

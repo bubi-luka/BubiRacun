@@ -94,6 +94,7 @@ void wid_stranke::napolni() {
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
 		QTableWidgetItem *naslov7 = new QTableWidgetItem;
+
 		naslov0->setText("ID");
 		naslov1->setText("Ime/Naziv");
 		naslov2->setText("Priimek/Polni naziv");
@@ -112,7 +113,7 @@ void wid_stranke::napolni() {
 		ui->tbl_stranke->setHorizontalHeaderItem(6, naslov6);
 		ui->tbl_stranke->setHorizontalHeaderItem(7, naslov7);
 
-		ui->tbl_stranke->setColumnWidth(0, 20);
+		ui->tbl_stranke->setColumnWidth(0, 35);
 		ui->tbl_stranke->setColumnWidth(1, 80);
 		ui->tbl_stranke->setColumnWidth(2, 120);
 		ui->tbl_stranke->setColumnWidth(3, 140);

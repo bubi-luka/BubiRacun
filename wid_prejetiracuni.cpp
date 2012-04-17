@@ -11,6 +11,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "datum.h"
 
 wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
     QWidget(parent),
@@ -184,7 +185,7 @@ void wid_prejetiracuni::napolni() {
 		// clear previous content
 		ui->tbl_racuni->clear();
 
-		for (int i = 0; i <= 6; i++) {
+		for (int i = 0; i <= 7; i++) {
 			ui->tbl_racuni->removeColumn(0);
 		}
 
@@ -203,6 +204,7 @@ void wid_prejetiracuni::napolni() {
 		ui->tbl_racuni->insertColumn(4);
 		ui->tbl_racuni->insertColumn(5);
 		ui->tbl_racuni->insertColumn(6);
+		ui->tbl_racuni->insertColumn(7);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -211,6 +213,7 @@ void wid_prejetiracuni::napolni() {
 		QTableWidgetItem *naslov4 = new QTableWidgetItem;
 		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
+		QTableWidgetItem *naslov7 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
 		naslov1->setText("Stevilka racuna");
@@ -219,6 +222,7 @@ void wid_prejetiracuni::napolni() {
 		naslov4->setText("Rok placila");
 		naslov5->setText("Status placila");
 		naslov6->setText("Status racunovodstva");
+		naslov7->setText("Znesek");
 
 		ui->tbl_racuni->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_racuni->setHorizontalHeaderItem(1, naslov1);
@@ -227,6 +231,13 @@ void wid_prejetiracuni::napolni() {
 		ui->tbl_racuni->setHorizontalHeaderItem(4, naslov4);
 		ui->tbl_racuni->setHorizontalHeaderItem(5, naslov5);
 		ui->tbl_racuni->setHorizontalHeaderItem(6, naslov6);
+		ui->tbl_racuni->setHorizontalHeaderItem(7, naslov7);
+
+		ui->tbl_racuni->setColumnWidth(0, 35);
+
+		datum *delegate = new datum(this);
+		ui->tbl_racuni->setItemDelegateForColumn(2, delegate);
+		ui->tbl_racuni->setItemDelegateForColumn(4, delegate);
 
 		QString projekt = "";
 
@@ -292,10 +303,10 @@ void wid_prejetiracuni::napolni() {
 				ui->tbl_racuni->setRowHeight(row, 20);
 				int col = 0;
 				int i = 0;
-				QString polja[7] = {"id", "stevilka_racuna", "datum_prejema", "izdajatelj_kratki", "rok_placila", "status_placila",
-														"status_racunovodstva"};
+				QString polja[8] = {"id", "stevilka_racuna", "datum_prejema", "izdajatelj_kratki", "rok_placila", "status_placila",
+														"status_racunovodstva", "znesek"};
 
-				while (col <= 6) {
+				while (col <= 7) {
 
 					QTableWidgetItem *celica = new QTableWidgetItem;
 					if ( polja[i] == "id" ) {
@@ -303,6 +314,10 @@ void wid_prejetiracuni::napolni() {
 					}
 					else if ( polja[i] == "datum_prejema" || polja[i] == "rok_placila") {
 						celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+					}
+					else if ( polja[i] == "znesek" ) {
+						QString vrednost = prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " EUR";
+						celica->setText(vrednost);
 					}
 					else {
 						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
