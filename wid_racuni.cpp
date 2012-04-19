@@ -5,6 +5,7 @@
 #include <QPrintDialog>
 #include <QDir>
 #include <QFileDialog>
+#include <QSortFilterProxyModel>
 
 #include "wid_racuni.h"
 #include "ui_wid_racuni.h"
@@ -73,24 +74,24 @@ wid_racuni::wid_racuni(QWidget *parent) :
 			// filtriraj po letu
 			ui->cb_leto->addItem("");
 
-			int min_leto = QDate::currentDate().year();
-			int max_leto = QDate::currentDate().year();
-
 			sql_napolni.prepare("SELECT * FROM racuni WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "'");
 			sql_napolni.exec();
 			while ( sql_napolni.next() ) {
-				if ( min_leto > prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()).right(4).toInt() ) {
-					min_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()).right(4).toInt();
+				QString leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()).right(4);
+				if ( ui->cb_leto->findText(leto) == -1 ) {
+					ui->cb_leto->addItem(leto);
 				}
-				if ( max_leto < prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()).right(4).toInt() ) {
-					max_leto = prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()).right(4).toInt();
-				}
-			}
-
-			for ( int i = min_leto; i <= max_leto; i++ ) {
-				ui->cb_leto->addItem(QString::number(i, 10));
 			}
 			sql_napolni.clear();
+
+			// razvrscanje let po vrsti
+			QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->cb_leto);
+			proxy->setSourceModel(ui->cb_leto->model());
+			// spustni seznam prepisemo
+			ui->cb_leto->model()->setParent(proxy);
+			ui->cb_leto->setModel(proxy);
+			// razvrsti
+			ui->cb_leto->model()->sort(0);
 
 			// filtriraj po statusu placila
 			ui->cb_placilo->addItem("");

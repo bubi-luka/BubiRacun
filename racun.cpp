@@ -359,6 +359,8 @@ void racun::on_btn_racun_clicked() {
 
 void racun::on_btn_predplacilni_racun_clicked() {
 
+	ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
+
 	QString stevilka_racuna_org = ui->txt_stevilka_racuna->text();
 
 	QString app_path = QApplication::applicationDirPath();
@@ -688,7 +690,12 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(5, pretvori(vApp->id()));
 			sql_vnesi_projekt.bindValue(6, pretvori(ui->txt_datum_pricetka->text()));
 			sql_vnesi_projekt.bindValue(7, pretvori(ui->txt_datum_zakljucka->text()));
-			sql_vnesi_projekt.bindValue(8, pretvori(ui->txt_datum_izdaje_racuna->text()));
+			if ( ui->txt_stevilka_racuna->text() == "" && ui->txt_stara_stevilka_racuna->text() == "" ) { // racun je izdan
+				sql_vnesi_projekt.bindValue(8, "");
+			}
+			else { // racun ni izdan
+				sql_vnesi_projekt.bindValue(8, pretvori(ui->txt_datum_izdaje_racuna->text()));
+			}
 			sql_vnesi_projekt.bindValue(9, pretvori(ui->txt_datum_placila_racuna->text()));
 			sql_vnesi_projekt.bindValue(10, pretvori(ui->txt_status_placila->currentText()));
 			sql_vnesi_projekt.bindValue(11, pretvori(ui->txt_status_racunovodstva->currentText()));
@@ -1229,6 +1236,9 @@ void racun::prejem(QString besedilo) {
 
 	napolni_vnesene_opombe();
 	napolni_vse_opombe();
+
+	// pri predplacilnem racunu nastavi status kot Placan
+	ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
 
 	/*
 	if ( ui->txt_status_predracuna->currentText() == "Potrjen" ) {
@@ -1838,6 +1848,15 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 		ui->txt_status_placila->setEnabled(false);
 		ui->txt_stevilka_racuna->setText("");
 		ui->txt_sklic->setText("");
+	}
+
+}
+
+
+void racun::on_txt_status_predracuna_currentIndexChanged() {
+
+	if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) {
+		ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
 	}
 
 }

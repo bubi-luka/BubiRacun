@@ -216,7 +216,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 				datum += "0";
 			}
 			datum += QString::number(dan, 10) + ".";
-			QString vrednost = ui->tbl_casovnice->item(vrstica, stolpec)->text();
+			QString vrednost = pretvori_v_double(ui->tbl_casovnice->item(vrstica, stolpec)->text());
 
 			QString id = ui->tbl_casovnice->item(vrstica, 0)->text();
 
@@ -249,7 +249,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 				// prestejemo vse zapise v tej casovnici
 				int max_casovnic = casovnice.count(";");
 
-				QString casovnice_new = datum + "," + vrednost + ";";
+				QString casovnice_new = datum + "," + pretvori_v_double(vrednost) + ";";
 
 				// ce je to nasa prva casovnica, zakljucimo vnos
 				// ce obstajajo se druge casovnice, jih dodamo v nas seznam
@@ -274,7 +274,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 				}
 
 				// izbrisemo nulto vrednost
-				if ( vrednost == "0" || vrednost == "" || vrednost == "0.0" ) {
+				if ( vrednost == "0" || vrednost == "" || vrednost == "0.0" || vrednost == "0.00") {
 					casovnice_new.remove(datum + "," + vrednost + ";");
 				}
 
@@ -287,7 +287,26 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
 			}
 			base.close();
 
+			// prepisi vrednost polja na prvotno stanje
+			// da preprecimo morebitno ponavljanje zanke, vnesemo izkljucitveno besedilo, ki ga bomo na koncu izbrisali
+			QString cb_aktivnost_besedilo = ui->cb_aktivnost->text();
+			ui->cb_aktivnost->setText("Vnasam");
+
+			// pretvorimo vrednost v ustrezno obliko
+			vrednost = pretvori_iz_double(pretvori_v_double(vrednost));
+
+			// vnesi novo vrednost v ustrezno polje
+			QTableWidgetItem *t_vrednost = new QTableWidgetItem;
+			t_vrednost->setText(vrednost);
+			ui->tbl_casovnice->setItem(vrstica, stolpec, t_vrednost);
+
+			// povrnemo predhodno nastavljeno besedilo na privzeto vrednost
+			ui->cb_aktivnost->setText(cb_aktivnost_besedilo);
+
 		napolni();
+
+		preracunaj_casovnice(ui->tbl_casovnice->item(vrstica, 0)->text());
+
 	}
 
 }
@@ -409,6 +428,7 @@ void wid_casovnice::napolni_sezname() {
 
 void wid_casovnice::napolni() {
 
+	QString cb_aktivnost_besedilo = ui->cb_aktivnost->text();
 	ui->cb_aktivnost->setText("Vnasam");
 
 	QString app_path = QApplication::applicationDirPath();
@@ -637,6 +657,106 @@ void wid_casovnice::napolni() {
 	}
 	base.close();
 
-	ui->cb_aktivnost->setText("");
+	ui->cb_aktivnost->setText(cb_aktivnost_besedilo);
+
+}
+
+void wid_casovnice::preracunaj_casovnice(QString opravilo) {
+
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "preracunaj_casovnice");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		double sestevek_ur = 0.0;
+
+		QSqlQuery sql_opravilo;
+		sql_opravilo.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(opravilo) + "' AND tip_ur LIKE '" + pretvori("casovnice") + "'");
+		sql_opravilo.exec();
+		if ( sql_opravilo.next() ) {
+			QString casovnice = sql_opravilo.value(sql_opravilo.record().indexOf("casovnice")).toString();
+
+			// prestejemo vse zapise v tej casovnici
+			int max_casovnic = casovnice.count(";");
+
+			// ce je to nasa prva casovnica, zakljucimo vnos
+			// ce obstajajo se druge casovnice, jih dodamo v nas seznam
+			if ( max_casovnic != 0 ) { // ce casovnice ze obstajajo nadaljujemo
+				for ( int i = 0; i <= max_casovnic; i++ ) { // vsako ze obstojeco casovnico razbijemo
+
+				// v seznam shranimo trenutno casovnico
+					QString seznam = casovnice.left(casovnice.indexOf(";"));
+
+				// v casovnice shranimo preostanek za naslednji cikelj
+					casovnice = casovnice.right(casovnice.length() - casovnice.indexOf(";") - 1);
+
+				// tenutno casovnico (seznam) razbijemo na datum in vrednost
+					QString seznam_datum = seznam.left(seznam.indexOf(","));
+					QString seznam_vrednost = pretvori_v_double(seznam.right(seznam.length() - seznam.indexOf(",") - 1));
+
+				// pristejemo trenutno vrednost h preteklim
+					sestevek_ur += pretvori_v_double(seznam_vrednost).toDouble();
+				}
+			}
+
+			// preracunaj in posodobi polja v tabeli opravil
+			double urna_postavka = pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("urna_postavka_brez_ddv")).toString()).toDouble();
+			double stopnja_ddv = pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("ddv")).toString()).toDouble();
+
+			double pribitek = 0.0;
+
+			double znesek_popustov = 0.0;
+			double znesek_brez_ddv = 0.0;
+			double znesek_ddv = 0.0;
+			double znesek = 0.0;
+
+			// izracunaj skupni znesek popustov
+			double popusti_skupaj = 0.0;
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_fb1")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_fb2")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb1")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb2")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_stranka")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_kupon")).toString()).toDouble();
+			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_akcija")).toString()).toDouble();
+
+			// pribitki
+			pribitek += 1.0;
+			pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_vikend")).toString()).toDouble() *
+									pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_vikend")).toString()).toDouble() / 100;
+			pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_hitrost")).toString()).toDouble() *
+									pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_hitrost")).toString()).toDouble() / 100;
+			pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_zapleti")).toString()).toDouble() *
+									pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_zapleti")).toString()).toDouble() / 100;
+
+			// izracun zneskov
+			znesek_brez_ddv = urna_postavka * sestevek_ur * (1 - popusti_skupaj / 100 ) * pribitek;
+			znesek_popustov = urna_postavka * sestevek_ur * popusti_skupaj / 100;
+			znesek_ddv = znesek_brez_ddv * stopnja_ddv / 100 ;
+			znesek = znesek_brez_ddv + znesek_ddv;
+
+			// vnesi podatke v bazo
+			QSqlQuery sql_vnesi;
+			sql_vnesi.prepare("UPDATE opravila SET ur_dela = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ? "
+												"WHERE id LIKE '" + opravilo + "'");
+			sql_vnesi.bindValue(0, pretvori(pretvori_v_double(QString::number(sestevek_ur, 'f', 1))));
+			sql_vnesi.bindValue(1, pretvori(pretvori_v_double(QString::number(znesek_popustov, 'f', 2))));
+			sql_vnesi.bindValue(2, pretvori(pretvori_v_double(QString::number(znesek_ddv, 'f', 2))));
+			sql_vnesi.bindValue(3, pretvori(pretvori_v_double(QString::number(znesek_brez_ddv, 'f', 2))));
+			sql_vnesi.exec();
+		}
+	}
+	base.close();
 
 }
