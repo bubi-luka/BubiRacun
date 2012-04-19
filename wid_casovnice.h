@@ -28,6 +28,7 @@ public slots:
 
 	void napolni_sezname();
 	void napolni();
+	void preracunaj_casovnice(QString opravilo);
 
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);

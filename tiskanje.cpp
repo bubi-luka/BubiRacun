@@ -3395,7 +3395,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
-		if ( racun_tip != "1") {
+		if ( racun_tip != "1" && racun_avans != "100,0 % " ) {
 			// dolocimo velikost kvadrata, ki ga tvori besedilo ("Rok placila (avansa): ")
 			velikost_besedila = painter.boundingRect(printer.width() / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 			// nastavimo parametre
@@ -3991,7 +3991,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			// nova vrstica
 			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
-		if ( racun_tip == "2" ) {
+		if ( racun_tip == "2" || ( racun_tip == "1" && racun_avans == "0,0 % " ) ) {
 			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
 
