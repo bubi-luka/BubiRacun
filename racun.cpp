@@ -73,7 +73,7 @@ racun::racun(QWidget *parent) :
 
 		// onemogoci polja
 		ui->txt_id->setEnabled(false);
-		ui->txt_stevilka_racuna->setEnabled(false);
+//		ui->txt_stevilka_racuna->setEnabled(false);
 		ui->txt_sklic->setEnabled(false);
 		ui->txt_projekt_id->setEnabled(false);
 		ui->txt_stranka_id->setEnabled(false);
@@ -1114,7 +1114,7 @@ void racun::prejem(QString besedilo) {
 
 			// onemogoci shranjevanje podatkov v predplacilo
 			if ( ui->rb_predplacilo->isChecked() ) {
-				ui->txt_stevilka_racuna->setEnabled(false);
+//				ui->txt_stevilka_racuna->setEnabled(false);
 				ui->cb_stara_stevilka_racuna->setEnabled(false);
 				ui->txt_status_predracuna->setEnabled(false);
 				ui->txt_stranka->setEnabled(false);
@@ -1155,7 +1155,7 @@ void racun::prejem(QString besedilo) {
 				int i = 0;
 
 				while ( sql_preveri_starse.next() ) {
-					ui->txt_stevilka_racuna->setEnabled(false);
+//					ui->txt_stevilka_racuna->setEnabled(false);
 					ui->cb_stara_stevilka_racuna->setEnabled(false);
 					ui->txt_status_predracuna->setEnabled(false);
 					ui->txt_stranka->setEnabled(false);
@@ -1320,7 +1320,7 @@ void racun::izracunaj() {
 	}
 	base.close();
 
-	if ( !ui->rb_racun->isChecked() ) {
+	if ( !ui->rb_racun->isChecked() ) { // izvzamemo racun, da v primeru sprememb ne spreminjamo vrednosti ze placanega avansa
 		ui->txt_avans->setText(pretvori_iz_double(QString::number(pretvori_v_double(ui->txt_znesek->text()).toDouble() *
 																															pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
 	}
@@ -1564,7 +1564,7 @@ void racun::on_txt_odstotek_avansa_editingFinished() {
 	ui->txt_odstotek_avansa->setText(pretvori_iz_double(pretvori_v_double(ui->txt_odstotek_avansa->text())) + " %");
 
 	ui->txt_avans->setText(pretvori_iz_double(QString::number(pretvori_v_double(ui->txt_znesek->text()).toDouble() *
-																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 1)) + " EUR");
+																														pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100, 'f', 2)) + " EUR");
 
 	if ( ui->txt_odstotek_avansa->text() == "0,0 %" ) {
 		ui->txt_datum_placila_avansa->setHidden(true);

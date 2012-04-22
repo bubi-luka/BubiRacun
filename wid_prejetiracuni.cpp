@@ -467,3 +467,78 @@ void wid_prejetiracuni::on_btn_print_pdf_clicked() {
 void wid_prejetiracuni::on_btn_print_seznam_clicked() {
 
 }
+
+void wid_prejetiracuni::on_btn_prestevilci_clicked() {
+/**
+	* zablokirano, saj ne deluje sortiranje datumov glede na abecedo
+	* potrebno je prvotno spremeniti vnose v bazi, nato sele moznost prestevilcevanja
+	*/
+/*
+	QString app_path = QApplication::applicationDirPath();
+	QString dbase_path = app_path + "/base.bz";
+
+	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+	base.setDatabaseName(dbase_path);
+	base.database();
+	base.open();
+	if(base.isOpen() != true){
+		QMessageBox msgbox;
+		msgbox.setText("Baze ni bilo moc odpreti");
+		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+		msgbox.exec();
+	}
+	else {
+		// baza je odprta
+
+		// uvedi spremenljivke;
+		QString leto = 0;
+		int zaporedna = 0;
+
+		// query, ki tece skozi vse prejete racune
+		QSqlQuery sql_prestevilci;
+		sql_prestevilci.prepare("SELECT * FROM prejeti_racuni ORDER BY datum_prejema ASC");
+		sql_prestevilci.exec();
+		while ( sql_prestevilci.next() ) {
+
+			// iz base pridobimo leto prejema trenutnega racuna
+			QString trenutno_leto = QDate::fromString(prevedi(sql_prestevilci.value(sql_prestevilci.record().indexOf("datum_prejema")).toString()), "dd.MM.yyyy").toString("yyyy");
+			qDebug(trenutno_leto.toAscii());
+
+			// v kolikor trenutno leto na poziciji querya ni enako letu, ki smo ga do sedaj imeli, pricnemo steti od novega
+			if ( trenutno_leto != leto ) {
+				zaporedna = 0;
+			}
+
+			// zaporedni stevilki pristejemo eno enoto
+			zaporedna++;
+
+			// leto spremenimo v trenutno leto
+			leto = trenutno_leto;
+
+			// pridobimo trimestno stevilko iz zaporedne stevilke
+			QString zaporedje = QString::number(zaporedna, 10);
+			if ( zaporedje.length() == 1 ) {
+				zaporedje = "00" + zaporedje;
+			}
+			else if ( zaporedje.length() == 2 ) {
+				zaporedje = "0" + zaporedje;
+			}
+
+			// sestavimo novo zaporedno stevilko
+			QString zaporedna_stevilka = "PR-" + leto + "-" + zaporedje;
+
+			// preverimo, ali je trenutna zaporedna stevilka razlicna od obstojece in jo v tem primeru prepisemo
+			if ( zaporedna_stevilka != prevedi(sql_prestevilci.value(sql_prestevilci.record().indexOf("stevilka_vnosa")).toString()) ) {
+				QSqlQuery sql_vnesi;
+				sql_vnesi.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ? WHERE id LIKE '" + sql_prestevilci.value(sql_prestevilci.record().indexOf("id")).toString() + "'");
+				sql_vnesi.bindValue(0, zaporedna_stevilka);
+				sql_vnesi.exec();
+			}
+
+		}
+
+	}
+	base.close();
+*/
+}
+

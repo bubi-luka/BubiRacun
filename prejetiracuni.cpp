@@ -173,7 +173,7 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 
 		// onemogocimo polja
 		ui->txt_id->setEnabled(false);
-		ui->txt_stevilka_vnosa->setEnabled(false);
+//		ui->txt_stevilka_vnosa->setEnabled(false);
 
 }
 
