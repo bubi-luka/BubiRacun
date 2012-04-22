@@ -79,7 +79,7 @@ potninalogi::potninalogi(QWidget *parent) :
 
 		// onemogocimo dolocena polja
 		ui->txt_id->setEnabled(false);
-		ui->txt_stevilka_naloga->setEnabled(false);
+//		ui->txt_stevilka_naloga->setEnabled(false);
 
 		ui->txt_cena_prevoza->setEnabled(false);
 		ui->txt_cena_dnevnic->setEnabled(false);

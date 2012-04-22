@@ -120,6 +120,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btn_prestevilci">
+       <property name="text">
+        <string>Preštevilči</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

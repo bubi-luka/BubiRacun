@@ -19,6 +19,7 @@ private slots:
 	void on_btn_refresh_clicked();
 	void on_btn_print_clicked();
 	void on_btn_print_pdf_clicked();
+	void on_btn_prestevilci_clicked();
 
 	void on_cb_mesec_currentIndexChanged();
 	void on_cb_leto_currentIndexChanged();
