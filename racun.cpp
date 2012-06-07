@@ -189,8 +189,8 @@ racun::racun(QWidget *parent) :
         // nastavi privzete vrednosti
         ui->rb_predplacilo->setChecked(true);
         ui->rb_predracun->setChecked(true);
-        ui->txt_status_placila->setCurrentIndex(1);
-        ui->txt_status_racunovodstva->setCurrentIndex(1);
+        ui->txt_status_placila->setCurrentIndex(0);
+        ui->txt_status_racunovodstva->setCurrentIndex(0);
 
         ui->tab_racuni->setCurrentIndex(0);
 
@@ -1242,7 +1242,7 @@ void racun::prejem(QString besedilo) {
     napolni_vse_opombe();
 
     // pri predplacilnem racunu nastavi status kot Placan
-    ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
+   // ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
 
     /*
     if ( ui->txt_status_predracuna->currentText() == "Potrjen" ) {
