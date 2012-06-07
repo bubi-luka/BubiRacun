@@ -1832,7 +1832,7 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
     if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
         ui->txt_status_predracuna->setEnabled(true);
-//		ui->txt_datum_oddaje_racuna->setEnabled(true);
+        ui->txt_datum_oddaje_racuna->setEnabled(true);
         ui->txt_status_racunovodstva->setEnabled(true);
         // ui->txt_rok_placila->setEnabled(true);
         ui->txt_odstotek_avansa->setEnabled(true);
@@ -1843,7 +1843,7 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
     }
     else {
         ui->txt_status_predracuna->setEnabled(false);
-//		ui->txt_datum_oddaje_racuna->setEnabled(false);
+        ui->txt_datum_oddaje_racuna->setEnabled(false);
         ui->txt_status_racunovodstva->setEnabled(false);
         // ui->txt_rok_placila->setEnabled(false);
         ui->txt_odstotek_avansa->setEnabled(false);
