@@ -1029,6 +1029,10 @@ void racun::prejem(QString besedilo) {
                 datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_placila")).toString()), "dd'.'MM'.'yyyy");
                 ui->txt_datum_placila_racuna->setDate(datum);
 
+                if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum_izdaje")).toString()) == "" ) {
+                    ui->txt_datum_izdaje_racuna->setDate(QDate::currentDate());
+                }
+
                 QSqlQuery sql_combo;
                 sql_combo.prepare("SELECT * FROM sif_status_placila WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_placila")).toString() + "'");
                 sql_combo.exec();
