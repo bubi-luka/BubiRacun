@@ -104,7 +104,8 @@ racun::racun(QWidget *parent) :
         ui->txt_projekt_id->setVisible(false);
         ui->txt_stranka_id->setVisible(false);
         ui->txt_id_zapisa_2->setVisible(false);
-        ui->txt_datum_placila_racuna->setHidden(true);
+        ui->txt_datum_placila_racuna->setVisible(false);
+        ui->btn_racun->setVisible(false);
 
         // napolni spustne sezname
         QString app_path = QApplication::applicationDirPath();
@@ -739,6 +740,14 @@ void racun::on_btn_sprejmi_clicked() {
 
         // close this window
         close();
+
+        // ce je status predracuna potrjen (predracun je placan), potem tvori racun (t.i. zacasni racun)
+        if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" && ui->txt_status_predracuna->isEnabled() ) {
+            on_btn_racun_clicked();
+            QMessageBox sporocilo;
+            sporocilo.setText("Tvorim racun");
+            sporocilo.exec();
+        }
 
     } // if napaka
     else {
@@ -1472,7 +1481,7 @@ void racun::on_rb_predracun_toggled() {
         ui->txt_datum_pricetka->setHidden(true);
         ui->lbl_datum_pricetka->setHidden(true);
 
-        ui->btn_racun->setVisible(true);
+//        ui->btn_racun->setVisible(true);
         ui->btn_predplacilni_racun->setVisible(true);
 
         ui->lbl_avans_placan->setVisible(true);
@@ -1507,7 +1516,7 @@ void racun::on_rb_predplacilo_toggled() {
         ui->txt_datum_pricetka->setHidden(true);
         ui->lbl_datum_pricetka->setHidden(true);
 
-        ui->btn_racun->setVisible(false);
+//        ui->btn_racun->setVisible(false);
         ui->btn_predplacilni_racun->setVisible(false);
 
         ui->lbl_avans_placan->setVisible(true);
@@ -1542,7 +1551,7 @@ void racun::on_rb_racun_toggled() {
         ui->txt_datum_pricetka->setHidden(false);
         ui->lbl_datum_pricetka->setHidden(false);
 
-        ui->btn_racun->setVisible(false);
+//        ui->btn_racun->setVisible(false);
         ui->btn_predplacilni_racun->setVisible(false);
 
         ui->lbl_avans_placan->setVisible(true);
@@ -1861,6 +1870,14 @@ void racun::on_txt_status_predracuna_currentIndexChanged() {
 
     if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) {
         ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
+        // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvoris racun
+        if ( ui->txt_status_predracuna->isEnabled() ) {
+            QMessageBox sporocilo;
+            sporocilo.setText("Ob pritisku na gumb Shrani bo predracun zaprt, \n"
+                              "tvoril se bo nov t.i. zacasni racun, ki bo osnova \n"
+                              "za koncni racun. Omogoceno bo vnasanje casovnic in komentarjev!");
+            sporocilo.exec();
+        }
     }
     else {
         ui->txt_status_placila->setCurrentIndex(0);
