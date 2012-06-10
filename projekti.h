@@ -68,6 +68,7 @@ private slots:
     void napolni_zapise();
 
     void napolni_casovnice();
+    void napolni_casovnice_tabelo();
     void on_gb_trajanje_od_do_toggled();
     void on_gb_trajanje_skupaj_toggled();
     void on_txt_cas_racun_1_currentIndexChanged();

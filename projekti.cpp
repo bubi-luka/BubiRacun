@@ -1727,26 +1727,228 @@ void projekti::on_btn_pocisti_clicked() {
 
 }
 
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////
 void projekti::napolni_casovnice() {
 
     ui->tab_casovnice->setEnabled(true);
 
+    ui->txt_cas_racun_1->clear();
+    ui->txt_cas_racun_1->addItem("");
+
+    ui->txt_cas_racun_2->clear();
+    ui->txt_cas_racun_2->addItem("");
+
     // preveri, ali obstajajo racuni
-    // napolni jih v ustrezni spustni seznam (racun_1)
-    // preveri, ali obstajajo racuni, ki se trajajo
-    // napolni jih v ustrezni spustni seznam (racun_2)
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_casovnice");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QSqlQuery racuni;
+        racuni.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" +
+                       pretvori("3") + "'");
+        racuni.exec();
+        // napolni jih v ustrezni spustni seznam (racun_1)
+        while ( racuni.next() ) {
+            ui->txt_cas_racun_1->addItem(prevedi(racuni.value(racuni.record().indexOf("id")).toString()) + ") " +
+                                         prevedi(racuni.value(racuni.record().indexOf("stevilka_racuna")).toString()));
+
+            // preveri, ali obstajajo racuni, ki se trajajo
+            if ( racuni.value(racuni.record().indexOf("status_oddaje_racuna")).toString() == "" ) {
+                ui->txt_cas_racun_2->addItem(prevedi(racuni.value(racuni.record().indexOf("id")).toString()) + ") " +
+                                             prevedi(racuni.value(racuni.record().indexOf("stevilka_racuna")).toString()));
+            }
+        }
+        racuni.clear();
+    }
+    base.close();
 
     // ce je samo 1 racun potem nastavi spustni seznam, da ima tega oznacenega
+    if ( ui->txt_cas_racun_1->count() == 2 ) {
+        ui->txt_cas_racun_1->setCurrentIndex(1);
+    }
+
+    if ( ui->txt_cas_racun_2->count() == 2 ) {
+        ui->txt_cas_racun_2->setCurrentIndex(1);
+    }
+
+    napolni_casovnice_tabelo();
+
+}
+
+void projekti::napolni_casovnice_tabelo() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_tabelo_casovnic");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QString sql_stavek = "SELECT * FROM opravila WHERE stevilka_projekta LIKE '" + pretvori(ui->txt_id->text()) + "'";
+
+        // dodaj pogoj za morebitni racun
+        if ( ui->txt_cas_racun_1->currentText() != "" ) { // izbran je tocno dolocen racun
+            sql_stavek += " AND stevilka_racuna LIKE '" + pretvori(ui->txt_cas_racun_1->currentText().left(ui->txt_cas_racun_1->currentText().indexOf(") "))) + "'";
+        }
+
+        // dodaj pogoj za morebitno opravilo
+        if ( ui->txt_cas_opravilo_1->currentText() != "" ) { // izbran je tocno doloceno opravilo
+            sql_stavek += " AND id LIKE '" + pretvori(ui->txt_cas_opravilo_1->currentText().left(ui->txt_cas_opravilo_1->currentText().indexOf(") "))) + "'";
+        }
+
+        // in samo, ce imajo prisotne casovnice
+        sql_stavek += " AND casovnice NOT LIKE ''";
+
+        // clear previous content
+        ui->tbl_casovnice->clear();
+
+        for (int i = 0; i <= 6; i++) {
+            ui->tbl_casovnice->removeColumn(0);
+        }
+
+        QSqlQuery sql_clear;
+        sql_clear.prepare("SELECT * FROM opravila");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            int i = prevedi(sql_clear.value(sql_clear.record().indexOf("casovnice")).toString()).count(";");
+            for ( int j = 0; j <= i; j++ ) {
+                ui->tbl_casovnice->removeRow(0);
+            }
+        }
+
+        // start filling the table
+        ui->tbl_casovnice->insertColumn(0);
+        ui->tbl_casovnice->insertColumn(1);
+        ui->tbl_casovnice->insertColumn(2);
+        ui->tbl_casovnice->insertColumn(3);
+        ui->tbl_casovnice->insertColumn(4);
+        ui->tbl_casovnice->insertColumn(5);
+        ui->tbl_casovnice->insertColumn(6);
+
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+        QTableWidgetItem *naslov3 = new QTableWidgetItem;
+        QTableWidgetItem *naslov4 = new QTableWidgetItem;
+        QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
+
+        naslov0->setText("ID");
+        naslov1->setText("Racun");
+        naslov2->setText("Sklop");
+        naslov3->setText("Skupina");
+        naslov4->setText("Storitev");
+        naslov5->setText("Datum");
+        naslov6->setText("Opravljenih ur");
+
+        ui->tbl_casovnice->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_casovnice->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_casovnice->setHorizontalHeaderItem(2, naslov2);
+        ui->tbl_casovnice->setHorizontalHeaderItem(3, naslov3);
+        ui->tbl_casovnice->setHorizontalHeaderItem(4, naslov4);
+        ui->tbl_casovnice->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_casovnice->setHorizontalHeaderItem(6, naslov6);
+
+ /*       ui->tbl_casovnice->setColumnWidth(0, 5);
+        ui->tbl_casovnice->setColumnWidth(1, 30);
+        ui->tbl_casovnice->setColumnWidth(2, 50);
+        ui->tbl_casovnice->setColumnWidth(3, 50);
+        ui->tbl_casovnice->setColumnWidth(4, 50);
+        ui->tbl_casovnice->setColumnWidth(5, 30);
+        ui->tbl_casovnice->setColumnWidth(6, 20);
+*/
+        QSqlQuery sql_fill;
+        sql_fill.prepare(sql_stavek);
+        sql_fill.exec();
+
+        int row = 0;
+        while (sql_fill.next()) {
+
+            // za vsako opravilo, ki vsebuje casovnice, razbij te casovnice in vsako vnesi v svojo vrstico
+            QString casovnice = prevedi(sql_fill.value(sql_fill.record().indexOf("casovnice")).toString());
+            QString nove_casovnice = casovnice;
+
+            for ( int i = 0; i < casovnice.count(";"); i++ ) {
+                QString datum = nove_casovnice.left(nove_casovnice.indexOf(",", 0));
+                QString ure = nove_casovnice.left(nove_casovnice.indexOf(";"));
+                ure = ure.right(ure.length() - datum.length() - 1);
+                nove_casovnice = nove_casovnice.right(nove_casovnice.length() - nove_casovnice.indexOf(";") - 1);
+
+                ui->tbl_casovnice->insertRow(row);
+                ui->tbl_casovnice->setRowHeight(row, 20);
+                int col = 0;
+                int i = 0;
+                QString polja[7] = {"id", "racun", "opravilo_sklop", "opravilo_skupina", "opravilo_storitev", "datum", "ure"};
+
+                while (col <= 6) {
+
+                    QTableWidgetItem *celica = new QTableWidgetItem;
+
+                    if ( polja[i] == "opravilo_sklop" || polja[i] == "opravilo_skupina" || polja[i] == "opravilo_storitev") {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "Ostalo" ) {
+                            celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("opravilo_rocno")).toString()));
+                        }
+                        else {
+                            celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                        }
+                    }
+                    else if ( polja[i] == "racun" ) {
+                        QString racun = "";
+                        QSqlQuery st_racuna;
+                        st_racuna.prepare("SELECT * FROM racuni WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_racuna")).toString() + "'");
+                        st_racuna.exec();
+                        if ( st_racuna.next() ) {
+                            racun = prevedi(st_racuna.value(st_racuna.record().indexOf("id")).toString()) + ") " +
+                                    prevedi(st_racuna.value(st_racuna.record().indexOf("stevilka_racuna")).toString());
+                        }
+                        celica->setText(racun);
+                    }
+                    else if ( polja[i] == "datum" ) {
+                        celica->setText(datum);
+                    }
+                    else if ( polja[i] == "ure" ) {
+                        celica->setText(ure);
+                    }
+                    else {
+                        celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                    }
+
+                    ui->tbl_casovnice->setItem(row, col, celica);
+
+                    col++;
+                    i++;
+
+                }
+
+                row++;
+
+            }
+
+        }
+    }
+
+    base.close();
+
 }
 
 void projekti::on_gb_trajanje_od_do_toggled() {
@@ -1773,25 +1975,173 @@ void projekti::on_gb_trajanje_skupaj_toggled() {
 
 void projekti::on_txt_cas_racun_1_currentIndexChanged() {
 
+    ui->txt_cas_opravilo_1->clear();
+
+    if ( ui->txt_cas_racun_1->currentText() != "" ) { // naredi, ce ni izbrano prazno polje
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
+
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "sprememba_racuna");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
+        }
+        else {
+            // baza je odprta
+
+            ui->txt_cas_opravilo_1->addItem("");
+            QString st_racuna = ui->txt_cas_racun_1->currentText().left(ui->txt_cas_racun_1->currentText().indexOf(")", 0));
+
+            QSqlQuery sql_opravila;
+            sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(st_racuna) + "'");
+            sql_opravila.exec();
+            while ( sql_opravila.next() ) {
+                QString opravilo = "";
+                opravilo = prevedi(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + ") ";
+
+                // izpise celoten naziv opravila, glede na hierarhijo in upostevajoc moznost "Ostalo"
+                if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_sklop")).toString()) == "Ostalo") { // sklop
+                    opravilo += prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                }
+                else {
+                    opravilo += prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_sklop")).toString());
+                    if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") { // skupina
+                        opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                    }
+                    else {
+                        opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_skupina")).toString());
+                        if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_storitev")).toString()) == "Ostalo") { // storitev
+                            opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                        }
+                        else {
+                            opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_storitev")).toString());
+                        }
+                    }
+                }
+
+                ui->txt_cas_opravilo_1->addItem(opravilo);
+            }
+
+        }
+        base.close();
+    }
+
+    if ( ui->txt_cas_opravilo_1->count() == 2 ) { // v primeru samo enega opravila ga avtomatsko izberi
+        ui->txt_cas_opravilo_1->setCurrentIndex(1);
+    }
+
+    napolni_casovnice_tabelo();
+
 }
 
 void projekti::on_txt_cas_racun_2_currentIndexChanged() {
+
+    ui->txt_cas_opravilo_2->clear();
+
+    if ( ui->txt_cas_racun_2->currentText() != "" ) { // naredi, ce ni izbrano prazno polje
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
+
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
+        }
+        else {
+            // baza je odprta
+
+            ui->txt_cas_opravilo_2->addItem("");
+            QString st_racuna = ui->txt_cas_racun_2->currentText().left(ui->txt_cas_racun_2->currentText().indexOf(")", 0));
+
+            QSqlQuery sql_opravila;
+            sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(st_racuna) + "'");
+            sql_opravila.exec();
+            while ( sql_opravila.next() ) {
+                QString opravilo = "";
+                opravilo = prevedi(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + ") ";
+
+                // izpise celoten naziv opravila, glede na hierarhijo in upostevajoc moznost "Ostalo"
+                if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_sklop")).toString()) == "Ostalo") { // sklop
+                    opravilo += prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                }
+                else {
+                    opravilo += prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_sklop")).toString());
+                    if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") { // skupina
+                        opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                    }
+                    else {
+                        opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_skupina")).toString());
+                        if ( prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_storitev")).toString()) == "Ostalo") { // storitev
+                            opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_rocno")).toString());
+                        }
+                        else {
+                            opravilo += " - " + prevedi(sql_opravila.value(sql_opravila.record().indexOf("opravilo_storitev")).toString());
+                        }
+                    }
+                }
+
+                ui->txt_cas_opravilo_2->addItem(opravilo);
+            }
+
+        }
+        base.close();
+    }
+
+    if ( ui->txt_cas_opravilo_2->count() == 2 ) { // v primeru samo enega opravila ga avtomatsko izberi
+        ui->txt_cas_opravilo_2->setCurrentIndex(1);
+    }
 
 }
 
 void projekti::on_txt_cas_opravilo_1_currentIndexChanged() {
 
+    napolni_casovnice_tabelo();
+
 }
 
 void projekti::on_txt_cas_opravilo_2_currentIndexChanged() {
+
+    // placeholder for some future functions
 
 }
 
 void projekti::on_btn_pocisti_casovnico_clicked() {
 
+    ui->txt_cas_opravilo_2->clear();
+    ui->txt_cas_od->setTime(QTime::fromString("00:00", "HH:mm"));
+    ui->txt_cas_do->setTime(QTime::fromString("00:00", "HH:mm"));
+    ui->txt_cas_trajanje->setTime(QTime::fromString("00:00", "HH:mm"));
+    ui->txt_datum->setDate(QDate::currentDate());
+
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////
 void projekti::on_btn_vnesi_casovnico_clicked() {
+
+    napolni_casovnice_tabelo();
 
 }
 
