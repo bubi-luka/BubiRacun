@@ -2812,6 +2812,62 @@ void prijava::posodobi_bazo() {
 
                     posodobi_bazo();
                 }
+                if ( stevilka_baze_min == 4 ) {
+                    // popravi časovnice iz stare oblike 0.00 na novo obliko HH:mm
+                    update.prepare("SELECT * FROM opravila WHERE casovnice NOT LIKE ''");
+                    update.exec();
+                    while ( update.next() ) {
+                        QString casovnice = prevedi(update.value(update.record().indexOf("casovnice")).toString());
+                        QString nove_casovnice = "";
+
+                        int st_casovnic = casovnice.count(";");
+
+                        // pojdi skozi vse casovnice danega opravila, jih razbij na datum in cas in sestavi skupaj
+                        for ( int i = 0; i < st_casovnic; i++ ) {
+
+                            // razbij casovnico na datum
+                            QString datum = casovnice.left(11); // "yyyy.MM.dd."
+                            QString cas = casovnice.left(casovnice.indexOf(";")); // "yyyy.MM.dd.,0.00"
+                            cas = cas.right(cas.length() - datum.length() - 1); // "0.00"
+
+                            // izrezi iz stare casovnice trenutne podatke, da ni potrebe dolocati pozicije
+                            casovnice = casovnice.right(casovnice.length() - casovnice.indexOf(";") - 1);
+
+                            // pretvori double v sekunde
+                            int double_v_sekunde = cas.toDouble() * 3600;
+                            QTime cas_v_minutah =QTime::fromString("00:00", "HH:mm");
+                            cas_v_minutah = cas_v_minutah.addSecs(double_v_sekunde);
+
+                            // cas v sekundah pretvori nazaj v cas kot oblika "H:mm
+                            cas = cas_v_minutah.toString("H:mm");
+
+                            nove_casovnice += datum + "," + cas + ";";
+
+                        }
+
+                        // posodobi casovnice
+                        QSqlQuery sql_posodobi_casovnice;
+                        sql_posodobi_casovnice.prepare("UPDATE opravila SET casovnice = '" + pretvori(nove_casovnice) + "' WHERE id LIKE '" +
+                                                       update.value(update.record().indexOf("id")).toString() + "'");
+                        sql_posodobi_casovnice.exec();
+                        sql_posodobi_casovnice.clear();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.5");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.5");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+                }
             }
         }
 

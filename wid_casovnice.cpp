@@ -207,8 +207,9 @@ void wid_casovnice::on_txt_racun_currentIndexChanged() {
 
 }
 
+// Ker se casovnice sedaj vnasajo prek obrazca na projektu
 void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
-
+/*
     if ( ui->cb_aktivnost->text() != "Vnasam" ) {
             QString datum = ui->txt_leto->currentText() + "." + ui->txt_mesec->currentText().left(2) + ".";
             int dan = stolpec - 5;
@@ -282,7 +283,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
                 QSqlQuery popravi;
                 popravi.prepare("UPDATE opravila SET casovnice = ? WHERE id LIKE '" + id + "'");
                 popravi.bindValue(0, casovnice_new);
-                popravi.exec();
+//                popravi.exec();
 
             }
             base.close();
@@ -308,7 +309,7 @@ void wid_casovnice::on_tbl_casovnice_cellChanged(int vrstica, int stolpec) {
         preracunaj_casovnice(ui->tbl_casovnice->item(vrstica, 0)->text());
 
     }
-
+*/
 }
 
 void wid_casovnice::napolni_sezname() {
@@ -536,8 +537,13 @@ void wid_casovnice::napolni() {
                 int i = 0;
                 QString polja[7] = {"id", "stevilka_racuna", "stevilka_projekta", "opravilo", "stevilka_stranke", "zdruzek", "casovnice"};
 
-                double d_mesec = 0.0;
-                double d_skupaj = 0.0;
+                int minute_mesec = 0;
+                int minute_skupaj = 0;
+                int ure_mesec = 0;
+                int ure_skupaj = 0;
+
+                QString cas_mesec = "";
+                QString cas_skupaj = "";
 
                 while (col <= 6) {
 
@@ -611,25 +617,53 @@ void wid_casovnice::napolni() {
 
                             // del seznama razbijemo na datum in vrednost
                             QString datum = del_seznama.left(del_seznama.indexOf(","));
-                            QString vrednost = pretvori_iz_double(del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1));
+
+                            QString vrednost = del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1);
+
+                            int ure = vrednost.left(vrednost.length() - 3).toInt();
+                            int minute = vrednost.right(2).toInt();
 
                             // datum razbijemo na leto, mesec in dan
                             QString leto = datum.left(4);
                             QString mesec = datum.right(6).left(2);
 
                             if ( ui->txt_leto->currentText() == leto && ui->txt_mesec->currentText().left(2) == mesec ) {
-                                d_mesec += pretvori_v_double(vrednost).toDouble();
+                                minute_mesec += minute;
+                                ure_mesec += ure;
                             }
-                            d_skupaj += pretvori_v_double(vrednost).toDouble();
+                            minute_skupaj += minute;
+                            ure_skupaj += ure;
+
+                            ure_mesec += minute_mesec / 60;
+                            minute_mesec = minute_mesec % 60;
+
+                            ure_skupaj += minute_skupaj / 60;
+                            minute_skupaj = minute_skupaj % 60;
+
+                            if ( minute_mesec < 10 ) {
+                                cas_mesec = QString::number(ure_mesec, 10) + ":0" + QString::number(minute_mesec, 10);
+                            }
+                            else {
+                                cas_mesec = QString::number(ure_mesec, 10) + ":" + QString::number(minute_mesec, 10);
+                            }
+
+                            if ( minute_skupaj < 10 ) {
+                                cas_skupaj = QString::number(ure_skupaj, 10) + ":0" + QString::number(minute_skupaj, 10);
+                            }
+                            else {
+                                cas_skupaj = QString::number(ure_skupaj, 10) + ":" + QString::number(minute_skupaj, 10);
+                            }
 
                         }
 
+                        // v tekocem mesecu
                         QTableWidgetItem *t_mesec = new QTableWidgetItem;
-                        t_mesec->setText(QString::number(d_mesec, 'f', 2));
+                        t_mesec->setText(cas_mesec);
                         ui->tbl_casovnice->setItem(row, 5, t_mesec);
 
+                        // v tekocem letu
                         QTableWidgetItem *t_skupaj = new QTableWidgetItem;
-                        t_skupaj->setText(QString::number(d_skupaj, 'f', 2));
+                        t_skupaj->setText(cas_skupaj);
                         ui->tbl_casovnice->setItem(row, 6, t_skupaj);
 
                         celica->setText("");

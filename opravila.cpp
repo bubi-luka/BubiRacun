@@ -975,7 +975,6 @@ void opravila::on_rb_predracun_toggled() {
 void opravila::on_rb_casovnice_toggled() {
 
     izracunaj_racun();
-
 }
 
 void opravila::on_rb_rocni_vnos_toggled() {
@@ -1087,7 +1086,11 @@ void opravila::on_txt_storitev_na_racunu_textChanged() {
                     seznam_casovnic = seznam_casovnic.right(seznam_casovnic.length() - seznam_casovnic.indexOf(";") - 1);
 
                     // del seznama razbijemo na datum in vrednost
-                    QString vrednost = del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1).replace(".", ",");
+                    QString vrednost = del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1); // oblika "H:mm"
+                    double ure = vrednost.left(vrednost.length() - 3).toDouble();
+                    double minute = vrednost.right(2).toDouble() / 60;
+                    vrednost = QString::number(ure + minute, 'f', 2);
+
                     ure_casovnice += pretvori_v_double(vrednost).toDouble();
                 } // for ( int a = 1; a <= max_casovnice; a++ )
             } // if ( sql_casovnice.next() )

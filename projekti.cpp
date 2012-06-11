@@ -76,8 +76,8 @@ projekti::projekti(QWidget *parent) :
         ui->txt_cas_opravilo_1->clear();
         ui->txt_cas_racun_2->clear();
         ui->txt_cas_opravilo_2->clear();
-        ui->txt_cas_od->setTime(QTime::fromString("00:00", "HH:mm"));
         ui->txt_cas_do->setTime(QTime::fromString("00:00", "HH:mm"));
+        ui->txt_cas_od->setTime(QTime::currentTime());
         ui->txt_cas_trajanje->setTime(QTime::fromString("00:00", "HH:mm"));
         ui->txt_datum->setDate(QDate::currentDate());
         ui->tbl_casovnice->clear();
@@ -2115,50 +2115,246 @@ void projekti::on_txt_cas_opravilo_2_currentIndexChanged() {
 
 }
 
+void projekti::on_txt_cas_od_timeChanged() {
+
+    ui->txt_cas_do->setTime(ui->txt_cas_od->time().addSecs(3600));
+
+}
+
+void projekti::on_txt_cas_do_timeChanged() {
+
+}
+
 void projekti::on_btn_pocisti_casovnico_clicked() {
 
     ui->txt_cas_opravilo_2->clear();
-    ui->txt_cas_od->setTime(QTime::fromString("00:00", "HH:mm"));
-    ui->txt_cas_do->setTime(QTime::fromString("00:00", "HH:mm"));
+    ui->txt_cas_od->setTime(QTime::currentTime());
     ui->txt_cas_trajanje->setTime(QTime::fromString("00:00", "HH:mm"));
     ui->txt_datum->setDate(QDate::currentDate());
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////
 void projekti::on_btn_vnesi_casovnico_clicked() {
+
+    QString napaka = "false";
+
+    // preveri, ali so spustni seznami ustrezno izpolnjeni
+    if ( ui->txt_cas_racun_2->currentText() == "" ) {
+        napaka = "true";
+    }
+    if ( ui->txt_cas_opravilo_2->currentText() == "" ) {
+        napaka = "true";
+    }
+
+    // preveri, ali je cas pricetka dela manjsi od casa konca dela
+    if ( ui->gb_trajanje_od_do->isChecked() ) {
+        if ( ui->txt_cas_od->time() > ui->txt_cas_do->time() ) {
+            napaka = "true";
+        }
+    }
+
+    // izracunaj vneseno trajanje dela
+    QString trajanje = "";
+    if ( ui->gb_trajanje_skupaj->isChecked() ) {
+        trajanje = ui->txt_cas_trajanje->text();
+    }
+    else if ( ui->gb_trajanje_od_do->isChecked() ) {
+        int cas_razlika = ui->txt_cas_od->time().secsTo(ui->txt_cas_do->time());
+        QTime cas = QTime::fromString("00:00", "HH:mm");
+        cas = cas.addSecs(cas_razlika);
+        trajanje = cas.toString("H:mm");
+    }
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "vnesi_casovnico");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QString casovnica_levo = "";
+        QString casovnica_desno = "";
+        QString casovnica = "";
+
+        QString datum = ui->txt_datum->date().toString("yyyy.MM.dd.");
+
+        // poglej, ce za izbrano opravilo za izbrani datum ze obstaja casovnica
+        QSqlQuery sql_preveri_opravilo;
+        sql_preveri_opravilo.prepare("SELECT * FROM opravila WHERE id LIKE '" +
+                                     pretvori(ui->txt_cas_opravilo_2->currentText().left(ui->txt_cas_opravilo_2->currentText().indexOf(") "))) + "'");
+        sql_preveri_opravilo.exec();
+        if ( sql_preveri_opravilo.next() ) {
+            casovnica = prevedi(sql_preveri_opravilo.value(sql_preveri_opravilo.record().indexOf("casovnice")).toString());
+        }
+
+        // preveri, ali v casovnicah ze obstaja datum
+        if ( casovnica.contains(datum) ) { // datum ze obstaja
+            // razbijemo datum na levo in desno od nasega datuma
+            casovnica_levo = casovnica.left(casovnica.indexOf(datum, 0));
+
+            casovnica = casovnica.right(casovnica.length() - casovnica_levo.length());
+            casovnica_desno = casovnica.right(casovnica.length() - casovnica.indexOf(";", 0) - 1);
+
+            // izluscimo obstojece trajanje dela
+            QString obstojec_cas = casovnica.left(casovnica.length() - casovnica_desno.length());
+            obstojec_cas = obstojec_cas.right(obstojec_cas.length() - datum.length() - 1);
+            obstojec_cas = obstojec_cas.left(obstojec_cas.length() - 1);
+
+            // pogledamo, kaj storiti glede ze obstojecega casa
+            if ( ui->rb_cas_pristej->isChecked() ) { // sestejemo ze obstojeco in novo vrednost
+                int ure = 0;
+                int minute = 0;
+
+                // minute
+                minute = obstojec_cas.right(2).toInt() + trajanje.right(2).toInt();
+                if ( minute >= 60 ) { // ce je minut vec kot 60 to pretvorimo v ure
+                    ure = minute / 60;
+                    minute = minute % 60;
+                }
+
+                // ure
+                ure = ure + obstojec_cas.left(obstojec_cas.length() - 3).toInt() + trajanje.left(trajanje.length() - 3).toInt();
+
+                // zdruzi
+                QString beseda_minute = "";
+                if ( minute <= 9 ) {
+                    beseda_minute = "0" + QString::number(minute, 10);
+                }
+                else {
+                    beseda_minute = QString::number(minute, 10);
+                }
+
+                trajanje = QString::number(ure, 10) + ":" + beseda_minute;
+
+            } // pri prepisu vrednosti zgolj vstavimo novo vrednost
+
+            // zdruzimo vse elemente casovnice
+            casovnica = casovnica_levo + casovnica_desno + datum + "," + trajanje + ";";
+
+        }
+        else { // datum se ne obstaja, samo vnesemo
+            casovnica += datum + "," + trajanje + ";";
+        }
+
+        QSqlQuery sql_vnesi_casovnice;
+        sql_vnesi_casovnice.prepare("UPDATE opravila SET casovnice = '" + pretvori(casovnica) + "' WHERE id LIKE '" +
+                                    pretvori(ui->txt_cas_opravilo_2->currentText().left(ui->txt_cas_opravilo_2->currentText().indexOf(") "))) + "'");
+        sql_vnesi_casovnice.exec();
+
+    }
+    base.close();
 
     napolni_casovnice_tabelo();
 
+    osvezi_opravilo((ui->txt_cas_opravilo_2->currentText().left(ui->txt_cas_opravilo_2->currentText().indexOf(") "))));
+
 }
 
-/////////////////////////////////////////////////////////
+void projekti::osvezi_opravilo(QString opravilo) {
 
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
 
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "osvezi_casovnice_pri_opravilu");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
 
+        double sestevek_ur = 0.0;
 
+        QSqlQuery sql_opravilo;
+        sql_opravilo.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(opravilo) + "' AND tip_ur LIKE '" + pretvori("casovnice") + "'");
+        sql_opravilo.exec();
+        if ( sql_opravilo.next() ) {
+            QString seznam_casovnic = sql_opravilo.value(sql_opravilo.record().indexOf("casovnice")).toString();
 
+            // prestejemo vse zapise v tej casovnici
+            int max_casovnic = seznam_casovnic.count(";");
 
+            // ce je to nasa prva casovnica, zakljucimo vnos
+            // ce obstajajo se druge casovnice, jih dodamo v nas seznam
+            if ( max_casovnic != 0 ) { // ce casovnice ze obstajajo nadaljujemo
+                for ( int i = 0; i <= max_casovnic; i++ ) { // vsako ze obstojeco casovnico razbijemo
+                    QString del_seznama = seznam_casovnic.left(seznam_casovnic.indexOf(";"));
+                    seznam_casovnic = seznam_casovnic.right(seznam_casovnic.length() - seznam_casovnic.indexOf(";") - 1);
 
+                    // del seznama razbijemo na datum in vrednost
+                    QString vrednost = del_seznama.right(del_seznama.length() - del_seznama.indexOf(",") - 1); // oblika "H:mm"
+                    double ure = vrednost.left(vrednost.length() - 3).toDouble();
+                    double minute = vrednost.right(2).toDouble() / 60;
+                    vrednost = QString::number(ure + minute, 'f', 2);
 
+                    sestevek_ur += pretvori_v_double(vrednost).toDouble();
+                }
+            }
 
+            // preracunaj in posodobi polja v tabeli opravil
+            double urna_postavka = pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("urna_postavka_brez_ddv")).toString()).toDouble();
+            double stopnja_ddv = pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("ddv")).toString()).toDouble();
 
+            double pribitek = 0.0;
 
+            double znesek_popustov = 0.0;
+            double znesek_brez_ddv = 0.0;
+            double znesek_ddv = 0.0;
+            double znesek = 0.0;
 
+            // izracunaj skupni znesek popustov
+            double popusti_skupaj = 0.0;
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_fb1")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_fb2")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb1")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb2")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_stranka")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_kupon")).toString()).toDouble();
+            popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_akcija")).toString()).toDouble();
 
+            // pribitki
+            pribitek += 1.0;
+            pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_vikend")).toString()).toDouble() *
+                                    pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_vikend")).toString()).toDouble() / 100;
+            pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_hitrost")).toString()).toDouble() *
+                                    pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_hitrost")).toString()).toDouble() / 100;
+            pribitek += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("podrazitev_zapleti")).toString()).toDouble() *
+                                    pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("pribitek_zapleti")).toString()).toDouble() / 100;
+
+            // izracun zneskov
+            znesek_brez_ddv = urna_postavka * sestevek_ur * (1 - popusti_skupaj / 100 ) * pribitek;
+            znesek_popustov = urna_postavka * sestevek_ur * popusti_skupaj / 100;
+            znesek_ddv = znesek_brez_ddv * stopnja_ddv / 100 ;
+            znesek = znesek_brez_ddv + znesek_ddv;
+
+            // vnesi podatke v bazo
+            QSqlQuery sql_vnesi;
+            sql_vnesi.prepare("UPDATE opravila SET ur_dela = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ? "
+                                                "WHERE id LIKE '" + opravilo + "'");
+            sql_vnesi.bindValue(0, pretvori(pretvori_v_double(QString::number(sestevek_ur, 'f', 1))));
+            sql_vnesi.bindValue(1, pretvori(pretvori_v_double(QString::number(znesek_popustov, 'f', 2))));
+            sql_vnesi.bindValue(2, pretvori(pretvori_v_double(QString::number(znesek_ddv, 'f', 2))));
+            sql_vnesi.bindValue(3, pretvori(pretvori_v_double(QString::number(znesek_brez_ddv, 'f', 2))));
+            sql_vnesi.exec();
+        }
+    }
+    base.close();
+
+}
 
 void projekti::on_txt_pricetek_dateChanged() {
 

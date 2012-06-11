@@ -75,8 +75,11 @@ private slots:
     void on_txt_cas_racun_2_currentIndexChanged();
     void on_txt_cas_opravilo_1_currentIndexChanged();
     void on_txt_cas_opravilo_2_currentIndexChanged();
+    void on_txt_cas_od_timeChanged();
+    void on_txt_cas_do_timeChanged();
     void on_btn_pocisti_casovnico_clicked();
     void on_btn_vnesi_casovnico_clicked();
+    void osvezi_opravilo(QString opravilo);
 
     QString pretvori_v_double(QString besedilo);
     QString pretvori_iz_double(QString besedilo);
