@@ -132,7 +132,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>577</height>
+         <height>582</height>
         </rect>
        </property>
       </widget>
@@ -146,7 +146,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>26</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -176,6 +176,7 @@ border:0;</string>
      <string>Delo</string>
     </property>
     <addaction name="actionStranke"/>
+    <addaction name="separator"/>
     <addaction name="actionProjekti"/>
     <addaction name="separator"/>
     <addaction name="actionKuponi"/>
@@ -199,6 +200,13 @@ border:0;</string>
     <addaction name="actionKilometrina"/>
     <addaction name="actionDnevnice"/>
    </widget>
+   <widget class="QMenu" name="menuOsnovni_pogled">
+    <property name="title">
+     <string>Osnovni pogled</string>
+    </property>
+    <addaction name="actionOsnovni_Pogled_2"/>
+   </widget>
+   <addaction name="menuOsnovni_pogled"/>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
    <addaction name="menu_ifranti"/>
@@ -293,6 +301,16 @@ border:0;</string>
   <action name="actionDnevnice">
    <property name="text">
     <string>Dnevnice</string>
+   </property>
+  </action>
+  <action name="actionOsnovni_Pogled">
+   <property name="text">
+    <string>Osnovni Pogled</string>
+   </property>
+  </action>
+  <action name="actionOsnovni_Pogled_2">
+   <property name="text">
+    <string>Osnovni Pogled</string>
    </property>
   </action>
  </widget>

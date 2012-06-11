@@ -7,7 +7,6 @@
 #include "varnost.h"
 #include "kodiranje.h"
 
-
 wid_casovnice::wid_casovnice(QWidget *parent) :
     QWidget(parent),
         ui(new Ui::wid_casovnice)

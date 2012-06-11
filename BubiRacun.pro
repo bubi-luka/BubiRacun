@@ -36,7 +36,8 @@ HEADERS += \
     wid_prihodki.h \
     wid_izdatki.h \
     wid_poslovanje.h \
-    datum.h
+    datum.h \
+    wid_osnovni_pogled.h
 
 SOURCES += \
     main.cpp \
@@ -75,7 +76,8 @@ SOURCES += \
     tiskanje.cpp \
     wid_prihodki.cpp \
     wid_izdatki.cpp \
-    wid_poslovanje.cpp
+    wid_poslovanje.cpp \
+    wid_osnovni_pogled.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -111,7 +113,8 @@ FORMS += \
     tiskanje.ui \
     wid_prihodki.ui \
     wid_izdatki.ui \
-    wid_poslovanje.ui
+    wid_poslovanje.ui \
+    wid_osnovni_pogled.ui
 
 QT += sql
 
