@@ -616,3 +616,143 @@ QString wid_racuni::pretvori_iz_double(QString besedilo) {
 void wid_racuni::on_btn_print_seznam_clicked() {
 
 }
+
+void wid_racuni::on_btn_prestevilci_clicked() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prestevilci-zapise");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // poisci vsa leta; dobimo seznam vseh let, v katerih smo uradovali
+        QStringList leta;
+
+        QSqlQuery sql_leta;
+        sql_leta.prepare("SELECT * FROM prejeti_racuni");
+        sql_leta.exec();
+        while ( sql_leta.next() ) {
+            if ( !leta.contains(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_prejema")).toString()).right(4)) ) {
+                leta.append(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_prejema")).toString()).right(4));
+
+            }
+        }
+
+        // razvrsti leta narascajoce
+        leta.sort();
+
+        // za vsako leto poisci mesece, dneve in id-je ter jih zapisi v nov seznam
+        for ( int i_leta = 0; i_leta < leta.count(); i_leta++ ) {
+
+            // ustvari nov seznam id-jev, mesecev in zaporednih stevilk
+            QStringList seznam_vnosov;
+            QStringList meseci;
+            int zaporedna_stevilka = 0;
+
+            // poisci vse mesece, dobimo seznam mesecev v danem letu
+            QSqlQuery sql_meseci;
+            sql_meseci.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%." + leta.value(i_leta) + "'");
+            sql_meseci.exec();
+            while ( sql_meseci.next() ) {
+                if ( !meseci.contains(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_prejema")).toString()).right(7).left(2)) ) {
+                    meseci.append(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_prejema")).toString()).right(7).left(2));
+                }
+            }
+
+            // razvrsti po mesecu
+            meseci.sort();
+
+            // za vsak mesec poiscemo dneve, idje ter jih zapisemo v nov seznam
+            for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ ) {
+
+                // ustvarimo nov seznam dnevov
+                QStringList dnevi;
+
+                // poisci vse dneve, dobimo seznam dnevov v danem letu in danem mesecu
+                QSqlQuery sql_dnevi;
+                sql_dnevi.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
+                sql_dnevi.exec();
+                while ( sql_dnevi.next() ) {
+                    if ( !dnevi.contains(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_prejema")).toString()).left(2)) ) {
+                        dnevi.append(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_prejema")).toString()).left(2));
+                    }
+                }
+
+                // razvrsti po dnevih
+                dnevi.sort();
+
+                // za vsak dan poisci id-je ter jih zapisi v nov seznam
+                for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ ) {
+
+                    // poisci vse id-je, dobimo seznam id-jev v danem letu in danem mesecu in danem dnevu
+                    QSqlQuery sql_id_ji;
+                    sql_id_ji.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '" + dnevi.value(i_dnevi) + "." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
+                    sql_id_ji.exec();
+                    while ( sql_id_ji.next() ) {
+                        if ( !seznam_vnosov.contains(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString())) ) {
+                            seznam_vnosov.append(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()));
+                        }
+                    }
+
+                    sql_id_ji.clear();
+
+                } // for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ )
+
+                dnevi.clear();
+                sql_dnevi.clear();
+
+            } // for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ )
+
+            // pojdi cez cel seznam vnosov (notri so IDji po vrstnem redu) in vsakega izpisi ( kasneje popravi )
+            for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
+
+                zaporedna_stevilka++;
+                QString zaporedna = "";
+                if ( zaporedna_stevilka < 10 ) {
+                    zaporedna = "00" + QString::number(zaporedna_stevilka, 10);
+                }
+                else if ( zaporedna_stevilka < 100 ) {
+                    zaporedna = "0" + QString::number(zaporedna_stevilka, 10);
+                }
+                else {
+                    zaporedna = "" + QString::number(zaporedna_stevilka, 10);
+                }
+
+                QSqlQuery sql_prestevilci;
+                sql_prestevilci.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
+                sql_prestevilci.bindValue(0, pretvori("PR-" + leta.value(i_leta) + "-" + zaporedna));
+//                sql_prestevilci.exec();
+
+            } // for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ )
+
+            meseci.clear();
+            sql_meseci.clear();
+            seznam_vnosov.clear();
+
+        } // for ( int i_leta = 0; i_leta < leta.count(); i_leta++ )
+
+        leta.clear();
+        sql_leta.clear();
+
+    }
+    base.close();
+
+    // sporocilo ob zakljucku prestevilcevanja
+    QMessageBox zakljucek;
+    zakljucek.setText("Prestevilcenje zakljuceno");
+    zakljucek.setInformativeText("Prestevilcenje zahtevanih vnosov je bilo uspesno zakljuceno.");
+    zakljucek.exec();
+
+    napolni();
+
+}
