@@ -848,7 +848,7 @@ void prejetiracuni::stevilka_racuna() {
         base.setDatabaseName(dbase_path);
         base.database();
         base.open();
-        if(base.isOpen() != true){
+        if(base.isOpen() != true) {
             QMessageBox msgbox;
             msgbox.setText("Baze ni bilo moc odpreti");
             msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
