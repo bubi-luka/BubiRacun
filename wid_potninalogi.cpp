@@ -848,6 +848,18 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
                     sql_popravi_stevilko.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
                     sql_popravi_stevilko.exec();
                 }
+                sql_potni_nalog.clear();
+
+                // prestevilci stroske - stevilka naloga
+                sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
+                sql_potni_nalog.exec();
+                while ( sql_potni_nalog.next() ) {
+                    QSqlQuery sql_popravi_stevilko;
+                    sql_popravi_stevilko.prepare("UPDATE stroski SET potninalog = ? WHERE potninalog LIKE '" +
+                                                 sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString() + "'");
+                    sql_popravi_stevilko.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
+                    sql_popravi_stevilko.exec();
+                }
 
                 // prestevilci potni nalog - stevilka naloga
                 QSqlQuery sql_prestevilci;

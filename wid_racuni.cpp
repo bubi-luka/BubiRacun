@@ -635,116 +635,136 @@ void wid_racuni::on_btn_prestevilci_clicked() {
     else {
         // baza je odprta
 
-        // poisci vsa leta; dobimo seznam vseh let, v katerih smo uradovali
-        QStringList leta;
+        // naredi prestevilcenje za vse tipe racunov
+        for ( int i_tip_racuna = 1; i_tip_racuna <= 3; i_tip_racuna++ ) {
 
-        QSqlQuery sql_leta;
-        sql_leta.prepare("SELECT * FROM prejeti_racuni");
-        sql_leta.exec();
-        while ( sql_leta.next() ) {
-            if ( !leta.contains(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_prejema")).toString()).right(4)) ) {
-                leta.append(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_prejema")).toString()).right(4));
+            // poisci vsa leta; dobimo seznam vseh let, v katerih smo uradovali
+            QStringList leta;
 
-            }
-        }
-
-        // razvrsti leta narascajoce
-        leta.sort();
-
-        // za vsako leto poisci mesece, dneve in id-je ter jih zapisi v nov seznam
-        for ( int i_leta = 0; i_leta < leta.count(); i_leta++ ) {
-
-            // ustvari nov seznam id-jev, mesecev in zaporednih stevilk
-            QStringList seznam_vnosov;
-            QStringList meseci;
-            int zaporedna_stevilka = 0;
-
-            // poisci vse mesece, dobimo seznam mesecev v danem letu
-            QSqlQuery sql_meseci;
-            sql_meseci.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%." + leta.value(i_leta) + "'");
-            sql_meseci.exec();
-            while ( sql_meseci.next() ) {
-                if ( !meseci.contains(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_prejema")).toString()).right(7).left(2)) ) {
-                    meseci.append(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_prejema")).toString()).right(7).left(2));
+            QSqlQuery sql_leta;
+            sql_leta.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori(QString::number(i_tip_racuna, 10)) +
+                             "' AND stevilka_racuna NOT LIKE ''");
+            sql_leta.exec();
+            while ( sql_leta.next() ) {
+                if ( !leta.contains(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_izdaje")).toString()).right(4)) ) {
+                    leta.append(prevedi(sql_leta.value(sql_leta.record().indexOf("datum_izdaje")).toString()).right(4));
                 }
             }
 
-            // razvrsti po mesecu
-            meseci.sort();
+            qDebug("Seznam let je narejen");
 
-            // za vsak mesec poiscemo dneve, idje ter jih zapisemo v nov seznam
-            for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ ) {
+            // razvrsti leta narascajoce
+            leta.sort();
 
-                // ustvarimo nov seznam dnevov
-                QStringList dnevi;
+            // za vsako leto poisci mesece, dneve in id-je ter jih zapisi v nov seznam
+            for ( int i_leta = 0; i_leta < leta.count(); i_leta++ ) {
+                // ustvari nov seznam id-jev, mesecev in zaporednih stevilk
+                QStringList seznam_vnosov;
+                QStringList meseci;
+                int zaporedna_stevilka = 0;
 
-                // poisci vse dneve, dobimo seznam dnevov v danem letu in danem mesecu
-                QSqlQuery sql_dnevi;
-                sql_dnevi.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
-                sql_dnevi.exec();
-                while ( sql_dnevi.next() ) {
-                    if ( !dnevi.contains(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_prejema")).toString()).left(2)) ) {
-                        dnevi.append(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_prejema")).toString()).left(2));
+                // poisci vse mesece, dobimo seznam mesecev v danem letu
+                QSqlQuery sql_meseci;
+                sql_meseci.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori(QString::number(i_tip_racuna, 10)) +
+                                   "' AND stevilka_racuna NOT LIKE '" +
+                                   "' AND datum_izdaje LIKE '%." + leta.value(i_leta) + "'");
+                sql_meseci.exec();
+                while ( sql_meseci.next() ) {
+                    if ( !meseci.contains(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_izdaje")).toString()).right(7).left(2)) ) {
+                        meseci.append(prevedi(sql_meseci.value(sql_meseci.record().indexOf("datum_izdaje")).toString()).right(7).left(2));
                     }
                 }
 
-                // razvrsti po dnevih
-                dnevi.sort();
+                // razvrsti po mesecu
+                meseci.sort();
 
-                // za vsak dan poisci id-je ter jih zapisi v nov seznam
-                for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ ) {
+                // za vsak mesec poiscemo dneve, idje ter jih zapisemo v nov seznam
+                for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ ) {
 
-                    // poisci vse id-je, dobimo seznam id-jev v danem letu in danem mesecu in danem dnevu
-                    QSqlQuery sql_id_ji;
-                    sql_id_ji.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '" + dnevi.value(i_dnevi) + "." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
-                    sql_id_ji.exec();
-                    while ( sql_id_ji.next() ) {
-                        if ( !seznam_vnosov.contains(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString())) ) {
-                            seznam_vnosov.append(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()));
+                    // ustvarimo nov seznam dnevov
+                    QStringList dnevi;
+
+                    // poisci vse dneve, dobimo seznam dnevov v danem letu in danem mesecu
+                    QSqlQuery sql_dnevi;
+                    sql_dnevi.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori(QString::number(i_tip_racuna, 10)) +
+                                      "' AND stevilka_racuna NOT LIKE '" +
+                                      "' AND datum_izdaje LIKE '%." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
+                    sql_dnevi.exec();
+                    while ( sql_dnevi.next() ) {
+                        if ( !dnevi.contains(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_izdaje")).toString()).left(2)) ) {
+                            dnevi.append(prevedi(sql_dnevi.value(sql_dnevi.record().indexOf("datum_izdaje")).toString()).left(2));
                         }
                     }
 
-                    sql_id_ji.clear();
+                    // razvrsti po dnevih
+                    dnevi.sort();
 
-                } // for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ )
+                    // za vsak dan poisci id-je ter jih zapisi v nov seznam
+                    for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ ) {
 
-                dnevi.clear();
-                sql_dnevi.clear();
+                        // poisci vse id-je, dobimo seznam id-jev v danem letu in danem mesecu in danem dnevu
+                        QSqlQuery sql_id_ji;
+                        sql_id_ji.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori(QString::number(i_tip_racuna, 10)) +
+                                          "' AND stevilka_racuna NOT LIKE '" +
+                                          "' AND datum_izdaje LIKE '" + dnevi.value(i_dnevi) + "." + meseci.value(i_meseci) + "." + leta.value(i_leta) + "'");
+                        sql_id_ji.exec();
+                        while ( sql_id_ji.next() ) {
+                            if ( !seznam_vnosov.contains(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString())) ) {
+                                seznam_vnosov.append(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()));
+                                qDebug(QString::number(i_tip_racuna, 10).toAscii() + ": " +
+                                       leta.value(i_leta).toAscii() + "." +
+                                       meseci.value(i_meseci).toAscii() + "." +
+                                       dnevi.value(i_dnevi).toAscii() + " - " +
+                                       prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()).toAscii());
+                            }
+                        }
 
-            } // for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ )
+                        sql_id_ji.clear();
 
-            // pojdi cez cel seznam vnosov (notri so IDji po vrstnem redu) in vsakega izpisi ( kasneje popravi )
-            for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
+                    } // for ( int i_dnevi = 0; i_dnevi < dnevi.count(); i_dnevi++ )
 
-                zaporedna_stevilka++;
-                QString zaporedna = "";
-                if ( zaporedna_stevilka < 10 ) {
-                    zaporedna = "00" + QString::number(zaporedna_stevilka, 10);
-                }
-                else if ( zaporedna_stevilka < 100 ) {
-                    zaporedna = "0" + QString::number(zaporedna_stevilka, 10);
-                }
-                else {
-                    zaporedna = "" + QString::number(zaporedna_stevilka, 10);
-                }
+                    dnevi.clear();
+                    sql_dnevi.clear();
 
-                QSqlQuery sql_prestevilci;
-                sql_prestevilci.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
-                sql_prestevilci.bindValue(0, pretvori("PR-" + leta.value(i_leta) + "-" + zaporedna));
-//                sql_prestevilci.exec();
+                } // for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ )
 
-            } // for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ )
+                // pojdi cez cel seznam vnosov (notri so IDji po vrstnem redu) in vsakega izpisi ( kasneje popravi )
+                for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
 
-            meseci.clear();
-            sql_meseci.clear();
-            seznam_vnosov.clear();
+                    zaporedna_stevilka++;
+                    QString zaporedna = "";
+                    if ( zaporedna_stevilka < 10 ) {
+                        zaporedna = "00" + QString::number(zaporedna_stevilka, 10);
+                    }
+                    else if ( zaporedna_stevilka < 100 ) {
+                        zaporedna = "0" + QString::number(zaporedna_stevilka, 10);
+                    }
+                    else {
+                        zaporedna = "" + QString::number(zaporedna_stevilka, 10);
+                    }
 
-        } // for ( int i_leta = 0; i_leta < leta.count(); i_leta++ )
+                    QSqlQuery sql_prestevilci;
+                    sql_prestevilci.prepare("UPDATE racuni SET stevilka_racuna = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
+                    sql_prestevilci.bindValue(0, pretvori(leta.value(i_leta).right(2) + zaporedna));
+                    sql_prestevilci.exec();
 
-        leta.clear();
-        sql_leta.clear();
+                    qDebug(leta.value(i_leta).right(2).toAscii() + zaporedna.toAscii());
+
+                } // for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ )
+
+                meseci.clear();
+                sql_meseci.clear();
+                seznam_vnosov.clear();
+
+            } // for ( int i_leta = 0; i_leta < leta.count(); i_leta++ )
+
+            leta.clear();
+            sql_leta.clear();
+
+        } // for ( int i_tip_racuna = 1; i_tip_racuna <= 3; i_tip_racuna++ )
 
     }
+
     base.close();
 
     // sporocilo ob zakljucku prestevilcevanja
