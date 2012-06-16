@@ -1842,7 +1842,9 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
         ui->txt_datum_placila_avansa->setEnabled(true);
         ui->txt_datum_izdaje_racuna->setEnabled(true);
         ui->txt_status_placila->setEnabled(true);
-        stevilka_racuna();
+        if ( ui->txt_stevilka_racuna->text() == "" ) {
+            stevilka_racuna();
+        }
     }
     else {
         ui->txt_status_predracuna->setEnabled(false);
