@@ -938,8 +938,6 @@ void racun::prejem(QString besedilo) {
         ui->btn_opravilo->setEnabled(false);
         ui->btn_brisi_opravilo->setEnabled(false);
 
-        ui->rb_predplacilo->setEnabled(false);
-        ui->rb_racun->setEnabled(false);
         ui->rb_predracun->setChecked(true);
 
         ui->txt_status_oddaje_racuna->setEnabled(false);
@@ -978,10 +976,6 @@ void racun::prejem(QString besedilo) {
 
         ui->btn_racun->setEnabled(false);
         ui->btn_predplacilni_racun->setEnabled(false);
-
-        ui->rb_predplacilo->setEnabled(false);
-        ui->rb_predracun->setEnabled(false);
-        ui->rb_racun->setEnabled(false);
 
         // besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
         QString app_path = QApplication::applicationDirPath();
