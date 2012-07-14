@@ -83,11 +83,11 @@ wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
 
             // filtriraj po izdajatelju racuna
             ui->cb_izdajatelj->addItem("");
-            sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE avtor LIKE '" + pretvori(vApp->id()) + "'");
+            sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE avtor LIKE '" + pretvori(vApp->id()) + "' ORDER BY izdajatelj_kratki ASC");
             sql_napolni.exec();
             while ( sql_napolni.next() ) {
-                if ( ui->cb_izdajatelj->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString())) == -1 ) {
-                    ui->cb_izdajatelj->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString()));
+                if ( ui->cb_izdajatelj->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString()).toUpper()) == -1 ) {
+                    ui->cb_izdajatelj->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izdajatelj_kratki")).toString()).toUpper());
                 }
             }
             sql_napolni.clear();
