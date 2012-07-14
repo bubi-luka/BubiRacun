@@ -238,10 +238,30 @@ void prijava::on_btn_prijavi_clicked() {
     else {
         // baza je odprta
 
+        QStringList seznam_id_org; // gre za seznam id-jev obstojecega user name-a
+        QStringList seznam_id; // gre za seznam id-jev urejen po vrstnem redu
+
         QSqlQuery sql_preveri;
         sql_preveri.prepare("SELECT * FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text().toLower()) + "'");
         sql_preveri.exec();
-        if (!sql_preveri.next()) {
+        while ( sql_preveri.next() ) {
+            seznam_id_org.append(prevedi(sql_preveri.value(sql_preveri.record().indexOf("id")).toString()));
+        }
+
+        // ker sort() deluje tako, da je zadnji string 9 in ne 10, je potrebno dodati toliko nicel, da so vsi stringi enako dolgi
+        int dolzina = seznam_id_org.last().length();
+
+        for ( int i = 0; i < seznam_id_org.count(); i++ ) {
+            QString dodatek;
+            for ( int a = 1; a < dolzina - seznam_id_org.at(i).length(); a++ ) {
+                dodatek += "0";
+            }
+            seznam_id.append(dodatek + seznam_id_org.at(i));
+        }
+
+        seznam_id.sort();
+
+        if ( seznam_id.isEmpty() ) { // seznam je prazen, uporabnika s tem imenom ni v bazi
             ui->txt_uporabnik->setText("");
             ui->txt_geslo->setText("");
 
@@ -250,33 +270,38 @@ void prijava::on_btn_prijavi_clicked() {
             msgbox.setInformativeText("V bazi ne obstaja uporabnik s tem uporabniskim imenom.");
             msgbox.exec();
         }
-        else {
-            if ( prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
-                // nastavi uporabnika, stanje, pravice uporabnika
-                vApp->set_id(pretvori(ui->txt_uporabnik->text().toLower())); // nastavi uporabniske pravice
-                if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
-                    vApp->set_state(pretvori("private")); // samo za oci pisarja
+        else { // uporabnik obstaja
+            QSqlQuery sql_uporabnik;
+            sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(seznam_id.last()) + "'");
+            sql_uporabnik.exec();
+            if ( sql_uporabnik.next() ) {
+                if ( prevedi(sql_uporabnik.value(sql_uporabnik.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
+                    // nastavi uporabnika, stanje, pravice uporabnika
+                    vApp->set_id(pretvori(seznam_id.last())); // nastavi uporabniske pravice
+                    if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
+                        vApp->set_state(pretvori("private")); // samo za oci pisarja
+                    }
+                    else {
+                        vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
+                    }
+
+                    // ustvari varnostno kopijo
+                    varnostna_kopija();
+
+                    // prikazi glavno okno
+                    GlavnoOkno *glavnookno = new GlavnoOkno;
+          //          glavnookno->showMaximized();
+                    glavnookno->show();
+                    this->close();
                 }
                 else {
-                    vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
+                    ui->txt_geslo->setText("");
+
+                    QMessageBox msgbox;
+                    msgbox.setText("Geslo ni pravilno!");
+                    msgbox.setInformativeText("Vnesli ste napacno geslo! Poskusite ponovno!");
+                    msgbox.exec();
                 }
-
-                // ustvari varnostno kopijo
-                varnostna_kopija();
-
-                // prikazi glavno okno
-                GlavnoOkno *glavnookno = new GlavnoOkno;
-                glavnookno->showMaximized();
-                glavnookno->show();
-                this->close();
-            }
-            else {
-                ui->txt_geslo->setText("");
-
-                QMessageBox msgbox;
-                msgbox.setText("Geslo ni pravilno!");
-                msgbox.setInformativeText("Vnesli ste napacno geslo! Poskusite ponovno!");
-                msgbox.exec();
             }
         }
 

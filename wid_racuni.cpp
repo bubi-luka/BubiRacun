@@ -651,8 +651,6 @@ void wid_racuni::on_btn_prestevilci_clicked() {
                 }
             }
 
-            qDebug("Seznam let je narejen");
-
             // razvrsti leta narascajoce
             leta.sort();
 
@@ -711,11 +709,6 @@ void wid_racuni::on_btn_prestevilci_clicked() {
                         while ( sql_id_ji.next() ) {
                             if ( !seznam_vnosov.contains(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString())) ) {
                                 seznam_vnosov.append(prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()));
-                                qDebug(QString::number(i_tip_racuna, 10).toAscii() + ": " +
-                                       leta.value(i_leta).toAscii() + "." +
-                                       meseci.value(i_meseci).toAscii() + "." +
-                                       dnevi.value(i_dnevi).toAscii() + " - " +
-                                       prevedi(sql_id_ji.value(sql_id_ji.record().indexOf("id")).toString()).toAscii());
                             }
                         }
 
@@ -747,8 +740,6 @@ void wid_racuni::on_btn_prestevilci_clicked() {
                     sql_prestevilci.prepare("UPDATE racuni SET stevilka_racuna = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
                     sql_prestevilci.bindValue(0, pretvori(leta.value(i_leta).right(2) + zaporedna));
                     sql_prestevilci.exec();
-
-                    qDebug(leta.value(i_leta).right(2).toAscii() + zaporedna.toAscii());
 
                 } // for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ )
 

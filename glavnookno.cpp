@@ -113,6 +113,7 @@ void GlavnoOkno::on_actionUporabniki_triggered() {
     ui->scrollArea->setWidget(widup);
     ui->lbl_pozicija->setText("Nahajate se na tabeli Zaposlenih!");
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Zaposleni");
+
 }
 
 void GlavnoOkno::on_actionPodjetje_triggered() {
@@ -225,7 +226,6 @@ void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
 
 }
 
-
 void GlavnoOkno::on_actionPrihodek_triggered() {
 
     wid_prihodki *widpri = new wid_prihodki;
@@ -268,6 +268,12 @@ void GlavnoOkno::on_actionDnevnice_triggered() {
 }
 
 void GlavnoOkno::varnost_id_changed() {
+
+    if (vApp->id() == "prazno" ) {
+        prijava *okno_prijava = new prijava;
+        okno_prijava->show();
+        GlavnoOkno::close();
+    }
 
 }
 
