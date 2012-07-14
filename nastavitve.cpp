@@ -86,7 +86,12 @@ void nastavitve::on_btn_ponastavi_clicked() {
 
 void nastavitve::on_btn_izhod_clicked() {
 
-    close();
+    if ( ui->txt_pot->text() == "" ) {
+        exit(0);
+    }
+    else {
+        close();
+    }
 
 }
 

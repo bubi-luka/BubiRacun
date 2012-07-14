@@ -67,6 +67,17 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
         if ( sql_firma.next() ) {
             pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
         }
+
+        // pogleda, ali obstajajo vnesene nastavitve, drugace prisili uporabnika v njihov vnos
+        QSqlQuery sql_nastavitve;
+        sql_nastavitve.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
+        sql_nastavitve.exec();
+        if ( sql_nastavitve.next() ) {
+            if ( sql_nastavitve.value(sql_nastavitve.record().indexOf("vrednost")).toString() == "" ) {
+                nastavitve *okno = new nastavitve;
+                okno->open();
+            }
+        }
     }
     base.close();
 
