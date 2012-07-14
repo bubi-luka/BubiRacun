@@ -37,7 +37,8 @@ HEADERS += \
     wid_izdatki.h \
     wid_poslovanje.h \
     datum.h \
-    wid_osnovni_pogled.h
+    wid_osnovni_pogled.h \
+    nastavitve.h
 
 SOURCES += \
     main.cpp \
@@ -77,7 +78,8 @@ SOURCES += \
     wid_prihodki.cpp \
     wid_izdatki.cpp \
     wid_poslovanje.cpp \
-    wid_osnovni_pogled.cpp
+    wid_osnovni_pogled.cpp \
+    nastavitve.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -114,7 +116,8 @@ FORMS += \
     wid_prihodki.ui \
     wid_izdatki.ui \
     wid_poslovanje.ui \
-    wid_osnovni_pogled.ui
+    wid_osnovni_pogled.ui \
+    nastavitve.ui
 
 QT += sql
 
@@ -140,7 +143,8 @@ OTHER_FILES += \
     racun-besedilo-predplacilo.csv \
     racun-besedilo-racun.csv \
     potni-nalog-besedilo-glava.csv \
-    style.css
+    style.css \
+    sif_nastavitve.csv
 
 
 

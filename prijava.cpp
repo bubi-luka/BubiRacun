@@ -34,6 +34,7 @@ prijava::prijava(QWidget *parent) :
     tabela_racuni();
     tabela_opravila();
     tabela_opombe();
+    tabela_nastavitve();
 
     // ustvari tabele sifrantov
     tabela_skd();
@@ -73,6 +74,7 @@ prijava::prijava(QWidget *parent) :
     vnesi_predracune();
     vnesi_storitve();
     vnesi_oddaja_racuna();
+    vnesi_nastavitve();
 
     // posodobitev baze
     posodobi_bazo();
@@ -290,7 +292,7 @@ void prijava::on_btn_prijavi_clicked() {
 
                     // prikazi glavno okno
                     GlavnoOkno *glavnookno = new GlavnoOkno;
-          //          glavnookno->showMaximized();
+                    glavnookno->showMaximized();
                     glavnookno->show();
                     this->close();
                 }
@@ -328,20 +330,17 @@ void prijava::varnostna_kopija() {
     else {
         // baza je odprta
 
-        QString predlagatelj_podjetje_logotip = "";
+        QString mapa_za_shranjevanje = "";
 
-        // v bazi poiscemo pot do logotipa
-        QSqlQuery sql_podjetje;
-        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
-        sql_podjetje.exec();
-        if ( sql_podjetje.next() ) {
-            predlagatelj_podjetje_logotip = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
+        // v bazi poiscemo pot do mesta shranjevanja podatkov
+        QSqlQuery sql_pot;
+        sql_pot.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
+        sql_pot.exec();
+        if ( sql_pot.next() ) {
+            mapa_za_shranjevanje = prevedi(sql_pot.value(sql_pot.record().indexOf("vrednost")).toString());
         }
 
-        if ( predlagatelj_podjetje_logotip != "" ) { // varnostno kopiranje podatkov izvedemo zgolj v primeru, da obstaja logotip podjetja
-            QString mapa_za_shranjevanje = "";
-            mapa_za_shranjevanje = predlagatelj_podjetje_logotip.left(predlagatelj_podjetje_logotip.lastIndexOf("/")); // izreze logotip
-            mapa_za_shranjevanje = mapa_za_shranjevanje.left(mapa_za_shranjevanje.lastIndexOf("/")); // izreze mapo za logotip
+        if ( mapa_za_shranjevanje != "" ) { // varnostno kopiranje podatkov izvedemo zgolj v primeru, da obstaja mapa za shranjevanje podatkov
 
             // ustvari mapo za shranjevanje baze podatkov
 
@@ -962,6 +961,35 @@ void prijava::tabela_opombe() {
 
 }
 
+void prijava::tabela_nastavitve() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS nastavitve ("
+                                                         "id INTEGER PRIMARY KEY, "
+                                                         "naziv TEXT, "
+                                                         "vrednost TEXT)"
+                                        );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
 // sifranti
 void prijava::tabela_skd() {
 
@@ -1448,7 +1476,6 @@ void prijava::tabela_opombe_pri_racunih() {
     base.close();
 
 }
-
 
 void prijava::tabela_dnevnice() {
 
@@ -2304,6 +2331,53 @@ void prijava::vnesi_oddaja_racuna() {
 
 }
 
+void prijava::vnesi_nastavitve() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QFile datoteka(app_path + "/sif_nastavitve.csv");
+    if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        /*
+        *	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+        * prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+        */
+        QTextStream besedilo(&datoteka);
+        while (!besedilo.atEnd()) {
+            QString naziv = besedilo.readLine();
+
+            QSqlQuery sql_check_table;
+            sql_check_table.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori(naziv) + "'");
+            sql_check_table.exec();
+            if ( !sql_check_table.next() ) {
+                QSqlQuery sql_insert_data;
+                sql_insert_data.prepare("INSERT INTO nastavitve (naziv) VALUES (?)");
+                sql_insert_data.bindValue(0, pretvori(naziv));
+                sql_insert_data.exec();
+            }
+        }
+    }
+    base.close();
+    datoteka.remove();
+
+}
+
 // pretvori v in iz kodirane oblike
 QString prijava::pretvori(QString besedilo) {
 
@@ -2887,6 +2961,37 @@ void prijava::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.5");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 5 ) {
+                    // nastavi pot shranjevanja podatkov glede na pot logotipa
+                    QString mapa_za_shranjevanje = "";
+
+                    update.prepare("SELECT * FROM podjetje");
+                    update.exec();
+                    if ( update.next() ) {
+                        QString logotip = prevedi(update.value(update.record().indexOf("logotip")).toString());
+                        mapa_za_shranjevanje = logotip.left(logotip.lastIndexOf("/") - 5);
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE nastavitve SET vrednost = ? WHERE naziv LIKE '" + pretvori("pot") + "'");
+                    update.bindValue(0, pretvori(mapa_za_shranjevanje));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.6");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.6");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
                     update.exec();
                     update.clear();

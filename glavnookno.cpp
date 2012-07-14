@@ -23,7 +23,7 @@
 #include "varnost.h"
 #include "kodiranje.h"
 #include "prijava.h"
-#include "popusti.h"
+#include "nastavitve.h"
 #include "wid_casovnice.h"
 #include "wid_prihodki.h"
 #include "wid_izdatki.h"
@@ -85,6 +85,7 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     ui->scrollArea->setWidget(widop);
     ui->lbl_pozicija->setText("Nahajate se na Osnovnem Pogledu!");
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Osnovni Pogled");
+
 }
 
 GlavnoOkno::~GlavnoOkno()
@@ -202,21 +203,6 @@ void GlavnoOkno::on_action_asovnice_triggered() {
 
 }
 
-void GlavnoOkno::on_actionPopusti_triggered() {
-
-    /*
-    * Za enkrat se popusti odprejo in urejajo zgolj v oknu, widget/tabela še ni predvidena
-    */
-//	Vizitka *widviz = new Vizitka;
-//	ui->scrollArea->setWidget(widviz);
-//	ui->lbl_pozicija->setText("Nahajate se na tabeli Vizitka!");
-//	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Vizitka");
-
-    popusti *okno_popusti = new popusti;
-    okno_popusti->show();
-
-}
-
 void GlavnoOkno::on_actionOpombe_pri_ra_unih_triggered() {
 
     wid_opombepriracunih *widopo = new wid_opombepriracunih;
@@ -263,6 +249,13 @@ void GlavnoOkno::on_actionKilometrina_triggered() {
 void GlavnoOkno::on_actionDnevnice_triggered() {
 
     sif_dnevnice *odpri = new sif_dnevnice;
+    odpri->show();
+
+}
+
+void GlavnoOkno::on_actionNastavitve_triggered() {
+
+    nastavitve *odpri = new nastavitve;
     odpri->show();
 
 }
