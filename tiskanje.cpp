@@ -3448,6 +3448,21 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
         // nastavi parametre
         painter.setFont(debelo);
+        besedilo = "BIC banke: ";
+        // dolocimo velikost kvadrata, ki ga tvori besedilo ("BIC banke: ")
+        velikost_besedila = painter.boundingRect(printer.width() / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+        // nastavimo parametre
+        visina_vrstice = velikost_besedila.height();
+        // natisnemo besedilo
+        painter.drawText(QRectF(printer.width() / 2, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+        // natisnemo besedilo
+        painter.setFont(normalno);
+        painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "ABANSI2X");
+        // nova vrstica
+        pozicija += visina_vrstice + razmik_med_vrsticami;
+
+        // nastavi parametre
+        painter.setFont(debelo);
         besedilo = racun.readLine() + " ";
         // dolocimo velikost kvadrata, ki ga tvori besedilo ("TRR Abanka: ")
         velikost_besedila = painter.boundingRect(printer.width() / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
@@ -3460,6 +3475,28 @@ void tiskanje::natisni_izdani_racun(QString id) {
         painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_trr);
         // nova vrstica
         pozicija += visina_vrstice + razmik_med_vrsticami;
+
+        if ( racun_tip != "2" ) {
+            // nastavi parametre
+            painter.setFont(debelo);
+            besedilo = "Koda namena: ";
+            // dolocimo velikost kvadrata, ki ga tvori besedilo ("Koda namena: ")
+            velikost_besedila = painter.boundingRect(printer.width() / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+            // nastavimo parametre
+            visina_vrstice = velikost_besedila.height();
+            // natisnemo besedilo
+            painter.drawText(QRectF(printer.width() / 2, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+            // natisnemo besedilo
+            painter.setFont(normalno);
+            if ( racun_tip == "1") { // pri predracunu
+                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "ADVA");
+            }
+            else if ( racun_tip == "3" ) { // pri racunu
+                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "SCVE");
+            }
+            // nova vrstica
+            pozicija += visina_vrstice + razmik_med_vrsticami;
+        }
 
         if ( racun_tip != "2" ) { // samo pri predracunu in racunu
             // nastavi parametre
