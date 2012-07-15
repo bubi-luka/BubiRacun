@@ -97,8 +97,8 @@ racun::racun(QWidget *parent) :
         ui->btn_predplacilni_racun->setEnabled(false);
         ui->btn_racun->setEnabled(false);
 
-        ui->txt_vse_opombe->setHidden(true);
-        ui->txt_vnesene_opombe->setHidden(true);
+//        ui->txt_vse_opombe->setHidden(true);
+//        ui->txt_vnesene_opombe->setHidden(true);
 
         // skrij polja
         ui->txt_projekt_id->setVisible(false);
@@ -1861,7 +1861,6 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
 }
 
-
 void racun::on_txt_status_predracuna_currentIndexChanged() {
 
     if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) {
@@ -2094,6 +2093,41 @@ void racun::on_btn_vnesi_zapis_2_clicked() {
 
 void racun::on_txt_vse_opombe_textChanged() {
 
+    QString zaporedje = ui->txt_vse_opombe->text();
+
+    // odstrani podvojene vejice
+    zaporedje = zaporedje.replace(",,", ",");
+
+    // odstrani prvo vejico
+    if ( zaporedje.left(1) == "," ) {
+        zaporedje = zaporedje.right(zaporedje.length() - 1);
+    }
+
+    // odstrani zadnjo vejico
+    if ( zaporedje.right(1) == "," ) {
+       zaporedje = zaporedje.left(zaporedje.length() - 1);
+    }
+
+    QString preostanek_opombe = zaporedje;
+
+    // napolni seznam opomb
+    QStringList seznam_opomb;
+    for ( int a = 0; a <= zaporedje.count(","); a++) {
+        seznam_opomb.append(preostanek_opombe.left(preostanek_opombe.indexOf(",")));
+        preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - preostanek_opombe.indexOf(",") - 1);
+    }
+
+    // uredi seznam opomb
+    zaporedje = ",";
+    seznam_opomb.sort();
+
+    for ( int b = 0; b < seznam_opomb.count(); b++ ) {
+        zaporedje += seznam_opomb.at(b) + ",";
+    }
+
+    // ponastavi besedilo polja vseh opomb, ki je sedaj v pravem vrstnem redu in urejeno
+    ui->txt_vse_opombe->setText(zaporedje);
+
     if ( ui->btn_sprejmi->text() != "Odpiram" ) {
         napolni_vse_opombe();
     }
@@ -2126,8 +2160,27 @@ void racun::napolni_vse_opombe() {
     else {
         // the database is opened
 
-        QString opombe = ui->txt_vse_opombe->text().replace(",,", ",");
-        QString preostanek_opombe = opombe;
+        QString zaporedje = ui->txt_vse_opombe->text();
+
+        // odstrani prvo vejico
+        if ( zaporedje.left(1) == "," ) {
+            zaporedje = zaporedje.right(zaporedje.length() - 1);
+        }
+
+        // odstrani zadnjo vejico
+        if ( zaporedje.right(1) == "," ) {
+            zaporedje = zaporedje.left(zaporedje.length() - 1);
+        }
+
+        QString preostanek_opombe = zaporedje;
+
+        // napolni seznam opomb
+        QStringList seznam_opomb;
+        for ( int a = 0; a <= zaporedje.count(","); a++) {
+            seznam_opomb.append(preostanek_opombe.left(preostanek_opombe.indexOf(",")));
+            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - preostanek_opombe.indexOf(",") - 1);
+        }
+
         QString id = "";
 
         // clear previous content
@@ -2166,11 +2219,8 @@ void racun::napolni_vse_opombe() {
         ui->tbl_vse_opombe->setColumnWidth(1, sirina);
 
         int row = 0;
-        for ( int a = 0; a < opombe.count(","); a++ ) {
-            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
-            int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
-            id = preostanek_opombe.left(vejica); // dobimo id opombe
-            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - id.length() ); // opombe skrajsamo za dolzino enega id-ja
+        for ( int b = 0; b < seznam_opomb.count(); b++ ) {
+            id = seznam_opomb.at(b); // dobimo id opombe
 
             QSqlQuery sql_fill;
             sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(id) + "' ORDER BY id ASC");
@@ -2208,10 +2258,6 @@ void racun::napolni_vse_opombe() {
 
 void racun::napolni_vnesene_opombe() {
 
-    QString opombe = ui->txt_vnesene_opombe->text().replace(",,", ",");
-    QString preostanek_opombe = opombe;
-    QString id = "";
-
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -2227,6 +2273,27 @@ void racun::napolni_vnesene_opombe() {
     }
     else {
         // the database is opened
+
+        QString zaporedje = ui->txt_vnesene_opombe->text().right(ui->txt_vnesene_opombe->text().length() - 1);
+
+        // odstrani podvojene vejice
+        zaporedje = zaporedje.replace(",,", ",");
+
+        // odstrani zadnjo vejico
+        if ( zaporedje.right(1) == "," ) {
+            zaporedje = zaporedje.left(zaporedje.length() - 1);
+        }
+
+        QString preostanek_opombe = zaporedje;
+
+        // napolni seznam opomb
+        QStringList seznam_opomb;
+        for ( int a = 0; a <= zaporedje.count(","); a++) {
+            seznam_opomb.append(preostanek_opombe.left(preostanek_opombe.indexOf(",")));
+            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - preostanek_opombe.indexOf(",") - 1);
+        }
+
+        QString id = "";
 
         // clear previous content
         ui->tbl_vnesene_opombe->clear();
@@ -2263,11 +2330,8 @@ void racun::napolni_vnesene_opombe() {
         ui->tbl_vnesene_opombe->setColumnWidth(1, sirina);
 
         int row = 0;
-        for ( int a = 0; a < opombe.count(","); a++ ) {
-            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - 1); // odstranimo zacetno vejico
-            int vejica = preostanek_opombe.indexOf(",", 0); // dobimo pozicijo prve vejice
-            id = preostanek_opombe.left(vejica); // dobimo id opombe
-            preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - id.length() ); // opombe skrajsamo za dolzino enega id-ja
+        for ( int b = 0; b < seznam_opomb.count(); b++ ) {
+            id = seznam_opomb.at(b); // dobimo id opombe
 
             QSqlQuery sql_fill;
             sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(id) + "' ORDER BY id ASC");
@@ -2340,5 +2404,95 @@ void racun::on_tbl_vnesene_opombe_doubleClicked() {
     else { // jo odstrani
         ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text().remove(id));
     }
+
+}
+
+void racun::on_btn_gor_clicked() {
+
+    // nas seznam opomb vnesemo v listo
+    QString zaporedje = ui->txt_vnesene_opombe->text().right(ui->txt_vnesene_opombe->text().length() - 1);
+
+    // odstrani podvojene vejice
+    zaporedje = zaporedje.replace(",,", ",");
+
+    // odstrani zadnjo vejico
+    if ( zaporedje.right(1) == "," ) {
+        zaporedje = zaporedje.left(zaporedje.length() - 1);
+    }
+
+    QString preostanek_opombe = zaporedje;
+
+    // napolni seznam opomb
+    QStringList seznam_opomb;
+    for ( int a = 0; a <= zaporedje.count(","); a++) {
+        seznam_opomb.append(preostanek_opombe.left(preostanek_opombe.indexOf(",")));
+        preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - preostanek_opombe.indexOf(",") - 1);
+    }
+
+    // dolocimo id vnosa, ki ga premikamo
+    QString id = ui->tbl_vnesene_opombe->selectedItems().takeAt(0)->text();
+
+    // dolocimo pozicijo vnosa, ki smo ga oznacili
+    int pozicija = seznam_opomb.indexOf(id);
+
+    // premaknemo pozicijo oznacenega polja za eno mesto visje na seznam
+    if ( pozicija > 0 ) {
+        seznam_opomb.swap(pozicija, pozicija - 1);
+    }
+
+    // ponovno tvorimo seznam
+    zaporedje = "";
+    for ( int b = 0; b < seznam_opomb.count(); b++ ) {
+        zaporedje += "," + seznam_opomb.at(b) + ",";
+
+    }
+
+    // prepisemo seznam v nase polje
+    ui->txt_vnesene_opombe->setText(zaporedje);
+
+}
+
+void racun::on_btn_dol_clicked() {
+
+    // nas seznam opomb vnesemo v listo
+    QString zaporedje = ui->txt_vnesene_opombe->text().right(ui->txt_vnesene_opombe->text().length() - 1);
+
+    // odstrani podvojene vejice
+    zaporedje = zaporedje.replace(",,", ",");
+
+    // odstrani zadnjo vejico
+    if ( zaporedje.right(1) == "," ) {
+        zaporedje = zaporedje.left(zaporedje.length() - 1);
+    }
+
+    QString preostanek_opombe = zaporedje;
+
+    // napolni seznam opomb
+    QStringList seznam_opomb;
+    for ( int a = 0; a <= zaporedje.count(","); a++) {
+        seznam_opomb.append(preostanek_opombe.left(preostanek_opombe.indexOf(",")));
+        preostanek_opombe = preostanek_opombe.right(preostanek_opombe.length() - preostanek_opombe.indexOf(",") - 1);
+    }
+
+    // dolocimo id vnosa, ki ga premikamo
+    QString id = ui->tbl_vnesene_opombe->selectedItems().takeAt(0)->text();
+
+    // dolocimo pozicijo vnosa, ki smo ga oznacili
+    int pozicija = seznam_opomb.indexOf(id);
+
+    // premaknemo pozicijo oznacenega polja za eno mesto visje na seznam
+    if ( pozicija < seznam_opomb.count() - 1 ) {
+        seznam_opomb.swap(pozicija, pozicija + 1);
+    }
+
+    // ponovno tvorimo seznam
+    zaporedje = "";
+    for ( int b = 0; b < seznam_opomb.count(); b++ ) {
+        zaporedje += "," + seznam_opomb.at(b) + ",";
+
+    }
+
+    // prepisemo seznam v nase polje
+    ui->txt_vnesene_opombe->setText(zaporedje);
 
 }
