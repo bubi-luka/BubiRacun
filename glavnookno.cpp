@@ -29,6 +29,7 @@
 #include "wid_izdatki.h"
 #include "wid_poslovanje.h"
 #include "wid_osnovni_pogled.h"
+#include "wid_avtomobili.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -268,6 +269,15 @@ void GlavnoOkno::on_actionNastavitve_triggered() {
 
     nastavitve *odpri = new nastavitve;
     odpri->show();
+
+}
+
+void GlavnoOkno::on_actionAvtomobili_triggered() {
+
+    wid_avtomobili *widavto = new wid_avtomobili;
+    ui->scrollArea->setWidget(widavto);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled avtomobilov!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled avtomobilov");
 
 }
 

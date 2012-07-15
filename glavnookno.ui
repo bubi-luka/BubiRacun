@@ -187,6 +187,7 @@ border:0;</string>
     </property>
     <addaction name="actionPodjetje"/>
     <addaction name="actionUporabniki"/>
+    <addaction name="actionAvtomobili"/>
     <addaction name="separator"/>
     <addaction name="action_asovnice"/>
     <addaction name="separator"/>
@@ -317,6 +318,11 @@ border:0;</string>
   <action name="actionNastavitve">
    <property name="text">
     <string>Nastavitve</string>
+   </property>
+  </action>
+  <action name="actionAvtomobili">
+   <property name="text">
+    <string>Avtomobili</string>
    </property>
   </action>
  </widget>

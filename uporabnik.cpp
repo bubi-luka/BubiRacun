@@ -116,9 +116,6 @@ void uporabnik::on_btn_brisi_clicked() {
     ui->txt_gsm->setText("");
     ui->txt_email->setText("");
     ui->txt_url->setText("");
-    ui->txt_avto->setText("");
-    ui->txt_model->setText("");
-    ui->txt_registracija->setText("");
 
     ui->txt_id->setText("");
     ui->txt_uporabnik->setText("");
@@ -485,9 +482,9 @@ void uporabnik::on_btn_sprejmi_clicked() {
             // razlicica uporabnika
 //			if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") { // vnesi novega uporabnika
             sql_vnesi_uporabnika.prepare("INSERT INTO uporabniki (ime, priimek, user_name, geslo, naslov, naslov_stevilka, posta, postna_stevilka, "
-                                                                 "telefon, gsm, email, rojstni_datum, spletna_stran, naziv, davcna_stevilka, emso, tekoci_racun, "
-                                                                 "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, avtomobil, model_avtomobila, registracija, "
-                                                                 "dovoljenje, podjetje) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                         "telefon, gsm, email, rojstni_datum, spletna_stran, naziv, davcna_stevilka, emso, tekoci_racun, "
+                                         "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, dovoljenje, podjetje) "
+                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 //			}
 //			else { // popravi ze obstojeci vnos
 //				sql_vnesi_uporabnika.prepare("UPDATE uporabniki SET ime = ?, priimek = ?, user_name = ?, geslo = ?, naslov = ?, naslov_stevilka = ?, "
@@ -517,11 +514,8 @@ void uporabnik::on_btn_sprejmi_clicked() {
             sql_vnesi_uporabnika.bindValue(18, pretvori(ui->txt_zaposlitev->text()));
             sql_vnesi_uporabnika.bindValue(19, pretvori(ui->txt_odpustitev->text()));
             sql_vnesi_uporabnika.bindValue(20, pretvori(pogodba));
-            sql_vnesi_uporabnika.bindValue(21, pretvori(ui->txt_avto->text()));
-            sql_vnesi_uporabnika.bindValue(22, pretvori(ui->txt_model->text()));
-            sql_vnesi_uporabnika.bindValue(23, pretvori(ui->txt_registracija->text()));
-            sql_vnesi_uporabnika.bindValue(24, pretvori(dovoljenje));
-            sql_vnesi_uporabnika.bindValue(25, pretvori(podjetje));
+            sql_vnesi_uporabnika.bindValue(21, pretvori(dovoljenje));
+            sql_vnesi_uporabnika.bindValue(22, pretvori(podjetje));
             sql_vnesi_uporabnika.exec();
         }
         base.close();
@@ -593,9 +587,6 @@ void uporabnik::prejem(QString besedilo) {
                 ui->txt_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
                 ui->txt_email->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("email")).toString()));
                 ui->txt_url->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("spletna_stran")).toString()));
-                ui->txt_avto->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("avtomobil")).toString()));
-                ui->txt_model->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("model_avtomobila")).toString()));
-                ui->txt_registracija->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("registracija")).toString()));
 
                 ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
                 ui->txt_uporabnik->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("user_name")).toString()));
@@ -649,6 +640,9 @@ void uporabnik::prejem(QString besedilo) {
                 ui->txt_davcna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("davcna_stevilka")).toString()));
                 ui->txt_emso->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("emso")).toString()));
                 ui->txt_tekoci_racun->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("tekoci_racun")).toString()));
+
+                napolni_avtomobile();
+
             }
         }
         base.close();
@@ -731,6 +725,137 @@ void uporabnik::on_txt_postna_stevilka_textChanged(QString besedilo) {
         sql_najdi.exec();
         if ( sql_najdi.next() ) {
             ui->txt_posta->setCurrentIndex(ui->txt_posta->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("posta")).toString())));
+        }
+    }
+    base.close();
+
+}
+
+void uporabnik::napolni_avtomobile() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // izprazni tabelo
+        QSqlQuery sql_brisi;
+        sql_brisi.prepare("SELECT * FROM avtomobili");
+        sql_brisi.exec();
+        while ( sql_brisi.next() ) {
+            ui->tbl_avto->removeRow(0);
+        }
+
+        for ( int i = 0; i < 3; i++ ) {
+            ui->tbl_avto->removeColumn(0);
+        }
+
+        // start filling the table
+        ui->tbl_avto->insertColumn(0);
+        ui->tbl_avto->insertColumn(1);
+        ui->tbl_avto->insertColumn(2);
+        ui->tbl_avto->insertColumn(3);
+
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+        QTableWidgetItem *naslov3 = new QTableWidgetItem;
+
+        naslov0->setText("ID");
+        naslov1->setText("Proizvajalec");
+        naslov2->setText("Znamka");
+        naslov3->setText("Registrska st.");
+
+        ui->tbl_avto->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_avto->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_avto->setHorizontalHeaderItem(2, naslov2);
+        ui->tbl_avto->setHorizontalHeaderItem(3, naslov3);
+
+        ui->tbl_avto->setColumnWidth(0, 35);
+        ui->tbl_avto->setColumnWidth(1, 100);
+        ui->tbl_avto->setColumnWidth(2, 100);
+        ui->tbl_avto->setColumnWidth(3, 100);
+
+        QSqlQuery sql_fill;
+        sql_fill.prepare("SELECT * FROM avtomobili");
+        sql_fill.exec();
+
+        int row = 0;
+        while (sql_fill.next()) {
+
+            // napreduj le ce je avto last podjetja, kateremu pripada tudi uporabnik ALI ce je avto last uporabniku
+            QString napreduj = "";
+            if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "0" ) { // podjetje
+                napreduj = "true";
+            }
+            else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "1" ) { // privat
+                if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()) == ui->txt_id->text() ) {
+                    napreduj = "true";
+                }
+                else {
+                    napreduj = "false";
+                }
+            }
+            else {
+                napreduj = "false";
+            }
+
+            if ( napreduj == "true" ) {
+                ui->tbl_avto->insertRow(row);
+                ui->tbl_avto->setRowHeight(row, 20);
+                int col = 0;
+                int i = 0;
+                QString polja[4] = {"id", "proizvajalec", "znamka", "registrska_stevilka"};
+
+                while (col <= 3) {
+
+                    QTableWidgetItem *celica = new QTableWidgetItem;
+                    if ( polja[i] == "id" ) {
+                        celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+                    }
+                    else if ( polja[i] == "lastnik" ) {
+                        QSqlQuery sql_lastnik;
+                        if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "1" ) { // zasebnik
+                            sql_lastnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
+                        }
+                        else if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "0" ) { // podjetje
+                            sql_lastnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
+                        }
+                        sql_lastnik.exec();
+                        if ( sql_lastnik.next() ) {
+                            if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "1" ) { // zasebnik
+                                celica->setText(prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("ime")).toString()) + " " +
+                                                prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("priimek")).toString()));
+                            }
+                            else if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "0" ) { // podjetje
+                                celica->setText(prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("ime")).toString()));
+                            }
+                        }
+                    }
+                    else {
+                        celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                    }
+                    ui->tbl_avto->setItem(row, col, celica);
+
+                    col++;
+                    i++;
+
+                }
+
+                row++;
+
+            }
         }
     }
     base.close();

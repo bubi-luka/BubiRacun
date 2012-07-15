@@ -35,6 +35,7 @@ prijava::prijava(QWidget *parent) :
     tabela_opravila();
     tabela_opombe();
     tabela_nastavitve();
+    tabela_avtomobili();
 
     // ustvari tabele sifrantov
     tabela_skd();
@@ -523,9 +524,6 @@ void prijava::tabela_uporabnik() {
                                                          "datum_zaposlitve TEXT, "
                                                          "konec_zaposlitve TEXT, "
                                                          "pogodba TEXT, "
-                                                         "avtomobil TEXT, "
-                                                         "model_avtomobila TEXT, "
-                                                         "registracija TEXT, "
                                                          "dovoljenje TEXT, "
                                                          "podjetje TEXT)"
                                          );
@@ -983,6 +981,40 @@ void prijava::tabela_nastavitve() {
                                                          "id INTEGER PRIMARY KEY, "
                                                          "naziv TEXT, "
                                                          "vrednost TEXT)"
+                                        );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+
+void prijava::tabela_avtomobili() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS avtomobili ("
+                                 "id INTEGER PRIMARY KEY, "
+                                 "proizvajalec TEXT, "
+                                 "znamka TEXT, "
+                                 "tip TEXT, "
+                                 "registrska_stevilka TEXT, "
+                                 "lastnistvo TEXT, "
+                                 "lastnik TEXT)"
                                         );
         sql_create_table.exec();
     }
@@ -2997,6 +3029,46 @@ void prijava::posodobi_bazo() {
                     update.clear();
 
                     posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 6 ) {
+                    // prepisi podatke o avtomobilih iz uporabnika v svojo bazo
+
+/*                    update.prepare("SELECT * FROM uporabniki");
+                    update.exec();
+                    while ( update.next() ) {
+                        // preveri, ali registracija ze obstaja v bazi avtomobilov
+                        QSqlQuery preveri;
+                        preveri.prepare("SELECT * FROM avtomobili WHERE registrska_stevilka LIKE '" + update.value(update.record().indexOf("registracija")).toString() + "'");
+                        preveri.exec();
+                        if ( !preveri.next() ) {
+                            // prepisi iz ene baze v drugo
+                            QSqlQuery vnesi;
+                            vnesi.prepare("INSERT INTO avtomobili (proizvajalec, znamka, tip, registrska_stevilka, lastnistvo, lastnik) "
+                                          "VALUES (?,?,?,?,?,?)");
+                            vnesi.bindValue(0, update.value(update.record().indexOf("avtomobil")).toString());
+                            vnesi.bindValue(1, update.value(update.record().indexOf("model_avtomobila")).toString());
+                            vnesi.bindValue(2, "");
+                            vnesi.bindValue(3, update.value(update.record().indexOf("registracija")).toString());
+                            vnesi.bindValue(4, "1");
+                            vnesi.bindValue(5, update.value(update.record().indexOf("id")).toString());
+                            vnesi.exec();
+                        }
+                    }
+                    update.clear();
+*/
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.7");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+//                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.7");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+  //                  update.exec();
+                    update.clear();
+
+          //          posodobi_bazo();
                 }
             }
         }

@@ -43,6 +43,7 @@ private slots:
     void tabela_opravila();
     void tabela_opombe();
     void tabela_nastavitve();
+    void tabela_avtomobili();
 
     // ustvari tabele sifrantov
     void tabela_skd();

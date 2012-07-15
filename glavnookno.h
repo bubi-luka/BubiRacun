@@ -36,6 +36,7 @@ private slots:
     void varnost_id_changed();
     void on_actionOsnovni_Pogled_2_triggered();
     void on_actionNastavitve_triggered();
+    void on_actionAvtomobili_triggered();
     void keyPressEvent(QKeyEvent *event);
 
     QString pretvori(QString besedilo);

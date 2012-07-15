@@ -240,7 +240,6 @@ void wid_uporabnik::on_tbl_uporabnik_doubleClicked() {
 
 }
 
-
 void wid_uporabnik::on_btn_brisi_clicked() {
 
     QString id = ui->tbl_uporabnik->selectedItems().takeAt(0)->text();

@@ -38,7 +38,9 @@ HEADERS += \
     wid_poslovanje.h \
     datum.h \
     wid_osnovni_pogled.h \
-    nastavitve.h
+    nastavitve.h \
+    avtomobili.h \
+    wid_avtomobili.h
 
 SOURCES += \
     main.cpp \
@@ -79,7 +81,9 @@ SOURCES += \
     wid_izdatki.cpp \
     wid_poslovanje.cpp \
     wid_osnovni_pogled.cpp \
-    nastavitve.cpp
+    nastavitve.cpp \
+    avtomobili.cpp \
+    wid_avtomobili.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -117,7 +121,9 @@ FORMS += \
     wid_izdatki.ui \
     wid_poslovanje.ui \
     wid_osnovni_pogled.ui \
-    nastavitve.ui
+    nastavitve.ui \
+    avtomobili.ui \
+    wid_avtomobili.ui
 
 QT += sql
 

@@ -97,8 +97,8 @@ racun::racun(QWidget *parent) :
         ui->btn_predplacilni_racun->setEnabled(false);
         ui->btn_racun->setEnabled(false);
 
-//        ui->txt_vse_opombe->setHidden(true);
-//        ui->txt_vnesene_opombe->setHidden(true);
+        ui->txt_vse_opombe->setHidden(true);
+        ui->txt_vnesene_opombe->setHidden(true);
 
         // skrij polja
         ui->txt_projekt_id->setVisible(false);
