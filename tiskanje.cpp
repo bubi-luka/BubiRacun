@@ -364,6 +364,9 @@ void tiskanje::natisni_potni_nalog(QString id) {
                 datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
                 namen_potnega_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen_naloga")).toString());
                 opombe = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("opombe")).toString());
+                prejemnik_znamka_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("proizvajalec")).toString());
+                prejemnik_model_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("znamka")).toString());
+                prejemnik_registrska_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("registrska_stevilka")).toString());
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
 
                 prevozno_sredstvo = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prevozno_sredstvo")).toString());
@@ -476,9 +479,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
                     prejemnik_naslov_stevilka = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("naslov_stevilka")).toString());
                     prejemnik_postna_stevilka = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("postna_stevilka")).toString());
                     prejemnik_posta = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("posta")).toString());
-                    prejemnik_znamka_avtomobila = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("avtomobil")).toString());
-                    prejemnik_model_avtomobila = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("model_avtomobila")).toString());
-                    prejemnik_registrska_stevilka = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("registracija")).toString());
                 }
                 QSqlQuery sql_prejemnik_naziv;
                 sql_prejemnik_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(prejemnik_naziv) + "'");
