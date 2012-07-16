@@ -581,7 +581,11 @@ void prijava::tabela_potni_nalogi() {
                                                          "predlagatelj_podjetje TEXT, "
                                                          "predlagatelj_oseba TEXT, "
                                                          "prejemnik_oseba TEXT, "
-                                                         "prevozno_sredstvo TEXT)"
+                                                         "prevozno_sredstvo TEXT, "
+                                                         "proizvajalec TEXT, "
+                                                         "znamka TEXT, "
+                                                         "tip TEXT, "
+                                                         "registrska_stevilka)"
                                                         );
         sql_create_table.exec();
     }
@@ -3033,7 +3037,7 @@ void prijava::posodobi_bazo() {
                 if ( stevilka_baze_min == 6 ) {
                     // prepisi podatke o avtomobilih iz uporabnika v svojo bazo
 
-/*                    update.prepare("SELECT * FROM uporabniki");
+                    update.prepare("SELECT * FROM uporabniki");
                     update.exec();
                     while ( update.next() ) {
                         // preveri, ali registracija ze obstaja v bazi avtomobilov
@@ -3055,20 +3059,49 @@ void prijava::posodobi_bazo() {
                         }
                     }
                     update.clear();
-*/
+
+                    // bazi potnih nalogov dodaj nove stolpce
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'proizvajalec' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'znamka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'tip' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'registrska_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // prepisi ze obstojec avtomobil kot prevozno sredstvo v vse potne naloge
+                    QSqlQuery sql_uporabniki;
+                    sql_uporabniki.prepare("SELECT * FROM uporabniki");
+                    sql_uporabniki.exec();
+                    while ( sql_uporabniki.next() ) {
+                        update.prepare("UPDATE potni_nalogi SET proizvajalec = ?, znamka = ?, tip = ?, registrska_stevilka = ? "
+                                       "WHERE prejemnik_oseba LIKE '" + sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString() + "'"
+                                       " AND prevozno_sredstvo LIKE '1'");
+                        update.bindValue(0, sql_uporabniki.value(sql_uporabniki.record().indexOf("avtomobil")).toString());
+                        update.bindValue(1, sql_uporabniki.value(sql_uporabniki.record().indexOf("model_avtomobila")).toString());
+                        update.bindValue(2, "");
+                        update.bindValue(3, sql_uporabniki.value(sql_uporabniki.record().indexOf("registracija")).toString());
+                        update.exec();
+                    }
+
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.7");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
-//                    update.exec();
+                    update.exec();
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.7");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
-  //                  update.exec();
+                    update.exec();
                     update.clear();
 
-          //          posodobi_bazo();
+                   posodobi_bazo();
                 }
             }
         }

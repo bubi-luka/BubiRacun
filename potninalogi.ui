@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_potni_stroski">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -295,7 +295,7 @@
                <x>0</x>
                <y>0</y>
                <width>598</width>
-               <height>149</height>
+               <height>189</height>
               </rect>
              </property>
             </widget>
@@ -429,7 +429,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>459</width>
+                 <width>476</width>
                  <height>148</height>
                 </rect>
                </property>
@@ -1065,42 +1065,28 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_9">
               <property name="text">
                <string>Znamka avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_40">
               <property name="text">
                <string>Model avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Registrska številka</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="txt_registrska_stevilka">
-              <property name="text">
-               <string>txt_registrska_stevilka</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
              <widget class="QLineEdit" name="txt_model_avtomobila">
               <property name="text">
                <string>txt_model_avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QLineEdit" name="txt_znamka_avtomobila">
               <property name="text">
                <string>txt_znamka_avtomobila</string>
@@ -1112,6 +1098,22 @@
               <item>
                <property name="text">
                 <string>txt_prevoz</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Registrska številka</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="txt_registrska_stevilka">
+              <item>
+               <property name="text">
+                <string>txt_registrska_stevilka</string>
                </property>
               </item>
              </widget>
@@ -1245,7 +1247,6 @@
   <tabstop>txt_prevoz</tabstop>
   <tabstop>txt_znamka_avtomobila</tabstop>
   <tabstop>txt_model_avtomobila</tabstop>
-  <tabstop>txt_registrska_stevilka</tabstop>
   <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>
