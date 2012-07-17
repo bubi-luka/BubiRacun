@@ -525,7 +525,9 @@ void prijava::tabela_uporabnik() {
                                                          "konec_zaposlitve TEXT, "
                                                          "pogodba TEXT, "
                                                          "dovoljenje TEXT, "
-                                                         "podjetje TEXT)"
+                                                         "podjetje TEXT, "
+                                                         "starsi TEXT, "
+                                                         "aktivnost TEXT)"
                                          );
         sql_create_table.exec();
     }
@@ -3097,6 +3099,43 @@ void prijava::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.7");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                   posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 7 ) {
+
+                    // bazi uporabnikov dodaj nove stolpce
+                    update.prepare("ALTER TABLE uporabniki ADD COLUMN 'starsi' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE uporabniki ADD COLUMN 'aktivnost' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // vse uporabnike obravnavaj kot aktivne in jim daj id starsa kar svoj id
+                    update.prepare("SELECT * FROM uporabniki");
+                    update.exec();
+                    while ( update.next() ) {
+                        QSqlQuery sql_uporabnik;
+                        sql_uporabnik.prepare("UPDATE uporabniki SET aktivnost = ?, starsi = ? WHERE id LIKE '" +
+                                              update.value(update.record().indexOf("id")).toString() + "'");
+                        sql_uporabnik.bindValue(0, "1");
+                        sql_uporabnik.bindValue(1, update.value(update.record().indexOf("id")).toString());
+                        sql_uporabnik.exec();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.8");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.8");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
                     update.exec();
                     update.clear();

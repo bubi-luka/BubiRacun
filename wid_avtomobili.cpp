@@ -183,7 +183,8 @@ void wid_avtomobili::napolni() {
                 else if ( polja[i] == "lastnik" ) {
                     QSqlQuery sql_lastnik;
                     if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "1" ) { // zasebnik
-                        sql_lastnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
+                        sql_lastnik.prepare("SELECT * FROM uporabniki WHERE starsi LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'"
+                                            " AND aktivnost LIKE '1'");
                     }
                     else if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "0" ) { // podjetje
                         sql_lastnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");

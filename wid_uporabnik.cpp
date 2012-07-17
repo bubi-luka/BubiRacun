@@ -93,6 +93,9 @@ void wid_uporabnik::napolni() {
         stavek += " AND naziv LIKE '" + pretvori(ui->cb_mesto->currentText().left(ui->cb_mesto->currentText().indexOf(") ", 0))) + "'";
     }
 
+    // uporabnik je aktiven
+    stavek += " AND aktivnost LIKE '1'";
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
