@@ -2692,14 +2692,8 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
         if ( sql_potni_nalog.next() ) {
             stevilka_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_vnosa")).toString());
             datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_prejema")).toString());
+            predlagatelj_podjetje_polno_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("placnik_podjetje_polni")).toString());
 
-            // podatki o predlagatelju - podjetje
-            QSqlQuery sql_predlagatelj_podjetje;
-            sql_predlagatelj_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("placnik_podjetje")).toString() + "'");
-            sql_predlagatelj_podjetje.exec();
-            if ( sql_predlagatelj_podjetje.next() ) {
-                predlagatelj_podjetje_polno_ime = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("polnoime")).toString());
-            }
         }
     }
     base.close();

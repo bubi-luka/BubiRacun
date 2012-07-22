@@ -364,24 +364,51 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
             msgbox.exec();
         }
         else {
+            QString podjetje_kratki = "";
+            QString podjetje_polni = "";
+
+            QSqlQuery sql_podjetje;
+            sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" +
+                                 pretvori(ui->txt_podjetje->text().left(ui->txt_podjetje->text().indexOf(") ", 0))) + "'");
+            sql_podjetje.exec();
+            if ( sql_podjetje.next() ) {
+                podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
+                podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
+            }
+
+            QString ime = "";
+            QString priimek = "";
+            QString naziv = "";
+
             QSqlQuery sql_oseba;
+            sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" +
+                                 pretvori(ui->txt_oseba->text().left(ui->txt_oseba->text().indexOf(") ", 0))) + "'");
+            sql_oseba.exec();
+            if ( sql_oseba.next() ) {
+                ime = prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString());
+                priimek = prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString());
+                naziv = prevedi(sql_oseba.value(sql_oseba.record().indexOf("naziv")).toString());
+            }
 
             QSqlQuery sql_vnesi;
             if (ui->btn_sprejmi->text() == "Vnesi racun") { // vnesi novega uporabnika
                 sql_vnesi.prepare("INSERT INTO prejeti_racuni (stevilka_vnosa, stevilka_racuna, izdajatelj_kratki, "
-                                                    "izdajatelj_polni, ulica, hisna_stevilka, postna_stevilka, posta, zadeva, datum_prejema, "
-                                                    "datum_placila, rok_placila, placnik_podjetje, placnik_oseba, stevilka_projekta, avtor, "
-                                                    "znesek_brez_ddv_00, znesek_brez_ddv_85, znesek_brez_ddv_20, znesek_ddv, znesek_brez_ddv, "
-                                                    "znesek, status_placila, status_racunovodstva) "
-                                                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "izdajatelj_polni, ulica, hisna_stevilka, postna_stevilka, posta, zadeva, datum_prejema, "
+                                  "datum_placila, rok_placila, placnik_podjetje_id, placnik_oseba_id, stevilka_projekta, avtor, "
+                                  "znesek_brez_ddv_00, znesek_brez_ddv_85, znesek_brez_ddv_20, znesek_ddv, znesek_brez_ddv, "
+                                  "znesek, status_placila, status_racunovodstva, placnik_podjetje_kratki, placnik_podjetje_polni, "
+                                  "placnik_oseba_ime, placnik_oseba_priimek, placnik_oseba_naziv) "
+                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ?, stevilka_racuna = ?, izdajatelj_kratki = ?, "
-                                                    "izdajatelj_polni = ?, ulica = ?, hisna_stevilka = ?, postna_stevilka = ?, posta = ?, "
-                                                    "zadeva = ?, datum_prejema = ?, datum_placila = ?, rok_placila = ?, placnik_podjetje = ?, "
-                                                    "placnik_oseba = ?, stevilka_projekta = ?, avtor = ?, znesek_brez_ddv_00 = ?, "
-                                                    "znesek_brez_ddv_85 = ?, znesek_brez_ddv_20 = ?, znesek_ddv = ?, znesek_brez_ddv = ?, znesek = ?, "
-                                                    "status_placila = ?, status_racunovodstva = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+                                  "izdajatelj_polni = ?, ulica = ?, hisna_stevilka = ?, postna_stevilka = ?, posta = ?, "
+                                  "zadeva = ?, datum_prejema = ?, datum_placila = ?, rok_placila = ?, placnik_podjetje_id = ?, "
+                                  "placnik_oseba_id = ?, stevilka_projekta = ?, avtor = ?, znesek_brez_ddv_00 = ?, "
+                                  "znesek_brez_ddv_85 = ?, znesek_brez_ddv_20 = ?, znesek_ddv = ?, znesek_brez_ddv = ?, znesek = ?, "
+                                  "status_placila = ?, status_racunovodstva = ?, placnik_podjetje_kratki = ?, placnik_podjetje_polni = ?, "
+                                  "placnik_oseba_ime = ?, placnik_oseba_priimek = ?, placnik_oseba_naziv = ? "
+                                  "WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi.bindValue(0, pretvori(ui->txt_stevilka_vnosa->text()));
             sql_vnesi.bindValue(1, pretvori(ui->txt_stevilka_racuna->text()));
@@ -407,6 +434,12 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
             sql_vnesi.bindValue(21, pretvori(pretvori_v_double(ui->txt_znesek->text())));
             sql_vnesi.bindValue(22, pretvori(ui->txt_status_placila->currentText()));
             sql_vnesi.bindValue(23, pretvori(ui->txt_status_racunovodstva->currentText()));
+            sql_vnesi.bindValue(24, pretvori(podjetje_kratki));
+            sql_vnesi.bindValue(25, pretvori(podjetje_polni));
+            sql_vnesi.bindValue(26, pretvori(ime));
+            sql_vnesi.bindValue(27, pretvori(priimek));
+            sql_vnesi.bindValue(28, pretvori(naziv));
+
             sql_vnesi.exec();
         }
         base.close();
@@ -586,7 +619,7 @@ void prejetiracuni::prejem(QString besedilo) {
                 ui->txt_rok_placila->setDate(datum);
 
                 QSqlQuery sql_podjetje;
-                sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("placnik_podjetje")).toString() + "'");
+                sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("placnik_podjetje_id")).toString() + "'");
                 sql_podjetje.exec();
                 if ( sql_podjetje.next() ) {
                     ui->txt_podjetje->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString()) + ") " +
@@ -594,7 +627,7 @@ void prejetiracuni::prejem(QString besedilo) {
                 }
 
                 QSqlQuery sql_oseba;
-                sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("placnik_oseba")).toString() + "'");
+                sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("placnik_oseba_id")).toString() + "'");
                 sql_oseba.exec();
                 if ( sql_oseba.next() ) {
                     ui->txt_oseba->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("id")).toString()) + ") " +
