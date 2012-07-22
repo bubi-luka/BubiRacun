@@ -364,9 +364,36 @@ void tiskanje::natisni_potni_nalog(QString id) {
                 datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
                 namen_potnega_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("namen_naloga")).toString());
                 opombe = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("opombe")).toString());
+
+                // podatki o predlagatelju - podjetje
+                predlagatelj_podjetje_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_kratki")).toString());
+                predlagatelj_podjetje_polno_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_dolgi")).toString());
+                predlagatelj_podjetje_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_naslov_ulica")).toString());
+                predlagatelj_podjetje_naslov_st = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_naslov_stevilka")).toString());
+                predlagatelj_podjetje_postna_st = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_postna_stevilka")).toString());
+                predlagatelj_podjetje_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_posta")).toString());
+                preglagatelj_podjetje_logotip = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_logotip")).toString());
+
+                // podatki o predlagatelju - oseba
+                predlagatelj_oseba_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_ime")).toString());
+                predlagatelj_oseba_priimek = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_priimek")).toString());
+                predlagatelj_oseba_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_ulica")).toString());
+                predlagatelj_oseba_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_stevilka")).toString());
+                predlagatelj_oseba_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_postna_stevilka")).toString());
+                predlagatelj_oseba_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_posta")).toString());
+
+                // podatki o prejemniku
+                prejemnik_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_ime")).toString());
+                prejemnik_priimek = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_priimek")).toString());
+                prejemnik_naziv = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naziv")).toString());
+                prejemnik_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_ulica")).toString());
+                prejemnik_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_stevilka")).toString());
+                prejemnik_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_postna_stevilka")).toString());
+                prejemnik_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_posta")).toString());
                 prejemnik_znamka_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("proizvajalec")).toString());
                 prejemnik_model_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("znamka")).toString());
                 prejemnik_registrska_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("registrska_stevilka")).toString());
+
 //				cena_dnevnice = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("cena_dnevnic")).toString());
 
                 prevozno_sredstvo = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prevozno_sredstvo")).toString());
@@ -440,46 +467,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
                 }
                 znesek_drugih_stroskov = QString::number(stroski, 'f', 2);
 
-                // podatki o predlagatelju - podjetje
-                QSqlQuery sql_predlagatelj_podjetje;
-                sql_predlagatelj_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje")).toString() + "'");
-                sql_predlagatelj_podjetje.exec();
-                if ( sql_predlagatelj_podjetje.next() ) {
-                    predlagatelj_podjetje_ime = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("ime")).toString());
-                    predlagatelj_podjetje_polno_ime = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("polnoime")).toString());
-                    predlagatelj_podjetje_naslov = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("naslov")).toString());
-                    predlagatelj_podjetje_naslov_st = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("naslov_st")).toString());
-                    predlagatelj_podjetje_postna_st = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("postna_stevilka")).toString());
-                    predlagatelj_podjetje_posta = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("posta")).toString());
-                    preglagatelj_podjetje_logotip = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("logotip")).toString());
-                }
-
-                // podatki o predlagatelju - oseba
-                QSqlQuery sql_predlagatelj_oseba;
-                sql_predlagatelj_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba")).toString() + "'");
-                sql_predlagatelj_oseba.exec();
-                if ( sql_predlagatelj_oseba.next() ) {
-                    predlagatelj_oseba_ime = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("ime")).toString());
-                    predlagatelj_oseba_priimek = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("priimek")).toString());
-                    predlagatelj_oseba_naslov = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("naslov")).toString());
-                    predlagatelj_oseba_naslov_stevilka = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("naslov_stevilka")).toString());
-                    predlagatelj_oseba_postna_stevilka = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("postna_stevilka")).toString());
-                    predlagatelj_oseba_posta = prevedi(sql_predlagatelj_oseba.value(sql_predlagatelj_oseba.record().indexOf("posta")).toString());
-                }
-
-                // podatki o prejemniku
-                QSqlQuery sql_prejemnik;
-                sql_prejemnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba")).toString() + "'");
-                sql_prejemnik.exec();
-                if ( sql_prejemnik.next() ) {
-                    prejemnik_ime = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("ime")).toString());
-                    prejemnik_priimek = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("priimek")).toString());
-                    prejemnik_naziv = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("naziv")).toString());
-                    prejemnik_naslov = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("naslov")).toString());
-                    prejemnik_naslov_stevilka = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("naslov_stevilka")).toString());
-                    prejemnik_postna_stevilka = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("postna_stevilka")).toString());
-                    prejemnik_posta = prevedi(sql_prejemnik.value(sql_prejemnik.record().indexOf("posta")).toString());
-                }
                 QSqlQuery sql_prejemnik_naziv;
                 sql_prejemnik_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(prejemnik_naziv) + "'");
                 sql_prejemnik_naziv.exec();

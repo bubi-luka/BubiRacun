@@ -46,7 +46,6 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 
     ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
 
-    QString pozdrav;
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -62,12 +61,6 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     }
     else {
         // baza je odprta
-        QSqlQuery sql_firma;
-        sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
-        sql_firma.exec();
-        if ( sql_firma.next() ) {
-            pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
-        }
 
         // pogleda, ali obstajajo vnesene nastavitve, drugace prisili uporabnika v njihov vnos
         QSqlQuery sql_nastavitve;
@@ -82,11 +75,7 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     }
     base.close();
 
-    pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
-    ui->lbl_pozdrav->setText(pozdrav);
-
-    ui->txt_uporabnik->setText(vApp->id());
-    ui->txt_pozicija->setText(prevedi(vApp->state()));
+    podatki();
 
     // skrijemo polja, ki jih ne potrebujemo
     ui->txt_pozicija->setVisible(false);
@@ -106,10 +95,13 @@ GlavnoOkno::~GlavnoOkno()
 }
 
 void GlavnoOkno::sekundnik() {
+
     QString datum = QDate::currentDate().toString("dd.MM.yyyy");
     QString ura = QTime::currentTime().toString("HH:mm:ss");
 
     ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
+    podatki();
+
 }
 
 void GlavnoOkno::on_actionOsnovni_Pogled_2_triggered() {
@@ -126,7 +118,6 @@ void GlavnoOkno::on_actionUporabniki_triggered() {
     ui->scrollArea->setWidget(widup);
     ui->lbl_pozicija->setText("Nahajate se na tabeli Zaposlenih!");
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Zaposleni");
-
 }
 
 void GlavnoOkno::on_actionPodjetje_triggered() {
@@ -283,11 +274,7 @@ void GlavnoOkno::on_actionAvtomobili_triggered() {
 
 void GlavnoOkno::varnost_id_changed() {
 
-    if (vApp->id() == "prazno" ) {
-        prijava *okno_prijava = new prijava;
-        okno_prijava->show();
-        GlavnoOkno::close();
-    }
+    podatki();
 
 }
 
@@ -328,6 +315,43 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
     }
 
+    ui->txt_pozicija->setText(prevedi(vApp->state()));
+
+}
+
+void GlavnoOkno::podatki() {
+
+    QString pozdrav = "";
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-pozdrav");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_firma;
+        sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+        sql_firma.exec();
+        if ( sql_firma.next() ) {
+            pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
+        }
+    }
+    base.close();
+
+    pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
+    ui->lbl_pozdrav->setText(pozdrav);
+    ui->lbl_pozdrav->update();
+
+
+    ui->txt_uporabnik->setText(vApp->id());
     ui->txt_pozicija->setText(prevedi(vApp->state()));
 
 }

@@ -21,10 +21,6 @@ uporabnik::uporabnik(QWidget *parent) :
     ui->txt_odpustitev->setEnabled(false);
     ui->txt_zaposlen->setChecked(false);
 
-    // skrij polja
-    ui->lbl_id_starsa->setHidden(true);
-    ui->txt_id_starsa->setHidden(true);
-
     // brisemo vsebino, ki je morda ostala v kaksnem polju
     on_btn_brisi_clicked();
     ui->txt_posta->clear();
@@ -120,7 +116,6 @@ void uporabnik::on_btn_brisi_clicked() {
     ui->txt_email->setText("");
     ui->txt_url->setText("");
 
-    ui->txt_id_starsa->setText("");
     ui->txt_id->setText("");
     ui->txt_uporabnik->setText("");
     ui->txt_geslo->setText("");
@@ -417,10 +412,6 @@ void uporabnik::on_btn_sprejmi_clicked() {
 */
     // javi napake, ce ni napak vnesi v bazo
     if (napaka == "") {
-        // v kolikor gre za prvi vnos uporabnika, je id starsa enak id uporabnika
-        if ( ui->txt_id_starsa->text() == "" ) {
-            ui->txt_id_starsa->setText(ui->txt_id->text());
-        }
 
         // vnesi ali popravi uporabnika
         QString app_path = QApplication::applicationDirPath();
@@ -485,24 +476,19 @@ void uporabnik::on_btn_sprejmi_clicked() {
 
             QSqlQuery sql_vnesi_uporabnika;
 
-            // Ob popravku uporabnika se le-ta vnese kot nov uporabnik. S tem se
-            // omogoci sledljivost med spremembami, hkrati pa spremembe ne popravijo
-            // ze obstojecih vnosov (sprememba priimka ne spremeni ze izdanih racunov
-            // prejetih racunov in potnih nalogov. Ob prijavi se vedno izbere zadnja
-            // razlicica uporabnika
-//			if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") { // vnesi novega uporabnika
+            if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") { // vnesi novega uporabnika
             sql_vnesi_uporabnika.prepare("INSERT INTO uporabniki (ime, priimek, user_name, geslo, naslov, naslov_stevilka, posta, postna_stevilka, "
                                          "telefon, gsm, email, rojstni_datum, spletna_stran, naziv, davcna_stevilka, emso, tekoci_racun, "
-                                         "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, dovoljenje, podjetje, starsi, aktivnost) "
-                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-//			}
-//			else { // popravi ze obstojeci vnos
-//				sql_vnesi_uporabnika.prepare("UPDATE uporabniki SET ime = ?, priimek = ?, user_name = ?, geslo = ?, naslov = ?, naslov_stevilka = ?, "
-//																		 "posta = ?, postna_stevilka = ?, telefon = ?, gsm = ?, email = ?, rojstni_datum = ?, spletna_stran = ?, "
-//																		 "naziv = ?, davcna_stevilka = ?, emso = ?, tekoci_racun = ?, zaposlen = ?, datum_zaposlitve = ?, "
-//																		 "konec_zaposlitve = ?, pogodba = ?, avtomobil = ?, model_avtomobila = ?, registracija = ?, "
-//																		 "dovoljenje = ?, podjetje = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
-//			}
+                                         "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, dovoljenje, podjetje) "
+                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            }
+            else { // popravi ze obstojeci vnos
+                sql_vnesi_uporabnika.prepare("UPDATE uporabniki SET ime = ?, priimek = ?, user_name = ?, geslo = ?, naslov = ?, naslov_stevilka = ?, "
+                                                                         "posta = ?, postna_stevilka = ?, telefon = ?, gsm = ?, email = ?, rojstni_datum = ?, spletna_stran = ?, "
+                                                                         "naziv = ?, davcna_stevilka = ?, emso = ?, tekoci_racun = ?, zaposlen = ?, datum_zaposlitve = ?, "
+                                                                         "konec_zaposlitve = ?, pogodba = ?, "
+                                                                         "dovoljenje = ?, podjetje = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+            }
             sql_vnesi_uporabnika.bindValue(0, pretvori(ui->txt_ime->text()));
             sql_vnesi_uporabnika.bindValue(1, pretvori(ui->txt_priimek->text()));
             sql_vnesi_uporabnika.bindValue(2, pretvori(ui->txt_uporabnik->text()));
@@ -526,21 +512,14 @@ void uporabnik::on_btn_sprejmi_clicked() {
             sql_vnesi_uporabnika.bindValue(20, pretvori(pogodba));
             sql_vnesi_uporabnika.bindValue(21, pretvori(dovoljenje));
             sql_vnesi_uporabnika.bindValue(22, pretvori(podjetje));
-            sql_vnesi_uporabnika.bindValue(23, pretvori(ui->txt_id_starsa->text()));
-            sql_vnesi_uporabnika.bindValue(24, pretvori("1"));
             sql_vnesi_uporabnika.exec();
 
-            QSqlQuery sql_spremeni_uporabnika;
-            sql_spremeni_uporabnika.prepare("UPDATE uporabniki SET aktivnost = ? WHERE id LIKE '" +
-                                            pretvori(ui->txt_id->text()) + "'");
-            sql_spremeni_uporabnika.bindValue(0, "0");
-            sql_spremeni_uporabnika.exec();
         }
         base.close();
 
         // send signal to reload widget
         poslji("uporabnik");
-        vApp->set_id("prazno");
+        vApp->set_id(vApp->id());
 
         // close this window
         close();
@@ -610,7 +589,6 @@ void uporabnik::prejem(QString besedilo) {
                 ui->txt_uporabnik->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("user_name")).toString()));
                 ui->txt_geslo->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("geslo")).toString()));
                 ui->txt_ponovnogeslo->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("geslo")).toString()));
-                ui->txt_id_starsa->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("starsi")).toString()));
 
                 QSqlQuery sql_combo;
                 sql_combo.prepare("SELECT * FROM sif_dovoljenja WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("dovoljenje")).toString() + "'");
@@ -819,7 +797,7 @@ void uporabnik::napolni_avtomobile() {
                 napreduj = "true";
             }
             else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "1" ) { // privat
-                if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()) == ui->txt_id_starsa->text() ) {
+                if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()) == ui->txt_id->text() ) {
                     napreduj = "true";
                 }
                 else {

@@ -525,9 +525,7 @@ void prijava::tabela_uporabnik() {
                                                          "konec_zaposlitve TEXT, "
                                                          "pogodba TEXT, "
                                                          "dovoljenje TEXT, "
-                                                         "podjetje TEXT, "
-                                                         "starsi TEXT, "
-                                                         "aktivnost TEXT)"
+                                                         "podjetje TEXT)"
                                          );
         sql_create_table.exec();
     }
@@ -554,40 +552,61 @@ void prijava::tabela_potni_nalogi() {
         // baza je odprta
         QSqlQuery sql_create_table;
         sql_create_table.prepare("CREATE TABLE IF NOT EXISTS potni_nalogi ("
-                                                         "id INTEGER PRIMARY KEY, "
-                                                         "stevilka_naloga TEXT, "
-                                                         "stevilka_dokumenta TEXT, "
-                                                         "datum_naloga TEXT, "
-                                                         "namen_naloga TEXT, "
-                                                         "naziv_ciljnega_podjetja TEXT, "
-                                                         "stevilka_projekta TEXT, "
-                                                         "opombe TEXT, "
-                                                         "priloge TEXT, "
-                                                         "cena_prevoza TEXT, "
-                                                         "cena_dnevnic TEXT, "
-                                                         "ostali_stroski TEXT, "
-                                                         "stroski_skupaj TEXT, "
-                                                         "skupaj_kilometri TEXT, "
-                                                         "kilometrina TEXT, "
-                                                         "skupaj_dnevi TEXT, "
-                                                         "skupaj_ure TEXT, "
-                                                         "priznana_dnevnica TEXT, "
-                                                         "cena_dnevnice_6_8 TEXT, "
-                                                         "cena_dnevnice_8_12 TEXT, "
-                                                         "cena_dnevnice_12_24 TEXT, "
-                                                         "dnevnica_6_8 TEXT, "
-                                                         "dnevnica_8_12 TEXT, "
-                                                         "dnevnica_12_24 TEXT, "
-                                                         "zajtrk_8_12 TEXT, "
-                                                         "zajtrk_12_24 TEXT, "
-                                                         "predlagatelj_podjetje TEXT, "
-                                                         "predlagatelj_oseba TEXT, "
-                                                         "prejemnik_oseba TEXT, "
-                                                         "prevozno_sredstvo TEXT, "
-                                                         "proizvajalec TEXT, "
-                                                         "znamka TEXT, "
-                                                         "tip TEXT, "
-                                                         "registrska_stevilka)"
+                                 "id INTEGER PRIMARY KEY, "
+                                 "stevilka_naloga TEXT, "
+                                 "stevilka_dokumenta TEXT, "
+                                 "datum_naloga TEXT, "
+                                 "namen_naloga TEXT, "
+                                 "naziv_ciljnega_podjetja TEXT, "
+                                 "stevilka_projekta TEXT, "
+                                 "opombe TEXT, "
+                                 "priloge TEXT, "
+                                 "cena_prevoza TEXT, "
+                                 "cena_dnevnic TEXT, "
+                                 "ostali_stroski TEXT, "
+                                 "stroski_skupaj TEXT, "
+                                 "skupaj_kilometri TEXT, "
+                                 "kilometrina TEXT, "
+                                 "skupaj_dnevi TEXT, "
+                                 "skupaj_ure TEXT, "
+                                 "priznana_dnevnica TEXT, "
+                                 "cena_dnevnice_6_8 TEXT, "
+                                 "cena_dnevnice_8_12 TEXT, "
+                                 "cena_dnevnice_12_24 TEXT, "
+                                 "dnevnica_6_8 TEXT, "
+                                 "dnevnica_8_12 TEXT, "
+                                 "dnevnica_12_24 TEXT, "
+                                 "zajtrk_8_12 TEXT, "
+                                 "zajtrk_12_24 TEXT, "
+                                 "predlagatelj_podjetje_id TEXT, "
+                                 "predlagatelj_podjetje_dolgi TEXT, "
+                                 "predlagatelj_podjetje_kratki TEXT, "
+                                 "predlagatelj_podjetje_naslov_ulica TEXT, "
+                                 "predlagatelj_podjetje_naslov_stevilka TEXT, "
+                                 "predlagatelj_podjetje_naslov_posta TEXT, "
+                                 "predlagatelj_podjetje_naslov_postna_stevilka TEXT, "
+                                 "predlagatelj_podjetje_logotip TEXT, "
+                                 "predlagatelj_oseba_id TEXT, "
+                                 "predlagatelj_oseba_ime TEXT, "
+                                 "predlagatelj_oseba_priimek TEXT, "
+                                 "predlagatelj_oseba_naziv TEXT, "
+                                 "predlagateljk_oseba_naslov_ulica TEXT, "
+                                 "predlagatelj_oseba_naslov_stevilka TEXT, "
+                                 "predlagatelj_oseba_naslov_posta TEXT, "
+                                 "predlagatelj_oseba_naslov_postna_stevilka TEXT, "
+                                 "prejemnik_oseba_id TEXT, "
+                                 "prejemnik_oseba_ime TEXT, "
+                                 "prejemnik_oseba_priimek TEXT, "
+                                 "prejemnik_oseba_naziv TEXT, "
+                                 "prejemnik_oseba_naslov_ulica TEXT, "
+                                 "prejemnik_oseba_naslov_stevilka TEXT, "
+                                 "prejemnik_oseba_naslov_posta TEXT, "
+                                 "prejemnik_oseba_naslov_postna_stevilka TEXT, "
+                                 "prevozno_sredstvo TEXT, "
+                                 "proizvajalec TEXT, "
+                                 "znamka TEXT, "
+                                 "tip TEXT, "
+                                 "registrska_stevilka TEXT)"
                                                         );
         sql_create_table.exec();
     }
@@ -3105,8 +3124,9 @@ void prijava::posodobi_bazo() {
 
                    posodobi_bazo();
                 }
+                // update na 0.9.8 je postal brezpredmeten, zato ga crtamo
                 if ( stevilka_baze_min == 7 ) {
-
+/*
                     // bazi uporabnikov dodaj nove stolpce
                     update.prepare("ALTER TABLE uporabniki ADD COLUMN 'starsi' TEXT");
                     update.exec();
@@ -3127,7 +3147,7 @@ void prijava::posodobi_bazo() {
                         sql_uporabnik.exec();
                     }
                     update.clear();
-
+*/
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.8");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
@@ -3141,6 +3161,184 @@ void prijava::posodobi_bazo() {
                     update.clear();
 
                    posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 8 ) {
+/*
+                    // bazi potnih nalogov dodaj nove stolpce
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_dolgi' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_kratki' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_naslov_ulica' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_naslov_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_naslov_posta' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_naslov_postna_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_logotip' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_ime' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_priimek' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_naziv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_naslov_ulica' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_naslov_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_naslov_posta' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_oseba_naslov_postna_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_ime' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_priimek' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_naziv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_naslov_ulica' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_naslov_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_naslov_posta' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'prejemnik_oseba_naslov_postna_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // sprehodi se skozi potne naloge in popravi podatke o uporabnikih in podjetju
+                    update.prepare("SELECT * FROM potni_nalogi");
+                    update.exec();
+                    while ( update.next() ) {
+                        QSqlQuery sql_podjetje;
+                        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" +
+                                              update.value(update.record().indexOf("predlagatelj_podjetje")).toString() + "'");
+                        sql_podjetje.exec();
+                        if ( sql_podjetje.next() ) {
+                            QSqlQuery sql_popravi_podjetje;
+                            sql_popravi_podjetje.prepare("UPDATE potni_nalogi SET "
+                                                         "predlagatelj_podjetje_id = ?, "
+                                                         "predlagatelj_podjetje_dolgi = ?, "
+                                                         "predlagatelj_podjetje_kratki = ?, "
+                                                         "predlagatelj_podjetje_naslov_ulica = ?, "
+                                                         "predlagatelj_podjetje_naslov_stevilka = ?, "
+                                                         "predlagatelj_podjetje_naslov_posta = ?, "
+                                                         "predlagatelj_podjetje_naslov_postna_stevilka = ?, "
+                                                         "predlagatelj_podjetje_logotip = ? "
+                                                         "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                            sql_popravi_podjetje.bindValue(0, sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString());
+                            sql_popravi_podjetje.bindValue(1, sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
+                            sql_popravi_podjetje.bindValue(2, sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
+                            sql_popravi_podjetje.bindValue(3, sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString());
+                            sql_popravi_podjetje.bindValue(4, sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString());
+                            sql_popravi_podjetje.bindValue(5, sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
+                            sql_popravi_podjetje.bindValue(6, sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString());
+                            sql_popravi_podjetje.bindValue(7, sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
+                            sql_popravi_podjetje.exec();
+                        }
+
+                        QSqlQuery sql_predlagatelj;
+                        sql_predlagatelj.prepare("SELECT * FROM uporabniki WHERE id LIKE '" +
+                                                 update.value(update.record().indexOf("predlagatelj_oseba")).toString() + "'");
+                        sql_predlagatelj.exec();
+                        if ( sql_predlagatelj.next() ) {
+                            QSqlQuery sql_popravi_predlagatelja;
+                            sql_popravi_predlagatelja.prepare("UPDATE potni_nalogi SET "
+                                                           "predlagatelj_oseba_id = ?, "
+                                                           "predlagatelj_oseba_ime = ?, "
+                                                           "predlagatelj_oseba_priimek = ?, "
+                                                           "predlagatelj_oseba_naziv = ?, "
+                                                           "predlagatelj_oseba_naslov_ulica = ?, "
+                                                           "predlagatelj_oseba_naslov_stevilka = ?, "
+                                                           "predlagatelj_oseba_naslov_posta = ?, "
+                                                           "predlagatelj_oseba_naslov_postna_stevilka = ? "
+                                                           "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                            sql_popravi_predlagatelja.bindValue(0, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("id")).toString());
+                            sql_popravi_predlagatelja.bindValue(1, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("ime")).toString());
+                            sql_popravi_predlagatelja.bindValue(2, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("priimek")).toString());
+                            sql_popravi_predlagatelja.bindValue(3, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("naziv")).toString());
+                            sql_popravi_predlagatelja.bindValue(4, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("naslov")).toString());
+                            sql_popravi_predlagatelja.bindValue(5, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("naslov_stevilka")).toString());
+                            sql_popravi_predlagatelja.bindValue(6, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("posta")).toString());
+                            sql_popravi_predlagatelja.bindValue(7, sql_predlagatelj.value(sql_predlagatelj.record().indexOf("postna_stevilka")).toString());
+                            sql_popravi_predlagatelja.exec();
+                        }
+
+                        QSqlQuery sql_prejemnik;
+                        sql_prejemnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" +
+                                              update.value(update.record().indexOf("prejemnik_oseba")).toString() + "'");
+                        sql_prejemnik.exec();
+                        if ( sql_prejemnik.next() ) {
+                            QSqlQuery sql_popravi_prejemnika;
+                            sql_popravi_prejemnika.prepare("UPDATE potni_nalogi SET "
+                                                           "prejemnik_oseba_id = ?, "
+                                                           "prejemnik_oseba_ime = ?, "
+                                                           "prejemnik_oseba_priimek = ?, "
+                                                           "prejemnik_oseba_naziv = ?, "
+                                                           "prejemnik_oseba_naslov_ulica = ?, "
+                                                           "prejemnik_oseba_naslov_stevilka = ?, "
+                                                           "prejemnik_oseba_naslov_posta = ?, "
+                                                           "prejemnik_oseba_naslov_postna_stevilka = ? "
+                                                           "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                            sql_popravi_prejemnika.bindValue(0, sql_prejemnik.value(sql_prejemnik.record().indexOf("id")).toString());
+                            sql_popravi_prejemnika.bindValue(1, sql_prejemnik.value(sql_prejemnik.record().indexOf("ime")).toString());
+                            sql_popravi_prejemnika.bindValue(2, sql_prejemnik.value(sql_prejemnik.record().indexOf("priimek")).toString());
+                            sql_popravi_prejemnika.bindValue(3, sql_prejemnik.value(sql_prejemnik.record().indexOf("naziv")).toString());
+                            sql_popravi_prejemnika.bindValue(4, sql_prejemnik.value(sql_prejemnik.record().indexOf("naslov")).toString());
+                            sql_popravi_prejemnika.bindValue(5, sql_prejemnik.value(sql_prejemnik.record().indexOf("naslov_stevilka")).toString());
+                            sql_popravi_prejemnika.bindValue(6, sql_prejemnik.value(sql_prejemnik.record().indexOf("posta")).toString());
+                            sql_popravi_prejemnika.bindValue(7, sql_prejemnik.value(sql_prejemnik.record().indexOf("postna_stevilka")).toString());
+                            sql_popravi_prejemnika.exec();
+                        }
+
+                    }
+                    update.clear();
+*/
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.9");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+             //       update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.9");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+             //       update.exec();
+                    update.clear();
+
+             //      posodobi_bazo();
                 }
             }
         }

@@ -463,11 +463,11 @@ void wid_potninalogi::napolni() {
                     }
                     else if ( polja[i] == "prejemnik_oseba" ) {
                         QSqlQuery sql_besedilo;
-                        sql_besedilo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+                        sql_besedilo.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
                         sql_besedilo.exec();
                         if ( sql_besedilo.next() ) {
-                            celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("priimek")).toString()) + " " +
-                                                            prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("ime")).toString()));
+                            celica->setText(prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("prejemnik_oseba_priimek")).toString()) + " " +
+                                                            prevedi(sql_besedilo.value(sql_besedilo.record().indexOf("prejemnik_oseba_ime")).toString()));
                         }
                     }
                     else if ( polja[i] == "namen_naloga" ) {

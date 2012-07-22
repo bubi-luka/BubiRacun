@@ -61,9 +61,15 @@ potninalogi::potninalogi(QWidget *parent) :
         ui->txt_predlagatelj_postna_stevilka->setText("");
         ui->cb_predlagatelj_oseba->setText("");
         ui->txt_predlagatelj_izbira_oseba->clear();
-        ui->txt_predlagatelj_oseba->setText("");
+        ui->txt_predlagatelj_oseba_ime->setText("");
+        ui->txt_predlagatelj_oseba_priimek->setText("");
+        ui->txt_predlagatelj_oseba_naslov->setText("");
+        ui->txt_predlagatelj_oseba_naslov_posta->setText("");
+        ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setText("");
+        ui->txt_predlagatelj_oseba_naslov_st->setText("");
         ui->txt_predlagatelj_naziv->setText("");
 
+        ui->cb_prejemnik_oseba->setText("");
         ui->txt_prejemnik_izbira_osebe->clear();
         ui->txt_prejemnik_priimek->setText("");
         ui->txt_prejemnik_ime->setText("");
@@ -102,7 +108,12 @@ potninalogi::potninalogi(QWidget *parent) :
         ui->txt_predlagatelj_naslov_st->setEnabled(false);
         ui->txt_predlagatelj_posta->setEnabled(false);
         ui->txt_predlagatelj_postna_stevilka->setEnabled(false);
-        ui->txt_predlagatelj_oseba->setEnabled(false);
+        ui->txt_predlagatelj_oseba_ime->setEnabled(false);
+        ui->txt_predlagatelj_oseba_priimek->setEnabled(false);
+        ui->txt_predlagatelj_oseba_naslov->setEnabled(false);
+        ui->txt_predlagatelj_oseba_naslov_st->setEnabled(false);
+        ui->txt_predlagatelj_oseba_naslov_posta->setEnabled(false);
+        ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setEnabled(false);
         ui->txt_predlagatelj_naziv->setEnabled(false);
 
         ui->txt_prejemnik_priimek->setEnabled(false);
@@ -121,6 +132,7 @@ potninalogi::potninalogi(QWidget *parent) :
 
         // skrij neuporabljena polja
         ui->txt_predlagatelj_izbira_oseba->setHidden(true);
+        ui->txt_prejemnik_izbira_osebe->setHidden(true);
 
         ui->label_19->setVisible(false);
         ui->gb_dnevnica->setVisible(false);
@@ -197,7 +209,7 @@ potninalogi::potninalogi(QWidget *parent) :
             }
             sql_fill_combo.clear();
             // napolni predlagatelja in prejemnika - spustni seznam oseb
-            sql_fill_combo.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + pretvori(vApp->id()) + "'");
+            sql_fill_combo.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + pretvori(vApp->firm()) + "'");
             sql_fill_combo.exec();
             while (sql_fill_combo.next()) {
                 QString uporabnik;
@@ -254,18 +266,42 @@ void potninalogi::on_cb_predlagatelj_oseba_toggled() {
 
     if ( ui->cb_predlagatelj_oseba->isChecked() ) {
         ui->txt_predlagatelj_izbira_oseba->setHidden(false);
-        ui->txt_predlagatelj_oseba->setHidden(true);
+        ui->txt_predlagatelj_oseba_ime->setHidden(true);
+        ui->txt_predlagatelj_oseba_priimek->setHidden(true);
     }
     else {
         ui->txt_predlagatelj_izbira_oseba->setHidden(true);
-        ui->txt_predlagatelj_oseba->setHidden(false);
+        ui->txt_predlagatelj_oseba_ime->setHidden(false);
+        ui->txt_predlagatelj_oseba_priimek->setHidden(false);
     }
 
 }
 
+void potninalogi::on_cb_prejemnik_oseba_toggled() {
+
+    if ( ui->cb_prejemnik_oseba->isChecked() ) {
+        ui->txt_prejemnik_izbira_osebe->setVisible(true);
+        ui->txt_prejemnik_izbira_osebe->setEnabled(true);
+        ui->txt_prevoz->setEnabled(true);
+        if ( ui->txt_prevoz->currentText().left(2) == "1)" ) {
+            ui->txt_registrska_stevilka->setEnabled(true);
+        }
+    }
+    else {
+        ui->txt_prejemnik_izbira_osebe->setVisible(false);
+        ui->txt_prejemnik_izbira_osebe->setEnabled(false);
+        ui->txt_prevoz->setEnabled(false);
+    }
+}
+
 void potninalogi::on_txt_predlagatelj_izbira_oseba_currentIndexChanged() {
 
-    ui->txt_predlagatelj_oseba->setText("");
+    ui->txt_predlagatelj_oseba_ime->setText("");
+    ui->txt_predlagatelj_oseba_priimek->setText("");
+    ui->txt_predlagatelj_oseba_naslov->setText("");
+    ui->txt_predlagatelj_oseba_naslov_posta->setText("");
+    ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setText("");
+    ui->txt_predlagatelj_oseba_naslov_st->setText("");
     ui->txt_predlagatelj_naziv->setText("");
 
     QString app_path = QApplication::applicationDirPath();
@@ -284,7 +320,7 @@ void potninalogi::on_txt_predlagatelj_izbira_oseba_currentIndexChanged() {
     else {
     // baza je odprta
 
-        // poisci indeks podjetja
+        // poisci indeks osebe
         QString indeks;
         indeks = prevedi(ui->txt_predlagatelj_izbira_oseba->currentText());
         indeks = indeks.left(indeks.indexOf(") ", 0));
@@ -294,8 +330,12 @@ void potninalogi::on_txt_predlagatelj_izbira_oseba_currentIndexChanged() {
         sql_fill.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + indeks + "'");
         sql_fill.exec();
         if ( sql_fill.next() ) {
-            ui->txt_predlagatelj_oseba->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("ime")).toString()) + " " +
-                                                                                    prevedi(sql_fill.value(sql_fill.record().indexOf("priimek")).toString()));
+            ui->txt_predlagatelj_oseba_ime->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("ime")).toString()));
+            ui->txt_predlagatelj_oseba_priimek->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("priimek")).toString()));
+            ui->txt_predlagatelj_oseba_naslov->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("naslov")).toString()));
+            ui->txt_predlagatelj_oseba_naslov_posta->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("posta")).toString()));
+            ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("postna_stevilka")).toString()));
+            ui->txt_predlagatelj_oseba_naslov_st->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("naslov_stevilka")).toString()));
             QSqlQuery sql_fill_naziv;
             sql_fill_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("naziv")).toString() + "'");
             sql_fill_naziv.exec();
@@ -305,6 +345,8 @@ void potninalogi::on_txt_predlagatelj_izbira_oseba_currentIndexChanged() {
         }
     }
     base.close();
+
+    ui->cb_predlagatelj_oseba->setChecked(false);
 
 }
 
@@ -378,12 +420,15 @@ void potninalogi::on_txt_prejemnik_izbira_osebe_currentIndexChanged() {
             ui->txt_znamka_avtomobila->setText("");
             ui->txt_model_avtomobila->setText("");
             ui->txt_registrska_stevilka->clear();
+            ui->txt_prevoz->setCurrentIndex(0);
             ui->txt_prevoz->setEnabled(false);
             ui->txt_stevilka_projekta->clear();
             ui->txt_stevilka_projekta->addItem("Prosim, izberite prejemnika");
         }
     }
     base.close();
+
+    ui->cb_prejemnik_oseba->setChecked(false);
 
 }
 
@@ -730,19 +775,35 @@ void potninalogi::on_btn_sprejmi_clicked() {
             if (ui->btn_sprejmi->text() == "Vnesi potni nalog") { // vnesi novega uporabnika
 
             sql_vnesi_uporabnika.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, "
-                                                                     "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
-                                                                     "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
-                                                                     "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje, "
-                                                                     "predlagatelj_oseba, prejemnik_oseba, prevozno_sredstvo, priloge, stevilka_dokumenta) VALUES "
-                                                                     "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                         "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
+                                         "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
+                                         "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje_id, predlagatelj_podjetje_dolgi, "
+                                         "predlagatelj_podjetje_kratki, predlagatelj_podjetje_naslov_ulica, predlagatelj_podjetje_naslov_stevilka, "
+                                         "predlagatelj_podjetje_naslov_posta, predlagatelj_podjetje_naslov_postna_stevilka, predlagatelj_podjetje_logotip, "
+                                         "predlagatelj_oseba_id, predlagatelj_oseba_ime, predlagatelj_oseba_priimek, predlagatelj_oseba_naziv, predlagatelj_oseba_naslov_ulica, "
+                                         "predlagatelj_oseba_naslov_stevilka, predlagatelj_oseba_naslov_posta, predlagatelj_oseba_naslov_postna_stevilka, "
+                                         "prejemnik_oseba_id, prejemnik_oseba_ime, prejemnik_oseba_priimek, prejemnik_oseba_naziv, prejemnik_oseba_naslov_ulica, "
+                                         "prejemnik_oseba_naslov_stevilka, prejemnik_oseba_naslov_posta, prejemnik_oseba_naslov_postna_stevilka, "
+                                         "prevozno_sredstvo, proizvajalec, znamka, tip, registrska_stevilka, priloge, stevilka_dokumenta) VALUES "
+                                         "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                         "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi_uporabnika.prepare("UPDATE potni_nalogi SET stevilka_naloga = ?, datum_naloga = ?, stevilka_projekta = ?, opombe = ?, cena_prevoza = ?, cena_dnevnic = ?, "
-                                                                         "ostali_stroski = ?, stroski_skupaj = ?, skupaj_kilometri = ?, kilometrina = ?, skupaj_dnevi = ?, "
-                                                                         "skupaj_ure = ?, priznana_dnevnica = ?, cena_dnevnice_6_8 = ?, cena_dnevnice_8_12 = ?, cena_dnevnice_12_24 = ?, "
-                                                                         "dnevnica_6_8 = ?, dnevnica_8_12 = ?, dnevnica_12_24 = ?, zajtrk_8_12 = ?, zajtrk_12_24 = ?, predlagatelj_podjetje = ?, "
-                                                                         "predlagatelj_oseba = ?, prejemnik_oseba = ?, prevozno_sredstvo = ?, priloge = ?, stevilka_dokumenta = ? WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+                                             "ostali_stroski = ?, stroski_skupaj = ?, skupaj_kilometri = ?, kilometrina = ?, skupaj_dnevi = ?, "
+                                             "skupaj_ure = ?, priznana_dnevnica = ?, cena_dnevnice_6_8 = ?, cena_dnevnice_8_12 = ?, cena_dnevnice_12_24 = ?, "
+                                             "dnevnica_6_8 = ?, dnevnica_8_12 = ?, dnevnica_12_24 = ?, zajtrk_8_12 = ?, zajtrk_12_24 = ?, predlagatelj_podjetje_id = ?, "
+                                             "predlagatelj_podjetje_dolgi = ?, predlagatelj_podjetje_kratki = ?, predlagatelj_podjetje_naslov_ulica = ?, "
+                                             "predlagatelj_podjetje_naslov_stevilka = ?, predlagatelj_podjetje_naslov_posta = ?, predlagatelj_podjetje_naslov_postna_stevilka = ?, "
+                                             "predlagatelj_podjetje_logotip = ?, predlagatelj_oseba_id = ?, predlagatelj_oseba_ime = ?, predlagatelj_oseba_priimek = ?, "
+                                             "predlagatelj_oseba_naziv = ?, predlagatelj_oseba_naslov_ulica = ?, predlagatelj_oseba_naslov_stevilka = ?, "
+                                             "predlagatelj_oseba_naslov_posta = ?, predlagatelj_oseba_naslov_postna_stevilka = ?, prejemnik_oseba_id = ?, "
+                                             "prejemnik_oseba_ime = ?, prejemnik_oseba_priimek = ?, prejemnik_oseba_naziv = ?, prejemnik_oseba_naslov_ulica = ?, "
+                                             "prejemnik_oseba_naslov_stevilka = ?, prejemnik_oseba_naslov_posta = ?, prejemnik_oseba_naslov_postna_stevilka = ?, "
+                                             "prevozno_sredstvo = ?, proizvajalec = ?, znamka = ?, tip = ?, registrska_stevilka = ?, priloge = ?, stevilka_dokumenta = ? "
+                                             "WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
             }
+
             sql_vnesi_uporabnika.bindValue(0, pretvori(ui->txt_stevilka_naloga->text()));
             sql_vnesi_uporabnika.bindValue(1, pretvori(ui->txt_datum_naloga->text()));
             QString indeks = prevedi(ui->txt_stevilka_projekta->currentText());
@@ -783,24 +844,67 @@ void potninalogi::on_btn_sprejmi_clicked() {
                 sql_vnesi_uporabnika.bindValue(20, pretvori("0"));
             }
 
-            sql_vnesi_uporabnika.bindValue(21, vApp->firm());
+            // predlagatelj - podjetje
+            QSqlQuery sql_podjetje;
+            sql_podjetje.prepare("SELECT * FROM podjetje WHERE ime LIKE '" + pretvori(ui->txt_predlagatelj_podjetje->text()) + "'");
+            sql_podjetje.exec();
+            QString id = "";
+            QString podjetje_dolgi = "";
+            QString logotip = "";
+            if ( sql_podjetje.next() ) {
+                id = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString());
+                podjetje_dolgi = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
+                logotip = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
+            }
 
+            sql_vnesi_uporabnika.bindValue(21, pretvori(id));
+            sql_vnesi_uporabnika.bindValue(22, pretvori(podjetje_dolgi));
+            sql_vnesi_uporabnika.bindValue(23, pretvori(ui->txt_predlagatelj_podjetje->text()));
+            sql_vnesi_uporabnika.bindValue(24, pretvori(ui->txt_predlagatelj_naslov->text()));
+            sql_vnesi_uporabnika.bindValue(25, pretvori(ui->txt_predlagatelj_naslov_st->text()));
+            sql_vnesi_uporabnika.bindValue(26, pretvori(ui->txt_prejemnik_posta->text()));
+            sql_vnesi_uporabnika.bindValue(27, pretvori(ui->txt_predlagatelj_postna_stevilka->text()));
+            sql_vnesi_uporabnika.bindValue(28, pretvori(logotip));
+
+            // predlagatelj - oseba
             indeks = prevedi(ui->txt_predlagatelj_izbira_oseba->currentText());
             indeks = indeks.left(indeks.indexOf(") ", 0));
             indeks = pretvori(indeks);
-            sql_vnesi_uporabnika.bindValue(22, indeks);
+            sql_vnesi_uporabnika.bindValue(29, indeks);
+            sql_vnesi_uporabnika.bindValue(30, pretvori(ui->txt_predlagatelj_oseba_ime->text()));
+            sql_vnesi_uporabnika.bindValue(31, pretvori(ui->txt_predlagatelj_oseba_priimek->text()));
+            sql_vnesi_uporabnika.bindValue(32, pretvori(ui->txt_predlagatelj_naziv->text()));
+            sql_vnesi_uporabnika.bindValue(33, pretvori(ui->txt_predlagatelj_oseba_naslov->text()));
+            sql_vnesi_uporabnika.bindValue(34, pretvori(ui->txt_predlagatelj_oseba_naslov_st->text()));
+            sql_vnesi_uporabnika.bindValue(35, pretvori(ui->txt_predlagatelj_oseba_naslov_posta->text()));
+            sql_vnesi_uporabnika.bindValue(36, pretvori(ui->txt_predlagatelj_oseba_naslov_postna_stevilka->text()));
 
+            // prejemnik oseba
             indeks = prevedi(ui->txt_prejemnik_izbira_osebe->currentText());
             indeks = indeks.left(indeks.indexOf(") ", 0));
             indeks = pretvori(indeks);
-            sql_vnesi_uporabnika.bindValue(23, indeks);
+            sql_vnesi_uporabnika.bindValue(37, indeks);
+            sql_vnesi_uporabnika.bindValue(38, pretvori(ui->txt_prejemnik_ime->text()));
+            sql_vnesi_uporabnika.bindValue(39, pretvori(ui->txt_prejemnik_priimek->text()));
+            sql_vnesi_uporabnika.bindValue(40, pretvori(ui->txt_prejemnik_naziv->text()));
+            sql_vnesi_uporabnika.bindValue(41, pretvori(ui->txt_prejemnik_naslov->text()));
+            sql_vnesi_uporabnika.bindValue(42, pretvori(ui->txt_prejemnik_naslov_st->text()));
+            sql_vnesi_uporabnika.bindValue(43, pretvori(ui->txt_prejemnik_posta->text()));
+            sql_vnesi_uporabnika.bindValue(44, pretvori(ui->txt_prejemnik_postna_stevilka->text()));
 
+            // prejemnik - odobren prevoz
             indeks = prevedi(ui->txt_prevoz->currentText());
             indeks = indeks.left(indeks.indexOf(") ", 0));
             indeks = pretvori(indeks);
-            sql_vnesi_uporabnika.bindValue(24, indeks);
-            sql_vnesi_uporabnika.bindValue(25, pretvori(ui->txt_priloge->toPlainText()));
-            sql_vnesi_uporabnika.bindValue(26, pretvori(ui->txt_stevilka_dokumenta->text()));
+            sql_vnesi_uporabnika.bindValue(45, indeks);
+            sql_vnesi_uporabnika.bindValue(46, pretvori(ui->txt_znamka_avtomobila->text()));
+            sql_vnesi_uporabnika.bindValue(47, pretvori(ui->txt_model_avtomobila->text()));
+            sql_vnesi_uporabnika.bindValue(48, pretvori(""));
+            sql_vnesi_uporabnika.bindValue(49, pretvori(ui->txt_registrska_stevilka->currentText()));
+
+            // ostalo
+            sql_vnesi_uporabnika.bindValue(50, pretvori(ui->txt_priloge->toPlainText()));
+            sql_vnesi_uporabnika.bindValue(51, pretvori(ui->txt_stevilka_dokumenta->text()));
             sql_vnesi_uporabnika.exec();
 
             // send signal to reload widget
@@ -840,13 +944,12 @@ void potninalogi::prejem(QString besedilo) {
         ui->wid_pot->setEnabled(false);
         ui->wid_st->setEnabled(false);
         ui->txt_datum_naloga->setEnabled(true);
+        ui->txt_prejemnik_izbira_osebe->setEnabled(true);
+        ui->txt_prevoz->setEnabled(true);
+        ui->txt_registrska_stevilka->setEnabled(true);
     }
     else {
         ui->btn_sprejmi->setText("Polnim");
-        ui->btn_izvozi->setEnabled(true);
-        ui->wid_pot->setEnabled(true);
-        ui->wid_st->setEnabled(true);
-        ui->txt_datum_naloga->setEnabled(false);
         // besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
@@ -914,30 +1017,54 @@ void potninalogi::prejem(QString besedilo) {
                     ui->txt_zajtrk_12_24->setChecked(false);
                 }
 
+                QString uporabnik;
+                uporabnik = prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_id")).toString()) + ") ";
+                uporabnik += prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_priimek")).toString()) + " ";
+                uporabnik += prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_ime")).toString());
+                ui->txt_predlagatelj_izbira_oseba->setCurrentIndex(ui->txt_predlagatelj_izbira_oseba->findText(uporabnik));
+
+                uporabnik = "";
+                uporabnik = prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_id")).toString()) + ") ";
+                uporabnik += prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_priimek")).toString()) + " ";
+                uporabnik += prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_ime")).toString());
+                ui->txt_prejemnik_izbira_osebe->setCurrentIndex(ui->txt_prejemnik_izbira_osebe->findText(uporabnik));
+
+                ui->txt_predlagatelj_podjetje->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje_kratki")).toString()));
+                ui->txt_predlagatelj_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje_naslov_ulica")).toString()));
+                ui->txt_predlagatelj_naslov_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje_naslov_stevilka")).toString()));
+                ui->txt_predlagatelj_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje_naslov_posta")).toString()));
+                ui->txt_predlagatelj_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_podjetje_naslov_postna_stevilka")).toString()));
+
+                ui->txt_predlagatelj_oseba_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_ime")).toString()));
+                ui->txt_predlagatelj_oseba_priimek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_priimek")).toString()));
+                ui->txt_predlagatelj_oseba_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_naslov_ulica")).toString()));
+                ui->txt_predlagatelj_oseba_naslov_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_naslov_stevilka")).toString()));
+                ui->txt_predlagatelj_oseba_naslov_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_naslov_posta")).toString()));
+                ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_naslov_postna_stevilka")).toString()));
+                ui->txt_predlagatelj_naziv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba_naziv")).toString()));
+
+                ui->txt_prejemnik_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_ime")).toString()));
+                ui->txt_prejemnik_priimek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_priimek")).toString()));
+                ui->txt_prejemnik_naslov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_naslov_ulica")).toString()));
+                ui->txt_prejemnik_naslov_st->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_naslov_stevilka")).toString()));
+                ui->txt_prejemnik_posta->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_naslov_posta")).toString()));
+                ui->txt_prejemnik_postna_stevilka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_naslov_postna_stevilka")).toString()));
+                ui->txt_prejemnik_naziv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba_naziv")).toString()));
+
+                QSqlQuery sql_nazivi;
+                sql_nazivi.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + ui->txt_predlagatelj_naziv->text() + "'");
+                sql_nazivi.exec();
+                if ( sql_nazivi.next() ) {
+                    ui->txt_predlagatelj_naziv->setText(prevedi(sql_nazivi.value(sql_nazivi.record().indexOf("naziv")).toString()));
+                }
+                sql_nazivi.clear();
+                sql_nazivi.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + ui->txt_prejemnik_naziv->text() + "'");
+                sql_nazivi.exec();
+                if ( sql_nazivi.next() ) {
+                    ui->txt_prejemnik_naziv->setText(prevedi(sql_nazivi.value(sql_nazivi.record().indexOf("naziv")).toString()));
+                }
+
                 QSqlQuery sql_combo;
-
-                sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("predlagatelj_oseba")).toString() + "'");
-                sql_combo.exec();
-                if ( sql_combo.next() ) {
-                    QString uporabnik;
-                    uporabnik = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
-                    uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString()) + " ";
-                    uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString());
-                    ui->txt_predlagatelj_izbira_oseba->setCurrentIndex(ui->txt_predlagatelj_izbira_oseba->findText(uporabnik));
-                }
-                sql_combo.clear();
-
-                sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("prejemnik_oseba")).toString() + "'");
-                sql_combo.exec();
-                if ( sql_combo.next() ) {
-                    QString uporabnik;
-                    uporabnik = prevedi(sql_combo.value(sql_combo.record().indexOf("id")).toString()) + ") ";
-                    uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("priimek")).toString()) + " ";
-                    uporabnik += prevedi(sql_combo.value(sql_combo.record().indexOf("ime")).toString());
-                    ui->txt_prejemnik_izbira_osebe->setCurrentIndex(ui->txt_prejemnik_izbira_osebe->findText(uporabnik));
-                }
-                sql_combo.clear();
-
                 sql_combo.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_projekta")).toString() + "'");
                 sql_combo.exec();
                 if ( sql_combo.next() ) {
@@ -949,6 +1076,7 @@ void potninalogi::prejem(QString besedilo) {
                 }
                 sql_combo.clear();
 
+                ui->txt_prevoz->setCurrentIndex(0);
                 sql_combo.prepare("SELECT * FROM sif_prevozna_sredstva WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("prevozno_sredstvo")).toString() + "'");
                 sql_combo.exec();
                 if ( sql_combo.next() ) {
@@ -959,11 +1087,18 @@ void potninalogi::prejem(QString besedilo) {
                 }
                 sql_combo.clear();
 
+                ui->txt_registrska_stevilka->setCurrentIndex(ui->txt_registrska_stevilka->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("registrska_stevilka")).toString())));
                 ui->txt_znamka_avtomobila->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("proizvajalec")).toString()));
                 ui->txt_model_avtomobila->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znamka")).toString()));
-                ui->txt_registrska_stevilka->setCurrentIndex(ui->txt_registrska_stevilka->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("registrska_stevilka")).toString())));
 
             }
+            ui->btn_izvozi->setEnabled(true);
+            ui->wid_pot->setEnabled(true);
+            ui->wid_st->setEnabled(true);
+            ui->txt_datum_naloga->setEnabled(false);
+            ui->txt_prejemnik_izbira_osebe->setEnabled(false);
+            ui->txt_prevoz->setEnabled(false);
+            ui->txt_registrska_stevilka->setEnabled(false);
         }
         base.close();
 
@@ -1297,5 +1432,45 @@ void potninalogi::stevilka_racuna() {
         }
         base.close();
     }
+
+}
+
+void potninalogi::on_btn_predlagatelj_uredi_clicked() {
+
+    ui->txt_predlagatelj_podjetje->setEnabled(true);
+    ui->txt_predlagatelj_naslov->setEnabled(true);
+    ui->txt_predlagatelj_naslov_st->setEnabled(true);
+    ui->txt_predlagatelj_posta->setEnabled(true);
+    ui->txt_predlagatelj_postna_stevilka->setEnabled(true);
+    ui->cb_predlagatelj_oseba->setEnabled(true);
+    ui->txt_predlagatelj_izbira_oseba->setEnabled(true);
+    ui->txt_predlagatelj_oseba_ime->setEnabled(true);
+    ui->txt_predlagatelj_oseba_priimek->setEnabled(true);
+    ui->txt_predlagatelj_oseba_naslov->setEnabled(true);
+    ui->txt_predlagatelj_oseba_naslov_st->setEnabled(true);
+    ui->txt_predlagatelj_oseba_naslov_posta->setEnabled(true);
+    ui->txt_predlagatelj_oseba_naslov_postna_stevilka->setEnabled(true);
+    ui->cb_predlagatelj_oseba->setHidden(true);
+    ui->txt_predlagatelj_naziv->setEnabled(true);
+
+    ui->btn_predlagatelj_uredi->setHidden(true);
+
+}
+
+void potninalogi::on_btn_prejemnik_uredi_clicked() {
+
+    ui->cb_prejemnik_oseba->setChecked(true);
+    ui->txt_prejemnik_priimek->setEnabled(true);
+    ui->txt_prejemnik_ime->setEnabled(true);
+    ui->txt_prejemnik_naziv->setEnabled(true);
+    ui->txt_prejemnik_naslov->setEnabled(true);
+    ui->txt_prejemnik_naslov_st->setEnabled(true);
+    ui->txt_prejemnik_posta->setEnabled(true);
+    ui->txt_prejemnik_postna_stevilka->setEnabled(true);
+    ui->txt_znamka_avtomobila->setEnabled(true);
+    ui->txt_model_avtomobila->setEnabled(true);
+    ui->txt_registrska_stevilka->setEnabled(true);
+
+    ui->btn_prejemnik_uredi->setVisible(false);
 
 }

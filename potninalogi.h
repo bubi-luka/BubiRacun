@@ -19,6 +19,7 @@ private slots:
     void on_btn_izhod_clicked();
     void on_btn_izvozi_clicked();
     void on_cb_predlagatelj_oseba_toggled();
+    void on_cb_prejemnik_oseba_toggled();
     void on_txt_predlagatelj_izbira_oseba_currentIndexChanged();
     void on_txt_prejemnik_izbira_osebe_currentIndexChanged();
     void on_txt_prevoz_currentIndexChanged(int index);
@@ -26,6 +27,9 @@ private slots:
     void on_btn_sprejmi_clicked();
     void keyPressEvent(QKeyEvent *event);
     void on_txt_registrska_stevilka_currentIndexChanged();
+
+    void on_btn_predlagatelj_uredi_clicked();
+    void on_btn_prejemnik_uredi_clicked();
 
     void on_txt_priznana_dnevnica_toggled();
     void on_txt_zajtrk_8_12_toggled();

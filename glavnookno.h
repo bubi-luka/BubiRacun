@@ -39,6 +39,8 @@ private slots:
     void on_actionAvtomobili_triggered();
     void keyPressEvent(QKeyEvent *event);
 
+    void podatki();
+
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
 
