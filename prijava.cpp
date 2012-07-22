@@ -715,8 +715,13 @@ void prijava::tabela_prejeti_racuni() {
                                                          "datum_prejema TEXT, "
                                                          "datum_placila TEXT, "
                                                          "rok_placila TEXT, "
-                                                         "placnik_podjetje TEXT, "
-                                                         "placnik_oseba TEXT, "
+                                                         "placnik_podjetje_id TEXT, "
+                                                         "placnik_podjetje_kratki TEXT, "
+                                                         "placnik_podjetje_polni TEXT, "
+                                                         "placnik_oseba_id TEXT, "
+                                                         "placnik_oseba_ime TEXT, "
+                                                         "placnik_oseba_priimek TEXT, "
+                                                         "placnik_oseba_naziv TEXT, "
                                                          "stevilka_projekta TEXT, "
                                                          "avtor TEXT, "
                                                          "znesek_brez_ddv_00 TEXT, "
@@ -3325,6 +3330,63 @@ void prijava::posodobi_bazo() {
 
                     }
                     update.clear();
+
+                    // posodobi tabelo prejetih racunov z novimi stolpci
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_podjetje_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_podjetje_kratki' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_podjetje_polni' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_oseba_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_oseba_ime' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_oseba_priimek' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'placnik_oseba_naziv' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // zapolni nova polja v tabeli prejetih racunov
+                    update.prepare("SELECT * FROM prejeti_racuni");
+                    update.exec();
+                    while ( update.next() ) {
+                        QSqlQuery sql_podjetje;
+                        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + update.value(update.record().indexOf("placnik_podjetje")).toString() + "'");
+                        sql_podjetje.exec();
+                        if ( sql_podjetje.next() ) {
+                            QSqlQuery sql_update;
+                            sql_update.prepare("UPDATE prejeti_racuni SET placnik_podjetje_id = ?, placnik_podjetje_kratki = ?, placnik_podjetje_polni = ? "
+                                               "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                            sql_update.bindValue(0, sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString());
+                            sql_update.bindValue(1, sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
+                            sql_update.bindValue(2, sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
+                            sql_update.exec();
+                        }
+
+                        QSqlQuery sql_oseba;
+                        sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + update.value(update.record().indexOf("placnik_oseba")).toString() + "'");
+                        sql_oseba.exec();
+                        if ( sql_oseba.next() ) {
+                            QSqlQuery sql_update;
+                            sql_update.prepare("UPDATE prejeti_racuni SET placnik_oseba_id = ?, placnik_oseba_ime = ?, placnik_oseba_priimek = ?, "
+                                               "placnik_oseba_naziv = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                            sql_update.bindValue(0, sql_oseba.value(sql_oseba.record().indexOf("id")).toString());
+                            sql_update.bindValue(1, sql_oseba.value(sql_oseba.record().indexOf("ime")).toString());
+                            sql_update.bindValue(2, sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString());
+                            sql_update.bindValue(3, sql_oseba.value(sql_oseba.record().indexOf("naziv")).toString());
+                            sql_update.exec();
+                        }
+
+                    }
+
 */
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.9");

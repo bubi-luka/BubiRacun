@@ -2223,14 +2223,7 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
         if ( sql_potni_nalog.next() ) {
             stevilka_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString());
             datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
-
-            // podatki o predlagatelju - podjetje
-            QSqlQuery sql_predlagatelj_podjetje;
-            sql_predlagatelj_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje")).toString() + "'");
-            sql_predlagatelj_podjetje.exec();
-            if ( sql_predlagatelj_podjetje.next() ) {
-                predlagatelj_podjetje_polno_ime = prevedi(sql_predlagatelj_podjetje.value(sql_predlagatelj_podjetje.record().indexOf("polnoime")).toString());
-            }
+            predlagatelj_podjetje_polno_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_dolgi")).toString());
         }
     }
     base.close();
@@ -2498,11 +2491,12 @@ void tiskanje::natisni_prejeti_racun(QString id) {
             znesek_ddv += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek_ddv")).toString()).replace(".", ",") + " EUR";
             znesek += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("znesek")).toString()).replace(".", ",") + " EUR";
 
+            placnik += prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("placnik_podjetje_polni")).toString());
+
             QSqlQuery sql_placnik;
-            sql_placnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("placnik_podjetje")).toString() + "'");
+            sql_placnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("placnik_podjetje_id")).toString() + "'");
             sql_placnik.exec();
             if ( sql_placnik.next() ) {
-                placnik += prevedi(sql_placnik.value(sql_placnik.record().indexOf("polnoime")).toString());
                 placnik_logotip = prevedi(sql_placnik.value(sql_placnik.record().indexOf("logotip")).toString());
             }
 
