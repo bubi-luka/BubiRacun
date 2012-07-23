@@ -3609,8 +3609,8 @@ void prijava::posodobi_bazo() {
 
                     // posodobi nova polja v tabeli podjetja
                     update.prepare("UPDATE podjetje SET bic = ?, banka = ?, koda_namena_avans = ?, koda_namena = ?");
-                    update.bindValue(0, pretvori("ABANSI2X"));
-                    update.bindValue(1, pretvori("ABANKA VIPA d.d."));
+                    update.bindValue(0, pretvori("ABAN SI 2X"));
+                    update.bindValue(1, pretvori("ABANKA VIPA d.d. "));
                     update.bindValue(2, pretvori("ADVA"));
                     update.bindValue(3, pretvori("SCVE"));
                     update.exec();

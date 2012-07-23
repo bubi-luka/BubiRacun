@@ -54,6 +54,8 @@ private slots:
     void on_btn_gor_clicked();
     void on_btn_dol_clicked();
 
+    void on_txt_banka_currentIndexChanged();
+
     void keyPressEvent(QKeyEvent *event);
 
     void prejem(QString besedilo);
