@@ -35,6 +35,11 @@ podjetje::podjetje(QWidget *parent) :
             ui->txt_telefon->setText("");
             ui->txt_gsm->setText("");
 
+            ui->txt_banka->clear();
+            ui->txt_bic->setText("");
+            ui->txt_koda_namena_avans->clear();
+            ui->txt_koda_namena->clear();
+
             ui->txt_skd_besedilo->clear();
             ui->txt_posta->clear();
             ui->txt_zavezanec->setText("");
@@ -137,6 +142,26 @@ podjetje::podjetje(QWidget *parent) :
             ui->txt_lastnik->addItem(vrstica);
             ui->txt_odgovorna->addItem(vrstica);
             ui->txt_kontaktna->addItem(vrstica);
+        }
+        sql_fill_combo.clear();
+
+        ui->txt_banka->addItem("");
+        sql_fill_combo.prepare("SELECT * FROM sif_banke ORDER BY ime_banke ASC");
+        sql_fill_combo.exec();
+        while ( sql_fill_combo.next() ) {
+            ui->txt_banka->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime_banke")).toString()));
+        }
+        sql_fill_combo.clear();
+
+        ui->txt_koda_namena->addItem("");
+        ui->txt_koda_namena_avans->addItem("");
+        sql_fill_combo.prepare("SELECT * FROM sif_koda_namena ORDER BY koda ASC");
+        sql_fill_combo.exec();
+        while ( sql_fill_combo.next() ) {
+            ui->txt_koda_namena->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("koda")).toString()) + " - " +
+                                         prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("opis_kratek")).toString()));
+            ui->txt_koda_namena_avans->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("koda")).toString()) + " - " +
+                                               prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("opis_kratek")).toString()));
         }
         sql_fill_combo.clear();
 
@@ -339,13 +364,15 @@ void podjetje::on_btn_potrdi_clicked() {
             }
             if (ui->btn_potrdi->text() == "Vnesi podjetje") {
             sql_vnesi.prepare("INSERT INTO podjetje (ime, polnoime, skd, skd_besedilo, url, maticna_stevilka, ddv_zavezanec, davcna, "
-                                                "tekoci_racun, naslov, naslov_st, posta, postna_stevilka, email, gsm, telefon, lastnik, kontaktna, odgovorna, logotip)"
-                                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+                              "tekoci_racun, naslov, naslov_st, posta, postna_stevilka, email, gsm, telefon, lastnik, kontaktna, "
+                              "odgovorna, logotip, bic, banka, koda_namena_avans, koda_namena)"
+                              "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
             }
             else {
             sql_vnesi.prepare("UPDATE podjetje SET ime = ?, polnoime = ?, skd = ?, skd_besedilo = ?, url = ?, maticna_stevilka = ?, "
-                                                "ddv_zavezanec = ?, davcna = ?, tekoci_racun = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
-                                                "email = ?, gsm = ?, telefon = ?, lastnik = ?, kontaktna = ?, odgovorna = ?, logotip = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+                              "ddv_zavezanec = ?, davcna = ?, tekoci_racun = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
+                              "email = ?, gsm = ?, telefon = ?, lastnik = ?, kontaktna = ?, odgovorna = ?, logotip = ?, "
+                              "bic = ?, banka = ?, koda_namena_avans = ?, koda_namena = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi.bindValue(0, pretvori(ui->txt_ime->text()));
             sql_vnesi.bindValue(1, pretvori(ui->txt_polnoime->text()));
@@ -367,6 +394,10 @@ void podjetje::on_btn_potrdi_clicked() {
             sql_vnesi.bindValue(17, pretvori(ui->txt_kontaktna->currentText().left(ui->txt_kontaktna->currentText().indexOf(")", 0))));
             sql_vnesi.bindValue(18, pretvori(ui->txt_odgovorna->currentText().left(ui->txt_odgovorna->currentText().indexOf(")", 0))));
             sql_vnesi.bindValue(19, pretvori(ui->txt_logotip->text()));
+            sql_vnesi.bindValue(20, pretvori(ui->txt_bic->text()));
+            sql_vnesi.bindValue(21, pretvori(ui->txt_banka->currentText()));
+            sql_vnesi.bindValue(22, pretvori(ui->txt_koda_namena_avans->currentText().left(4)));
+            sql_vnesi.bindValue(23, pretvori(ui->txt_koda_namena->currentText().left(4)));
             sql_vnesi.exec();
         }
         base.close();
@@ -496,6 +527,11 @@ void podjetje::prejem(QString besedilo) {
                 ui->txt_gsm->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("gsm")).toString()));
 
                 ui->txt_logotip->setText(prevedi(sql_fill.value(sql_fill.record().indexOf("logotip")).toString()));
+
+                ui->txt_banka->setCurrentIndex(ui->txt_banka->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("banka")).toString())));
+                ui->txt_bic->setText((prevedi(sql_fill.value(sql_fill.record().indexOf("bic")).toString())));
+                ui->txt_koda_namena_avans->setCurrentIndex(ui->txt_koda_namena_avans->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("koda_namena_avans")).toString()) + " - ", Qt::MatchStartsWith));
+                ui->txt_koda_namena->setCurrentIndex(ui->txt_koda_namena->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("koda_namena")).toString()) + " - ", Qt::MatchStartsWith));
 
                 bool ok;
                 QSqlQuery sql_combo;
@@ -832,5 +868,35 @@ void podjetje::on_txt_logotip_textChanged(QString besedilo) {
     QImage logotip(besedilo);
 
     ui->img_logotip->setPixmap(QPixmap::fromImage(logotip).scaledToHeight(70));
+
+}
+
+void podjetje::on_txt_banka_currentIndexChanged() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "banka-bic");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // v bazi poiscemo pot do mesta shranjevanja podatkov
+        QSqlQuery sql_pot;
+        sql_pot.prepare("SELECT * FROM sif_banke WHERE ime_banke LIKE '" + pretvori(ui->txt_banka->currentText()) + "'");
+        sql_pot.exec();
+        if ( sql_pot.next() ) {
+            ui->txt_bic->setText(prevedi(sql_pot.value(sql_pot.record().indexOf("bic")).toString()));
+        }
+    }
+    base.close();
 
 }

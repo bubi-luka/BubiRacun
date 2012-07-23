@@ -150,7 +150,9 @@ OTHER_FILES += \
     racun-besedilo-racun.csv \
     potni-nalog-besedilo-glava.csv \
     style.css \
-    sif_nastavitve.csv
+    sif_nastavitve.csv \
+    sif_banke.csv \
+    sif_koda_namena.csv
 
 
 

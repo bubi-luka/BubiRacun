@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>656</width>
-    <height>653</height>
+    <width>739</width>
+    <height>727</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,13 +80,13 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-292</y>
-            <width>596</width>
-            <height>837</height>
+            <y>0</y>
+            <width>679</width>
+            <height>923</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
               <string>Osnovni podatki</string>
@@ -221,7 +221,7 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item>
             <widget class="QGroupBox" name="groupBox_3">
              <property name="title">
               <string>Podjetje v številkah</string>
@@ -339,7 +339,113 @@
              </layout>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item>
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="title">
+              <string>Bančni podatki</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <layout class="QFormLayout" name="formLayout_5">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_26">
+                  <property name="text">
+                   <string>Banka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_27">
+                  <property name="text">
+                   <string>Bic številka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>Koda namena predplačilo</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_29">
+                  <property name="text">
+                   <string>Koda namena</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="txt_banka">
+                  <property name="minimumSize">
+                   <size>
+                    <width>450</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_banka</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="txt_koda_namena_avans">
+                  <property name="minimumSize">
+                   <size>
+                    <width>450</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_koda_namena_avans</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="txt_koda_namena">
+                  <property name="minimumSize">
+                   <size>
+                    <width>450</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>txt_koda_namena</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="txt_bic">
+                  <property name="text">
+                   <string>txt_bic</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_11">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>46</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_2">
              <property name="title">
               <string>Naslov</string>
@@ -449,7 +555,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>Kontakti</string>
@@ -517,7 +623,7 @@
              </layout>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item>
             <widget class="QGroupBox" name="groupBox_5">
              <property name="title">
               <string>Logotip</string>
@@ -543,19 +649,6 @@
                      <string>txt_logotip</string>
                     </property>
                    </widget>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -583,6 +676,19 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -644,8 +750,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>614</width>
-            <height>509</height>
+            <width>697</width>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -897,8 +1003,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>614</width>
-            <height>509</height>
+            <width>697</width>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1150,8 +1256,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>614</width>
-            <height>509</height>
+            <width>697</width>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1363,6 +1469,9 @@
   <tabstop>txt_zavezanec</tabstop>
   <tabstop>txt_davcna</tabstop>
   <tabstop>txt_tekoci_racun</tabstop>
+  <tabstop>txt_banka</tabstop>
+  <tabstop>txt_koda_namena_avans</tabstop>
+  <tabstop>txt_koda_namena</tabstop>
   <tabstop>txt_naslov</tabstop>
   <tabstop>txt_naslov_st</tabstop>
   <tabstop>txt_posta</tabstop>

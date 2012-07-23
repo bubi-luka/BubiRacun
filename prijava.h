@@ -65,6 +65,8 @@ private slots:
     void tabela_opombe_pri_racunih();
     void tabela_dnevnice();
     void tabela_kilometrina();
+    void tabela_banke();
+    void tabela_koda_namena();
 
     // vnese podatke v tabele
     void vnesi_skd();
@@ -84,6 +86,8 @@ private slots:
     void vnesi_storitve();
     void vnesi_oddaja_racuna();
     void vnesi_nastavitve();
+    void vnesi_banke();
+    void vnesi_koda_namena();
 
     // posodobitev baze
     void posodobi_bazo();

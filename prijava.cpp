@@ -57,6 +57,8 @@ prijava::prijava(QWidget *parent) :
     tabela_opombe_pri_racunih();
     tabela_dnevnice();
     tabela_kilometrina();
+    tabela_banke();
+    tabela_koda_namena();
 
     // vnese podatke v tabele
     vnesi_skd();
@@ -76,6 +78,8 @@ prijava::prijava(QWidget *parent) :
     vnesi_storitve();
     vnesi_oddaja_racuna();
     vnesi_nastavitve();
+    vnesi_banke();
+    vnesi_koda_namena();
 
     // posodobitev baze
     posodobi_bazo();
@@ -475,7 +479,11 @@ void prijava::tabela_podjetje() {
                                                          "logotip TEXT, "
                                                          "lastnik TEXT, "
                                                          "kontaktna TEXT, "
-                                                         "odgovorna TEXT)"
+                                                         "odgovorna TEXT, "
+                                                         "bic TEXT, "
+                                                         "banka TEXT, "
+                                                         "koda_namena_avans TEXT, "
+                                                         "koda_namena TEXT)"
                             );
         sql_create_table.exec();
     }
@@ -867,30 +875,55 @@ void prijava::tabela_racuni() {
         // the database is opened
         QSqlQuery sql_create_table;
         sql_create_table.prepare("CREATE TABLE IF NOT EXISTS racuni ("
-                                                         "id INTEGER PRIMARY KEY, "
-                                                         "stevilka_racuna TEXT, "
-                                                         "stevilka_starsa TEXT, "
-                                                         "stara_stevilka_racuna TEXT, "
-                                                         "sklic TEXT, "
-                                                         "tip_racuna TEXT, "
-                                                         "status_racuna TEXT, "
-                                                         "stranka TEXT, "
-                                                         "projekt TEXT, "
-                                                         "avtor_oseba TEXT, "
-                                                         "datum_pricetka TEXT, "
-                                                         "datum_konca TEXT, "
-                                                         "datum_izdaje TEXT, "
-                                                         "datum_placila TEXT, "
-                                                         "rok_placila TEXT, "
-                                                         "status_placila TEXT, "
-                                                         "status_racunovodstva TEXT, "
-                                                         "odstotek_avansa TEXT, "
-                                                         "avans TEXT, "
-                                                         "datum_placila_avansa TEXT, "
-                                                         "status_oddaje_racuna TEXT, "
-                                                         "datum_oddaje_racuna TEXT, "
-                                                         "opombe TEXT)"
-                                        );
+                                 "id INTEGER PRIMARY KEY, "
+                                 "stevilka_racuna TEXT, "
+                                 "stevilka_starsa TEXT, "
+                                 "stara_stevilka_racuna TEXT, "
+                                 "sklic TEXT, "
+                                 "tip_racuna TEXT, "
+                                 "status_racuna TEXT, "
+                                 "stranka TEXT, "
+                                 "projekt TEXT, "
+                                 "avtor_oseba TEXT, "
+                                 "datum_pricetka TEXT, "
+                                 "datum_konca TEXT, "
+                                 "datum_izdaje TEXT, "
+                                 "datum_placila TEXT, "
+                                 "rok_placila TEXT, "
+                                 "status_placila TEXT, "
+                                 "status_racunovodstva TEXT, "
+                                 "odstotek_avansa TEXT, "
+                                 "avans TEXT, "
+                                 "datum_placila_avansa TEXT, "
+                                 "status_oddaje_racuna TEXT, "
+                                 "datum_oddaje_racuna TEXT, "
+                                 "opombe TEXT, "
+                                 "podjetje_id TEXT, "
+                                 "podjetje_kratki TEXT, "
+                                 "podjetje_polni TEXT, "
+                                 "podjetje_naslov_ulica TEXT, "
+                                 "podjetje_naslov_stevilka TEXT, "
+                                 "podjetje_naslov_posta TEXT, "
+                                 "podjetje_naslov_postna_stevilka TEXT, "
+                                 "podjetje_url TEXT, "
+                                 "podjetje_email TEXT, "
+                                 "podjetje_telefon TEXT, "
+                                 "podjetje_ddv TEXT, "
+                                 "podjetje_bic TEXT, "
+                                 "podjetje_banka TEXT, "
+                                 "podjetje_tekoci_racun TEXT, "
+                                 "podjetje_koda_namena TEXT, "
+                                 "podjetje_logotip TEXT, "
+                                 "izdajatelj_id TEXT, "
+                                 "izdajatelj_ime TEXT, "
+                                 "izdajatelj_priimek TEXT, "
+                                 "izdajatelj_naziv TEXT, "
+                                 "narocnik_id TEXT, "
+                                 "narocnik_naziv TEXT, "
+                                 "narocnik_naslov TEXT, "
+                                 "narocnik_posta TEXT, "
+                                 "narocnik_davcna TEXT)"
+                                 );
         sql_create_table.exec();
     }
     base.close();
@@ -1017,7 +1050,6 @@ void prijava::tabela_nastavitve() {
     base.close();
 
 }
-
 
 void prijava::tabela_avtomobili() {
 
@@ -1594,6 +1626,67 @@ void prijava::tabela_kilometrina() {
                                                          "kilometrina TEXT, "
                                                          "datum TEXT, "
                                                          "avtor_oseba TEXT)"
+                                         );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+void prijava::tabela_banke() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_banke ("
+                                 "id INTEGER PRIMARY KEY, "
+                                 "ime_banke TEXT, "
+                                 "id_banke TEXT, "
+                                 "bic TEXT, "
+                                 "tip TEXT)"
+                                 );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+void prijava::tabela_koda_namena() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_koda_namena ("
+                                                         "id INTEGER PRIMARY KEY, "
+                                                         "koda TEXT, "
+                                                         "opis_kratek TEXT, "
+                                                         "opis_poln TEXT)"
                                          );
         sql_create_table.exec();
     }
@@ -2431,6 +2524,119 @@ void prijava::vnesi_nastavitve() {
                 QSqlQuery sql_insert_data;
                 sql_insert_data.prepare("INSERT INTO nastavitve (naziv) VALUES (?)");
                 sql_insert_data.bindValue(0, pretvori(naziv));
+                sql_insert_data.exec();
+            }
+        }
+    }
+    base.close();
+    datoteka.remove();
+
+}
+
+void prijava::vnesi_banke() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QFile datoteka(app_path + "/sif_banke.csv");
+    if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        /*
+        *	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+        * prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+        */
+        QTextStream besedilo(&datoteka);
+        while (!besedilo.atEnd()) {
+            QString opravilo = besedilo.readLine();
+            QString ime_banke = opravilo.left(opravilo.indexOf(";", 0));
+            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
+            QString id_banke = opravilo.left(opravilo.indexOf(";", 0));
+            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
+            QString bic = opravilo.left(opravilo.indexOf(";", 0));
+            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
+            QString tip = opravilo;
+
+            QSqlQuery sql_check_table;
+            sql_check_table.prepare("SELECT * FROM sif_banke WHERE id_banke LIKE '" + pretvori(id_banke) + "'");
+            sql_check_table.exec();
+            if ( !sql_check_table.next() ) {
+                QSqlQuery sql_insert_data;
+                sql_insert_data.prepare("INSERT INTO sif_banke (ime_banke, id_banke, bic, tip) "
+                                                                "VALUES (?, ?, ?, ?)");
+                sql_insert_data.bindValue(0, pretvori(ime_banke));
+                sql_insert_data.bindValue(1, pretvori(id_banke));
+                sql_insert_data.bindValue(2, pretvori(bic));
+                sql_insert_data.bindValue(3, pretvori(tip));
+                sql_insert_data.exec();
+            }
+        }
+    }
+    base.close();
+    datoteka.remove();
+
+}
+
+void prijava::vnesi_koda_namena() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QFile datoteka(app_path + "/sif_koda_namena.csv");
+    if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        /*
+        *	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+        * prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+        */
+        QTextStream besedilo(&datoteka);
+        while (!besedilo.atEnd()) {
+            QString opravilo = besedilo.readLine();
+            QString koda = opravilo.left(opravilo.indexOf(";", 0));
+            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
+            QString opis_kratek = opravilo.left(opravilo.indexOf(";", 0));
+            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
+            QString opis_poln = opravilo;
+
+            QSqlQuery sql_check_table;
+            sql_check_table.prepare("SELECT * FROM sif_koda_namena WHERE koda LIKE '" + pretvori(koda) + "'");
+            sql_check_table.exec();
+            if ( !sql_check_table.next() ) {
+                QSqlQuery sql_insert_data;
+                sql_insert_data.prepare("INSERT INTO sif_koda_namena (koda, opis_kratek, opis_poln) "
+                                                                "VALUES (?, ?, ?)");
+                sql_insert_data.bindValue(0, pretvori(koda));
+                sql_insert_data.bindValue(1, pretvori(opis_kratek));
+                sql_insert_data.bindValue(2, pretvori(opis_poln));
                 sql_insert_data.exec();
             }
         }
@@ -3387,6 +3593,217 @@ void prijava::posodobi_bazo() {
 
                     }
 
+                    // dodaj nove stolpce v tabelo podjetja
+                    update.prepare("ALTER TABLE podjetje ADD COLUMN 'bic' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE podjetje ADD COLUMN 'banka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE podjetje ADD COLUMN 'koda_namena_avans' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE podjetje ADD COLUMN 'koda_namena' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // posodobi nova polja v tabeli podjetja
+                    update.prepare("UPDATE podjetje SET bic = ?, banka = ?, koda_namena_avans = ?, koda_namena = ?");
+                    update.bindValue(0, pretvori("ABANSI2X"));
+                    update.bindValue(1, pretvori("ABANKA VIPA d.d."));
+                    update.bindValue(2, pretvori("ADVA"));
+                    update.bindValue(3, pretvori("SCVE"));
+                    update.exec();
+                    update.clear();
+
+                    // dodaj nove stolpce v tabelo racunov
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_kratki' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_polni' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_naslov_ulica' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_naslov_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_naslov_posta' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_naslov_postna_stevilka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_url' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_email' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_telefon' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_ddv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_bic' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_banka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_tekoci_racun' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_koda_namena' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_logotip' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'izdajatelj_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'izdajatelj_ime' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'izdajatelj_priimek' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'izdajatelj_naziv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'narocnik_id' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'narocnik_naziv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'narocnik_naslov' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'narocnik_posta' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'narocnik_davcna' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // izpolni novonastala polja
+                    update.prepare("SELECT * FROM racuni");
+                    update.exec();
+                    while ( update.next() ) {
+                        QString podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov, podjetje_naslov_stevilka,
+                                podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv,
+                                podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip;
+                        QString izdajatelj_id, izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv;
+                        QString narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna;
+
+                        QSqlQuery sql_uporabnik;
+                        sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + update.value(update.record().indexOf("avtor_oseba")).toString() + "'");
+                        sql_uporabnik.exec();
+                        if ( sql_uporabnik.next() ) {
+                            izdajatelj_id = sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString();
+                            izdajatelj_ime = sql_uporabnik.value(sql_uporabnik.record().indexOf("ime")).toString();
+                            izdajatelj_priimek = sql_uporabnik.value(sql_uporabnik.record().indexOf("priimek")).toString();
+                            izdajatelj_naziv = sql_uporabnik.value(sql_uporabnik.record().indexOf("naziv")).toString();
+
+                            QSqlQuery sql_podjetje;
+                            sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_uporabnik.value(sql_uporabnik.record().indexOf("podjetje")).toString() + "'");
+                            sql_podjetje.exec();
+                            if ( sql_podjetje.next() ) {
+                                podjetje_id = sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString();
+                                podjetje_kratki = sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString();
+                                podjetje_polni = sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString();
+                                podjetje_naslov = sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString();
+                                podjetje_naslov_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString();
+                                podjetje_naslov_posta = sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString();
+                                podjetje_naslov_postna_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString();
+                                podjetje_url = sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString();
+                                podjetje_email = sql_podjetje.value(sql_podjetje.record().indexOf("email")).toString();
+                                podjetje_telefon = sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString();
+                                if ( podjetje_telefon == "+(0)/--" ) {
+                                    podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
+                                }
+                                podjetje_ddv = sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString();
+                                podjetje_bic = sql_podjetje.value(sql_podjetje.record().indexOf("bic")).toString();
+                                podjetje_banka = sql_podjetje.value(sql_podjetje.record().indexOf("banka")).toString();
+                                podjetje_tekoci_racun = sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString();
+                                if ( update.value(update.record().indexOf("tip_racuna")).toString() == "1" ) { // predracun
+                                    podjetje_koda_namena = sql_podjetje.value(sql_podjetje.record().indexOf("koda_namena_avans")).toString();
+                                }
+                                else if ( update.value(update.record().indexOf("tip_racuna")).toString() == "3" ) { // racun
+                                    podjetje_koda_namena = sql_podjetje.value(sql_podjetje.record().indexOf("koda_namena")).toString();
+                                }
+                                else { // predplacilni racun
+                                    podjetje_koda_namena = "";
+                                }
+                                podjetje_logotip = sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString();
+                            }
+                        }
+
+                        QSqlQuery sql_narocnik;
+                        sql_narocnik.prepare("SELECT * from stranke WHERE id LIKE '" + update.value(update.record().indexOf("avtor_oseba")).toString() + "'");
+                        sql_narocnik.exec();
+                        if ( sql_narocnik.next() ) {
+                            narocnik_id = sql_narocnik.value(sql_narocnik.record().indexOf("id")).toString();
+                            narocnik_davcna = "";
+                            if ( sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString() == "1" ) {
+                            narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString() + " " +
+                                    sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString();
+                            }
+                            else {
+                               narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
+                               if ( sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString() == "1" ) {
+                                   narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
+                               }
+                            }
+                            narocnik_naslov = sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString() + " " +
+                                    sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString();
+                            narocnik_posta = sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString() + " " +
+                                    sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString();
+                        }
+
+                        QSqlQuery sql_posodobi;
+                        sql_posodobi.prepare("UPDATE racuni SET podjetje_id = ?, podjetje_kratki = ?, podjetje_polni = ?, podjetje_naslov_ulica = ?, "
+                                             "podjetje_naslov_stevilka = ?, podjetje_naslov_posta = ?, podjetje_naslov_postna_stevilka = ?, "
+                                             "podjetje_url = ?, podjetje_email = ?, podjetje_telefon = ?, podjetje_ddv = ?, podjetje_bic = ?, "
+                                             "podjetje_banka = ?, podjetje_tekoci_racun = ?, podjetje_koda_namena = ?, podjetje_logotip = ?, "
+                                             "izdajatelj_id = ?, izdajatelj_ime = ?, izdajatelj_priimek = ?, izdajatelj_naziv = ?, narocnik_id = ?, "
+                                             "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ?"
+                                             "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        sql_posodobi.bindValue(0, podjetje_id);
+                        sql_posodobi.bindValue(1, podjetje_kratki);
+                        sql_posodobi.bindValue(2, podjetje_polni);
+                        sql_posodobi.bindValue(3, podjetje_naslov);
+                        sql_posodobi.bindValue(4, podjetje_naslov_stevilka);
+                        sql_posodobi.bindValue(5, podjetje_naslov_posta);
+                        sql_posodobi.bindValue(6, podjetje_naslov_postna_stevilka);
+                        sql_posodobi.bindValue(7, podjetje_url);
+                        sql_posodobi.bindValue(8, podjetje_email);
+                        sql_posodobi.bindValue(9, podjetje_telefon);
+                        sql_posodobi.bindValue(10, podjetje_ddv);
+                        sql_posodobi.bindValue(11, podjetje_bic);
+                        sql_posodobi.bindValue(12, podjetje_banka);
+                        sql_posodobi.bindValue(13, podjetje_tekoci_racun);
+                        sql_posodobi.bindValue(14, podjetje_koda_namena);
+                        sql_posodobi.bindValue(15, podjetje_logotip);
+                        sql_posodobi.bindValue(16, izdajatelj_id);
+                        sql_posodobi.bindValue(17, izdajatelj_ime);
+                        sql_posodobi.bindValue(18, izdajatelj_priimek);
+                        sql_posodobi.bindValue(19, izdajatelj_naziv);
+                        sql_posodobi.bindValue(20, narocnik_id);
+                        sql_posodobi.bindValue(21, narocnik_naziv);
+                        sql_posodobi.bindValue(22, narocnik_naslov);
+                        sql_posodobi.bindValue(23, narocnik_posta);
+                        sql_posodobi.bindValue(24, narocnik_davcna);
+                        sql_posodobi.exec();
+                    }
+                    update.clear();
 */
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.9");

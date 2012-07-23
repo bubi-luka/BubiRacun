@@ -1,0 +1,130 @@
+ACCT;Upravljanje denarnih sredstev - znotraj banke;Prenos sredstev med  računoma istega imetnika znotraj banke
+ADVA;Plačilo vnaprej/predplačilo;Plačilo predplačila/avansa
+ADMG;Administrativne storitve;Plačilo administrativnih storitev (npr  vstopnine, dostopi,  vpisi, registracije, zakupi, najemi,  različne članarine)
+AGRT;Plačilo v kmetijstvu;Pomoči države oziroma državnih organov za odpravo posledic naravnih nesreče, nadomestila zaradi neugodnih pogojev kmetovanja.                                                    Plačilo povezano s kmetijsko dejavnostjo, ekološka nadomestila
+AIRB;Zračni prevoz;Plačilo za storitve, povezane z letalskim transportom, prevozom blaga,  letalskih vozovnic
+ALMY;Preživnina;Plačilo preživnine, rejnine, invalidnine, alimentov, denarnih dodatkov za preživljanje, sodni sklepi za preživnine
+ANNI;Plačilo obroka kredita/zavarovanja;Plačilo anuitete (kredit, zavarovanje, naložba) 
+ANTS;Storitve anestezije;Plačilo storitev anestezije
+AREN;Vnos/vpis terjatev;Plačilo povezano z vnosom/vpisom terjatev
+BECH;Otroški dodatek;Otroški dodatek, dodatek za nego, starševski dodatek, pomoč za opremo novorojenca, dodatek za veliko družino 
+BENE;Podpora za brezposelne/invalide;Prejemki iz naslova začasne brezposelnosti, plačila za delo obsojencev v kazenskih zavodih, denarno nadomestilo, sredstva iz naslova aktivne politike zaposlovanja, plačila za delo med rehabilitacijo,  starševsko nadomestilo 
+BEXP;Poslovni izdatki;Plačilo poslovnih izdatkov (reprezentanca, službena potovanja, kilometrina, dnevnice, kotizacija, nočnina)
+BOCE;Vnos/vpis konverzije v zaledju;Plačilo, povezano z vnosom konverzije (preračuna) v zaledju
+BONU;Bonus plačilo;Regres, odpravnina, jubilejna nagrada, pogodbeno delo, rente, priznavalnina, podjemna pogodba, študentsko delo, avtorski honorar, sejnina, nagrada, plačilo vojnim veteranom
+BLDM;Vzdrževanje zgradb;Plačilo za vzdrževanje nepremičnin (npr: redno vzdrževanje dvigal, tekočih stopnic, ogrevanje, vodovodne napeljave, klimatski sistem)
+BUSB;Avtobusni transport;Plačilo za storitve povezane z avtobusnim transportom, avtobusne vozovnice
+CASH;Upravljanje denarnih sredstev - med bankami;Upravljanje denarnih sredstev, prenos sredstev na drugo banko
+CBFF;Pokojninski skladi, varčevanje;Varčevanje za prihodnost oz. upokojitev (pokojninski steber), transakcije v zvezi z vplačili/ izplačili v/iz  sklade za pokojninsko varčevanje, vplačila/izplačila  v zvezi z dodatno pokojnino
+CBTV;Račun za kabelsko TV;Plačilo računa za kabelsko TV
+CCRD ;Plačilo s kreditno kartico;Plačilo s kreditno  kartico
+CDBL;Plačilo računa za kreditno kartico;Plačilo računa za kreditno kartico
+CDCB;Kartična plačila z gotovinskim vračilom;Nakup blaga in storitev z dodatno možnostjo izplačila gotovine na prodajnem mestu (vračilo gotovine)
+CDCD;Kartično izplačilo ;Dvig gotovine na bankomatu ali bančnem okencu
+CDCS;Kartično izplačilo z dodatnimi stroški;Dvig gotovine na bankomatu ali bančnem okencu s sočasno avtorizacijo dodatnih stroškov
+CDOC;Originalna odobritev;Izplačilo dobitka na prodajnem mestu pri igrah na srečo na račun imetnika plačilne kartice.
+CDQC;Navidezna  gotovina;Nakup blaga, ki je enakovreden gotovini (igralniški žetoni) 
+CFEE;Stroški preklica;Plačilo stroškov preklica, odpovedi
+CHAR;Dobrodelno plačilo;Plačilo v dobrodelne namene, solidarna pomoč, humanitarna plačila
+CLPR;Plačilo avtomobilskega kredita;Plačilo glavnice avtomobilskega posojila
+CMDT;Plačilo blaga;Surovine
+COLL;Nalog za izvršitev plačila;Zbiranje sredstev na podlagi kreditnega plačila ali direktne obremenitve
+COMC;Komercialno plačilo;Plačilo komercialnega kredita oz. dolga 
+COMM;Plačilo provizije;Plačilo provizije (opravnine)
+COMT;Konsolidirano plačilo tretje stranke za potrošnika;Plačilo  tretje osebe, ki lahko zbira sredstva za plačilo v imenu potrošnikov, (npr. svetovalne kreditne družbe oz. družbe za plačevanje računov)
+COST;Stroški;Plačilo različnih vrst stroškov 
+CPYR;Avtorska pravica;Plačilo avtorske  pravice
+CSDB;Denarno izplačilo;Izplačilo denarnih sredstev  (gotovina)
+CSLP;Plačilo socialnega posojila banki;Plačilo podjetja banki za financiranje socialnih posojil zaposlenim
+CVCF;Pripomočki za okrevajoče;Plačilo pripomočkov za okrevajoče
+DBTC;Debetno plačilo;Plačilo na podlagi debetnega naloga, plačilo po vseh sklepih o izvršbah, razen sodnih za preživnino
+DCRD;Plačilo z debetno kartico;Plačilo z debetno kartico
+DEPT;Depozit;Vplačilo depozita
+DERI;Derivativi;Izvedeni finančni instrumenti
+DIVD;Dividenda;Izplačilo dividend
+DMEQ;Medicinska oprema;Plačilo za uporabo  trajne medicinske opreme
+DNTS;Zobozdravstvene storitve;Plačilo zobozdravstvenih storitev
+ELEC;Račun za elektriko;Plačilo računa za električno energijo
+ENRG;Energetika;Plačilo energije
+ESTX;Davek na nepremičnine;Plačilo davka na nepremičnine (odmera NUSZ,  davek na promet nepremičnin, dohodnina ob prodaji, DDV ob nakupu nove nepremičnine)
+FERB;Ladijski prevoz;Plačilo za storitve povezane s trajektnim prevozom 
+FREX;Devizno poslovanje;Plačilo storitev deviznega  poslovanja (menjava valut)
+GASB;Račun za plin;Plačilo računa za plin
+GDDS;Kupoprodaja blaga;Plačilo nakupa ali prodaje blaga
+GDSV;Kupoprodaja blaga in storitev;Plačilo nakupa ali  prodaje blaga in storitev 
+GOVI;Državno zavarovanje;Plačilo državnega zavarovanja
+GOVT;Plačilo v dobro/breme državnega  organa;Plačilo državnemu organu ali s strani državnega organa (nakazila po vojnih zakonih, prejemki vojnih in  mirovnih vojaških invalidov, sredstva za odpravo posledic nesreč, refundacija KID - kratkoročne invalidske dajatve, humanitarna pomoč, kazni, penali, globe, sodne in druge takse, plačilo dohodnine)
+GSCB;Kupoprodaja blaga in storitev z gotovino;Nakup ali prodaja blaga ter storitev z gotovino (tudi polog izkupička)
+GVEA;Avstrijski vladni uslužbenci kategorije A;Plačilo za avstrijske vladne uslužbence kategorije A
+GVEB;Avstrijski vladni uslužbenci kategorije B;Plačilo za avstrijske vladne uslužbence kategorije B
+GVEC;Avstrijski vladni uslužbenci kategorije C;Plačilo za avstrijske vladne uslužbence kategorije C
+GVED;Avstrijski vladni uslužbenci kategorije D;Plačilo za avstrijske vladne uslužbence kategorije D
+HEDG;Zaščita pred tveganji;Plačilo  storitev poslovanja v zvezi z zaščito pred tveganji.
+HLRP;Plačilo stanovanjskega posojila;Plačilo stanovanjskega posojila
+HLTC;Zdravstvena oskrba na domu;Plačilo zdravstvene oskrbe na domu
+HLTI;Zdravstveno zavarovanje;Plačilo zdravstvenega zavarovanja 
+HSPC;Bolnišnična oskrba;Plačilo oskrbe v bolnišnici
+HSTX;Stanovanjski davek;Plačilo stanovanjskega davka 
+ICCP;Nepreklicno plačilo s kreditno kartico;Nepreklicno plačilo s kreditno kartico
+ICRF;Prva/nujna pomoč;Plačilo oskrbe  prve/nujne pomoči
+IDCP;Nepreklicno plačilo z debetno kartico;Nepreklicno plačilo z debetno kartico
+IHRP;Plačilo obroka najemnine/nakupa;Plačilo po dogovoru o obročnih/najemnih  nakupih
+INPC;Premija avtomobilskega zavarovanja;Plačilo premije za avtomobilsko zavarovanje
+INSM;Plačilo obroka;Plačilo obroka (razni  nakupi na obroke)
+INSU;Zavarovalna premija;Plačilo zavarovalne premije
+INTC;Interno plačilo;Plačilo znotraj družbe, kar pomeni plačilo med dvema podjetjema, ki pripadata isti skupini
+INTE;Obresti;Plačilo obresti
+INTX;Davek na dobiček;Plačilo davka na dobiček (davek od dohodka pravne osebe)
+LBRI;Delovno zavarovanje;Plačilo delovnega zavarovanja, prispevkov za socialno varnost (zdravstveno, pokojninsko) 
+LICF;Licenčna provizija/licenčnina;Plačilo licenčne provizije/licenčnine
+LIFI;Življenjsko zavarovanje;Plačilo življenjskega zavarovanja
+LIMA;Upravljanje likvidnosti;Banka je izvedla prenos sredstev za podporo upravljanju bilance, poolingu ali sweepingu.
+LOAN;Posojilo;Nakazilo posojila posojilojemalcu
+LOAR;Odplačilo posojila;Plačilo posojila (obročno odplačevanje kredita)
+LTCF;Dolgotrajna zdravstvena oskrba;Plačilo daljše zdravstvene oskrbe 
+MDCS;Zdravstvene storitve;Plačilo za zdravstvene storitve
+MSVC;Večnamenske storitve;Plačilo za večnamenske storitve (nadomestilo nerezidentom)
+ MTUP;Polnjenje mobi računa;Plačilo storitve, ki omogoča takojšnjo rezervacijo sredstev na kartičnem računu, kateri sledi polnitev rezerviranega zneska  na mobi račun.
+NETT;Neto izravnava;Transakcija se nanaša na operacijo neto izravnave (pobot).
+NITX;Davek na čisti dobiček;Plačilo davka na čisti dobiček
+NOWS;Ni opredeljeno drugod.;Plačilo storitev, ki niso opredeljene drugod 
+NWCH;Omrežnina;Plačilo omrežnine
+NWCM;Plačilo komunikacijskega omrežja;Plačilo mrežne povezave (internet)
+OFEE;Otvoritvena provizija;Plačilo otvoritvene provizije 
+OTHR;Drugo;Drug namen plačila
+OTLC;Drugi računi - telekomunikacije;Plačilo drugih računov v zvezi s telekomunikacijami
+PADD;Vnaprej odobrena obremenitev;Vnaprej odobren nalog za obremenitev (npr. direktne obremenitve SEPA)
+PAYR;Plačilna lista;Izplačilo po plačilni listi (plače, nakazila nadomestil, javna dela)
+PENS;Pokojnina;Izplačilo pokojnin 
+PHON;Račun za telefon;Plačilo telefonskega računa 
+POPE;Vnos/vpis prodajnega mesta;Plačilo, povezano s prodajnim mestom
+PPTI;Zavarovanje lastnine;Plačilo zavarovanja lastnine
+PRCP;Plačilo izdatkov;Plačilo izdatkov (potni stroški, malica), ki se nanašajo na izplačilo pri plači
+PRME;Plemenite kovine;plačilo se nanaša na poslovanje s plemenitimi kovinami.
+PTSP;Plačilni pogoji;Plačilo se nanaša na specifikacije plačilnih pogojev.
+RCKE;Plačilo za ponovno unovčitev čeka;Plačilo v povezavi  z unovčitvijo čeka.
+RCPT;Plačilo za  izdajo potrdila ;Plačilo za  izdajo potrdila 
+REFU;Vračilo denarnih sredstev;Vračilo denarnih sredstev  
+RENT;Najemnina;Plačilo najemnine
+RINP;Obročna plačila;Plačilo ponavljajočih  obrokov v rednih intervalih 
+RLWY;Železniški prevoz;Plačilo za storitve povezane z železniškim transportom
+ROYA;Plačilo iz naslova avtorskih pravic;Plačilo tantiem (avtorski dohodek)
+SALA;Plača;Izplačilo plač, porodniške
+SAVG;Varčevanje;Prenos na varčevalni/pokojninski račun (rentno varčevanje, varčevanje v shemi NSVS, vplačilo v sklade)
+SCVE;Kupoprodaja storitev;plačilo  nakupa ali  prodaje storitev 
+SECU;Vrednostni papirji;Plačilo vrednostnih papirjev (menic, obveznic, delnic)
+SSBE;Socialna podpora;Plačilo države za pomoč posameznikom zaradi izgube ali zmanjšanja delovne sposobnosti
+STDY;Študij;Plačilo študija/šolnine (štipendija, študijsko gradivo, izobraževanje, seminarji, nagrade za trajnostni razvoj)
+SUBS;Naročnina;Plačilo storitev informativne in razvedrilne narave  v tiskani ali elektronski obliki (npr. naročnina na časopis)
+SUPP;Plačilo dobaviteljem;Plačilo dobaviteljem
+TAXR;Vračilo davka ;Vračilo plačanega davka ali davčne obveznosti in preveč plačane dohodnine
+TAXS;Plačilo davkov ;Plačilo davka na dohodek iz kapitala (obresti, dividende, vrednostni papirji), dohodnine (iz delovnega in drugega pogodbenega razmerja), dohodnine iz osnovne kmetijske in gozdarske dejavnosti, iz dajanja premoženja v najem, od dohodka iz dejavnosti pri s.p.
+TELI;Telefonsko izvedena transakcija;Plačilo nakupa izvedenega prek telefona
+TRAD;Trgovinske storitve;Transakcija se nanaša na trgovinske storitve.
+TREA;Zakladniško plačilo;Plačilo storitev zakladniškega poslovanja
+TRFD;Skrbniški sklad;Plačilo v/iz skrbniški/jamstveni  sklad
+VATX;Plačilo davka na dodano vrednost;Plačilo davka na dodano vrednost
+VIEW;Oskrba vida;Plačilo za oskrbo vida
+WEBI;Internetno izvedena transakcija;Plačilo nakupa izvedenega prek svetovnega spleta (internet)
+WHLD;Davek po odbitku;Davčni odtegljaj od dohodkov nerezidentov (WHT)
+WTER;Račun za vodo/vodarina;Plačilo vode, kanalščine, priključnine in ostalih storitev povezanih z oskrbo z vodo
