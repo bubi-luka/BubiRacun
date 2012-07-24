@@ -2893,13 +2893,13 @@ void tiskanje::natisni_izdani_racun(QString id) {
     QString podjetje_naslov_posta = "";
     QString podjetje_trr = "";
     QString podjetje_telefon = "";
+    QString podjetje_banka = "";
+    QString podjetje_bic = "";
+    QString podjetje_koda_namena = "";
 
-    QString narocnik = "";
-    QString narocnik_naslov_ulica = "";
-    QString narocnik_naslov_stevilka = "";
-    QString narocnik_naslov_postna_stevilka = "";
-    QString narocnik_naslov_posta = "";
-    QString narocnik_davcni_zavezanec = "";
+    QString narocnik_naziv = "";
+    QString narocnik_naslov = "";
+    QString narocnik_posta = "";
     QString narocnik_davcna = "";
 
     QString racun_tip = "";
@@ -2965,34 +2965,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
         msgbox.exec();
     }
     else {
-        // podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
-        QSqlQuery sql_podjetje;
-        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
-        sql_podjetje.exec();
-        if ( sql_podjetje.next() ) {
-            podjetje_logo = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
-            podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
-            podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
-            podjetje_url = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString());
-            podjetje_email = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("email")).toString());
-            podjetje_ddv = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString());
-            podjetje_naslov_ulica = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString());
-            podjetje_naslov_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString());
-            podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString());
-            podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
-            podjetje_trr = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString());
-            podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString());
-            if ( podjetje_telefon == "+(0)/--" ) {
-                podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
-            }
-
-            // vstavi presledke med vsake stiri znake pri trr-ju
-            podjetje_trr.insert(4, " ");
-            podjetje_trr.insert(9, " ");
-            podjetje_trr.insert(14, " ");
-            podjetje_trr.insert(19, " ");
-        }
-        sql_podjetje.clear();
 
         // napolni vrednosti racuna
         QSqlQuery sql_racun;
@@ -3025,8 +2997,48 @@ void tiskanje::natisni_izdani_racun(QString id) {
             racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
 
             podjetje_oseba = prevedi(sql_racun.value(sql_racun.record().indexOf("avtor_oseba")).toString());
-            narocnik = prevedi(sql_racun.value(sql_racun.record().indexOf("stranka")).toString());
+//            narocnik = prevedi(sql_racun.value(sql_racun.record().indexOf("stranka")).toString());
             racun_id_starsa = prevedi(sql_racun.value(sql_racun.record().indexOf("stevilka_starsa")).toString());
+
+            // napolni podatke o podjetju
+            podjetje_logo = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_logotip")).toString());
+            podjetje_kratki = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_kratki")).toString());
+            podjetje_polni = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_polni")).toString());
+            podjetje_url = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_url")).toString());
+            podjetje_email = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_email")).toString());
+            podjetje_telefon = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_telefon")).toString());
+            podjetje_ddv = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_ddv")).toString());
+            podjetje_naslov_ulica = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_naslov_ulica")).toString());
+            podjetje_naslov_stevilka = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_naslov_stevilka")).toString());
+            podjetje_naslov_postna_stevilka = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
+            podjetje_naslov_posta = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_naslov_posta")).toString());
+            podjetje_trr = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_tekoci_racun")).toString());
+            podjetje_banka = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_banka")).toString());
+            podjetje_bic = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_bic")).toString());
+            podjetje_koda_namena = prevedi(sql_racun.value(sql_racun.record().indexOf("podjetje_koda_namena")).toString());
+            // vstavi presledke med vsake stiri znake pri trr-ju
+            podjetje_trr.insert(4, " ");
+            podjetje_trr.insert(9, " ");
+            podjetje_trr.insert(14, " ");
+            podjetje_trr.insert(19, " ");
+
+            // napolni podatke o avtorju/podpisniku/izdajatelju racuna
+            podjetje_oseba = prevedi(sql_racun.value(sql_racun.record().indexOf("izdajatelj_priimek")).toString()) + " " +
+                                             prevedi(sql_racun.value(sql_racun.record().indexOf("izdajatelj_ime")).toString());
+            podjetje_oseba_naziv = prevedi(sql_racun.value(sql_racun.record().indexOf("izdajatelj_naziv")).toString());
+            // napolni vrednosti avtorjev naziv / ce ne ustreza, ga pusti pri miru
+            QSqlQuery sql_naziv;
+            sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(podjetje_oseba_naziv) + "'");
+            sql_naziv.exec();
+            if ( sql_naziv.next() ) {
+                podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv")).toString());
+            }
+
+            // napolni podatke o narocniku
+            narocnik_naziv = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_naziv")).toString());
+            narocnik_naslov = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_naslov")).toString());
+            narocnik_posta = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_posta")).toString());
+            narocnik_davcna = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_davcna")).toString());
         }
         if ( racun_id_starsa != "" ) {
             QSqlQuery sql_stars;
@@ -3035,53 +3047,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
             if ( sql_stars.next() ) {
                 racun_stevilka_starsa = prevedi(sql_stars.value(sql_stars.record().indexOf("stevilka_racuna")).toString());
             }
-        }
-
-        // napolni vrednosti avtorja racuna
-        QSqlQuery sql_uporabnik;
-        sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(podjetje_oseba) + "'");
-        sql_uporabnik.exec();
-        if ( sql_uporabnik.next() ) {
-            podjetje_oseba = prevedi(sql_uporabnik.value(sql_uporabnik.record().indexOf("priimek")).toString()) + " " +
-                                             prevedi(sql_uporabnik.value(sql_uporabnik.record().indexOf("ime")).toString());
-            podjetje_oseba_naziv = prevedi(sql_uporabnik.value(sql_uporabnik.record().indexOf("naziv")).toString());
-        }
-
-        // napolni vrednosti avtorjev naziv
-        QSqlQuery sql_naziv;
-        sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(podjetje_oseba_naziv) + "'");
-        sql_naziv.exec();
-        if ( sql_naziv.next() ) {
-            podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv")).toString());
-        }
-
-        // napolni vrednosti narocnika
-        QSqlQuery sql_narocnik;
-        sql_narocnik.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(narocnik) + "'");
-        sql_narocnik.exec();
-        if ( sql_narocnik.next() ) {
-            if ( prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString()) == "2" ) { // pravna
-                if ( prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) == "" ) {
-                    narocnik = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString());
-                }
-                else {
-                    narocnik = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString());
-                }
-                if ( prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString()) == "0" ) { // ni davcni zavezanec
-                    narocnik_davcna = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString());
-                }
-                else {
-                    narocnik_davcna = "SI" + prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString());
-                }
-            }
-            else {
-                narocnik = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
-                                     prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString());
-            }
-            narocnik_naslov_ulica = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString());
-            narocnik_naslov_stevilka = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString());
-            narocnik_naslov_postna_stevilka = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString());
-            narocnik_naslov_posta = prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString());
         }
 
         QSqlQuery sql_pot;
@@ -3229,29 +3194,29 @@ void tiskanje::natisni_izdani_racun(QString id) {
         // nastavi parametre
         painter.setFont(normalno);
         // dolocimo velikost kvadrata, ki ga tvori besedilo (ime/naziv)
-        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik);
+        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik_naziv);
         // nastavimo parametre
         visina_vrstice = velikost_besedila.height();
         razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
         // natisnemo besedilo
-        painter.drawText(QRectF(0, pozicija, printer.width() /2 , visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik);
+        painter.drawText(QRectF(0, pozicija, printer.width() /2 , visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naziv);
         // nova vrstica
         pozicija += visina_vrstice + razmik_med_vrsticami;
 
         // dolocimo velikost kvadrata, ki ga tvori besedilo (naslov - ulica)
-        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_ulica + " " + narocnik_naslov_stevilka);
+        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov);
         // nastavimo parametre
         visina_vrstice = velikost_besedila.height();
         razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
         // natisnemo besedilo
-        painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_ulica + " " + narocnik_naslov_stevilka);
+        painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov);
         // nova vrstica
         pozicija += visina_vrstice + razmik_med_vrsticami;
 
         // dolocimo velikost kvadrata, ki ga tvori besedilo (naslov - posta)
-        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_postna_stevilka + " " + narocnik_naslov_posta);
+        velikost_besedila = painter.boundingRect(0, 0, printer.width() / 2, 0, Qt::AlignJustify | Qt::TextWordWrap, narocnik_posta);
         // natisnemo besedilo
-        painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_naslov_postna_stevilka + " " + narocnik_naslov_posta);
+        painter.drawText(QRectF(0, pozicija, printer.width() / 2, visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_posta);
         // nova vrstica
         pozicija += visina_vrstice * 6 + razmik_med_vrsticami * 6;
 
@@ -3432,7 +3397,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
         painter.drawText(QRectF(printer.width() / 2, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
         // natisnemo besedilo
         painter.setFont(normalno);
-        painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "ABANSI2X");
+        painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_bic);
         // nova vrstica
         pozicija += visina_vrstice + razmik_med_vrsticami;
 
@@ -3464,10 +3429,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
             // natisnemo besedilo
             painter.setFont(normalno);
             if ( racun_tip == "1") { // pri predracunu
-                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "ADVA");
+                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
             }
             else if ( racun_tip == "3" ) { // pri racunu
-                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "SCVE");
+                painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
             }
             // nova vrstica
             pozicija += visina_vrstice + razmik_med_vrsticami;
@@ -4183,16 +4148,16 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 
         // podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
         QSqlQuery sql_podjetje;
-        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
+        sql_podjetje.prepare("SELECT * FROM racuni WHERE id LIKE '" + id + "'");
         sql_podjetje.exec();
         if ( sql_podjetje.next() ) {
-            podjetje_logo = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString());
-            podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
-            podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
-            podjetje_naslov_ulica = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString());
-            podjetje_naslov_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString());
-            podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString());
-            podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
+            podjetje_logo = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_logotip")).toString());
+            podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_kratki")).toString());
+            podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_polni")).toString());
+            podjetje_naslov_ulica = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_ulica")).toString());
+            podjetje_naslov_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_stevilka")).toString());
+            podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
+            podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_posta")).toString());
         }
     }
     base.close();
@@ -4305,22 +4270,19 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
     else {
         // podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
         QSqlQuery sql_podjetje;
-        sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(vApp->firm()) + "'");
+        sql_podjetje.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
         sql_podjetje.exec();
         if ( sql_podjetje.next() ) {
-            podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString());
-            podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString());
-            podjetje_url = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString());
-            podjetje_email = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("email")).toString());
-            podjetje_ddv = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString());
-            podjetje_naslov_ulica = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString());
-            podjetje_naslov_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString());
-            podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString());
-            podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString());
-            podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString());
-            if ( podjetje_telefon == "+(0)/--" ) {
-                podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
-            }
+            podjetje_kratki = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_kratki")).toString());
+            podjetje_polni = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_polni")).toString());
+            podjetje_url = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_url")).toString());
+            podjetje_email = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_email")).toString());
+            podjetje_ddv = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_ddv")).toString());
+            podjetje_naslov_ulica = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_ulica")).toString());
+            podjetje_naslov_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_stevilka")).toString());
+            podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
+            podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_posta")).toString());
+            podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_telefon")).toString());
         }
         sql_podjetje.clear();
     }

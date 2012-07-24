@@ -3374,7 +3374,7 @@ void prijava::posodobi_bazo() {
                    posodobi_bazo();
                 }
                 if ( stevilka_baze_min == 8 ) {
-/*
+
                     // bazi potnih nalogov dodaj nove stolpce
                     update.prepare("ALTER TABLE potni_nalogi ADD COLUMN 'predlagatelj_podjetje_id' TEXT");
                     update.exec();
@@ -3610,7 +3610,7 @@ void prijava::posodobi_bazo() {
                     // posodobi nova polja v tabeli podjetja
                     update.prepare("UPDATE podjetje SET bic = ?, banka = ?, koda_namena_avans = ?, koda_namena = ?");
                     update.bindValue(0, pretvori("ABAN SI 2X"));
-                    update.bindValue(1, pretvori("ABANKA VIPA d.d. "));
+                    update.bindValue(1, pretvori("ABANKA VIPA d.d."));
                     update.bindValue(2, pretvori("ADVA"));
                     update.bindValue(3, pretvori("SCVE"));
                     update.exec();
@@ -3804,20 +3804,20 @@ void prijava::posodobi_bazo() {
                         sql_posodobi.exec();
                     }
                     update.clear();
-*/
+
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.9");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
-             //       update.exec();
+                    update.exec();
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.9");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
-             //       update.exec();
+                    update.exec();
                     update.clear();
 
-             //      posodobi_bazo();
+                   posodobi_bazo();
                 }
             }
         }

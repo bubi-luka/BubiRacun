@@ -284,12 +284,90 @@ void racun::on_btn_racun_clicked() {
         // na novo izracunamo stevilko racuna
 //		stevilka_racuna();
 
+        // doloci spremenljivke, ki jih ni v sami formi programa
+        QString podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov,
+                podjetje_naslov_stevilka, podjetje_naslov_posta, podjetje_naslov_postna_stevilka,
+                podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, podjetje_bic,
+                podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip,
+                izdajatelj_id, izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id,
+                narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna;
+
+                QSqlQuery sql_uporabnik;
+                sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + vApp->id() + "'");
+                sql_uporabnik.exec();
+                if ( sql_uporabnik.next() ) {
+                    izdajatelj_id = sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString();
+                    izdajatelj_ime = sql_uporabnik.value(sql_uporabnik.record().indexOf("ime")).toString();
+                    izdajatelj_priimek = sql_uporabnik.value(sql_uporabnik.record().indexOf("priimek")).toString();
+                    izdajatelj_naziv = sql_uporabnik.value(sql_uporabnik.record().indexOf("naziv")).toString();
+
+                    QSqlQuery sql_podjetje;
+                    sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+                    sql_podjetje.exec();
+                    if ( sql_podjetje.next() ) {
+                        podjetje_id = sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString();
+                        podjetje_kratki = sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString();
+                        podjetje_polni = sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString();
+                        podjetje_naslov = sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString();
+                        podjetje_naslov_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString();
+                        podjetje_naslov_posta = sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString();
+                        podjetje_naslov_postna_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString();
+                        podjetje_url = sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString();
+                        podjetje_email = sql_podjetje.value(sql_podjetje.record().indexOf("email")).toString();
+                        podjetje_telefon = sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString();
+                        if ( podjetje_telefon == "+(0)/--" ) {
+                            podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
+                        }
+                        podjetje_ddv = sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString();
+                        podjetje_bic = pretvori(ui->txt_bic->text());
+                        podjetje_banka = pretvori(ui->txt_banka->currentText());
+                        podjetje_tekoci_racun = sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString();
+                        if ( ui->rb_predracun->isChecked()) { // predracun
+                            podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
+                        }
+                        else if ( ui->rb_racun->isChecked() ) { // racun
+                            podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
+                        }
+                        else { // predplacilni racun
+                            podjetje_koda_namena = "";
+                        }
+                        podjetje_logotip = sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString();
+                    }
+                }
+
+                QSqlQuery sql_narocnik;
+                sql_narocnik.prepare("SELECT * from stranke WHERE id LIKE '" + pretvori(ui->txt_stranka_id->text()) + "'");
+                sql_narocnik.exec();
+                if ( sql_narocnik.next() ) {
+                    narocnik_id = sql_narocnik.value(sql_narocnik.record().indexOf("id")).toString();
+                    narocnik_davcna = "";
+                    if ( sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString() == "1" ) {
+                    narocnik_naziv = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString()));
+                    }
+                    else {
+                       narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
+                       if ( sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString() == "1" ) {
+                           narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
+                       }
+                    }
+                    narocnik_naslov = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString()));
+                    narocnik_posta = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString()));
+                }
+
         // vnesemo podatke
         QSqlQuery sql_vnesi_projekt;
         sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
-                                                            "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-                                                            "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa, rok_placila) "
-                                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
+                                  "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, "
+                                  "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
+                                  "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
+                                  "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna"
+                                  ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         sql_vnesi_projekt.bindValue(0, pretvori(""));
         sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
         sql_vnesi_projekt.bindValue(2, pretvori(""));
@@ -311,7 +389,31 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(18, pretvori(""));
         sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
         sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
-
+        sql_vnesi_projekt.bindValue(21, podjetje_id);
+        sql_vnesi_projekt.bindValue(22, podjetje_kratki);
+        sql_vnesi_projekt.bindValue(23, podjetje_polni);
+        sql_vnesi_projekt.bindValue(24, podjetje_naslov);
+        sql_vnesi_projekt.bindValue(25, podjetje_naslov_stevilka);
+        sql_vnesi_projekt.bindValue(26, podjetje_naslov_posta);
+        sql_vnesi_projekt.bindValue(27, podjetje_naslov_postna_stevilka);
+        sql_vnesi_projekt.bindValue(28, podjetje_url);
+        sql_vnesi_projekt.bindValue(29, podjetje_email);
+        sql_vnesi_projekt.bindValue(30, podjetje_telefon);
+        sql_vnesi_projekt.bindValue(31, podjetje_ddv);
+        sql_vnesi_projekt.bindValue(32, podjetje_bic);
+        sql_vnesi_projekt.bindValue(33, podjetje_banka);
+        sql_vnesi_projekt.bindValue(34, podjetje_tekoci_racun);
+        sql_vnesi_projekt.bindValue(35, podjetje_koda_namena);
+        sql_vnesi_projekt.bindValue(36, podjetje_logotip);
+        sql_vnesi_projekt.bindValue(37, izdajatelj_id);
+        sql_vnesi_projekt.bindValue(38, izdajatelj_ime);
+        sql_vnesi_projekt.bindValue(39, izdajatelj_priimek);
+        sql_vnesi_projekt.bindValue(40, izdajatelj_naziv);
+        sql_vnesi_projekt.bindValue(41, narocnik_id);
+        sql_vnesi_projekt.bindValue(42, narocnik_naziv);
+        sql_vnesi_projekt.bindValue(43, narocnik_naslov);
+        sql_vnesi_projekt.bindValue(44, narocnik_posta);
+        sql_vnesi_projekt.bindValue(45, narocnik_davcna);
         sql_vnesi_projekt.exec();
 
         // poiscemo id pravkar vnesenega zapisa
@@ -411,12 +513,90 @@ void racun::on_btn_predplacilni_racun_clicked() {
         // na novo izracunamo stevilko racuna
         stevilka_racuna();
 
+        // doloci spremenljivke, ki jih ni v sami formi programa
+        QString podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov,
+                podjetje_naslov_stevilka, podjetje_naslov_posta, podjetje_naslov_postna_stevilka,
+                podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, podjetje_bic,
+                podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip,
+                izdajatelj_id, izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id,
+                narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna;
+
+                QSqlQuery sql_uporabnik;
+                sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + vApp->id() + "'");
+                sql_uporabnik.exec();
+                if ( sql_uporabnik.next() ) {
+                    izdajatelj_id = sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString();
+                    izdajatelj_ime = sql_uporabnik.value(sql_uporabnik.record().indexOf("ime")).toString();
+                    izdajatelj_priimek = sql_uporabnik.value(sql_uporabnik.record().indexOf("priimek")).toString();
+                    izdajatelj_naziv = sql_uporabnik.value(sql_uporabnik.record().indexOf("naziv")).toString();
+
+                    QSqlQuery sql_podjetje;
+                    sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+                    sql_podjetje.exec();
+                    if ( sql_podjetje.next() ) {
+                        podjetje_id = sql_podjetje.value(sql_podjetje.record().indexOf("id")).toString();
+                        podjetje_kratki = sql_podjetje.value(sql_podjetje.record().indexOf("ime")).toString();
+                        podjetje_polni = sql_podjetje.value(sql_podjetje.record().indexOf("polnoime")).toString();
+                        podjetje_naslov = sql_podjetje.value(sql_podjetje.record().indexOf("naslov")).toString();
+                        podjetje_naslov_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("naslov_st")).toString();
+                        podjetje_naslov_posta = sql_podjetje.value(sql_podjetje.record().indexOf("posta")).toString();
+                        podjetje_naslov_postna_stevilka = sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString();
+                        podjetje_url = sql_podjetje.value(sql_podjetje.record().indexOf("url")).toString();
+                        podjetje_email = sql_podjetje.value(sql_podjetje.record().indexOf("email")).toString();
+                        podjetje_telefon = sql_podjetje.value(sql_podjetje.record().indexOf("telefon")).toString();
+                        if ( podjetje_telefon == "+(0)/--" ) {
+                            podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("gsm")).toString());
+                        }
+                        podjetje_ddv = sql_podjetje.value(sql_podjetje.record().indexOf("davcna")).toString();
+                        podjetje_bic = pretvori(ui->txt_bic->text());
+                        podjetje_banka = pretvori(ui->txt_banka->currentText());
+                        podjetje_tekoci_racun = sql_podjetje.value(sql_podjetje.record().indexOf("tekoci_racun")).toString();
+                        if ( ui->rb_predracun->isChecked()) { // predracun
+                            podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
+                        }
+                        else if ( ui->rb_racun->isChecked() ) { // racun
+                            podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
+                        }
+                        else { // predplacilni racun
+                            podjetje_koda_namena = "";
+                        }
+                        podjetje_logotip = sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString();
+                    }
+                }
+
+                QSqlQuery sql_narocnik;
+                sql_narocnik.prepare("SELECT * from stranke WHERE id LIKE '" + pretvori(ui->txt_stranka_id->text()) + "'");
+                sql_narocnik.exec();
+                if ( sql_narocnik.next() ) {
+                    narocnik_id = sql_narocnik.value(sql_narocnik.record().indexOf("id")).toString();
+                    narocnik_davcna = "";
+                    if ( sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString() == "1" ) {
+                    narocnik_naziv = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString()));
+                    }
+                    else {
+                       narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
+                       if ( sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString() == "1" ) {
+                           narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
+                       }
+                    }
+                    narocnik_naslov = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString()));
+                    narocnik_posta = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString()) + " " +
+                            prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString()));
+                }
+
         // vnesemo podatke
         QSqlQuery sql_vnesi_projekt;
         sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
-                                                            "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-                                                            "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, stevilka_starsa, rok_placila) "
-                                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
+                                  "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, "
+                                  "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
+                                  "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
+                                  "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna"
+                                  ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_racuna->text()));
         sql_vnesi_projekt.bindValue(1, pretvori("2")); // predplacilo (2), racun (3)
         sql_vnesi_projekt.bindValue(2, pretvori(ui->txt_status_predracuna->currentText()));
@@ -446,7 +626,31 @@ void racun::on_btn_predplacilni_racun_clicked() {
         sql_vnesi_projekt.bindValue(18, pretvori(""));
         sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
         sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
-
+        sql_vnesi_projekt.bindValue(21, podjetje_id);
+        sql_vnesi_projekt.bindValue(22, podjetje_kratki);
+        sql_vnesi_projekt.bindValue(23, podjetje_polni);
+        sql_vnesi_projekt.bindValue(24, podjetje_naslov);
+        sql_vnesi_projekt.bindValue(25, podjetje_naslov_stevilka);
+        sql_vnesi_projekt.bindValue(26, podjetje_naslov_posta);
+        sql_vnesi_projekt.bindValue(27, podjetje_naslov_postna_stevilka);
+        sql_vnesi_projekt.bindValue(28, podjetje_url);
+        sql_vnesi_projekt.bindValue(29, podjetje_email);
+        sql_vnesi_projekt.bindValue(30, podjetje_telefon);
+        sql_vnesi_projekt.bindValue(31, podjetje_ddv);
+        sql_vnesi_projekt.bindValue(32, podjetje_bic);
+        sql_vnesi_projekt.bindValue(33, podjetje_banka);
+        sql_vnesi_projekt.bindValue(34, podjetje_tekoci_racun);
+        sql_vnesi_projekt.bindValue(35, podjetje_koda_namena);
+        sql_vnesi_projekt.bindValue(36, podjetje_logotip);
+        sql_vnesi_projekt.bindValue(37, izdajatelj_id);
+        sql_vnesi_projekt.bindValue(38, izdajatelj_ime);
+        sql_vnesi_projekt.bindValue(39, izdajatelj_priimek);
+        sql_vnesi_projekt.bindValue(40, izdajatelj_naziv);
+        sql_vnesi_projekt.bindValue(41, narocnik_id);
+        sql_vnesi_projekt.bindValue(42, narocnik_naziv);
+        sql_vnesi_projekt.bindValue(43, narocnik_naslov);
+        sql_vnesi_projekt.bindValue(44, narocnik_posta);
+        sql_vnesi_projekt.bindValue(45, narocnik_davcna);
         sql_vnesi_projekt.exec();
 
         // poiscemo id pravkar vnesenega zapisa
@@ -740,8 +944,8 @@ void racun::on_btn_sprejmi_clicked() {
                         narocnik_id = sql_narocnik.value(sql_narocnik.record().indexOf("id")).toString();
                         narocnik_davcna = "";
                         if ( sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString() == "1" ) {
-                        narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString() + " " +
-                                sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString();
+                        narocnik_naziv = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
+                                prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString()));
                         }
                         else {
                            narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
@@ -749,10 +953,10 @@ void racun::on_btn_sprejmi_clicked() {
                                narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
                            }
                         }
-                        narocnik_naslov = sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString() + " " +
-                                sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString();
-                        narocnik_posta = sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString() + " " +
-                                sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString();
+                        narocnik_naslov = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString()) + " " +
+                                prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString()));
+                        narocnik_posta = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString()) + " " +
+                                prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString()));
                     }
 
             // doloci SQL query glede na stanje programa: vnesi nov vnos, popravi obstojeci vnos, kopiraj obstojeci vnos in vse pripadajoce opravke
