@@ -40,6 +40,7 @@ private slots:
     void sprejmipot();
     void izracun();
     void stevilka_racuna();
+    void registrska_stevilka();
 
     QString pretvori_v_double(QString besedilo);
     QString pretvori_iz_double(QString besedilo);

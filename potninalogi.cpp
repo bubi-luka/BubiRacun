@@ -123,6 +123,7 @@ potninalogi::potninalogi(QWidget *parent) :
         ui->txt_prejemnik_naslov_st->setEnabled(false);
         ui->txt_prejemnik_posta->setEnabled(false);
         ui->txt_prejemnik_postna_stevilka->setEnabled(false);
+        ui->txt_prevoz->setEnabled(false);
         ui->txt_znamka_avtomobila->setEnabled(false);
         ui->txt_model_avtomobila->setEnabled(false);
 
@@ -290,7 +291,9 @@ void potninalogi::on_cb_prejemnik_oseba_toggled() {
     else {
         ui->txt_prejemnik_izbira_osebe->setVisible(false);
         ui->txt_prejemnik_izbira_osebe->setEnabled(false);
-        ui->txt_prevoz->setEnabled(false);
+        if ( ui->txt_prejemnik_priimek->text() == "" && ui->btn_prejemnik_uredi->isVisible()) {
+            ui->txt_prevoz->setEnabled(false);
+        }
     }
 }
 
@@ -421,7 +424,9 @@ void potninalogi::on_txt_prejemnik_izbira_osebe_currentIndexChanged() {
             ui->txt_model_avtomobila->setText("");
             ui->txt_registrska_stevilka->clear();
             ui->txt_prevoz->setCurrentIndex(0);
-            ui->txt_prevoz->setEnabled(false);
+            if ( ui->txt_prejemnik_priimek->text() == "" && ui->btn_prejemnik_uredi->isVisible()) {
+                ui->txt_prevoz->setEnabled(false);
+            }
             ui->txt_stevilka_projekta->clear();
             ui->txt_stevilka_projekta->addItem("Prosim, izberite prejemnika");
         }
@@ -429,6 +434,8 @@ void potninalogi::on_txt_prejemnik_izbira_osebe_currentIndexChanged() {
     base.close();
 
     ui->cb_prejemnik_oseba->setChecked(false);
+
+    registrska_stevilka();
 
 }
 
@@ -444,57 +451,8 @@ void potninalogi::on_txt_prevoz_currentIndexChanged(int index) {
         ui->label_40->setHidden(false);
 
         // napolni registracijske stevilke za uporabnika
-        ui->txt_registrska_stevilka->clear();
-        ui->txt_registrska_stevilka->addItem("");
+        registrska_stevilka();
 
-        QString app_path = QApplication::applicationDirPath();
-        QString dbase_path = app_path + "/base.bz";
-
-        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "avtomobil");
-        base.setDatabaseName(dbase_path);
-        base.database();
-        base.open();
-        if(base.isOpen() != true){
-            QMessageBox msgbox;
-            msgbox.setText("Baze ni bilo moc odpreti");
-            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-            msgbox.exec();
-        }
-        else {
-            // baza je odprta
-
-            QSqlQuery sql_fill;
-            sql_fill.prepare("SELECT * FROM avtomobili");
-            sql_fill.exec();
-
-            int row = 0;
-            while (sql_fill.next()) {
-
-                // napreduj le ce je avto last podjetja, kateremu pripada tudi uporabnik ALI ce je avto last uporabniku
-                QString napreduj = "";
-                if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "0" ) { // podjetje
-                    napreduj = "true";
-                }
-                else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "1" ) { // privat
-                    if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()) ==
-                         ui->txt_prejemnik_izbira_osebe->currentText().left(ui->txt_prejemnik_izbira_osebe->currentText().indexOf(") ")) ) {
-                        napreduj = "true";
-                    }
-                    else {
-                        napreduj = "false";
-                    }
-                }
-                else {
-                    napreduj = "false";
-                }
-
-                if ( napreduj == "true" ) {
-                    ui->txt_registrska_stevilka->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("registrska_stevilka")).toString()));
-                }
-            }
-
-        }
-        base.close();
     }
     else {
         ui->txt_znamka_avtomobila->setHidden(true);
@@ -945,7 +903,7 @@ void potninalogi::prejem(QString besedilo) {
         ui->wid_st->setEnabled(false);
         ui->txt_datum_naloga->setEnabled(true);
         ui->txt_prejemnik_izbira_osebe->setEnabled(true);
-        ui->txt_prevoz->setEnabled(true);
+        ui->txt_prevoz->setEnabled(false);
         ui->txt_registrska_stevilka->setEnabled(true);
     }
     else {
@@ -1472,5 +1430,61 @@ void potninalogi::on_btn_prejemnik_uredi_clicked() {
     ui->txt_registrska_stevilka->setEnabled(true);
 
     ui->btn_prejemnik_uredi->setVisible(false);
+
+}
+
+void potninalogi::registrska_stevilka() {
+
+    ui->txt_registrska_stevilka->clear();
+    ui->txt_registrska_stevilka->addItem("");
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "avtomobil");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QSqlQuery sql_fill;
+        sql_fill.prepare("SELECT * FROM avtomobili");
+        sql_fill.exec();
+
+        int row = 0;
+        while (sql_fill.next()) {
+
+            // napreduj le ce je avto last podjetja, kateremu pripada tudi uporabnik ALI ce je avto last uporabniku
+            QString napreduj = "";
+            if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "0" ) { // podjetje
+                napreduj = "true";
+            }
+            else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString()) == "1" ) { // privat
+                if ( prevedi(sql_fill.value(sql_fill.record().indexOf("lastnik")).toString()) ==
+                     ui->txt_prejemnik_izbira_osebe->currentText().left(ui->txt_prejemnik_izbira_osebe->currentText().indexOf(") ")) ) {
+                    napreduj = "true";
+                }
+                else {
+                    napreduj = "false";
+                }
+            }
+            else {
+                napreduj = "false";
+            }
+
+            if ( napreduj == "true" ) {
+                ui->txt_registrska_stevilka->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("registrska_stevilka")).toString()));
+            }
+        }
+
+    }
+    base.close();
 
 }
