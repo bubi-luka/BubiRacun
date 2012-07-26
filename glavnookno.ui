@@ -77,6 +77,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="btn_home">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Domov</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="txt_uporabnik">
         <property name="enabled">
          <bool>false</bool>
@@ -132,7 +145,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>586</height>
+         <height>583</height>
         </rect>
        </property>
       </widget>
@@ -202,13 +215,6 @@ border:0;</string>
     <addaction name="actionKilometrina"/>
     <addaction name="actionDnevnice"/>
    </widget>
-   <widget class="QMenu" name="menuOsnovni_pogled">
-    <property name="title">
-     <string>Osnovni pogled</string>
-    </property>
-    <addaction name="actionOsnovni_Pogled_2"/>
-   </widget>
-   <addaction name="menuOsnovni_pogled"/>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
    <addaction name="menu_ifranti"/>
@@ -313,6 +319,9 @@ border:0;</string>
   <action name="actionOsnovni_Pogled_2">
    <property name="text">
     <string>Osnovni Pogled</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionNastavitve">

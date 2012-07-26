@@ -7,6 +7,8 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "datum.h"
+#include "stranke.h"
+#include "potninalogi.h"
 
 wid_osnovni_pogled::wid_osnovni_pogled(QWidget *parent) :
     QWidget(parent),
@@ -459,5 +461,46 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
     }
     base.close();
+
+}
+
+void wid_osnovni_pogled::on_tbl_stranke_doubleClicked() {
+
+    stranke *uredi = new stranke;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_stranke->selectedItems().takeAt(0)->text());
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}
+
+void wid_osnovni_pogled::on_tbl_potni_nalogi_doubleClicked() {
+
+    potninalogi *uredi = new potninalogi;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_potni_nalogi->selectedItems().takeAt(0)->text());
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}
+
+void wid_osnovni_pogled::osvezi(QString beseda) {
+
+    if ( beseda == "stranke" ) {
+        napolni_stranke();
+    }
+    else if ( beseda == "potninalog" ) {
+        napolni_potne_naloge();
+    }
 
 }

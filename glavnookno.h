@@ -34,12 +34,14 @@ private slots:
     void on_actionIzdatek_triggered();
     void on_actionPoslovanje_triggered();
     void varnost_id_changed();
-    void on_actionOsnovni_Pogled_2_triggered();
     void on_actionNastavitve_triggered();
     void on_actionAvtomobili_triggered();
     void keyPressEvent(QKeyEvent *event);
 
+    void on_btn_home_clicked();
+
     void podatki();
+    void osnovni_pogled();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

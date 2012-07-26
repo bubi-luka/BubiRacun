@@ -22,8 +22,16 @@ private slots:
     void napolni_prejete_racune();
     void napolni_izdane_racune();
 
+    void on_tbl_stranke_doubleClicked();
+    void on_tbl_potni_nalogi_doubleClicked();
+
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
+
+    void osvezi(QString beseda);
+
+signals:
+    void prenos(QString beseda);
 
 private:
     Ui::wid_osnovni_pogled *ui;

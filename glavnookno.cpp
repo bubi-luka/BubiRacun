@@ -82,16 +82,20 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     ui->txt_uporabnik->setVisible(false);
 
     // odpremo osnovni pogled
-    wid_osnovni_pogled *widop = new wid_osnovni_pogled;
-    ui->scrollArea->setWidget(widop);
-    ui->lbl_pozicija->setText("Nahajate se na Osnovnem Pogledu!");
-    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Osnovni Pogled");
+    osnovni_pogled();
 
 }
 
 GlavnoOkno::~GlavnoOkno()
 {
     delete ui;
+}
+
+
+void GlavnoOkno::on_btn_home_clicked() {
+
+    osnovni_pogled();
+
 }
 
 void GlavnoOkno::sekundnik() {
@@ -104,7 +108,7 @@ void GlavnoOkno::sekundnik() {
 
 }
 
-void GlavnoOkno::on_actionOsnovni_Pogled_2_triggered() {
+void GlavnoOkno::osnovni_pogled() {
 
     wid_osnovni_pogled *widop = new wid_osnovni_pogled;
     ui->scrollArea->setWidget(widop);
@@ -293,9 +297,7 @@ QString GlavnoOkno::prevedi(QString besedilo) {
 void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
     if ( event->key() == Qt::Key_Escape ) {
-        ui->scrollArea->widget()->close();
-        setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)));
-        ui->lbl_pozicija->setText("");
+        osnovni_pogled();
     }
     else if ( (event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier) ) {
         prijava *okno_prijava = new prijava;
