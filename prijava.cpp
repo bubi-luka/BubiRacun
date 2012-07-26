@@ -3753,8 +3753,8 @@ void prijava::posodobi_bazo() {
                             narocnik_id = sql_narocnik.value(sql_narocnik.record().indexOf("id")).toString();
                             narocnik_davcna = "";
                             if ( sql_narocnik.value(sql_narocnik.record().indexOf("tip")).toString() == "1" ) {
-                            narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString() + " " +
-                                    sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString();
+                            narocnik_naziv = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString()) + " " +
+                                    prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("ime")).toString()));
                             }
                             else {
                                narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
@@ -3762,10 +3762,10 @@ void prijava::posodobi_bazo() {
                                    narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
                                }
                             }
-                            narocnik_naslov = sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString() + " " +
-                                    sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString();
-                            narocnik_posta = sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString() + " " +
-                                    sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString();
+                            narocnik_naslov = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov")).toString()) + " " +
+                                    prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("naslov_st")).toString()));
+                            narocnik_posta = pretvori(prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("postna_stevilka")).toString()) + " " +
+                                    prevedi(sql_narocnik.value(sql_narocnik.record().indexOf("posta")).toString()));
                         }
 
                         QSqlQuery sql_posodobi;

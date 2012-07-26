@@ -322,29 +322,33 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 void GlavnoOkno::podatki() {
 
     QString pozdrav = "";
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-pozdrav");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        // baza je odprta
-        QSqlQuery sql_firma;
-        sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
-        sql_firma.exec();
-        if ( sql_firma.next() ) {
-            pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
+    {
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
+
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-pozdrav");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
         }
+        else {
+            // baza je odprta
+            QSqlQuery sql_firma;
+            sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
+            sql_firma.exec();
+            if ( sql_firma.next() ) {
+                pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
+            }
+        }
+        base.close();
     }
-    base.close();
+    QSqlDatabase::removeDatabase("uporabniki-pozdrav");
 
     pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
     ui->lbl_pozdrav->setText(pozdrav);
