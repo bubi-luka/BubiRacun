@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>666</width>
+    <width>741</width>
     <height>771</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_potni_stroski">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -294,8 +294,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>598</width>
-               <height>149</height>
+               <width>673</width>
+               <height>189</height>
               </rect>
              </property>
             </widget>
@@ -429,7 +429,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>459</width>
+                 <width>551</width>
                  <height>148</height>
                 </rect>
                </property>
@@ -577,13 +577,13 @@
       <attribute name="title">
        <string>Predlagatelj</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Podatki o predlagatelju</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <layout class="QFormLayout" name="formLayout_2">
             <item row="0" column="0">
@@ -736,7 +736,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="txt_predlagatelj_oseba">
+                 <widget class="QLineEdit" name="txt_predlagatelj_oseba_ime">
                   <property name="minimumSize">
                    <size>
                     <width>150</width>
@@ -750,7 +750,26 @@
                    </size>
                   </property>
                   <property name="text">
-                   <string>txt_predlagatelj_oseba</string>
+                   <string>txt_predlagatelj_oseba_ime</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="txt_predlagatelj_oseba_priimek">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>txt_predlagatelj_oseba_priimek</string>
                   </property>
                  </widget>
                 </item>
@@ -821,23 +840,144 @@
               </item>
              </layout>
             </item>
+            <item row="6" column="1">
+             <layout class="QFormLayout" name="formLayout_10">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_47">
+                <property name="text">
+                 <string>Ulica</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_48">
+                <property name="text">
+                 <string>Hišna št.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLineEdit" name="txt_predlagatelj_oseba_naslov">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>txt_predlagatelj_oseba_naslov</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_49">
+                <property name="text">
+                 <string>Poštna št.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_50">
+                <property name="text">
+                 <string>Pošta</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="txt_predlagatelj_oseba_naslov_posta">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>txt_preslagatelj_oseba_naslov_posta</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLineEdit" name="txt_predlagatelj_oseba_naslov_postna_stevilka">
+                <property name="text">
+                 <string>txt_preslagatelj_oseba_naslov_postna_stevilka</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="txt_predlagatelj_oseba_naslov_st">
+                <property name="maximumSize">
+                 <size>
+                  <width>50</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>txt_preslagatelj_oseba_naslov_st</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Naslov</string>
+              </property>
+             </widget>
+            </item>
            </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>17</width>
+           <height>282</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_9">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="btn_predlagatelj_uredi">
+           <property name="text">
+            <string>Uredi</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <spacer name="horizontalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -1018,6 +1158,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="cb_prejemnik_oseba">
+              <property name="text">
+               <string>cb_prejemnik_oseba</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QComboBox" name="txt_prejemnik_izbira_osebe">
               <property name="minimumSize">
                <size>
@@ -1065,42 +1212,28 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_9">
               <property name="text">
                <string>Znamka avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_40">
               <property name="text">
                <string>Model avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Registrska številka</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="1">
-             <widget class="QLineEdit" name="txt_registrska_stevilka">
-              <property name="text">
-               <string>txt_registrska_stevilka</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
              <widget class="QLineEdit" name="txt_model_avtomobila">
               <property name="text">
                <string>txt_model_avtomobila</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QLineEdit" name="txt_znamka_avtomobila">
               <property name="text">
                <string>txt_znamka_avtomobila</string>
@@ -1112,6 +1245,22 @@
               <item>
                <property name="text">
                 <string>txt_prevoz</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Registrska številka</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="txt_registrska_stevilka">
+              <item>
+               <property name="text">
+                <string>txt_registrska_stevilka</string>
                </property>
               </item>
              </widget>
@@ -1146,6 +1295,30 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="btn_prejemnik_uredi">
+           <property name="text">
+            <string>Uredi</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -1232,7 +1405,7 @@
   <tabstop>txt_predlagatelj_postna_stevilka</tabstop>
   <tabstop>cb_predlagatelj_oseba</tabstop>
   <tabstop>txt_predlagatelj_izbira_oseba</tabstop>
-  <tabstop>txt_predlagatelj_oseba</tabstop>
+  <tabstop>txt_predlagatelj_oseba_ime</tabstop>
   <tabstop>txt_predlagatelj_naziv</tabstop>
   <tabstop>txt_prejemnik_izbira_osebe</tabstop>
   <tabstop>txt_prejemnik_priimek</tabstop>
@@ -1245,7 +1418,6 @@
   <tabstop>txt_prevoz</tabstop>
   <tabstop>txt_znamka_avtomobila</tabstop>
   <tabstop>txt_model_avtomobila</tabstop>
-  <tabstop>txt_registrska_stevilka</tabstop>
   <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>

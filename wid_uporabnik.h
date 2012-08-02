@@ -16,21 +16,21 @@ public:
     ~wid_uporabnik();
 
 private slots:
-	void on_cb_mesto_currentIndexChanged();
-	void on_cb_pogodba_currentIndexChanged();
+    void on_cb_mesto_currentIndexChanged();
+    void on_cb_pogodba_currentIndexChanged();
 
-	void on_btn_brisi_clicked();
-	void on_btn_nov_clicked();
-	void on_tbl_uporabnik_doubleClicked();
+    void on_btn_brisi_clicked();
+    void on_btn_nov_clicked();
+    void on_tbl_uporabnik_doubleClicked();
 
-	void osvezi(QString beseda);
-	void napolni();
+    void osvezi(QString beseda);
+    void napolni();
 
-	QString pretvori(QString besedilo);
-	QString prevedi(QString besedilo);
+    QString pretvori(QString besedilo);
+    QString prevedi(QString besedilo);
 
 signals:
-	void prenos(QString beseda);
+    void prenos(QString beseda);
 
 private:
     Ui::wid_uporabnik *ui;

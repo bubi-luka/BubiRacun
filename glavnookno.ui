@@ -26,8 +26,8 @@
    <enum>Qt::ToolButtonTextOnly</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLabel" name="lbl_pozdrav">
@@ -77,6 +77,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="btn_home">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Domov</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="txt_uporabnik">
         <property name="enabled">
          <bool>false</bool>
@@ -121,7 +134,7 @@ border:0;</string>
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item>
      <widget class="QScrollArea" name="scrollArea">
       <property name="widgetResizable">
        <bool>true</bool>
@@ -132,7 +145,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>577</height>
+         <height>583</height>
         </rect>
        </property>
       </widget>
@@ -146,7 +159,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -176,10 +189,10 @@ border:0;</string>
      <string>Delo</string>
     </property>
     <addaction name="actionStranke"/>
+    <addaction name="separator"/>
     <addaction name="actionProjekti"/>
     <addaction name="separator"/>
     <addaction name="actionKuponi"/>
-    <addaction name="actionPopusti"/>
    </widget>
    <widget class="QMenu" name="menuNastavitve">
     <property name="title">
@@ -187,8 +200,11 @@ border:0;</string>
     </property>
     <addaction name="actionPodjetje"/>
     <addaction name="actionUporabniki"/>
+    <addaction name="actionAvtomobili"/>
     <addaction name="separator"/>
     <addaction name="action_asovnice"/>
+    <addaction name="separator"/>
+    <addaction name="actionNastavitve"/>
    </widget>
    <widget class="QMenu" name="menu_ifranti">
     <property name="title">
@@ -293,6 +309,29 @@ border:0;</string>
   <action name="actionDnevnice">
    <property name="text">
     <string>Dnevnice</string>
+   </property>
+  </action>
+  <action name="actionOsnovni_Pogled">
+   <property name="text">
+    <string>Osnovni Pogled</string>
+   </property>
+  </action>
+  <action name="actionOsnovni_Pogled_2">
+   <property name="text">
+    <string>Osnovni Pogled</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionNastavitve">
+   <property name="text">
+    <string>Nastavitve</string>
+   </property>
+  </action>
+  <action name="actionAvtomobili">
+   <property name="text">
+    <string>Avtomobili</string>
    </property>
   </action>
  </widget>

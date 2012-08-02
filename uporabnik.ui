@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>983</width>
-    <height>615</height>
+    <width>1025</width>
+    <height>807</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -25,8 +25,8 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje zaposlenega</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -44,52 +44,13 @@
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
            <layout class="QFormLayout" name="formLayout">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
                <string>Ime</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Priimek</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Naslov</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Telefon</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>GSM</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Elektronski naslov</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>Spletna stran</string>
               </property>
              </widget>
             </item>
@@ -106,10 +67,24 @@
               </property>
              </widget>
             </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Priimek</string>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="1">
              <widget class="QLineEdit" name="txt_priimek">
               <property name="text">
                <string>txt_priimek</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Rojstni datum</string>
               </property>
              </widget>
             </item>
@@ -133,80 +108,10 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="txt_telefon">
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_7">
               <property name="text">
-               <string>txt_telefon</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="txt_gsm">
-              <property name="text">
-               <string>txt_gsm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QLineEdit" name="txt_email">
-              <property name="text">
-               <string>txt_email</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QLineEdit" name="txt_url">
-              <property name="text">
-               <string>txt_url</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Rojstni datum</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QLineEdit" name="txt_avto">
-              <property name="text">
-               <string>txt_avto</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="1">
-             <widget class="QLineEdit" name="txt_registracija">
-              <property name="text">
-               <string>txt_registracija</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="label_20">
-              <property name="text">
-               <string>Znamka avtomobila</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="0">
-             <widget class="QLabel" name="label_21">
-              <property name="text">
-               <string>Registrska številka</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0">
-             <widget class="QLabel" name="label_24">
-              <property name="text">
-               <string>Model avtomobila</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QLineEdit" name="txt_model">
-              <property name="text">
-               <string>txt_model</string>
+               <string>Naslov</string>
               </property>
              </widget>
             </item>
@@ -308,7 +213,85 @@
               </item>
              </layout>
             </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Telefon</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="txt_telefon">
+              <property name="text">
+               <string>txt_telefon</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>GSM</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="txt_gsm">
+              <property name="text">
+               <string>txt_gsm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Elektronski naslov</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QLineEdit" name="txt_email">
+              <property name="text">
+               <string>txt_email</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Spletna stran</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QLineEdit" name="txt_url">
+              <property name="text">
+               <string>txt_url</string>
+              </property>
+             </widget>
+            </item>
            </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Seznam avtomobilov, ki so na voljo uporabniku</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QTableWidget" name="tbl_avto">
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -388,23 +371,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Ponovni vpis gesla</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="txt_ponovnogeslo">
-              <property name="text">
-               <string>txt_ponovnogeslo</string>
-              </property>
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
@@ -444,6 +410,30 @@
               </item>
              </layout>
             </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Ponovni vpis gesla</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="txt_ponovnogeslo">
+              <property name="text">
+               <string>txt_ponovnogeslo</string>
+              </property>
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Dovoljenja</string>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="1">
              <widget class="QComboBox" name="txt_dovoljenja">
               <item>
@@ -453,10 +443,10 @@
               </item>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_23">
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_25">
               <property name="text">
-               <string>Dovoljenja</string>
+               <string>Podjetje</string>
               </property>
              </widget>
             </item>
@@ -467,13 +457,6 @@
                 <string>txt_podjetje</string>
                </property>
               </item>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_25">
-              <property name="text">
-               <string>Podjetje</string>
-              </property>
              </widget>
             </item>
            </layout>
@@ -666,7 +649,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item>
     <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -679,7 +662,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -737,9 +720,6 @@
   <tabstop>txt_gsm</tabstop>
   <tabstop>txt_email</tabstop>
   <tabstop>txt_url</tabstop>
-  <tabstop>txt_avto</tabstop>
-  <tabstop>txt_model</tabstop>
-  <tabstop>txt_registracija</tabstop>
   <tabstop>txt_id</tabstop>
   <tabstop>txt_uporabnik</tabstop>
   <tabstop>txt_geslo</tabstop>

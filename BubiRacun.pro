@@ -36,7 +36,11 @@ HEADERS += \
     wid_prihodki.h \
     wid_izdatki.h \
     wid_poslovanje.h \
-    datum.h
+    datum.h \
+    wid_osnovni_pogled.h \
+    nastavitve.h \
+    avtomobili.h \
+    wid_avtomobili.h
 
 SOURCES += \
     main.cpp \
@@ -75,7 +79,11 @@ SOURCES += \
     tiskanje.cpp \
     wid_prihodki.cpp \
     wid_izdatki.cpp \
-    wid_poslovanje.cpp
+    wid_poslovanje.cpp \
+    wid_osnovni_pogled.cpp \
+    nastavitve.cpp \
+    avtomobili.cpp \
+    wid_avtomobili.cpp
 
 FORMS += \
     glavnookno.ui \
@@ -111,7 +119,11 @@ FORMS += \
     tiskanje.ui \
     wid_prihodki.ui \
     wid_izdatki.ui \
-    wid_poslovanje.ui
+    wid_poslovanje.ui \
+    wid_osnovni_pogled.ui \
+    nastavitve.ui \
+    avtomobili.ui \
+    wid_avtomobili.ui
 
 QT += sql
 
@@ -137,7 +149,10 @@ OTHER_FILES += \
     racun-besedilo-predplacilo.csv \
     racun-besedilo-racun.csv \
     potni-nalog-besedilo-glava.csv \
-    style.css
+    style.css \
+    sif_nastavitve.csv \
+    sif_banke.csv \
+    sif_koda_namena.csv
 
 
 

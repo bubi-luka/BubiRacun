@@ -16,22 +16,24 @@ public:
     ~uporabnik();
 
 private slots:
-	void on_btn_izhod_clicked();
-	void on_btn_brisi_clicked();
-	void on_btn_sprejmi_clicked();
-	void on_btn_geslo_clicked();
-	void keyPressEvent(QKeyEvent *event);
-	void on_txt_zaposlen_toggled(bool stanje);
+    void on_btn_izhod_clicked();
+    void on_btn_brisi_clicked();
+    void on_btn_sprejmi_clicked();
+    void on_btn_geslo_clicked();
+    void keyPressEvent(QKeyEvent *event);
+    void on_txt_zaposlen_toggled(bool stanje);
 
-	void on_txt_posta_currentIndexChanged(QString besedilo);
-	void on_txt_postna_stevilka_textChanged(QString besedilo);
+    void on_txt_posta_currentIndexChanged(QString besedilo);
+    void on_txt_postna_stevilka_textChanged(QString besedilo);
 
-	void prejem(QString besedilo);
-	QString pretvori(QString besedilo);
-	QString prevedi(QString besedilo);
+    void prejem(QString besedilo);
+    void napolni_avtomobile();
+
+    QString pretvori(QString besedilo);
+    QString prevedi(QString besedilo);
 
 signals:
-	void poslji(QString beseda);
+    void poslji(QString beseda);
 
 private:
     Ui::uporabnik *ui;
