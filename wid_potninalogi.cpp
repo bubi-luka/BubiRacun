@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QStyledItemDelegate>
+#include <QSortFilterProxyModel>
 
 #include "wid_potninalogi.h"
 #include "ui_wid_potninalogi.h"
@@ -112,6 +113,15 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
             }
             sql_napolni.clear();
 
+            // razvrscanje strank po vrsti
+            QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->cb_stranka);
+            proxy->setSourceModel(ui->cb_stranka->model());
+            // spustni seznam prepisemo
+            ui->cb_stranka->model()->setParent(proxy);
+            ui->cb_stranka->setModel(proxy);
+            // razvrsti
+            ui->cb_stranka->model()->sort(0);
+
             // filtriraj po kraju prihoda
             ui->cb_kraj->addItem("");
             sql_napolni.prepare("SELECT * FROM potni_nalogi WHERE predlagatelj_oseba LIKE '" + pretvori(vApp->id()) + "'");
@@ -129,6 +139,15 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
                 }
             }
             sql_napolni.clear();
+
+            // razvrscanje strank po vrsti
+            QSortFilterProxyModel* proxy1 = new QSortFilterProxyModel(ui->cb_kraj);
+            proxy1->setSourceModel(ui->cb_kraj->model());
+            // spustni seznam prepisemo
+            ui->cb_kraj->model()->setParent(proxy1);
+            ui->cb_kraj->setModel(proxy1);
+            // razvrsti
+            ui->cb_kraj->model()->sort(0);
 
             // filtriraj po prevoznem sredstvu
             ui->cb_prevoz->addItem("");
@@ -400,13 +419,28 @@ void wid_potninalogi::napolni() {
                 // filtriraj glede na kraj prihoda
                 if ( ui->cb_kraj->currentText() != "" ) {
                     filter = "negativno"; // privzeto nastavimo na negativno vrednost, tako pozitivni zadetki lahko omogocijo pozitivni filter
+
+                    QStringList seznam_krajev;
+                    seznam_krajev.clear();
+
+                    // napolnimo seznam krajev s seznamom nasih krajev prihoda (ciljev)
                     QSqlQuery sql_filter;
                     sql_filter.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
                     sql_filter.exec();
                     while ( sql_filter.next() ) {
-                        if ( prevedi(sql_filter.value(sql_filter.record().indexOf("kraj_prihoda")).toString()).toLower() == ui->cb_kraj->currentText().toLower() ) {
-                            filter = "pozitivno";
-                        }
+//                        if ( !seznam_krajev.contains(prevedi(sql_filter.value(sql_filter.record().indexOf("kraj_prihoda")).toString()).toLower()) ) {
+                            seznam_krajev.append(prevedi(sql_filter.value(sql_filter.record().indexOf("kraj_prihoda")).toString()).toLower());
+//                        }
+                    }
+
+                    // izbrisi zadnji kraj prihoda (cilj) v seznamu krajev, razen, ce je samo en kraj (samo izhodisce)
+                    if ( seznam_krajev.count() > 1 ) {
+                        seznam_krajev.removeLast();
+                    }
+
+                    // ce seznam krajev vsebuje iskani kraj, potem obdrzimo filter "pozitivno", drugace ga zapremo
+                    if ( seznam_krajev.contains(ui->cb_kraj->currentText().toLower()) ) {
+                        filter = "pozitivno";
                     }
                 }
             }
