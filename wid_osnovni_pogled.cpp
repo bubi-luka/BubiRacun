@@ -64,17 +64,23 @@ void wid_osnovni_pogled::napolni_projekte() {
         int odprti_projekti = 0;
         QStringList seznam_projektov;
 
-        QString mesec = "." + QDate::currentDate().toString("MM") + ".";
+        QString datum = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
 
         QSqlQuery sql_odprti_projekti;
-        sql_odprti_projekti.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("1") +
-                                    "' AND status_racuna LIKE 'Pmoilii' AND datum_oddaje_racuna LIKE '%" + mesec + "%'");
+        // stevilo projektov, ki so trenutno v teku
+        sql_odprti_projekti.prepare("SELECT * FROM projekti WHERE status_projekta LIKE '" + pretvori("2") + "'"); // projekt je v teku
+        //        Za primer, ko gledamo samo stevilo projektov, ki so bili potrjeni v tekocem mesecu
+        //        sql_odprti_projekti.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("1") +
+        //                                    "' AND status_racuna LIKE 'Pmoilii' AND datum_oddaje_racuna LIKE '%" + datum + "%'");
         sql_odprti_projekti.exec();
         while ( sql_odprti_projekti.next() ) {
-            if ( !seznam_projektov.contains(prevedi(sql_odprti_projekti.value(sql_odprti_projekti.record().indexOf("projekt")).toString())) ) {
-                seznam_projektov.append(prevedi(sql_odprti_projekti.value(sql_odprti_projekti.record().indexOf("projekt")).toString()));
-                odprti_projekti++;
-            }
+            // stevilo projektov, ki so trenutno v teku
+            odprti_projekti++;
+            //            Za primer, ko gledamo samo stevilo projektov, ki so bili potrjeni v tekocem mesecu
+            //            if ( !seznam_projektov.contains(prevedi(sql_odprti_projekti.value(sql_odprti_projekti.record().indexOf("projekt")).toString())) ) {
+            //                seznam_projektov.append(prevedi(sql_odprti_projekti.value(sql_odprti_projekti.record().indexOf("projekt")).toString()));
+            //                odprti_projekti++;
+            //            }
         }
         seznam_projektov.clear();
 
@@ -85,7 +91,7 @@ void wid_osnovni_pogled::napolni_projekte() {
 
         QSqlQuery sql_zavrnjeni_projekti;
         sql_zavrnjeni_projekti.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("1") +
-                                       "' AND status_racuna LIKE 'Zvripnzj' AND datum_oddaje_racuna LIKE '%" + mesec + "%'");
+                                       "' AND status_racuna LIKE 'Zvripnzj' AND datum_oddaje_racuna LIKE '%" + datum + "%'");
         sql_zavrnjeni_projekti.exec();
         while ( sql_zavrnjeni_projekti.next() ) {
             if ( !seznam_projektov.contains(prevedi(sql_zavrnjeni_projekti.value(sql_zavrnjeni_projekti.record().indexOf("projekt")).toString())) ) {
@@ -150,16 +156,13 @@ void wid_osnovni_pogled::napolni_stranke() {
 
         ui->tbl_stranke->setHorizontalHeaderLabels(naslovi);
 
-        // get current month
-//        QString tekoci_mesec = "." + QDate::currentDate().toString("MM") + ".";
-
         // set list of custumers, that have open projects
         QStringList stranke;
+        stranke.clear();
 
         // search for the project, that are currently open
         QSqlQuery sql_projekti;
-      //  sql_projekti.prepare("SELECT * FROM projekti WHERE status_projekta LIKE '" + pretvori("2") + "'"); // projekt je v teku
-        sql_projekti.prepare("SELECT * FROM projekti"); // projekt je v teku
+        sql_projekti.prepare("SELECT * FROM projekti WHERE status_projekta LIKE '" + pretvori("2") + "'"); // projekt je v teku
         sql_projekti.exec();
         while ( sql_projekti.next() ) {
             if ( !stranke.contains(prevedi(sql_projekti.value(sql_projekti.record().indexOf("stranka")).toString())) ) {
@@ -293,10 +296,10 @@ void wid_osnovni_pogled::napolni_potne_naloge() {
         int st_nalogov = 0;
         int row = 0;
 
-        QString mesec = "." + QDate::currentDate().toString("MM") + ".";
+        QString datum = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
 
         QSqlQuery sql_potni_nalog;
-        sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE datum_naloga LIKE '%" + mesec + "%'");
+        sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE datum_naloga LIKE '%" + datum + "%'");
         sql_potni_nalog.exec();
         while ( sql_potni_nalog.next() ) {
             st_nalogov++;
@@ -362,13 +365,13 @@ void wid_osnovni_pogled::napolni_prejete_racune() {
     else {
         // baza je odprta
 
-        QString mesec = "." + QDate::currentDate().toString("MM") + ".";
+        QString datum = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
 
         int st_prejetih_racunov = 0;
         double znesek_prejetih_racunov = 0.0;
 
         QSqlQuery sql_prejeti_racuni;
-        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%" + mesec + "%'");
+        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%" + datum + "%'");
         sql_prejeti_racuni.exec();
         while ( sql_prejeti_racuni.next() ) {
             st_prejetih_racunov++;
@@ -403,7 +406,7 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
     else {
         // baza je odprta
 
-        QString mesec = "." + QDate::currentDate().toString("MM") + ".";
+        QString datum = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
 
         int st_predracunov = 0;
         double znesek_predracunov = 0.0;
@@ -415,8 +418,7 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
         double znesek_racunov = 0.0;
 
         QSqlQuery sql_racuni;
-//        sql_racuni.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%" + mesec + "%'");
-        sql_racuni.prepare("SELECT * FROM racuni");
+        sql_racuni.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%" + datum + "%'");
         sql_racuni.exec();
         while ( sql_racuni.next() ) {
 
