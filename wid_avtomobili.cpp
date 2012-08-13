@@ -183,8 +183,7 @@ void wid_avtomobili::napolni() {
                 else if ( polja[i] == "lastnik" ) {
                     QSqlQuery sql_lastnik;
                     if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "1" ) { // zasebnik
-                        sql_lastnik.prepare("SELECT * FROM uporabniki WHERE starsi LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'"
-                                            " AND aktivnost LIKE '1'");
+                        sql_lastnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
                     }
                     else if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "0" ) { // podjetje
                         sql_lastnik.prepare("SELECT * FROM podjetje WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
@@ -192,8 +191,8 @@ void wid_avtomobili::napolni() {
                     sql_lastnik.exec();
                     if ( sql_lastnik.next() ) {
                         if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "1" ) { // zasebnik
-                            celica->setText(prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("ime")).toString()) + " " +
-                                            prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("priimek")).toString()));
+                            celica->setText(prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("priimek")).toString()) + " " +
+                                            prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("ime")).toString()));
                         }
                         else if ( sql_fill.value(sql_fill.record().indexOf("lastnistvo")).toString() == "0" ) { // podjetje
                             celica->setText(prevedi(sql_lastnik.value(sql_lastnik.record().indexOf("ime")).toString()));

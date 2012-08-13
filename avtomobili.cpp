@@ -131,7 +131,7 @@ void avtomobili::napolni_lastnike() {
 
         QSqlQuery sql_lastniki;
         if ( ui->rb_zasebnik->isChecked() ) {
-            sql_lastniki.prepare("SELECT * FROM uporabniki WHERE aktivnost LIKE '1'");
+            sql_lastniki.prepare("SELECT * FROM uporabniki");
         }
         else if ( ui->rb_podjetje->isChecked() ) {
             sql_lastniki.prepare("SELECT * FROM podjetje");
@@ -145,7 +145,7 @@ void avtomobili::napolni_lastnike() {
                 lastnik += prevedi(sql_lastniki.value(sql_lastniki.record().indexOf("ime")).toString());
             }
             else if ( ui->rb_zasebnik->isChecked() ) {
-                lastnik += prevedi(sql_lastniki.value(sql_lastniki.record().indexOf("starsi")).toString());
+                lastnik += prevedi(sql_lastniki.value(sql_lastniki.record().indexOf("id")).toString());
                 lastnik += ") ";
                 lastnik += prevedi(sql_lastniki.value(sql_lastniki.record().indexOf("priimek")).toString());
                 lastnik += " ";
