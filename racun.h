@@ -44,6 +44,7 @@ private slots:
     void on_tbl_zapisi_2_doubleClicked();
     void napolni_zapise();
     void on_cb_stara_stevilka_racuna_toggled();
+    void on_cb_stevilka_starsa_toggled();
 
     void on_txt_vse_opombe_textChanged();
     void on_txt_vnesene_opombe_textChanged();

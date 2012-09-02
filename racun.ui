@@ -38,7 +38,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>684</height>
+            <height>716</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -185,6 +185,31 @@
                    <widget class="QLineEdit" name="txt_stara_stevilka_racuna">
                     <property name="text">
                      <string>txt_stara_stevilka_racuna</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="lbl_stevilka_starsa">
+                  <property name="text">
+                   <string>Številka starša</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_15">
+                  <item>
+                   <widget class="QCheckBox" name="cb_stevilka_starsa">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="txt_stevilka_starsa">
+                    <property name="text">
+                     <string>txt_stevilka_starsa</string>
                     </property>
                    </widget>
                   </item>

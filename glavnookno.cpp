@@ -178,20 +178,6 @@ void GlavnoOkno::on_actionKuponi_triggered() {
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Kuponi");
 }
 
-void GlavnoOkno::on_actionIzdani_ra_uni_triggered() {
-
-    wid_racuni *widrac = new wid_racuni;
-    ui->scrollArea->setWidget(widrac);
-    ui->lbl_pozicija->setText("Nahajate se na tabeli Izdani racuni!");
-    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Izdani racuni");
-
-    QObject::connect(this, SIGNAL(prenos(QString)),
-               widrac , SLOT(prejem(QString)));
-    prenos("*");
-    this->disconnect();
-
-}
-
 void GlavnoOkno::on_actionVizitka_triggered() {
 
     Vizitka *widviz = new Vizitka;
@@ -273,6 +259,49 @@ void GlavnoOkno::on_actionAvtomobili_triggered() {
     ui->scrollArea->setWidget(widavto);
     ui->lbl_pozicija->setText("Nahajate se na tabeli Pregled avtomobilov!");
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Pregled avtomobilov");
+
+}
+
+
+void GlavnoOkno::on_actionPredra_uni_triggered() {
+
+    wid_racuni *widrac = new wid_racuni;
+    ui->scrollArea->setWidget(widrac);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Izdani racuni!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Izdani racuni");
+
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               widrac , SLOT(tip(QString)));
+    prenos("1");
+    this->disconnect();
+
+}
+
+void GlavnoOkno::on_actionPredpla_ilni_ra_uni_triggered() {
+
+    wid_racuni *widrac = new wid_racuni;
+    ui->scrollArea->setWidget(widrac);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Izdani racuni!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Izdani racuni");
+
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               widrac , SLOT(tip(QString)));
+    prenos("2");
+    this->disconnect();
+
+}
+
+void GlavnoOkno::on_actionRa_uni_triggered() {
+
+    wid_racuni *widrac = new wid_racuni;
+    ui->scrollArea->setWidget(widrac);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Izdani racuni!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Izdani racuni");
+
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               widrac , SLOT(tip(QString)));
+    prenos("3");
+    this->disconnect();
 
 }
 

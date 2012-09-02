@@ -32,6 +32,7 @@ racun::racun(QWidget *parent) :
         ui->txt_id->setText("");
         ui->txt_stevilka_racuna->setText("");
         ui->txt_stara_stevilka_racuna->setText("");
+        ui->txt_stevilka_starsa->setText("");
         ui->txt_status_predracuna->clear();
         ui->txt_stranka_id->setText("");
         ui->txt_stranka->clear();
@@ -80,6 +81,7 @@ racun::racun(QWidget *parent) :
         // onemogoci polja
         ui->txt_id->setEnabled(false);
 //		ui->txt_stevilka_racuna->setEnabled(false);
+        ui->txt_stevilka_starsa->setEnabled(false);
         ui->txt_sklic->setEnabled(false);
         ui->txt_projekt_id->setEnabled(false);
         ui->txt_stranka_id->setEnabled(false);
@@ -103,8 +105,9 @@ racun::racun(QWidget *parent) :
         ui->btn_predplacilni_racun->setEnabled(false);
         ui->btn_racun->setEnabled(false);
 
-        ui->txt_vse_opombe->setHidden(true);
-        ui->txt_vnesene_opombe->setHidden(true);
+        // odznaci kljukice
+        ui->cb_stara_stevilka_racuna->setChecked(false);
+        ui->cb_stevilka_starsa->setChecked(false);
 
         // skrij polja
         ui->txt_projekt_id->setVisible(false);
@@ -112,6 +115,8 @@ racun::racun(QWidget *parent) :
         ui->txt_id_zapisa_2->setVisible(false);
         ui->txt_datum_placila_racuna->setVisible(false);
         ui->btn_racun->setVisible(false);
+        ui->txt_vse_opombe->setHidden(true);
+        ui->txt_vnesene_opombe->setHidden(true);
 
         // napolni spustne sezname
         QString app_path = QApplication::applicationDirPath();
@@ -366,9 +371,9 @@ void racun::on_btn_racun_clicked() {
                                   "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
                                   "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
                                   "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
-                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna"
-                                  ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, "
+                                  "stevilka_starsa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         sql_vnesi_projekt.bindValue(0, pretvori(""));
         sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
         sql_vnesi_projekt.bindValue(2, pretvori(""));
@@ -388,7 +393,7 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
         sql_vnesi_projekt.bindValue(17, pretvori(""));
         sql_vnesi_projekt.bindValue(18, pretvori(""));
-        sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
+        sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_vnesene_opombe->text()));
         sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
         sql_vnesi_projekt.bindValue(21, podjetje_id);
         sql_vnesi_projekt.bindValue(22, podjetje_kratki);
@@ -415,6 +420,7 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(43, narocnik_naslov);
         sql_vnesi_projekt.bindValue(44, narocnik_posta);
         sql_vnesi_projekt.bindValue(45, narocnik_davcna);
+        sql_vnesi_projekt.bindValue(46, ui->txt_id->text());
         sql_vnesi_projekt.exec();
 
         // poiscemo id pravkar vnesenega zapisa
@@ -969,9 +975,10 @@ void racun::on_btn_sprejmi_clicked() {
                                           "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
                                           "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
                                           "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
-                                          "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna"
+                                          "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, "
+                                          "narocnik_davcna, stevilka_starsa"
                                           ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                          "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                          "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojec vnos
                 sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
@@ -983,7 +990,7 @@ void racun::on_btn_sprejmi_clicked() {
                                           "podjetje_url = ?, podjetje_email = ?, podjetje_telefon = ?, podjetje_ddv = ?, podjetje_bic = ?, "
                                           "podjetje_banka = ?, podjetje_tekoci_racun = ?, podjetje_koda_namena = ?, podjetje_logotip = ?, "
                                           "izdajatelj_id = ?, izdajatelj_ime = ?, izdajatelj_priimek = ?, izdajatelj_naziv = ?, narocnik_id = ?, "
-                                          "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ? "
+                                          "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ?, stevilka_starsa = ? "
                                           "WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
 
@@ -1055,9 +1062,11 @@ void racun::on_btn_sprejmi_clicked() {
             sql_vnesi_projekt.bindValue(43, narocnik_naslov);
             sql_vnesi_projekt.bindValue(44, narocnik_posta);
             sql_vnesi_projekt.bindValue(45, narocnik_davcna);
+            sql_vnesi_projekt.bindValue(46, ui->txt_stevilka_starsa->text());
 
             sql_vnesi_projekt.exec();
 
+            // zapisi stevilko starsa v racun in predplacilni racun
             if ( !ui->rb_predracun->isChecked() && ui->txt_id->text() != "" ) {
                 QSqlQuery sql_poisci_otroke;
                 sql_poisci_otroke.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
@@ -1350,6 +1359,7 @@ void racun::prejem(QString besedilo) {
                 ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
                 ui->txt_stranka_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString()));
                 ui->txt_stevilka_racuna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_racuna")).toString()));
+                ui->txt_stevilka_starsa->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_starsa")).toString()));
                 if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("stara_stevilka_racuna")).toString()) != "" ) {
                     ui->cb_stara_stevilka_racuna->setChecked(true);
                     ui->txt_stara_stevilka_racuna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stara_stevilka_racuna")).toString()));
@@ -1833,6 +1843,10 @@ void racun::on_rb_predracun_toggled() {
         ui->txt_datum_pricetka->setHidden(true);
         ui->lbl_datum_pricetka->setHidden(true);
 
+        ui->lbl_stevilka_starsa->setVisible(false);
+        ui->cb_stevilka_starsa->setVisible(false);
+        ui->txt_stevilka_starsa->setVisible(false);
+
 //        ui->btn_racun->setVisible(true);
         ui->btn_predplacilni_racun->setVisible(true);
 
@@ -1873,6 +1887,10 @@ void racun::on_rb_predplacilo_toggled() {
         ui->txt_datum_pricetka->setHidden(true);
         ui->lbl_datum_pricetka->setHidden(true);
 
+        ui->lbl_stevilka_starsa->setVisible(true);
+        ui->cb_stevilka_starsa->setVisible(true);
+        ui->txt_stevilka_starsa->setVisible(true);
+
 //        ui->btn_racun->setVisible(false);
         ui->btn_predplacilni_racun->setVisible(false);
 
@@ -1912,6 +1930,10 @@ void racun::on_rb_racun_toggled() {
         ui->txt_odstotek_avansa->setEnabled(false);
         ui->txt_datum_pricetka->setHidden(false);
         ui->lbl_datum_pricetka->setHidden(false);
+
+        ui->lbl_stevilka_starsa->setVisible(true);
+        ui->cb_stevilka_starsa->setVisible(true);
+        ui->txt_stevilka_starsa->setVisible(true);
 
 //        ui->btn_racun->setVisible(false);
         ui->btn_predplacilni_racun->setVisible(false);
@@ -1970,6 +1992,17 @@ void racun::on_cb_stara_stevilka_racuna_toggled() {
     }
     else {
         ui->txt_stara_stevilka_racuna->setEnabled(false);
+    }
+
+}
+
+void racun::on_cb_stevilka_starsa_toggled() {
+
+    if ( ui->cb_stevilka_starsa->isChecked() ) {
+        ui->txt_stevilka_starsa->setEnabled(true);
+    }
+    else {
+        ui->txt_stevilka_starsa->setEnabled(false);
     }
 
 }
@@ -2236,9 +2269,9 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
 void racun::on_txt_status_predracuna_currentIndexChanged() {
 
-    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) {
+    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) { // obvestimo o mozni tvorbi racuna
         ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
-        // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvoris racun
+        // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvori racun
         if ( ui->txt_status_predracuna->isEnabled() ) {
             QMessageBox sporocilo;
             sporocilo.setText("Ob pritisku na gumb Shrani bo predracun zaprt, \n"
@@ -2247,17 +2280,13 @@ void racun::on_txt_status_predracuna_currentIndexChanged() {
             sporocilo.exec();
         }
     }
-    else {
-        ui->txt_status_placila->setCurrentIndex(0);
-    }
-
-    // status racunovodstva
-    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) {
+    else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) { // status racunovodstva
         ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText("Ni za oddajo"));
     }
-    else {
-        ui->txt_status_racunovodstva->setCurrentIndex(0);
-    }
+// ce omogocimo, vpliva tudi na polnenje polj, kjer pa to ni zazeleno
+//    else {
+//        ui->txt_status_racunovodstva->setCurrentIndex(0);
+//    }
 
 }
 

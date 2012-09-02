@@ -166,9 +166,17 @@ border:0;</string>
     <property name="title">
      <string>Računovodstvo</string>
     </property>
+    <widget class="QMenu" name="menuIzdani_ra_uni">
+     <property name="title">
+      <string>Izdani računi</string>
+     </property>
+     <addaction name="actionPredra_uni"/>
+     <addaction name="actionPredpla_ilni_ra_uni"/>
+     <addaction name="actionRa_uni"/>
+    </widget>
     <addaction name="actionPotni_nalogi"/>
     <addaction name="actionPrejeti_ra_uni"/>
-    <addaction name="actionIzdani_ra_uni"/>
+    <addaction name="menuIzdani_ra_uni"/>
    </widget>
    <widget class="QMenu" name="menuIzpisi">
     <property name="title">
@@ -246,11 +254,6 @@ border:0;</string>
   <action name="actionPrejeti_ra_uni">
    <property name="text">
     <string>Prejeti računi</string>
-   </property>
-  </action>
-  <action name="actionIzdani_ra_uni">
-   <property name="text">
-    <string>Izdani računi</string>
    </property>
   </action>
   <action name="actionPrihodek">
@@ -332,6 +335,21 @@ border:0;</string>
   <action name="actionAvtomobili">
    <property name="text">
     <string>Avtomobili</string>
+   </property>
+  </action>
+  <action name="actionPredra_uni">
+   <property name="text">
+    <string>Predračuni</string>
+   </property>
+  </action>
+  <action name="actionPredpla_ilni_ra_uni">
+   <property name="text">
+    <string>Predplačilni računi</string>
+   </property>
+  </action>
+  <action name="actionRa_uni">
+   <property name="text">
+    <string>Računi</string>
    </property>
   </action>
  </widget>

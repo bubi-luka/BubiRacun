@@ -28,12 +28,16 @@ private slots:
     void on_cb_racunovodstvo_currentIndexChanged();
 
     void on_tbl_racuni_doubleClicked();
+    void on_tbl_racuni_clicked();
+    void on_tbl_sorodniki_doubleClicked();
     void on_btn_nov_clicked();
     void on_btn_brisi_clicked();
 
     void osvezi(QString beseda);
     void prejem(QString besedilo);
+    void tip(QString besedilo);
     void napolni();
+    void napolni_sorodnike();
 
     void on_btn_prestevilci_clicked();
 
