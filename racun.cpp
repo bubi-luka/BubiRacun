@@ -1402,8 +1402,10 @@ void racun::prejem(QString besedilo) {
 
                 sql_combo.prepare("SELECT * FROM sif_status_racunovodstva WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_racunovodstva")).toString() + "'");
                 sql_combo.exec();
+                qDebug(prevedi(sql_napolni.value(sql_napolni.record().indexOf("status_racunovodstva")).toString()).toAscii());
                 if ( sql_combo.next() ) {
                     ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString())));
+                    qDebug(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString()).toAscii());
                 }
                 sql_combo.clear();
 
@@ -2236,9 +2238,9 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
 void racun::on_txt_status_predracuna_currentIndexChanged() {
 
-    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) {
+    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) { // obvestimo o mozni tvorbi racuna
         ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
-        // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvoris racun
+        // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvori racun
         if ( ui->txt_status_predracuna->isEnabled() ) {
             QMessageBox sporocilo;
             sporocilo.setText("Ob pritisku na gumb Shrani bo predracun zaprt, \n"
@@ -2247,17 +2249,13 @@ void racun::on_txt_status_predracuna_currentIndexChanged() {
             sporocilo.exec();
         }
     }
-    else {
-        ui->txt_status_placila->setCurrentIndex(0);
-    }
-
-    // status racunovodstva
-    if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) {
+    else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) { // status racunovodstva
         ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText("Ni za oddajo"));
     }
-    else {
-        ui->txt_status_racunovodstva->setCurrentIndex(0);
-    }
+// ce omogocimo, vpliva tudi na polnenje polj, kjer pa to ni zazeleno
+//    else {
+//        ui->txt_status_racunovodstva->setCurrentIndex(0);
+//    }
 
 }
 
