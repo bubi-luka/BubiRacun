@@ -322,7 +322,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Znesek prejetih računov</string>
+             <string>Znesek prejetih računov z DDV</string>
             </property>
            </widget>
           </item>
@@ -399,7 +399,7 @@
         </size>
        </property>
        <property name="title">
-        <string>Izdani računi</string>
+        <string>Izdani računi v tekočem mesecu</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -454,7 +454,7 @@
           <item row="0" column="2">
            <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Znesek</string>
+             <string>Znesek brez DDV</string>
             </property>
            </widget>
           </item>
