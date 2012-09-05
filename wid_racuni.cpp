@@ -440,6 +440,126 @@ void wid_racuni::napolni() {
 
 }
 
+void wid_racuni::napolni_sorodnike() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_sorodniki");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        // clear previous content
+        ui->tbl_sorodniki->clear();
+
+        for (int i = 0; i <= 3; i++) {
+            ui->tbl_sorodniki->removeColumn(0);
+        }
+
+        QSqlQuery sql_clear("wid_sorodniki");
+        sql_clear.prepare("SELECT * FROM racuni");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_sorodniki->removeRow(0);
+        }
+
+        // start filling the table
+        ui->tbl_sorodniki->insertColumn(0);
+        ui->tbl_sorodniki->insertColumn(1);
+        ui->tbl_sorodniki->insertColumn(2);
+
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+
+        naslov0->setText("ID");
+        naslov1->setText("Tip racuna");
+        naslov2->setText("St. racuna");
+
+        ui->tbl_sorodniki->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_sorodniki->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_sorodniki->setHorizontalHeaderItem(2, naslov2);
+
+        ui->tbl_sorodniki->setColumnWidth(0, 35);
+        ui->tbl_sorodniki->setColumnWidth(1, 70);
+        ui->tbl_sorodniki->setColumnWidth(2, 70);
+
+        // dolocimo ID, po katerem iscemo sorodnike ter ID, ki je trenutno izbran
+        QString id_starsa = "";
+        QString id_izbran = "";
+
+        id_izbran = ui->tbl_racuni->selectedItems().takeAt(0)->text();
+
+        if ( ui->tbl_racuni->selectedItems().takeAt(1)->text().left(6) == "Predra" ) { // predracun, id_izbran == id_starsa
+            id_starsa = id_izbran;
+        }
+        else { // predplacilni racun ali racun
+            QSqlQuery sql_stars;
+            sql_stars.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id_izbran) + "'");
+            sql_stars.exec();
+            if ( sql_stars.next() ) {
+                id_starsa = prevedi(sql_stars.value(sql_stars.record().indexOf("stevilka_starsa")).toString());
+            }
+        }
+
+        QString sql_stavek = "SELECT * FROM racuni WHERE";
+        sql_stavek.append(" stevilka_starsa LIKE '" + pretvori(id_starsa) + "'");
+        sql_stavek.append(" OR id LIKE '" + pretvori(id_starsa) + "'");
+
+        QSqlQuery sql_fill("wid_sorodniki");
+        sql_fill.prepare(sql_stavek);
+        sql_fill.exec();
+
+        int row = 0;
+        while (sql_fill.next()) {
+            // izlocimo trenutno izbran racun
+            if ( id_izbran != prevedi(sql_fill.value(sql_fill.record().indexOf("id")).toString()) ) {
+                ui->tbl_sorodniki->insertRow(row);
+                ui->tbl_sorodniki->setRowHeight(row, 20);
+                int col = 0;
+                int i = 0;
+                QString polja[3] = {"id", "tip_racuna", "stevilka_racuna"};
+
+                while (col <= 2) {
+                    QTableWidgetItem *celica = new QTableWidgetItem;
+                    if ( polja[i] == "id" ) {
+                        celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+                    }
+                    else if ( polja[i] == "tip_racuna" ) {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
+                            celica->setText("Predracun");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "2" ) {
+                            celica->setText("Predplacilo");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "3" ) {
+                            celica->setText("Racun");
+                        }
+                    }
+                    else {
+                        celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                    }
+                    ui->tbl_sorodniki->setItem(row, col, celica);
+                    col++;
+                    i++;
+                }
+                row++;
+            }
+        }
+    }
+    base.close();
+
+}
+
 void wid_racuni::on_tbl_racuni_doubleClicked() {
 
     racun *uredi = new racun;
@@ -447,6 +567,27 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
     QObject::connect(this, SIGNAL(prenos(QString)),
                uredi , SLOT(prejem(QString)));
     prenos(ui->tbl_racuni->selectedItems().takeAt(0)->text()); // ce racun ze obstaja, naprej posljemo id. racuna
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}
+
+void wid_racuni::on_tbl_racuni_clicked() {
+
+    napolni_sorodnike();
+
+}
+
+void wid_racuni::on_tbl_sorodniki_doubleClicked() {
+
+    racun *uredi = new racun;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_sorodniki->selectedItems().takeAt(0)->text()); // ce racun ze obstaja, naprej posljemo id. racuna
     this->disconnect();
 
     // receive signal to refresh table
@@ -529,6 +670,16 @@ void wid_racuni::prejem(QString besedilo) {
     ui->txt_stprojekta->setText(besedilo);
 
     napolni();
+
+}
+
+void wid_racuni::tip(QString besedilo) {
+
+    ui->txt_stprojekta->setText("*");
+
+    ui->cb_racun->setCurrentIndex(ui->cb_racun->findText(besedilo + ") ", Qt::MatchStartsWith));
+
+//    napolni();
 
 }
 
