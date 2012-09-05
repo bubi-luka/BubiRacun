@@ -25,7 +25,6 @@ private slots:
     void on_actionProjekti_triggered();
     void on_actionKuponi_triggered();
     void on_actionVizitka_triggered();
-    void on_actionIzdani_ra_uni_triggered();
     void on_action_asovnice_triggered();
     void on_actionOpombe_pri_ra_unih_triggered();
     void on_actionKilometrina_triggered();
@@ -36,6 +35,9 @@ private slots:
     void varnost_id_changed();
     void on_actionNastavitve_triggered();
     void on_actionAvtomobili_triggered();
+    void on_actionPredra_uni_triggered();
+    void on_actionPredpla_ilni_ra_uni_triggered();
+    void on_actionRa_uni_triggered();
     void keyPressEvent(QKeyEvent *event);
 
     void on_btn_home_clicked();
