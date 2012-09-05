@@ -1404,10 +1404,8 @@ void racun::prejem(QString besedilo) {
 
                 sql_combo.prepare("SELECT * FROM sif_status_racunovodstva WHERE status LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("status_racunovodstva")).toString() + "'");
                 sql_combo.exec();
-                qDebug(prevedi(sql_napolni.value(sql_napolni.record().indexOf("status_racunovodstva")).toString()).toAscii());
                 if ( sql_combo.next() ) {
                     ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString())));
-                    qDebug(prevedi(sql_combo.value(sql_combo.record().indexOf("status")).toString()).toAscii());
                 }
                 sql_combo.clear();
 
