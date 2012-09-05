@@ -366,9 +366,9 @@ void racun::on_btn_racun_clicked() {
                                   "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
                                   "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
                                   "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
-                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna"
-                                  ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, "
+                                  "stevilka_starsa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         sql_vnesi_projekt.bindValue(0, pretvori(""));
         sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
         sql_vnesi_projekt.bindValue(2, pretvori(""));
@@ -388,7 +388,7 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
         sql_vnesi_projekt.bindValue(17, pretvori(""));
         sql_vnesi_projekt.bindValue(18, pretvori(""));
-        sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
+        sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_vnesene_opombe->text()));
         sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
         sql_vnesi_projekt.bindValue(21, podjetje_id);
         sql_vnesi_projekt.bindValue(22, podjetje_kratki);
@@ -415,6 +415,7 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(43, narocnik_naslov);
         sql_vnesi_projekt.bindValue(44, narocnik_posta);
         sql_vnesi_projekt.bindValue(45, narocnik_davcna);
+        sql_vnesi_projekt.bindValue(46, ui->txt_id->text());
         sql_vnesi_projekt.exec();
 
         // poiscemo id pravkar vnesenega zapisa
@@ -1058,6 +1059,7 @@ void racun::on_btn_sprejmi_clicked() {
 
             sql_vnesi_projekt.exec();
 
+            // zapisi stevilko starsa v racun in predplacilni racun
             if ( !ui->rb_predracun->isChecked() && ui->txt_id->text() != "" ) {
                 QSqlQuery sql_poisci_otroke;
                 sql_poisci_otroke.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
