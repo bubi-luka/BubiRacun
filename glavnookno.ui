@@ -204,7 +204,7 @@ border:0;</string>
    </widget>
    <widget class="QMenu" name="menuNastavitve">
     <property name="title">
-     <string>Nastavitve</string>
+     <string>Podatki</string>
     </property>
     <addaction name="actionPodjetje"/>
     <addaction name="actionUporabniki"/>
