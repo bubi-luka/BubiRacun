@@ -200,6 +200,8 @@ border:0;</string>
     <addaction name="separator"/>
     <addaction name="actionProjekti"/>
     <addaction name="separator"/>
+    <addaction name="action_asovnice"/>
+    <addaction name="separator"/>
     <addaction name="actionKuponi"/>
    </widget>
    <widget class="QMenu" name="menuNastavitve">
@@ -210,7 +212,6 @@ border:0;</string>
     <addaction name="actionUporabniki"/>
     <addaction name="actionAvtomobili"/>
     <addaction name="separator"/>
-    <addaction name="action_asovnice"/>
     <addaction name="separator"/>
     <addaction name="actionNastavitve"/>
    </widget>
@@ -282,6 +283,9 @@ border:0;</string>
    </property>
   </action>
   <action name="actionKuponi">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Kuponi</string>
    </property>
