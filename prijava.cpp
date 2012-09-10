@@ -3819,6 +3819,27 @@ void prijava::posodobi_bazo() {
 
                    posodobi_bazo();
                 }
+                if ( stevilka_baze_min == 9 ) {
+
+                    update.prepare("UPDATE sif_storitve SET storitev = ? WHERE storitev LIKE '" + pretvori("Multivariantna analiza") + "'");
+                    update.bindValue(0, pretvori("Multivariatna analiza"));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.10");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.10");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                   posodobi_bazo();
+                }
             }
         }
 
