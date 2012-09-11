@@ -615,10 +615,18 @@ void wid_racuni::on_btn_brisi_clicked() {
     }
     else {
         QSqlQuery sql_brisi;
+
+        // izbrisi opravila
         sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
         sql_brisi.exec();
         sql_brisi.clear();
 
+        // izbrisi zapise
+        sql_brisi.prepare("DELETE FROM opombe WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
+        sql_brisi.exec();
+        sql_brisi.clear();
+
+        // izbrisi racun
         sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
         sql_brisi.exec();
     }

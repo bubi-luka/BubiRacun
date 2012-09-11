@@ -351,20 +351,45 @@ void wid_projekti::on_btn_brisi_clicked() {
         msgbox.exec();
     }
     else {
-        QSqlQuery sql_racun;
-        sql_racun.prepare("SELECT * FROM racuni WHERE stprojekta LIKE '" + pretvori(stprojekta) + "'");
-        sql_racun.exec();
+
         QSqlQuery sql_brisi;
-        while ( sql_racun.next() ) {
-            stracuna = sql_racun.value(sql_racun.record().indexOf("stracuna")).toString();
-            sql_brisi.prepare("DELETE FROM opravila WHERE racun LIKE '" + stracuna + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-        }
-        sql_brisi.prepare("DELETE FROM racuni WHERE stprojekta LIKE '" + stprojekta + "'");
+
+        // izbrisi opravila
+        sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_projekta LIKE '" + id + "'");
         sql_brisi.exec();
         sql_brisi.clear();
 
+        // izbrisi izdane racune
+        sql_brisi.prepare("DELETE FROM racuni WHERE projekt LIKE '" + id + "'");
+        sql_brisi.exec();
+        sql_brisi.clear();
+
+        // izbrisi zapise
+        sql_brisi.prepare("DELETE FROM opombe WHERE stevilka_projekta LIKE '" + id + "'");
+        sql_brisi.exec();
+        sql_brisi.clear();
+
+        // izbrisi potne naloge
+        QSqlQuery sql_potni_nalog;
+        sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE stevilka_projekta LIKE '" + id + "'");
+        sql_potni_nalog.exec();
+        while ( sql_potni_nalog.next() ) {
+            // izbrisi pot
+            QString st_naloga = sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString();
+            sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + st_naloga + "'");
+            sql_brisi.exec();
+            sql_brisi.clear();
+        }
+        sql_brisi.prepare("DELETE FROM potni_nalogi WHERE stevilka_projekta LIKE '" + id + "'");
+        sql_brisi.exec();
+        sql_brisi.clear();
+
+        // izbrisi prejete racune
+        sql_brisi.prepare("DELETE FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + id + "'");
+        sql_brisi.exec();
+        sql_brisi.clear();
+
+        // izbrisi projekt
         sql_brisi.prepare("DELETE FROM projekti WHERE id LIKE '" + id + "'");
         sql_brisi.exec();
     }
