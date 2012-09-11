@@ -13,7 +13,7 @@ wid_podjetje::wid_podjetje(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	napolni();
+    napolni();
 
 }
 
@@ -24,207 +24,219 @@ wid_podjetje::~wid_podjetje()
 
 void wid_podjetje::napolni() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+    int izbranec = 0;
+    int razvrsti = 0;
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
+    if ( ui->tbl_podjetje->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_podjetje->selectedItems().takeAt(0)->row();
+    }
 
-		// clear previous content
-		ui->tbl_podjetje->clear();
+    razvrsti = ui->tbl_podjetje->horizontalHeader()->sortIndicatorSection();
 
-		for (int i = 0; i <= 9; i++) {
-			ui->tbl_podjetje->removeColumn(0);
-		}
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
 
-		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM podjetje");
-		sql_clear.exec();
-		while (sql_clear.next()) {
-			ui->tbl_podjetje->removeRow(0);
-		}
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
 
-		// start filling the table
-		ui->tbl_podjetje->insertColumn(0);
-		ui->tbl_podjetje->insertColumn(1);
-		ui->tbl_podjetje->insertColumn(2);
-		ui->tbl_podjetje->insertColumn(3);
-		ui->tbl_podjetje->insertColumn(4);
-		ui->tbl_podjetje->insertColumn(5);
-		ui->tbl_podjetje->insertColumn(6);
-		ui->tbl_podjetje->insertColumn(7);
-		ui->tbl_podjetje->insertColumn(8);
-		ui->tbl_podjetje->insertColumn(9);
+        // clear previous content
+        ui->tbl_podjetje->clear();
 
-		QTableWidgetItem *naslov0 = new QTableWidgetItem;
-		QTableWidgetItem *naslov1 = new QTableWidgetItem;
-		QTableWidgetItem *naslov2 = new QTableWidgetItem;
-		QTableWidgetItem *naslov3 = new QTableWidgetItem;
-		QTableWidgetItem *naslov4 = new QTableWidgetItem;
-		QTableWidgetItem *naslov5 = new QTableWidgetItem;
-		QTableWidgetItem *naslov6 = new QTableWidgetItem;
-		QTableWidgetItem *naslov7 = new QTableWidgetItem;
-		QTableWidgetItem *naslov8 = new QTableWidgetItem;
-		QTableWidgetItem *naslov9 = new QTableWidgetItem;
+        for (int i = 0; i <= 9; i++) {
+            ui->tbl_podjetje->removeColumn(0);
+        }
 
-		naslov0->setText("ID");
-		naslov1->setText("Naziv");
-		naslov2->setText("Polni naziv");
-		naslov3->setText("Odgovorna oseba");
-		naslov4->setText("Kontaktna oseba");
-		naslov5->setText("Telefon");
-		naslov6->setText("GSM");
-		naslov7->setText("Email");
-		naslov8->setText("Davcna st.");
-		naslov9->setText("Spletna stran");
+        QSqlQuery sql_clear;
+        sql_clear.prepare("SELECT * FROM podjetje");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_podjetje->removeRow(0);
+        }
 
-		ui->tbl_podjetje->setHorizontalHeaderItem(0, naslov0);
-		ui->tbl_podjetje->setHorizontalHeaderItem(1, naslov1);
-		ui->tbl_podjetje->setHorizontalHeaderItem(2, naslov2);
-		ui->tbl_podjetje->setHorizontalHeaderItem(3, naslov3);
-		ui->tbl_podjetje->setHorizontalHeaderItem(4, naslov4);
-		ui->tbl_podjetje->setHorizontalHeaderItem(5, naslov5);
-		ui->tbl_podjetje->setHorizontalHeaderItem(6, naslov6);
-		ui->tbl_podjetje->setHorizontalHeaderItem(7, naslov7);
-		ui->tbl_podjetje->setHorizontalHeaderItem(8, naslov8);
-		ui->tbl_podjetje->setHorizontalHeaderItem(9, naslov9);
+        // start filling the table
+        ui->tbl_podjetje->insertColumn(0);
+        ui->tbl_podjetje->insertColumn(1);
+        ui->tbl_podjetje->insertColumn(2);
+        ui->tbl_podjetje->insertColumn(3);
+        ui->tbl_podjetje->insertColumn(4);
+        ui->tbl_podjetje->insertColumn(5);
+        ui->tbl_podjetje->insertColumn(6);
+        ui->tbl_podjetje->insertColumn(7);
+        ui->tbl_podjetje->insertColumn(8);
+        ui->tbl_podjetje->insertColumn(9);
 
-		ui->tbl_podjetje->setColumnWidth(0, 35);
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+        QTableWidgetItem *naslov3 = new QTableWidgetItem;
+        QTableWidgetItem *naslov4 = new QTableWidgetItem;
+        QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
+        QTableWidgetItem *naslov7 = new QTableWidgetItem;
+        QTableWidgetItem *naslov8 = new QTableWidgetItem;
+        QTableWidgetItem *naslov9 = new QTableWidgetItem;
 
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM podjetje");
-		sql_fill.exec();
+        naslov0->setText("ID");
+        naslov1->setText("Naziv");
+        naslov2->setText("Polni naziv");
+        naslov3->setText("Odgovorna oseba");
+        naslov4->setText("Kontaktna oseba");
+        naslov5->setText("Telefon");
+        naslov6->setText("GSM");
+        naslov7->setText("Email");
+        naslov8->setText("Davcna st.");
+        naslov9->setText("Spletna stran");
 
-		int row = 0;
-		while (sql_fill.next()) {
-			ui->tbl_podjetje->insertRow(row);
-			ui->tbl_podjetje->setRowHeight(row, 20);
-			int col = 0;
-			int i = 0;
-			QString polja[10] = {"id", "ime", "polnoime", "odgovorna", "kontaktna", "telefon", "gsm", "email", "davcna", "url"};
+        ui->tbl_podjetje->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_podjetje->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_podjetje->setHorizontalHeaderItem(2, naslov2);
+        ui->tbl_podjetje->setHorizontalHeaderItem(3, naslov3);
+        ui->tbl_podjetje->setHorizontalHeaderItem(4, naslov4);
+        ui->tbl_podjetje->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_podjetje->setHorizontalHeaderItem(6, naslov6);
+        ui->tbl_podjetje->setHorizontalHeaderItem(7, naslov7);
+        ui->tbl_podjetje->setHorizontalHeaderItem(8, naslov8);
+        ui->tbl_podjetje->setHorizontalHeaderItem(9, naslov9);
 
-			while (col <= 9) {
+        ui->tbl_podjetje->setColumnWidth(0, 35);
 
-				QTableWidgetItem *celica = new QTableWidgetItem;
-				if ( polja[i] == "id" ) {
-					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
-				}
-				else if ( polja[i] == "odgovorna" ) {
-					QSqlQuery sql_oseba;
-					sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
-					sql_oseba.exec();
-					if ( sql_oseba.next() ) {
-						celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
-														prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
-					}
-				}
-				else if ( polja[i] == "kontaktna" ) {
-					QSqlQuery sql_oseba;
-					sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
-					sql_oseba.exec();
-					if ( sql_oseba.next() ) {
-						celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
-														prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
-					}
-				}
-				else {
-					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
-				}
-				ui->tbl_podjetje->setItem(row, col, celica);
+        QSqlQuery sql_fill;
+        sql_fill.prepare("SELECT * FROM podjetje");
+        sql_fill.exec();
 
-				col++;
-				i++;
+        int row = 0;
+        while (sql_fill.next()) {
+            ui->tbl_podjetje->insertRow(row);
+            ui->tbl_podjetje->setRowHeight(row, 20);
+            int col = 0;
+            int i = 0;
+            QString polja[10] = {"id", "ime", "polnoime", "odgovorna", "kontaktna", "telefon", "gsm", "email", "davcna", "url"};
 
-			}
+            while (col <= 9) {
 
-			row++;
+                QTableWidgetItem *celica = new QTableWidgetItem;
+                if ( polja[i] == "id" ) {
+                    celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+                }
+                else if ( polja[i] == "odgovorna" ) {
+                    QSqlQuery sql_oseba;
+                    sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+                    sql_oseba.exec();
+                    if ( sql_oseba.next() ) {
+                        celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
+                                                        prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
+                    }
+                }
+                else if ( polja[i] == "kontaktna" ) {
+                    QSqlQuery sql_oseba;
+                    sql_oseba.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+                    sql_oseba.exec();
+                    if ( sql_oseba.next() ) {
+                        celica->setText(prevedi(sql_oseba.value(sql_oseba.record().indexOf("priimek")).toString()) + " " +
+                                                        prevedi(sql_oseba.value(sql_oseba.record().indexOf("ime")).toString()));
+                    }
+                }
+                else {
+                    celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                }
+                ui->tbl_podjetje->setItem(row, col, celica);
 
-		}
-	}
-	base.close();
+                col++;
+                i++;
+
+            }
+
+            row++;
+
+        }
+    }
+    base.close();
+
+    ui->tbl_podjetje->selectRow(izbranec);
+    ui->tbl_podjetje->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
 void wid_podjetje::on_tbl_podjetje_doubleClicked() {
 
-	podjetje *uredi = new podjetje;
-	uredi->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-			   uredi , SLOT(prejem(QString)));
-	prenos(ui->tbl_podjetje->selectedItems().takeAt(0)->text());
-	this->disconnect();
+    podjetje *uredi = new podjetje;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_podjetje->selectedItems().takeAt(0)->text());
+    this->disconnect();
 
-	// receive signal to refresh table
-	QObject::connect(uredi, SIGNAL(poslji(QString)),
-			   this , SLOT(osvezi(QString)));
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
 
 }
 
 void wid_podjetje::on_btn_brisi_clicked() {
 
-	QString id = ui->tbl_podjetje->selectedItems().takeAt(0)->text();
+    QString id = ui->tbl_podjetje->selectedItems().takeAt(0)->text();
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM podjetje WHERE id LIKE '" + id + "'");
-		sql_brisi.exec();
-	}
-	base.close();
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        QSqlQuery sql_brisi;
+        sql_brisi.prepare("DELETE FROM podjetje WHERE id LIKE '" + id + "'");
+        sql_brisi.exec();
+    }
+    base.close();
 
-	ui->tbl_podjetje->removeRow(ui->tbl_podjetje->selectedItems().takeAt(0)->row());
-	osvezi("podjetje");
+    ui->tbl_podjetje->removeRow(ui->tbl_podjetje->selectedItems().takeAt(0)->row());
+    osvezi("podjetje");
 
 }
 
 void wid_podjetje::on_btn_nov_clicked() {
 
-	podjetje *oknopodjetja = new podjetje;
-	oknopodjetja->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-			   oknopodjetja , SLOT(prejem(QString)));
-	prenos("Novo podjetje");
+    podjetje *oknopodjetja = new podjetje;
+    oknopodjetja->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               oknopodjetja , SLOT(prejem(QString)));
+    prenos("Novo podjetje");
 
 }
 
 void wid_podjetje::osvezi(QString beseda) {
 
-	if ( beseda == "podjetje" ) {
-		napolni();
-	}
+    if ( beseda == "podjetje" ) {
+        napolni();
+    }
 
 }
 
 QString wid_podjetje::pretvori(QString besedilo) {
 
-	return kodiranje().zakodiraj(besedilo);
+    return kodiranje().zakodiraj(besedilo);
 
 }
 
 QString wid_podjetje::prevedi(QString besedilo) {
 
-	return kodiranje().odkodiraj(besedilo);
+    return kodiranje().odkodiraj(besedilo);
 
 }

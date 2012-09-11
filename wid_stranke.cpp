@@ -35,6 +35,15 @@ void wid_stranke::on_cb_pravna_toggled() {
 
 void wid_stranke::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_stranke->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_stranke->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_stranke->horizontalHeader()->sortIndicatorSection();
+
     QString stavek = "SELECT * FROM stranke";
 
     if ( ! ( ui->cb_fizicna->isChecked() && ui->cb_pravna->isChecked() ) ) {
@@ -169,6 +178,9 @@ void wid_stranke::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_stranke->selectRow(izbranec);
+    ui->tbl_stranke->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

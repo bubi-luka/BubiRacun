@@ -150,6 +150,15 @@ void wid_projekti::on_cb_projekt_currentIndexChanged() {
 
 void wid_projekti::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_projekti->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_projekti->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_projekti->horizontalHeader()->sortIndicatorSection();
+
     QString stavek = "";
 
     if ( ui->cb_stranka->currentText() != "" ) {
@@ -313,6 +322,9 @@ void wid_projekti::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_projekti->selectRow(izbranec);
+    ui->tbl_projekti->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

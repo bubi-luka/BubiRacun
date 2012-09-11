@@ -13,7 +13,7 @@ wid_opombepriracunih::wid_opombepriracunih(QWidget *parent) :
 {
     ui->setupUi(this);
 
-		napolni();
+        napolni();
 
 }
 
@@ -24,162 +24,174 @@ wid_opombepriracunih::~wid_opombepriracunih()
 
 void wid_opombepriracunih::napolni() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+    int izbranec = 0;
+    int razvrsti = 0;
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
+    if ( ui->tbl_opombe->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_opombe->selectedItems().takeAt(0)->row();
+    }
 
-		// clear previous content
-		ui->tbl_opombe->clear();
+    razvrsti = ui->tbl_opombe->horizontalHeader()->sortIndicatorSection();
 
-		for (int i = 0; i <= 2; i++) {
-			ui->tbl_opombe->removeColumn(0);
-		}
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
 
-		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM sif_opombe_pri_racunih");
-		sql_clear.exec();
-		while (sql_clear.next()) {
-			ui->tbl_opombe->removeRow(0);
-		}
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
 
-		// start filling the table
-		ui->tbl_opombe->insertColumn(0);
-		ui->tbl_opombe->insertColumn(1);
-		ui->tbl_opombe->insertColumn(2);
+        // clear previous content
+        ui->tbl_opombe->clear();
 
-		QTableWidgetItem *naslov0 = new QTableWidgetItem;
-		QTableWidgetItem *naslov1 = new QTableWidgetItem;
-		QTableWidgetItem *naslov2 = new QTableWidgetItem;
+        for (int i = 0; i <= 2; i++) {
+            ui->tbl_opombe->removeColumn(0);
+        }
 
-		naslov0->setText("ID");
-		naslov1->setText("Naslov");
-		naslov2->setText("Besedilo");
+        QSqlQuery sql_clear;
+        sql_clear.prepare("SELECT * FROM sif_opombe_pri_racunih");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_opombe->removeRow(0);
+        }
 
-		ui->tbl_opombe->setHorizontalHeaderItem(0, naslov0);
-		ui->tbl_opombe->setHorizontalHeaderItem(1, naslov1);
-		ui->tbl_opombe->setHorizontalHeaderItem(2, naslov2);
-		ui->tbl_opombe->setColumnWidth(0, 20);
-		ui->tbl_opombe->setColumnWidth(1, 100);
-		ui->tbl_opombe->setColumnWidth(2, 400);
+        // start filling the table
+        ui->tbl_opombe->insertColumn(0);
+        ui->tbl_opombe->insertColumn(1);
+        ui->tbl_opombe->insertColumn(2);
 
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih");
-		sql_fill.exec();
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
 
-		int row = 0;
-		while (sql_fill.next()) {
-			ui->tbl_opombe->insertRow(row);
-			ui->tbl_opombe->setRowHeight(row, 20);
-			int col = 0;
-			int i = 0;
-			QString polja[3] = {"id", "naslov", "besedilo"};
+        naslov0->setText("ID");
+        naslov1->setText("Naslov");
+        naslov2->setText("Besedilo");
 
-			while (col <= 2) {
+        ui->tbl_opombe->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_opombe->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_opombe->setHorizontalHeaderItem(2, naslov2);
+        ui->tbl_opombe->setColumnWidth(0, 20);
+        ui->tbl_opombe->setColumnWidth(1, 100);
+        ui->tbl_opombe->setColumnWidth(2, 400);
 
-				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
-				ui->tbl_opombe->setItem(row, col, celica);
+        QSqlQuery sql_fill;
+        sql_fill.prepare("SELECT * FROM sif_opombe_pri_racunih");
+        sql_fill.exec();
 
-				col++;
-				i++;
+        int row = 0;
+        while (sql_fill.next()) {
+            ui->tbl_opombe->insertRow(row);
+            ui->tbl_opombe->setRowHeight(row, 20);
+            int col = 0;
+            int i = 0;
+            QString polja[3] = {"id", "naslov", "besedilo"};
 
-			}
+            while (col <= 2) {
 
-			row++;
+                QTableWidgetItem *celica = new QTableWidgetItem;
+                celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                ui->tbl_opombe->setItem(row, col, celica);
 
-		}
-	}
-	base.close();
+                col++;
+                i++;
+
+            }
+
+            row++;
+
+        }
+    }
+    base.close();
+
+    ui->tbl_opombe->selectRow(izbranec);
+    ui->tbl_opombe->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
 void wid_opombepriracunih::on_tbl_opombe_doubleClicked() {
 
-	opombepriracunih *uredi = new opombepriracunih;
-	uredi->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-				 uredi , SLOT(prejem(QString)));
-	prenos(ui->tbl_opombe->selectedItems().takeAt(0)->text());
-	this->disconnect();
+    opombepriracunih *uredi = new opombepriracunih;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+                 uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_opombe->selectedItems().takeAt(0)->text());
+    this->disconnect();
 
-	// receive signal to refresh table
-	QObject::connect(uredi, SIGNAL(poslji(QString)),
-				 this , SLOT(osvezi(QString)));
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+                 this , SLOT(osvezi(QString)));
 
 }
 
 void wid_opombepriracunih::on_btn_brisi_clicked() {
 
-	QString id = ui->tbl_opombe->selectedItems().takeAt(0)->text();
+    QString id = ui->tbl_opombe->selectedItems().takeAt(0)->text();
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
 
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		QSqlQuery sql_brisi;
-		sql_brisi.prepare("DELETE FROM sif_opombe_pri_racunih WHERE id LIKE '" + id + "'");
-		sql_brisi.exec();
-	}
-	base.close();
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        QSqlQuery sql_brisi;
+        sql_brisi.prepare("DELETE FROM sif_opombe_pri_racunih WHERE id LIKE '" + id + "'");
+        sql_brisi.exec();
+    }
+    base.close();
 
-	ui->tbl_opombe->removeRow(ui->tbl_opombe->selectedItems().takeAt(0)->row());
-	osvezi("opombe");
+    ui->tbl_opombe->removeRow(ui->tbl_opombe->selectedItems().takeAt(0)->row());
+    osvezi("opombe");
 
 }
 
 void wid_opombepriracunih::osvezi(QString beseda) {
 
-	if ( beseda == "opombe" ) {
-		napolni();
-	}
+    if ( beseda == "opombe" ) {
+        napolni();
+    }
 
 }
 
 QString wid_opombepriracunih::pretvori(QString besedilo) {
 
-	return kodiranje().zakodiraj(besedilo);
+    return kodiranje().zakodiraj(besedilo);
 
 }
 
 QString wid_opombepriracunih::prevedi(QString besedilo) {
 
-	return kodiranje().odkodiraj(besedilo);
+    return kodiranje().odkodiraj(besedilo);
 
 }
 
 void wid_opombepriracunih::on_btn_nov_clicked() {
 
-	opombepriracunih *uredi = new opombepriracunih;
-	uredi->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-				 uredi , SLOT(prejem(QString)));
-	prenos("Nova opomba");
-	this->disconnect();
+    opombepriracunih *uredi = new opombepriracunih;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+                 uredi , SLOT(prejem(QString)));
+    prenos("Nova opomba");
+    this->disconnect();
 
-	// receive signal to refresh table
-	QObject::connect(uredi, SIGNAL(poslji(QString)),
-				 this , SLOT(osvezi(QString)));
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+                 this , SLOT(osvezi(QString)));
 
 }

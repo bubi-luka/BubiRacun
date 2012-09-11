@@ -166,6 +166,15 @@ void wid_prejetiracuni::on_cb_racunovodstvo_currentIndexChanged() {
 
 void wid_prejetiracuni::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_racuni->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_racuni->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_racuni->horizontalHeader()->sortIndicatorSection();
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -332,6 +341,9 @@ void wid_prejetiracuni::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_racuni->selectRow(izbranec);
+    ui->tbl_racuni->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

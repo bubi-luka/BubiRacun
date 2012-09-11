@@ -108,6 +108,15 @@ void wid_osnovni_pogled::napolni_projekte() {
 
 void wid_osnovni_pogled::napolni_stranke() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_stranke->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_stranke->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_stranke->horizontalHeader()->sortIndicatorSection();
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -238,9 +247,21 @@ void wid_osnovni_pogled::napolni_stranke() {
     }
     base.close();
 
+    ui->tbl_stranke->selectRow(izbranec);
+    ui->tbl_stranke->sortByColumn(razvrsti, Qt::AscendingOrder);
+
 }
 
 void wid_osnovni_pogled::napolni_potne_naloge() {
+
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_potni_nalogi->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_potni_nalogi->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_potni_nalogi->horizontalHeader()->sortIndicatorSection();
 
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
@@ -344,6 +365,9 @@ void wid_osnovni_pogled::napolni_potne_naloge() {
 
     }
     base.close();
+
+    ui->tbl_potni_nalogi->selectRow(izbranec);
+    ui->tbl_potni_nalogi->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
