@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>846</width>
-    <height>714</height>
+    <width>769</width>
+    <height>634</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -368,7 +368,7 @@
       <attribute name="title">
        <string>Časovnice</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_16">
+      <layout class="QHBoxLayout" name="horizontalLayout_17">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_10">
          <item>
@@ -483,6 +483,43 @@
             </property>
            </column>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <item>
+            <spacer name="horizontalSpacer_55">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_brisi_casovnico">
+             <property name="text">
+              <string>Izbriši označeno časovnico</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_54">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -839,14 +876,14 @@
            <item>
             <widget class="QPushButton" name="btn_vnesi_casovnico">
              <property name="text">
-              <string>Vnesi</string>
+              <string>Vnesi oz. popravi časovnico</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="btn_pocisti_casovnico">
              <property name="text">
-              <string>Počisti</string>
+              <string>Počisti vnosno polje</string>
              </property>
             </widget>
            </item>
@@ -1069,8 +1106,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>778</width>
-               <height>515</height>
+               <width>701</width>
+               <height>441</height>
               </rect>
              </property>
             </widget>
@@ -1210,8 +1247,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>778</width>
-               <height>515</height>
+               <width>701</width>
+               <height>441</height>
               </rect>
              </property>
             </widget>
@@ -1334,8 +1371,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>778</width>
-               <height>573</height>
+               <width>701</width>
+               <height>495</height>
               </rect>
              </property>
             </widget>

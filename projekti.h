@@ -80,6 +80,7 @@ private slots:
     void on_btn_pocisti_casovnico_clicked();
     void on_btn_vnesi_casovnico_clicked();
     void osvezi_opravilo(QString opravilo);
+    void on_btn_brisi_casovnico_clicked();
 
     QString pretvori_v_double(QString besedilo);
     QString pretvori_iz_double(QString besedilo);

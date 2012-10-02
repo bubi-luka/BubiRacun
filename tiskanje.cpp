@@ -4165,7 +4165,7 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 
     // logotip podjetja
     QImage logotip(podjetje_logo);
-    painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(73).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
+    painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(95).toImage(), 0, 0, 0, 0, Qt::ColorOnly);
 
     pozicija = 10; // zaradi velikosti logotipa
     // ime in naslov podjetja

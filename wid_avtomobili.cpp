@@ -96,6 +96,15 @@ void wid_avtomobili::on_tbl_avtomobili_doubleClicked() {
 
 void wid_avtomobili::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_avtomobili->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_avtomobili->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_avtomobili->horizontalHeader()->sortIndicatorSection();
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -214,6 +223,9 @@ void wid_avtomobili::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_avtomobili->selectRow(izbranec);
+    ui->tbl_avtomobili->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

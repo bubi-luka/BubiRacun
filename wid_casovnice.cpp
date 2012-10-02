@@ -428,6 +428,16 @@ void wid_casovnice::napolni_sezname() {
 
 void wid_casovnice::napolni() {
 
+
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_casovnice->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_casovnice->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_casovnice->horizontalHeader()->sortIndicatorSection();
+
     QString cb_aktivnost_besedilo = ui->cb_aktivnost->text();
     ui->cb_aktivnost->setText("Vnasam");
 
@@ -713,6 +723,9 @@ void wid_casovnice::napolni() {
     base.close();
 
     ui->cb_aktivnost->setText(cb_aktivnost_besedilo);
+
+    ui->tbl_casovnice->selectRow(izbranec);
+    ui->tbl_casovnice->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

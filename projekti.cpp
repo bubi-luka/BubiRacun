@@ -2259,6 +2259,67 @@ void projekti::on_btn_vnesi_casovnico_clicked() {
 
 }
 
+void projekti::on_btn_brisi_casovnico_clicked() {
+
+    // dolocimo izbrano casovnico
+    QString id_opravilo = ui->tbl_casovnice->selectedItems().takeAt(0)->text();
+    QString datum = ui->tbl_casovnice->selectedItems().takeAt(5)->text();
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "osvezi_casovnice_pri_opravilu");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // prostor za prelomljeno casovnico
+        QString casovnica = "";
+        QString casovnica_levo = "";
+        QString casovnica_desno = "";
+
+        // poglej, ce za izbrano opravilo za izbrani datum ze obstaja casovnica
+        QSqlQuery sql_preveri_opravilo;
+        sql_preveri_opravilo.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(id_opravilo) + "'");
+        sql_preveri_opravilo.exec();
+        if ( sql_preveri_opravilo.next() ) {
+            casovnica = prevedi(sql_preveri_opravilo.value(sql_preveri_opravilo.record().indexOf("casovnice")).toString());
+        }
+
+        // preveri, ali v casovnicah ze obstaja datum
+        if ( casovnica.contains(datum) ) { // datum ze obstaja
+            // razbijemo datum na levo in desno od nasega datuma
+            casovnica_levo = casovnica.left(casovnica.indexOf(datum, 0));
+
+            casovnica = casovnica.right(casovnica.length() - casovnica_levo.length());
+            casovnica_desno = casovnica.right(casovnica.length() - casovnica.indexOf(";", 0) - 1);
+
+            // zdruzimo vse elemente casovnice
+            casovnica = casovnica_levo + casovnica_desno;
+
+        }
+
+        QSqlQuery sql_vnesi_casovnice;
+        sql_vnesi_casovnice.prepare("UPDATE opravila SET casovnice = '" + pretvori(casovnica) + "' WHERE id LIKE '" +
+                                    pretvori(ui->txt_cas_opravilo_2->currentText().left(ui->txt_cas_opravilo_2->currentText().indexOf(") "))) + "'");
+        sql_vnesi_casovnice.exec();
+    }
+    base.close();
+
+    napolni_casovnice_tabelo();
+
+    osvezi_opravilo(id_opravilo);
+
+}
+
 void projekti::osvezi_opravilo(QString opravilo) {
 
     QString app_path = QApplication::applicationDirPath();

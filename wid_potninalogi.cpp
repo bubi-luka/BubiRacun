@@ -274,6 +274,15 @@ void wid_potninalogi::on_cb_prevoz_currentIndexChanged() {
 
 void wid_potninalogi::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_potninalogi->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_potninalogi->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_potninalogi->horizontalHeader()->sortIndicatorSection();
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -610,6 +619,9 @@ void wid_potninalogi::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_potninalogi->selectRow(izbranec);
+    ui->tbl_potninalogi->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 

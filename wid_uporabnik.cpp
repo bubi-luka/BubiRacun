@@ -84,6 +84,15 @@ void wid_uporabnik::on_cb_pogodba_currentIndexChanged() {
 
 void wid_uporabnik::napolni() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_uporabnik->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_uporabnik->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_uporabnik->horizontalHeader()->sortIndicatorSection();
+
     QString stavek = "";
 
     if ( ui->cb_pogodba->currentText() != "" ) {
@@ -222,6 +231,9 @@ void wid_uporabnik::napolni() {
         }
     }
     base.close();
+
+    ui->tbl_uporabnik->selectRow(izbranec);
+    ui->tbl_uporabnik->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
