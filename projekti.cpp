@@ -1853,13 +1853,13 @@ void projekti::napolni_casovnice_tabelo() {
         QTableWidgetItem *naslov5 = new QTableWidgetItem;
         QTableWidgetItem *naslov6 = new QTableWidgetItem;
 
-        naslov0->setText("ID");
-        naslov1->setText("Racun");
-        naslov2->setText("Sklop");
+        naslov0->setText("Datum");
+        naslov1->setText("Opravljenih ur");
+        naslov2->setText("Storitev");
         naslov3->setText("Skupina");
-        naslov4->setText("Storitev");
-        naslov5->setText("Datum");
-        naslov6->setText("Opravljenih ur");
+        naslov4->setText("Sklop");
+        naslov5->setText("Racun");
+        naslov6->setText("ID");
 
         ui->tbl_casovnice->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_casovnice->setHorizontalHeaderItem(1, naslov1);
@@ -1898,7 +1898,7 @@ void projekti::napolni_casovnice_tabelo() {
                 ui->tbl_casovnice->setRowHeight(row, 20);
                 int col = 0;
                 int i = 0;
-                QString polja[7] = {"id", "racun", "opravilo_sklop", "opravilo_skupina", "opravilo_storitev", "datum", "ure"};
+                QString polja[7] = {"datum", "ure", "opravilo_storitev", "opravilo_skupina", "opravilo_sklop", "racun", "id"};
 
                 while (col <= 6) {
 
