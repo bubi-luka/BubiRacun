@@ -434,6 +434,7 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
         int st_predracunov = 0;
         double znesek_predracunov = 0.0;
+        double znesek_avansa_predracunov = 0.0;
 
         int st_predplacilnih_racunov = 0;
         double znesek_predplacilnih_racunov = 0.0;
@@ -447,6 +448,7 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
         while ( sql_racuni.next() ) {
 
             double znesek = 0.0;
+            double avans = 0.0;
 
             QSqlQuery sql_opravila;
             sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_racuni.value(sql_racuni.record().indexOf("id")).toString() + "'");
@@ -455,17 +457,21 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
                 // znesek brez DDV - zelja narocnika
                 znesek += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_koncni")).toString()).toDouble();
             }
+            avans = prevedi(sql_racuni.value(sql_racuni.record().indexOf("avans")).toString()).toDouble();
 
             // predracuni
             if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "1" ) {
-                st_predracunov++;
-                znesek_predracunov += znesek;
-
+                if ( sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString() != "Zvripnzj" ) {
+                    st_predracunov++;
+                    znesek_predracunov += znesek;
+                    znesek_avansa_predracunov += avans;
+                    qDebug(prevedi(sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString()).toAscii());
+                }
             }
             // predplacilni racuni
             else if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "2" ) {
                 st_predplacilnih_racunov++;
-                znesek_predplacilnih_racunov += znesek;
+                znesek_predplacilnih_racunov += avans;
 
             }
             // racuni
@@ -478,6 +484,7 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
         ui->txt_predracuni->setText(QString::number(st_predracunov, 10));
         ui->txt_znesek_predracunov->setText(QString::number(znesek_predracunov, 'f', 2).replace(".", ",") + " EUR");
+        ui->txt_avans_predracuna->setText(QString::number(znesek_avansa_predracunov, 'f', 2).replace(".", ",") + " EUR");
 
         ui->txt_predplacilni->setText(QString::number(st_predplacilnih_racunov, 10));
         ui->txt_znesek_predplacilnih->setText(QString::number(znesek_predplacilnih_racunov, 'f', 2).replace(".", ",") + " EUR");
