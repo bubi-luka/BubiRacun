@@ -15,6 +15,12 @@ public:
     explicit Vizitka(QWidget *parent = 0);
     ~Vizitka();
 
+private slots:
+    void insert_base();
+    void insert_licence();
+    void insert_news();
+    void insert_program_info();
+
 private:
     Ui::Vizitka *ui;
 };

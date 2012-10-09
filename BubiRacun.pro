@@ -152,7 +152,10 @@ OTHER_FILES += \
     style.css \
     sif_nastavitve.csv \
     sif_banke.csv \
-    sif_koda_namena.csv
+    sif_koda_namena.csv \
+    licence.txt \
+    news.txt \
+    readme.txt
 
 
 
