@@ -9,6 +9,7 @@
 #include "datum.h"
 #include "stranke.h"
 #include "potninalogi.h"
+#include "prejetiracuni.h"
 
 wid_osnovni_pogled::wid_osnovni_pogled(QWidget *parent) :
     QWidget(parent),
@@ -373,6 +374,15 @@ void wid_osnovni_pogled::napolni_potne_naloge() {
 
 void wid_osnovni_pogled::napolni_prejete_racune() {
 
+    int izbranec = 0;
+    int razvrsti = 0;
+
+    if ( ui->tbl_prejeti_racuni->selectedItems().count() > 0 ) {
+        izbranec = ui->tbl_prejeti_racuni->selectedItems().takeAt(0)->row();
+    }
+
+    razvrsti = ui->tbl_prejeti_racuni->horizontalHeader()->sortIndicatorSection();
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -389,13 +399,14 @@ void wid_osnovni_pogled::napolni_prejete_racune() {
     else {
         // baza je odprta
 
-        QString datum = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
+        // podatki v vrsticah
+        QString datum1 = "." + QDate::currentDate().toString("MM") + "." + QDate::currentDate().toString("yyyy");
 
         int st_prejetih_racunov = 0;
         double znesek_prejetih_racunov = 0.0;
 
         QSqlQuery sql_prejeti_racuni;
-        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%" + datum + "%'");
+        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE rok_placila LIKE '%" + datum1 + "%'");
         sql_prejeti_racuni.exec();
         while ( sql_prejeti_racuni.next() ) {
             st_prejetih_racunov++;
@@ -407,8 +418,102 @@ void wid_osnovni_pogled::napolni_prejete_racune() {
         ui->txt_prejeti_racuni->setText(QString::number(st_prejetih_racunov, 10));
         ui->txt_znesek_prejetih_racunov->setText(QString::number(znesek_prejetih_racunov, 'f', 2).replace(".", ",") + " EUR");
 
+        // podatki v tabeli
+        ui->tbl_prejeti_racuni->clear();
+
+        for (int i = 0; i <= 4; i++) {
+            ui->tbl_prejeti_racuni->removeColumn(0);
+        }
+
+        QSqlQuery sql_clear;
+        sql_clear.prepare("SELECT * FROM prejeti_racuni");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_prejeti_racuni->removeRow(0);
+        }
+
+        // start filling the table
+        ui->tbl_prejeti_racuni->insertColumn(0);
+        ui->tbl_prejeti_racuni->insertColumn(1);
+        ui->tbl_prejeti_racuni->insertColumn(2);
+        ui->tbl_prejeti_racuni->insertColumn(3);
+
+        // set proper width to the first four columns
+
+        ui->tbl_prejeti_racuni->setColumnWidth(0, 0);
+        ui->tbl_prejeti_racuni->setColumnWidth(1, 100);
+        ui->tbl_prejeti_racuni->setColumnWidth(2, 150);
+        ui->tbl_prejeti_racuni->setColumnWidth(3, 150);
+
+        // start filling the table
+        QStringList naslovi;
+        naslovi.append("ID");
+        naslovi.append("Naziv podjetja");
+        naslovi.append("Rok placila");
+        naslovi.append("Status racunovodstva");
+
+        ui->tbl_prejeti_racuni->setHorizontalHeaderLabels(naslovi);
+
+        datum *delegate = new datum(this);
+        ui->tbl_prejeti_racuni->setItemDelegateForColumn(2, delegate);
+
+        int row = 0;
+
+        sql_prejeti_racuni.clear();
+        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE rok_placila LIKE '%" + datum1 + "%' AND status_placila NOT LIKE '" + pretvori("Pla") + "%'");
+        sql_prejeti_racuni.exec();
+        while ( sql_prejeti_racuni.next() ) {
+
+            // dodaj novo vrstico v tabelo
+            ui->tbl_prejeti_racuni->insertRow(row);
+            ui->tbl_prejeti_racuni->setRowHeight(row, 20);
+
+            int col = 0;
+            int i = 0;
+
+            QString polja[4] = {"id", "izdajatelj_kratki", "rok_placila", "status_racunovodstva"};
+
+            // napolni stolpce
+            while ( col < 4 ) {
+
+                QTableWidgetItem *celica = new QTableWidgetItem;
+
+                // vrstice z rokom placila danasnji datum napravi odebeljene
+                if ( QDate::currentDate().toString("dd.MM.yyyy") == prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf("rok_placila")).toString()) ) {
+                    QFont pisava;
+                    pisava.setBold(true);
+                    celica->setFont(pisava);
+                }
+
+                if ( polja[i] == "id" ) {
+                    celica->setData(Qt::DisplayRole, prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf(polja[i])).toString()).toInt());
+                }
+                else if ( polja[i] == "rok_placila" ) {
+                    celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+                }
+                else {
+                    celica->setText(prevedi(sql_prejeti_racuni.value(sql_prejeti_racuni.record().indexOf(polja[i])).toString()));
+                }
+
+                if ( celica->text() != "" ) {
+                    ui->tbl_prejeti_racuni->setItem(row, col, celica);
+                }
+
+                col++;
+                i++;
+
+            }
+
+
+            row++;
+
+        }
+
     }
     base.close();
+
+    ui->tbl_prejeti_racuni->selectRow(izbranec);
+    ui->tbl_prejeti_racuni->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
@@ -461,11 +566,10 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
             // predracuni
             if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "1" ) {
-                if ( sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString() != "Zvripnzj" ) {
+                if ( sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString() != pretvori("Potrjen") ) {
                     st_predracunov++;
                     znesek_predracunov += znesek;
                     znesek_avansa_predracunov += avans;
-                    qDebug(prevedi(sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString()).toAscii());
                 }
             }
             // predplacilni racuni
@@ -527,6 +631,21 @@ void wid_osnovni_pogled::on_tbl_potni_nalogi_doubleClicked() {
 
 }
 
+void wid_osnovni_pogled::on_tbl_prejeti_racuni_doubleClicked() {
+
+    prejetiracuni *uredi = new prejetiracuni;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos(ui->tbl_prejeti_racuni->selectedItems().takeAt(0)->text());
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}
+
 void wid_osnovni_pogled::osvezi(QString beseda) {
 
     if ( beseda == "stranke" ) {
@@ -534,6 +653,9 @@ void wid_osnovni_pogled::osvezi(QString beseda) {
     }
     else if ( beseda == "potninalog" ) {
         napolni_potne_naloge();
+    }
+    else if ( beseda == "racun" ) {
+        napolni_prejete_racune();
     }
 
 }

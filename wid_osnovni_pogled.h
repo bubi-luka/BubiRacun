@@ -24,6 +24,7 @@ private slots:
 
     void on_tbl_stranke_doubleClicked();
     void on_tbl_potni_nalogi_doubleClicked();
+    void on_tbl_prejeti_racuni_doubleClicked();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

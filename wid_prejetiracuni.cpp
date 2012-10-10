@@ -372,7 +372,7 @@ void wid_prejetiracuni::on_btn_brisi_clicked() {
     base.close();
 
     ui->tbl_racuni->removeRow(ui->tbl_racuni->selectedItems().takeAt(0)->row());
-    osvezi("prejetiracuniracuni");
+    osvezi("racun");
 
 }
 
