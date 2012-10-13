@@ -2693,6 +2693,7 @@ void prijava::posodobi_bazo() {
         QString stevilka_programa = "";
         int zaporedna_stevilka_stevilke_programa = 0;
         int zaporedna_stevilka_stevilke_baze = 0;
+        int zaporedna_stevilka_datuma_spremembe = 0;
         int stevilka_baze_max = 0;
         int stevilka_baze_mid = 0;
         int stevilka_baze_min = 0;
@@ -2713,6 +2714,9 @@ void prijava::posodobi_bazo() {
                 stevilka_baze_mid = stevilka_baze.left(stevilka_baze.indexOf(".", 0)).toInt();
                 stevilka_baze = stevilka_baze.right(stevilka_baze.length() - stevilka_baze.indexOf(".", 0) - 1);
                 stevilka_baze_min = stevilka_baze.left(stevilka_baze.indexOf(".", 0)).toInt();
+            }
+            else if ( podatki.value(podatki.record().indexOf("parameter")).toString() == "Datum spremembe" ) {
+                zaporedna_stevilka_datuma_spremembe = podatki.value(podatki.record().indexOf("razlicica")).toInt();
             }
         }
 
@@ -3835,6 +3839,56 @@ void prijava::posodobi_bazo() {
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.10");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                   posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 10 ) {
+
+                    QSqlQuery vnesi;
+                    vnesi.prepare("INSERT INTO glavna (parameter, vrednost, opis, razlicica) "
+                                  "VALUES (?, ?, ?, ?)");
+                    vnesi.bindValue(0, "Ime programa");
+                    vnesi.bindValue(1, "BubiRacun");
+                    vnesi.bindValue(2, "Prikaze uradno in polno ime programa.");
+                    vnesi.bindValue(3, "1");
+                    vnesi.exec();
+                    vnesi.clear();
+
+                    vnesi.prepare("INSERT INTO glavna (parameter, vrednost, opis, razlicica) "
+                                  "VALUES (?, ?, ?, ?)");
+                    vnesi.bindValue(0, "Avtor programa");
+                    vnesi.bindValue(1, "Luka Oman");
+                    vnesi.bindValue(2, "Prikaze ime in priimek avtorja programa in nosilca avtorskih pravic.");
+                    vnesi.bindValue(3, "1");
+                    vnesi.exec();
+                    vnesi.clear();
+
+                    vnesi.prepare("INSERT INTO glavna (parameter, vrednost, opis, razlicica) "
+                                  "VALUES (?, ?, ?, ?)");
+                    vnesi.bindValue(0, "Datum spremembe");
+                    vnesi.bindValue(1, "09.10.2012");
+                    vnesi.bindValue(2, "Prikaze datum zadnje spremembe programa ali programske spremembe baze v formatu DD.MM.YYYY.");
+                    vnesi.bindValue(3, "0");
+                    vnesi.exec();
+                    vnesi.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.11");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.11");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "10.10.2012");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
                     update.exec();
                     update.clear();
 
