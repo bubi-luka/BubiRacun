@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
+#include <QClipboard>
+#include <QTextEdit>
 
 #include "wid_potninalogi.h"
 #include "ui_wid_potninalogi.h"
@@ -934,5 +936,51 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     zakljucek.exec();
 
     napolni();
+
+}
+
+void wid_potninalogi::on_btn_kopiraj_clicked() {
+
+    QClipboard *odlozisce = QApplication::clipboard();
+
+    QModelIndexList selectedList = ui->tbl_potninalogi->selectionModel()->selectedRows();
+
+    QString html_besedilo = "<table>";
+    html_besedilo += "<tr>";
+    html_besedilo += "<th>ID</th>";
+    html_besedilo += "<th>Prejemnik</th>";
+    html_besedilo += "<th>St. naloga</th>";
+    html_besedilo += "<th>Datum izdaje</th>";
+    html_besedilo += "<th>Namen</th>";
+    html_besedilo += "<th>Naziv ciljnega podjetja</th>";
+    html_besedilo += "<th>Kraj prihoda</th>";
+    html_besedilo += "<th>Prevozno sredstvo</th>";
+    html_besedilo += "<th>St. kilometrov</th>";
+    html_besedilo += "<th>St. dnevnic</th>";
+    html_besedilo += "<th>Ostali stroski</th>";
+    html_besedilo += "<th>Skupaj stroski</th>";
+    html_besedilo += "</tr>";
+    for( int i = 0; i < selectedList.count(); i++) {
+        html_besedilo += "<tr>";
+        for ( int a = 0; a < 12; a++ ) {
+                html_besedilo += "<td>";
+                html_besedilo += ui->tbl_potninalogi->item(selectedList.at(i).row(), a)->text();
+                html_besedilo += "</td>";
+        }
+        html_besedilo += "</tr>";
+    }
+
+    html_besedilo += "</table>";
+
+    QTextEdit *textedit = new QTextEdit;
+
+    textedit->setHtml(html_besedilo);
+    html_besedilo = textedit->toHtml();
+
+    odlozisce->clear();
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("text/html", html_besedilo.toUtf8());
+    odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
 
 }
