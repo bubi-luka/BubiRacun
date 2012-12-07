@@ -145,7 +145,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>583</height>
+         <height>580</height>
         </rect>
        </property>
       </widget>
@@ -159,7 +159,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -180,7 +180,7 @@ border:0;</string>
    </widget>
    <widget class="QMenu" name="menuIzpisi">
     <property name="title">
-     <string>Izpisi</string>
+     <string>Pregledi</string>
     </property>
     <addaction name="actionPrihodek"/>
     <addaction name="actionIzdatek"/>
