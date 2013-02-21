@@ -81,6 +81,9 @@ wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
             }
             sql_napolni.clear();
 
+            // privzeto izberi trenutno leto
+            ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
+
             // filtriraj po izdajatelju racuna
             ui->cb_izdajatelj->addItem("");
             sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE avtor LIKE '" + pretvori(vApp->id()) + "' ORDER BY izdajatelj_kratki ASC");

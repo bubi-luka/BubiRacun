@@ -83,6 +83,9 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
             }
             sql_napolni.clear();
 
+            // privzeto izberi trenutno leto
+            ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
+
             // filtriraj po namenu
             QString s_povratek = "";
             ui->cb_namen->addItem("");

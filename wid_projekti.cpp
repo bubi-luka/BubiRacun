@@ -86,6 +86,9 @@ wid_projekti::wid_projekti(QWidget *parent) :
             }
             sql_napolni.clear();
 
+            // privzeto izberi trenutno leto
+            ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
+
             ui->cb_projekt->addItem("");
             sql_napolni.prepare("SELECT * FROM sif_status_projekta");
             sql_napolni.exec();

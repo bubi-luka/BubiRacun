@@ -412,6 +412,8 @@ void wid_casovnice::napolni_sezname() {
     ui->txt_leto->setModel(proxy);
     ui->txt_leto->model()->sort(0, Qt::AscendingOrder);
 
+    // privzeto izberi trenutno leto
+    ui->txt_leto->setCurrentIndex(ui->txt_leto->findText(QDate::currentDate().toString("yyyy")));
 
     // izberi trenuten datum
     ui->txt_leto->setCurrentIndex(ui->txt_leto->findText(QDate::currentDate().toString("yyyy")));

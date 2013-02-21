@@ -93,6 +93,9 @@ wid_racuni::wid_racuni(QWidget *parent) :
             // razvrsti
             ui->cb_leto->model()->sort(0);
 
+            // privzeto izberi trenutno leto
+            ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
+
             // filtriraj po statusu placila
             ui->cb_placilo->addItem("");
             sql_napolni.prepare("SELECT * FROM sif_status_placila");
