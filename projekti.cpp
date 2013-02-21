@@ -1897,7 +1897,7 @@ void projekti::napolni_casovnice_tabelo() {
                 ui->tbl_casovnice->insertRow(row);
                 ui->tbl_casovnice->setRowHeight(row, 20);
                 int col = 0;
-            //    int i = 0;
+                i = 0;
                 QString polja[7] = {"datum", "ure", "opravilo_storitev", "opravilo_skupina", "opravilo_sklop", "racun", "id"};
 
                 while (col <= 6) {

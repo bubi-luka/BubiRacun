@@ -1,5 +1,7 @@
 #include <QtSql>
 #include <QMessageBox>
+#include <QClipboard>
+#include <QTextEdit>
 
 #include "wid_stranke.h"
 #include "ui_wid_stranke.h"
@@ -313,5 +315,49 @@ QString wid_stranke::pretvori(QString besedilo) {
 QString wid_stranke::prevedi(QString besedilo) {
 
     return kodiranje().odkodiraj(besedilo);
+
+}
+
+void wid_stranke::on_btn_kopiraj_clicked() {
+
+    QClipboard *odlozisce = QApplication::clipboard();
+
+    QModelIndexList selectedList = ui->tbl_stranke->selectionModel()->selectedRows();
+
+    QString html_besedilo = "<table>";
+    html_besedilo += "<tr>";
+    html_besedilo += "<th>ID</th>";
+    html_besedilo += "<th>Ime/Naziv</th>";
+    html_besedilo += "<th>Priimek/Polni naziv</th>";
+    html_besedilo += "<th>Telefon</th>";
+    html_besedilo += "<th>GSM</th>";
+    html_besedilo += "<th>Elektronski naslov</th>";
+    html_besedilo += "<th>Izobrazevalna ustanova</th>";
+    html_besedilo += "<th>Tip stranke</th>";
+    html_besedilo += "</tr>";
+
+    for( int i = 0; i < selectedList.count(); i++) {
+        html_besedilo += "<tr>";
+        for ( int a = 0; a < 8; a++ ) {
+            html_besedilo += "<td>";
+            html_besedilo += ui->tbl_stranke->item(selectedList.at(i).row(), a)->text();
+            html_besedilo += "</td>";
+
+        }
+        html_besedilo += "</tr>";
+    }
+
+    html_besedilo += "</table>";
+
+    QTextEdit *textedit = new QTextEdit;
+
+    textedit->setHtml(html_besedilo);
+    html_besedilo = textedit->toHtml();
+
+    odlozisce->clear();
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("text/html", html_besedilo.toUtf8());
+    odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
 
 }

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>829</width>
+    <width>858</width>
     <height>709</height>
    </rect>
   </property>
@@ -107,6 +107,13 @@
       <widget class="QPushButton" name="btn_prestevilci">
        <property name="text">
         <string>Preštevilči</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_kopiraj">
+       <property name="text">
+        <string>Copy - Paste</string>
        </property>
       </widget>
      </item>
