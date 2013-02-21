@@ -69,6 +69,7 @@ private slots:
     void on_txt_popust_komb2_textChanged(QString besedilo);
     void on_txt_popust_stalna_stranka_textChanged(QString besedilo);
     void on_txt_popust_kupon_textChanged(QString besedilo);
+    void on_txt_popust_akcija_textChanged(QString besedilo);
 
     void on_txt_popust_fb1_editingFinished();
     void on_txt_popust_fb2_editingFinished();
