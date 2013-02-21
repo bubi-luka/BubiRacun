@@ -105,7 +105,7 @@ void wid_poslovanje::napolni_mesec() {
         QString trenutno_leto = ui->txt_leto->currentText();
 
         QString meseci[12] = {"01", "02", "03", "04", "05", "06",
-                                                            "07", "08", "09", "10", "11", "12"};
+                              "07", "08", "09", "10", "11", "12"};
 
         QString vrednost_izdanih[12];
         QString vrednost_prejetih[12];
@@ -140,8 +140,9 @@ void wid_poslovanje::napolni_mesec() {
             QSqlQuery sql_avans;
             double znesek_avans = 0.0;
             double znesek_ostanek = 0.0;
-            sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3' AND datum_placila_avansa LIKE '%." +
-                                                pretvori("01." + meseci[b] + "." + trenutno_leto).right(7) + "'");
+            sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila_avansa LIKE '%." +
+                                                pretvori("01." + meseci[b] + "." + trenutno_leto).right(7) + "'" +
+                                                " AND status_racuna LIKE '" + pretvori("Potrjen") + "'");
             sql_avans.exec();
             while ( sql_avans.next() ) {
                 znesek_avans += pretvori_v_double(prevedi(sql_avans.value(sql_avans.record().indexOf("avans")).toString())).toDouble();
@@ -842,7 +843,9 @@ void wid_poslovanje::napolni_leto() {
             double znesek_ostanek = 0.0;
 
             QSqlQuery sql_avans;
-            sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3' AND datum_placila LIKE '%." + pretvori("01.01." + leta.at(i)).right(4) + "'");
+            sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila LIKE '%." +
+                              pretvori("01.01." + leta.at(i)).right(4) + "'" +
+                              " AND status_racuna LIKE '" + pretvori("Potrjen") + "'");
             sql_avans.exec();
             while ( sql_avans.next() ) {
                 znesek_avans += pretvori_v_double(prevedi(sql_avans.value(sql_avans.record().indexOf("avans")).toString())).toDouble();
@@ -988,8 +991,9 @@ void wid_poslovanje::napolni_skupni() {
                 // izdani racuni
                 // poisci, kateri avansi so bili placani v danem mesecu
                 QSqlQuery sql_avans;
-                sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3' AND datum_placila_avansa LIKE '%." +
-                                                    pretvori("01." + meseci[b] + "." + leta.at(c)).right(7) + "'");
+                sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila_avansa LIKE '%." +
+                                                    pretvori("01." + meseci[b] + "." + leta.at(c)).right(7) + "'" +
+                                                    " AND status_racuna LIKE '" + pretvori("Potrjen") + "'");
                 sql_avans.exec();
                 while ( sql_avans.next() ) {
                     znesek_avans += pretvori_v_double(prevedi(sql_avans.value(sql_avans.record().indexOf("avans")).toString())).toDouble();
