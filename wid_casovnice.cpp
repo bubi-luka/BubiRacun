@@ -83,34 +83,25 @@ QString wid_casovnice::pretvori_iz_double(QString besedilo) {
 void wid_casovnice::on_cb_aktivnost_toggled() {
 
     napolni_sezname();
+    napolni();
 
 }
 
 void wid_casovnice::on_txt_leto_currentIndexChanged() {
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
-    else if ( ui->txt_leto->currentText() == "" ) {
-        ui->txt_mesec->setCurrentIndex(ui->txt_mesec->findText(""));
-        napolni();
-    }
+    napolni();
 
 }
 
 void wid_casovnice::on_txt_mesec_currentIndexChanged() {
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
+    napolni();
 
 }
 
 void wid_casovnice::on_txt_avtor_currentIndexChanged() {
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
+    napolni();
 
 }
 
@@ -147,9 +138,7 @@ void wid_casovnice::on_txt_stranka_currentIndexChanged() {
     }
     base.close();
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
+    napolni();
 
 }
 
@@ -192,17 +181,13 @@ void wid_casovnice::on_txt_projekt_currentIndexChanged() {
     }
     base.close();
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
+    napolni();
 
 }
 
 void wid_casovnice::on_txt_racun_currentIndexChanged() {
 
-    if ( ui->txt_leto->currentText() != "" && ui->txt_mesec->currentText() != "" ) {
-        napolni();
-    }
+    napolni();
 
 }
 
@@ -520,6 +505,9 @@ void wid_casovnice::napolni() {
 
         QSqlQuery racuni;
         QString stavek_racuni = "SELECT * FROM racuni WHERE tip_racuna LIKE '3'";
+        if ( ui->txt_avtor->currentText() != "" ) {
+            stavek_racuni += " AND avtor_oseba LIKE '" + pretvori(ui->txt_avtor->currentText().left(ui->txt_avtor->currentText().indexOf(") "))) + "'";
+        }
         if ( ui->txt_projekt->currentText() != "" ) {
             stavek_racuni += " AND projekt LIKE '" + pretvori(ui->txt_projekt->currentText().left(ui->txt_projekt->currentText().indexOf(") "))) + "'";
         }
@@ -537,7 +525,8 @@ void wid_casovnice::napolni() {
         while ( racuni.next() ) {
 
             QSqlQuery vnesi;
-            vnesi.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + racuni.value(racuni.record().indexOf("id")).toString() + "'");
+            vnesi.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + racuni.value(racuni.record().indexOf("id")).toString() + "'" +
+                          " AND casovnice LIKE '%" + ui->txt_leto->currentText() + "." + ui->txt_mesec->currentText().left(2) + "%'");
             vnesi.exec();
             while ( vnesi.next() ) {
                 ui->tbl_casovnice->insertRow(row);
