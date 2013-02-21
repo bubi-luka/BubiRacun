@@ -405,8 +405,8 @@ void wid_osnovni_pogled::napolni_prejete_racune() {
         int st_prejetih_racunov = 0;
         double znesek_prejetih_racunov = 0.0;
 
-        QSqlQuery sql_prejeti_racuni;
-        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE rok_placila LIKE '%" + datum1 + "%'");
+        QSqlQuery sql_prejeti_racuni; // na zeljo narocnika sesteje vse, prejete v tekocem mesecu
+        sql_prejeti_racuni.prepare("SELECT * FROM prejeti_racuni WHERE datum_prejema LIKE '%" + datum1 + "%'");
         sql_prejeti_racuni.exec();
         while ( sql_prejeti_racuni.next() ) {
             st_prejetih_racunov++;
