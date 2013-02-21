@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QSortFilterProxyModel>
+#include <QClipboard>
+#include <QTextEdit>
 
 #include "wid_racuni.h"
 #include "ui_wid_racuni.h"
@@ -658,6 +660,53 @@ void wid_racuni::on_btn_brisi_clicked() {
 
     ui->tbl_racuni->removeRow(ui->tbl_racuni->selectedItems().takeAt(0)->row());
     osvezi("racuni");
+
+}
+
+void wid_racuni::on_btn_kopiraj_clicked() {
+
+    QClipboard *odlozisce = QApplication::clipboard();
+
+    QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+    QString html_besedilo = "<table>";
+    html_besedilo += "<tr>";
+    html_besedilo += "<th>ID</th>";
+    html_besedilo += "<th>Tip racuna</th>";
+    html_besedilo += "<th>Stevilka racuna</th>";
+    html_besedilo += "<th>Datum izdaje</th>";
+    html_besedilo += "<th>Stranka</th>";
+    html_besedilo += "<th>Projekt</th>";
+    html_besedilo += "<th>Znesek za placilo</th>";
+    html_besedilo += "<th>Se placati</th>";
+    html_besedilo += "<th>Status placila</th>";
+    html_besedilo += "<th>Status racunovodstva</th>";
+    html_besedilo += "</tr>";
+
+    for( int i = 0; i < selectedList.count(); i++) {
+        html_besedilo += "<tr>";
+        for ( int a = 0; a < 10; a++ ) {
+            html_besedilo += "<td>";
+            html_besedilo += ui->tbl_racuni->item(selectedList.at(i).row(), a)->text();
+            html_besedilo += "</td>";
+
+        }
+        html_besedilo += "</tr>";
+    }
+
+    html_besedilo += "</table>";
+
+    QTextEdit *textedit = new QTextEdit;
+
+    textedit->setHtml(html_besedilo);
+    html_besedilo = textedit->toHtml();
+
+    odlozisce->clear();
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("text/html", html_besedilo.toUtf8());
+    odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
+
 
 }
 

@@ -32,6 +32,7 @@ private slots:
     void on_tbl_sorodniki_doubleClicked();
     void on_btn_nov_clicked();
     void on_btn_brisi_clicked();
+    void on_btn_kopiraj_clicked();
 
     void osvezi(QString beseda);
     void prejem(QString besedilo);
