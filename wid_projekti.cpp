@@ -1,5 +1,7 @@
 #include <QtSql>
 #include <QMessageBox>
+#include <QClipboard>
+#include <QTextEdit>
 
 #include "wid_projekti.h"
 #include "ui_wid_projekti.h"
@@ -444,5 +446,47 @@ QString wid_projekti::pretvori(QString besedilo) {
 QString wid_projekti::prevedi(QString besedilo) {
 
     return kodiranje().odkodiraj(besedilo);
+
+}
+void wid_projekti::on_btn_kopiraj_clicked() {
+
+    QClipboard *odlozisce = QApplication::clipboard();
+
+    QModelIndexList selectedList = ui->tbl_projekti->selectionModel()->selectedRows();
+
+    QString html_besedilo = "<table>";
+    html_besedilo += "<tr>";
+    html_besedilo += "<th>ID</th>";
+    html_besedilo += "<th>St. projekta</th>";
+    html_besedilo += "<th>Stranka</th>";
+    html_besedilo += "<th>Ime projekta</th>";
+    html_besedilo += "<th>Datum pricetka</th>";
+    html_besedilo += "<th>Datum zakljucka</th>";
+    html_besedilo += "<th>Status projekta</th>";
+    html_besedilo += "</tr>";
+
+    for( int i = 0; i < selectedList.count(); i++) {
+        html_besedilo += "<tr>";
+        for ( int a = 0; a < 7; a++ ) {
+            html_besedilo += "<td>";
+            html_besedilo += ui->tbl_projekti->item(selectedList.at(i).row(), a)->text();
+            html_besedilo += "</td>";
+
+        }
+        html_besedilo += "</tr>";
+    }
+
+    html_besedilo += "</table>";
+
+    QTextEdit *textedit = new QTextEdit;
+
+    textedit->setHtml(html_besedilo);
+    html_besedilo = textedit->toHtml();
+
+    odlozisce->clear();
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("text/html", html_besedilo.toUtf8());
+    odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
 
 }

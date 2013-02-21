@@ -24,6 +24,8 @@ private slots:
 	void on_tbl_projekti_doubleClicked();
 	void on_btn_nov_clicked();
 	void on_btn_brisi_clicked();
+    void on_btn_kopiraj_clicked();
+
 	void osvezi(QString beseda);
 	void napolni();
 	QString pretvori(QString besedilo);
