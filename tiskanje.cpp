@@ -3609,7 +3609,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                 // popusti
                 double popusti = 0.0;
                 popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_fb1")).toString())).toDouble();
-                popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_f2")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_fb2")).toString())).toDouble();
                 popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_komb1")).toString())).toDouble();
                 popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_komb2")).toString())).toDouble();
                 popusti += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("popust_stranka")).toString())).toDouble();

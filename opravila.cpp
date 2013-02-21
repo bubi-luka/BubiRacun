@@ -1948,6 +1948,12 @@ void opravila::on_txt_popust_kupon_textChanged(QString besedilo) {
 
 }
 
+void opravila::on_txt_popust_akcija_textChanged(QString besedilo) {
+
+    izracunaj_popuste(pretvori_v_double(besedilo).toDouble(), 5);
+
+}
+
 void opravila::on_txt_popust_fb1_editingFinished() {
 
     double popust = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
