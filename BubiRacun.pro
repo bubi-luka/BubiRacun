@@ -132,6 +132,7 @@ FORMS += \
     sif_cenamalice.ui
 
 QT += sql
+QT += network
 
 OTHER_FILES += \
 		potni-nalog-besedilo.csv \
