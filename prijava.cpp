@@ -2715,7 +2715,24 @@ void prijava::vnesi_koda_namena() {
 
 void prijava::vnesi_stroski_prehrane() {
 
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
     // sem pride koda, kako extrahirati podatke iz spletne strani!!!!
+    }
+    base.close();
 
 }
 
@@ -3995,6 +4012,12 @@ void prijava::posodobi_bazo() {
                         update.exec();
                         update.clear();
                     }
+
+                    update.prepare("INSERT INTO nastavitve (naziv, vrednost) VALUES (?, ?)");
+                    update.bindValue(0, pretvori("delavniki"));
+                    update.bindValue(1, pretvori("http://www.racunovodja.com/mdokumenti/delure2002.asp"));
+                    update.exec();
+                    update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
                     update.bindValue(0, "0.9.12");
