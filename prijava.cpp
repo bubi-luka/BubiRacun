@@ -36,6 +36,7 @@ prijava::prijava(QWidget *parent) :
     tabela_opombe();
     tabela_nastavitve();
     tabela_avtomobili();
+    tabela_stroski_prehrane();
 
     // ustvari tabele sifrantov
     tabela_skd();
@@ -57,6 +58,7 @@ prijava::prijava(QWidget *parent) :
     tabela_opombe_pri_racunih();
     tabela_dnevnice();
     tabela_kilometrina();
+    tabela_cenamalice();
     tabela_banke();
     tabela_koda_namena();
 
@@ -80,6 +82,7 @@ prijava::prijava(QWidget *parent) :
     vnesi_nastavitve();
     vnesi_banke();
     vnesi_koda_namena();
+    vnesi_stroski_prehrane();
 
     // posodobitev baze
     posodobi_bazo();
@@ -1084,6 +1087,40 @@ void prijava::tabela_avtomobili() {
 
 }
 
+void prijava::tabela_stroski_prehrane() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS stroski_prehrane ("
+                                 "id INTEGER PRIMARY KEY, "
+                                 "leto TEXT, "
+                                 "mesec TEXT, "
+                                 "delavniki TEXT, "
+                                 "prazniki TEXT, "
+                                 "skupaj TEXT, "
+                                 "ure_na_mesec TEXT, "
+                                 "cena malice TEXT)"
+                                 );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
 // sifranti
 void prijava::tabela_skd() {
 
@@ -1624,6 +1661,36 @@ void prijava::tabela_kilometrina() {
         sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_kilometrina ("
                                                          "id INTEGER PRIMARY KEY, "
                                                          "kilometrina TEXT, "
+                                                         "datum TEXT, "
+                                                         "avtor_oseba TEXT)"
+                                         );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+void prijava::tabela_cenamalice() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_cena_malice ("
+                                                         "id INTEGER PRIMARY KEY, "
+                                                         "cena TEXT, "
                                                          "datum TEXT, "
                                                          "avtor_oseba TEXT)"
                                          );
@@ -2643,6 +2710,12 @@ void prijava::vnesi_koda_namena() {
     }
     base.close();
     datoteka.remove();
+
+}
+
+void prijava::vnesi_stroski_prehrane() {
+
+    // sem pride koda, kako extrahirati podatke iz spletne strani!!!!
 
 }
 
@@ -3888,6 +3961,55 @@ void prijava::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
                     update.bindValue(0, "10.10.2012");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                   posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 11 ) {
+
+                    // za vsake obstojecega uporabnika tvorimo potrebne stolpce pri prehrani
+                    QSqlQuery sql_uporabniki;
+                    sql_uporabniki.prepare("SELECT * FROM uporabniki");
+                    sql_uporabniki.exec();
+                    while ( sql_uporabniki.next() ) {
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                       pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
+                                       "_bolezen' TEXT");
+                        update.exec();
+                        update.clear();
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                       pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
+                                       "_dopust' TEXT");
+                        update.exec();
+                        update.clear();
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                       pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
+                                       "_izplacilo_dni' TEXT");
+                        update.exec();
+                        update.clear();
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                       pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
+                                       "_izplacilo_znesek' TEXT");
+                        update.exec();
+                        update.clear();
+                    }
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.12");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.12");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "22.02.2013");
                     update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
                     update.exec();
                     update.clear();

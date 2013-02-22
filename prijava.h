@@ -44,6 +44,7 @@ private slots:
     void tabela_opombe();
     void tabela_nastavitve();
     void tabela_avtomobili();
+    void tabela_stroski_prehrane();
 
     // ustvari tabele sifrantov
     void tabela_skd();
@@ -65,6 +66,7 @@ private slots:
     void tabela_opombe_pri_racunih();
     void tabela_dnevnice();
     void tabela_kilometrina();
+    void tabela_cenamalice();
     void tabela_banke();
     void tabela_koda_namena();
 
@@ -88,6 +90,7 @@ private slots:
     void vnesi_nastavitve();
     void vnesi_banke();
     void vnesi_koda_namena();
+    void vnesi_stroski_prehrane();
 
     // posodobitev baze
     void posodobi_bazo();

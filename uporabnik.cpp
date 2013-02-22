@@ -477,17 +477,17 @@ void uporabnik::on_btn_sprejmi_clicked() {
             QSqlQuery sql_vnesi_uporabnika;
 
             if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") { // vnesi novega uporabnika
-            sql_vnesi_uporabnika.prepare("INSERT INTO uporabniki (ime, priimek, user_name, geslo, naslov, naslov_stevilka, posta, postna_stevilka, "
+                sql_vnesi_uporabnika.prepare("INSERT INTO uporabniki (ime, priimek, user_name, geslo, naslov, naslov_stevilka, posta, postna_stevilka, "
                                          "telefon, gsm, email, rojstni_datum, spletna_stran, naziv, davcna_stevilka, emso, tekoci_racun, "
                                          "zaposlen, datum_zaposlitve, konec_zaposlitve, pogodba, dovoljenje, podjetje) "
                                          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi_uporabnika.prepare("UPDATE uporabniki SET ime = ?, priimek = ?, user_name = ?, geslo = ?, naslov = ?, naslov_stevilka = ?, "
-                                                                         "posta = ?, postna_stevilka = ?, telefon = ?, gsm = ?, email = ?, rojstni_datum = ?, spletna_stran = ?, "
-                                                                         "naziv = ?, davcna_stevilka = ?, emso = ?, tekoci_racun = ?, zaposlen = ?, datum_zaposlitve = ?, "
-                                                                         "konec_zaposlitve = ?, pogodba = ?, "
-                                                                         "dovoljenje = ?, podjetje = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+                                             "posta = ?, postna_stevilka = ?, telefon = ?, gsm = ?, email = ?, rojstni_datum = ?, spletna_stran = ?, "
+                                             "naziv = ?, davcna_stevilka = ?, emso = ?, tekoci_racun = ?, zaposlen = ?, datum_zaposlitve = ?, "
+                                             "konec_zaposlitve = ?, pogodba = ?, "
+                                             "dovoljenje = ?, podjetje = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi_uporabnika.bindValue(0, pretvori(ui->txt_ime->text()));
             sql_vnesi_uporabnika.bindValue(1, pretvori(ui->txt_priimek->text()));
@@ -520,6 +520,36 @@ void uporabnik::on_btn_sprejmi_clicked() {
         // send signal to reload widget
         poslji("uporabnik");
         vApp->set_id(vApp->id());
+
+        // ob vnosu novega uporabnika vnesi njegove stolpce v tabelo stroski prehrane
+        if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") {
+            QSqlQuery sql_uporabnik;
+            sql_uporabnik.prepare("SELECT* FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text()) + "'");
+            sql_uporabnik.exec();
+            if ( sql_uporabnik.next() ) {
+                QSqlQuery sql_stroski_prehrane;
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                               "_bolezen' TEXT");
+                sql_stroski_prehrane.exec();
+                sql_stroski_prehrane.clear();
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                               "_dopust' TEXT");
+                sql_stroski_prehrane.exec();
+                sql_stroski_prehrane.clear();
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                               "_izplacilo_dni' TEXT");
+                sql_stroski_prehrane.exec();
+                sql_stroski_prehrane.clear();
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                               "_izplacilo_znesek' TEXT");
+                sql_stroski_prehrane.exec();
+                sql_stroski_prehrane.clear();
+            }
+        }
 
         // close this window
         close();
