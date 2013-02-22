@@ -528,24 +528,24 @@ void uporabnik::on_btn_sprejmi_clicked() {
             sql_uporabnik.exec();
             if ( sql_uporabnik.next() ) {
                 QSqlQuery sql_stroski_prehrane;
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
-                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                                               "_bolezen' TEXT");
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'bolezen_" +
+                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                               "' TEXT");
                 sql_stroski_prehrane.exec();
                 sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
-                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                                               "_dopust' TEXT");
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'dopust_" +
+                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                               "' TEXT");
                 sql_stroski_prehrane.exec();
                 sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
-                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                                               "_izplacilo_dni' TEXT");
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_dni_" +
+                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                               "' TEXT");
                 sql_stroski_prehrane.exec();
                 sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
-                                             pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                                               "_izplacilo_znesek' TEXT");
+                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_znesek_" +
+                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                               "' TEXT");
                 sql_stroski_prehrane.exec();
                 sql_stroski_prehrane.clear();
             }

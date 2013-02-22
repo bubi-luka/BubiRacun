@@ -15,6 +15,15 @@ public:
     explicit wid_stroskiprehrane(QWidget *parent = 0);
     ~wid_stroskiprehrane();
     
+private slots:
+    void izbrisi_tabelo();
+    void izbrisi_leta();
+    void napolni_leta();
+    void napolni_tabelo();
+
+    QString pretvori(QString besedilo);
+    QString prevedi(QString besedilo);
+
 private:
     Ui::wid_stroskiprehrane *ui;
 };

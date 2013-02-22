@@ -1117,7 +1117,7 @@ void prijava::tabela_stroski_prehrane() {
                                  "prazniki TEXT, "
                                  "skupaj TEXT, "
                                  "ure_na_mesec TEXT, "
-                                 "cena malice TEXT)"
+                                 "cena_malice TEXT)"
                                  );
         sql_create_table.exec();
     }
@@ -3976,24 +3976,24 @@ void prijava::posodobi_bazo() {
                     sql_uporabniki.prepare("SELECT * FROM uporabniki");
                     sql_uporabniki.exec();
                     while ( sql_uporabniki.next() ) {
-                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'bolezen_" +
                                        pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
-                                       "_bolezen' TEXT");
+                                       "' TEXT");
                         update.exec();
                         update.clear();
-                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'dopust_" +
                                        pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
-                                       "_dopust' TEXT");
+                                       "' TEXT");
                         update.exec();
                         update.clear();
-                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_dni_" +
                                        pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
-                                       "_izplacilo_dni' TEXT");
+                                       "' TEXT");
                         update.exec();
                         update.clear();
-                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN '" +
+                        update.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_znesek_" +
                                        pretvori(sql_uporabniki.value(sql_uporabniki.record().indexOf("id")).toString()) +
-                                       "_izplacilo_znesek' TEXT");
+                                       "' TEXT");
                         update.exec();
                         update.clear();
                     }
@@ -4142,5 +4142,6 @@ void prijava::konec_odziva(QNetworkReply *odgovor) {
     base.close();
 
     prijava::setEnabled(true);
+    ui->txt_uporabnik->setFocus();
 
 }
