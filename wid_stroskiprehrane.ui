@@ -95,7 +95,14 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="tbl_stroski_prehrane"/>
+    <widget class="QTableWidget" name="tbl_stroski_prehrane">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
