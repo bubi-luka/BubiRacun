@@ -403,7 +403,17 @@ void wid_stroskiprehrane::shrani_vrstico(int vrstica, int status) {
 void wid_stroskiprehrane::on_tbl_stroski_prehrane_itemChanged(QTableWidgetItem *celica) {
 
     if ( ui->btn_kopiraj->text() != "Vnasam" ) {
-        izracunaj_delavne_dni(celica->row(), 1);
+        if ( celica->text() == celica->text().remove(QRegExp("[^0-9]*")) &&
+             ui->tbl_stroski_prehrane->item(celica->row(), 2)->text().toInt() + 1 >
+             ( ui->tbl_stroski_prehrane->item(celica->row(), 3)->text().toInt() +
+               ui->tbl_stroski_prehrane->item(celica->row(), 4)->text().toInt() ) ) {
+            izracunaj_delavne_dni(celica->row(), 1);
+        }
+        else {
+            QTableWidgetItem *polje = new QTableWidgetItem;
+            polje->setText("");
+            ui->tbl_stroski_prehrane->setItem(celica->row(), celica->column(), polje);
+        }
     }
 
 }
