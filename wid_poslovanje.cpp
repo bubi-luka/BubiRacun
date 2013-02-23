@@ -6,6 +6,7 @@
 #include "wid_poslovanje.h"
 #include "ui_wid_poslovanje.h"
 #include "kodiranje.h"
+#include "varnost.h"
 
 wid_poslovanje::wid_poslovanje(QWidget *parent) :
     QWidget(parent),
@@ -132,6 +133,22 @@ void wid_poslovanje::napolni_mesec() {
             while ( sql_meseci.next() ) {
                 vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("stroski_skupaj")).toString())).toDouble();
             } // while ( sql_meseci.next() )
+            sql_meseci.clear();
+
+            // pristej stroske prehrane
+            sql_meseci.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + trenutno_leto +
+                                "' AND mesec LIKE '" + meseci[b] + "'");
+            sql_meseci.exec();
+            while ( sql_meseci.next() ) {
+                QSqlQuery uporabniki;
+                uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                uporabniki.exec();
+                while ( uporabniki.next() ) {
+                    QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                    vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                }
+            }
+            sql_meseci.clear();
 
             vrednost_izdanih[b] = QString::number(vrednost, 'f', 2);
 
@@ -836,6 +853,21 @@ void wid_poslovanje::napolni_leto() {
                 izdatki += pretvori_v_double(prevedi(sql_izdatki.value(sql_izdatki.record().indexOf("stroski_skupaj")).toString())).toDouble();
 
             } // while ( sql_izdatki.next() )
+            sql_izdatki.clear();
+
+            // pristej stroske prehrane
+            sql_izdatki.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + leta.at(i) + "'");
+            sql_izdatki.exec();
+            while ( sql_izdatki.next() ) {
+                QSqlQuery uporabniki;
+                uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                uporabniki.exec();
+                while ( uporabniki.next() ) {
+                    QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                    izdatki += pretvori_v_double(prevedi(sql_izdatki.value(sql_izdatki.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                }
+            }
+            sql_izdatki.clear();
 
             // prejemki
             // poisci, kateri avansi so bili placani v danem mesecu
@@ -986,6 +1018,21 @@ void wid_poslovanje::napolni_skupni() {
                 while ( sql_meseci.next() ) {
                     vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("stroski_skupaj")).toString())).toDouble();
                 } // while ( sql_meseci.next() )
+                sql_meseci.clear();
+
+                // pristej stroske prehrane
+                sql_meseci.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + leta.at(c) + "' AND mesec LIKE '" + meseci[b] + "'");
+                sql_meseci.exec();
+                while ( sql_meseci.next() ) {
+                    QSqlQuery uporabniki;
+                    uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                    uporabniki.exec();
+                    while ( uporabniki.next() ) {
+                        QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                        vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                    }
+                }
+                sql_meseci.clear();
 
 
                 // izdani racuni
