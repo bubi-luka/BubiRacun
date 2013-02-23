@@ -29,12 +29,14 @@ private slots:
     void on_actionOpombe_pri_ra_unih_triggered();
     void on_actionKilometrina_triggered();
     void on_actionDnevnice_triggered();
+    void on_actionCena_malice_triggered();
     void on_actionPrihodek_triggered();
     void on_actionIzdatek_triggered();
     void on_actionPoslovanje_triggered();
     void varnost_id_changed();
     void on_actionNastavitve_triggered();
     void on_actionAvtomobili_triggered();
+    void on_actionDopusti_bolni_ke_triggered();
     void on_actionPredra_uni_triggered();
     void on_actionPredpla_ilni_ra_uni_triggered();
     void on_actionRa_uni_triggered();

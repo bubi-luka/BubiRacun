@@ -30,6 +30,8 @@
 #include "wid_poslovanje.h"
 #include "wid_osnovni_pogled.h"
 #include "wid_avtomobili.h"
+#include "wid_stroskiprehrane.h"
+#include "sif_cenamalice.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -246,6 +248,13 @@ void GlavnoOkno::on_actionDnevnice_triggered() {
 
 }
 
+void GlavnoOkno::on_actionCena_malice_triggered() {
+
+    sif_cenamalice *odpri = new sif_cenamalice;
+    odpri->show();
+
+}
+
 void GlavnoOkno::on_actionNastavitve_triggered() {
 
     nastavitve *odpri = new nastavitve;
@@ -262,6 +271,14 @@ void GlavnoOkno::on_actionAvtomobili_triggered() {
 
 }
 
+void GlavnoOkno::on_actionDopusti_bolni_ke_triggered() {
+
+    wid_stroskiprehrane *widavto = new wid_stroskiprehrane;
+    ui->scrollArea->setWidget(widavto);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Vnos dopustov, bolniskih dni, malic!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Dopusti, bolniske, malice");
+
+}
 
 void GlavnoOkno::on_actionPredra_uni_triggered() {
 

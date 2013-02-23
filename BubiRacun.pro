@@ -40,7 +40,9 @@ HEADERS += \
 		wid_osnovni_pogled.h \
 		nastavitve.h \
 		avtomobili.h \
-		wid_avtomobili.h
+		wid_avtomobili.h \
+    wid_stroskiprehrane.h \
+    sif_cenamalice.h
 
 SOURCES += \
 		main.cpp \
@@ -83,7 +85,9 @@ SOURCES += \
 		wid_osnovni_pogled.cpp \
 		nastavitve.cpp \
 		avtomobili.cpp \
-		wid_avtomobili.cpp
+		wid_avtomobili.cpp \
+    wid_stroskiprehrane.cpp \
+    sif_cenamalice.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -123,9 +127,12 @@ FORMS += \
 		wid_osnovni_pogled.ui \
 		nastavitve.ui \
 		avtomobili.ui \
-		wid_avtomobili.ui
+		wid_avtomobili.ui \
+    wid_stroskiprehrane.ui \
+    sif_cenamalice.ui
 
 QT += sql
+QT += network
 
 OTHER_FILES += \
 		potni-nalog-besedilo.csv \
