@@ -104,6 +104,8 @@ void wid_stroskiprehrane::napolni_tabelo() {
 
     ui->btn_kopiraj->setText("Vnasam");
 
+    double strosek_za_malico = 0.00;
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -266,6 +268,7 @@ void wid_stroskiprehrane::napolni_tabelo() {
                 else if ( polja[i] == "izplacilo_znesek_" + pretvori(vApp->id()) ) {
                     celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())));
                     celica->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+                    strosek_za_malico += pretvori_v_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())).toDouble();
                 }
                 else {
                     celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -285,6 +288,8 @@ void wid_stroskiprehrane::napolni_tabelo() {
     base.close();
 
     ui->btn_kopiraj->setText("Copy - Paste");
+
+    ui->lbl_prehrana->setText(pretvori_iz_double(QString::number(strosek_za_malico, 'f', 2)));
 
     QTimer::singleShot(1, this, SLOT(preracunaj()));
 
