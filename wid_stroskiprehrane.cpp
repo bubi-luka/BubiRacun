@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QClipboard>
+#include <QModelIndexList>
 #include <QTextEdit>
 #include <QTimer>
 
@@ -142,10 +143,10 @@ void wid_stroskiprehrane::napolni_tabelo() {
 
         naslov0->setText("ID");
         naslov1->setText("Mesec");
-        naslov2->setText("St. delavnih dni");
+        naslov2->setText("St. delovnih dni");
         naslov3->setText("Dopust");
         naslov4->setText("Bolniska");
-        naslov5->setText("Delavni dnevi");
+        naslov5->setText("Delovni dnevi");
         naslov6->setText("Cena malice");
         naslov7->setText("Skupen znesek");
 
@@ -416,30 +417,28 @@ void wid_stroskiprehrane::on_btn_osvezi_clicked() {
 }
 
 void wid_stroskiprehrane::on_btn_kopiraj_clicked() {
-/*
+
     QClipboard *odlozisce = QApplication::clipboard();
 
-    QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+    QModelIndexList selectedList = ui->tbl_stroski_prehrane->selectionModel()->selectedRows();
 
     QString html_besedilo = "<table>";
     html_besedilo += "<tr>";
     html_besedilo += "<th>ID</th>";
-    html_besedilo += "<th>Tip racuna</th>";
-    html_besedilo += "<th>Stevilka racuna</th>";
-    html_besedilo += "<th>Datum izdaje</th>";
-    html_besedilo += "<th>Stranka</th>";
-    html_besedilo += "<th>Projekt</th>";
-    html_besedilo += "<th>Znesek za placilo</th>";
-    html_besedilo += "<th>Se placati</th>";
-    html_besedilo += "<th>Status placila</th>";
-    html_besedilo += "<th>Status racunovodstva</th>";
+    html_besedilo += "<th>Mesec</th>";
+    html_besedilo += "<th>St. delovnih dni</th>";
+    html_besedilo += "<th>Dopust</th>";
+    html_besedilo += "<th>Bolniska</th>";
+    html_besedilo += "<th>Delovni dnevi</th>";
+    html_besedilo += "<th>Cena malice</th>";
+    html_besedilo += "<th>Skupen znesek</th>";
     html_besedilo += "</tr>";
 
     for( int i = 0; i < selectedList.count(); i++) {
         html_besedilo += "<tr>";
-        for ( int a = 0; a < 10; a++ ) {
+        for ( int a = 0; a < 8; a++ ) {
             html_besedilo += "<td>";
-            html_besedilo += ui->tbl_racuni->item(selectedList.at(i).row(), a)->text();
+            html_besedilo += ui->tbl_stroski_prehrane->item(selectedList.at(i).row(), a)->text();
             html_besedilo += "</td>";
 
         }
@@ -458,7 +457,7 @@ void wid_stroskiprehrane::on_btn_kopiraj_clicked() {
     QMimeData *mimeData = new QMimeData();
     mimeData->setData("text/html", html_besedilo.toUtf8());
     odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
-*/
+
 }
 
 void wid_stroskiprehrane::on_cb_leto_currentIndexChanged() {
