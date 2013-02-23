@@ -4,6 +4,7 @@
 #include <QSortFilterProxyModel>
 
 #include "kodiranje.h"
+#include "varnost.h"
 #include "wid_izdatki.h"
 #include "ui_wid_izdatki.h"
 
@@ -127,8 +128,8 @@ void wid_izdatki::napolni_izbrani_mesec() {
         // izracunaj prejete racune
         QSqlQuery sql_napolni;
         sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE datum_placila LIKE '%." + pretvori("01." +
-                                                                                                                                                                                             ui->txt_mesec->currentText().left(2) + "." +
-                                                                                                                                                                                             ui->txt_leto->currentText()).right(7) + "'");
+                            ui->txt_mesec->currentText().left(2) + "." +
+                            ui->txt_leto->currentText()).right(7) + "'");
         sql_napolni.exec();
         while ( sql_napolni.next() ) {
             skupaj += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek")).toString())).toDouble();
@@ -141,32 +142,52 @@ void wid_izdatki::napolni_izbrani_mesec() {
         // pristej potne naloge
         double potni_nalog = 0.0;
         sql_napolni.prepare("SELECT * FROM potni_nalogi WHERE datum_naloga LIKE '%." + pretvori("01." +
-                                                                                                                                                                                        ui->txt_mesec->currentText().left(2) + "." +
-                                                                                                                                                                                        ui->txt_leto->currentText()).right(7) + "'");
+                            ui->txt_mesec->currentText().left(2) + "." +
+                            ui->txt_leto->currentText()).right(7) + "'");
         sql_napolni.exec();
         while ( sql_napolni.next() ) {
             skupaj += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString())).toDouble();
             potni_nalog += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString())).toDouble();
         }
+        sql_napolni.clear();
+
+        // pristej stroske prehrane
+        double prehrana = 0.0;
+        sql_napolni.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + ui->txt_leto->currentText() +
+                            "' AND mesec LIKE '" + ui->txt_mesec->currentText().left(2) + "'");
+        sql_napolni.exec();
+        while ( sql_napolni.next() ) {
+            QSqlQuery uporabniki;
+            uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+            uporabniki.exec();
+            while ( uporabniki.next() ) {
+                QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                skupaj += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                prehrana += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+            }
+        }
+        sql_napolni.clear();
 
         ui->txt_skupaj_znesek->setText(QString::number(skupaj, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_projektni_znesek->setText(QString::number(projekti, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_prosti_znesek->setText(QString::number(skupaj - projekti - potni_nalog, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_potni_nalog_znesek->setText(QString::number(potni_nalog, 'f', 2).replace(".", ",") + " EUR");
+        ui->txt_prehrana_znesek->setText(QString::number(prehrana, 'f', 2).replace(".", ",") + " EUR");
 
         if ( skupaj == 0.0 ) {
             ui->txt_skupaj_odstotek->setText("0,0 %");
             ui->txt_projektni_odstotek->setText("0,0 %");
             ui->txt_prosti_odstotek->setText("0,0 %");
             ui->txt_potni_nalog_odstotek->setText("0,0 %");
+            ui->txt_prehrana_odstotek->setText("0,0 %");
         }
         else {
             ui->txt_skupaj_odstotek->setText(QString::number(skupaj / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_projektni_odstotek->setText(QString::number(projekti / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_prosti_odstotek->setText(QString::number(( skupaj - projekti - potni_nalog ) / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_potni_nalog_odstotek->setText(QString::number(potni_nalog / skupaj * 100, 'f', 2).replace(".", ",") + " %");
+            ui->txt_prehrana_odstotek->setText(QString::number(prehrana / skupaj * 100, 'f', 2).replace(".", ",") + " %");
         }
-
     }
     base.close();
 
@@ -217,6 +238,22 @@ void wid_izdatki::napolni_trenutni_mesec() {
                 while ( sql_meseci.next() ) {
                     vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("stroski_skupaj")).toString())).toDouble();
                 } // while ( sql_meseci.next() )
+                sql_meseci.clear();
+
+                // pristej stroske prehrane
+                sql_meseci.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + trenutno_leto +
+                                    "' AND mesec LIKE '" + meseci[b] + "'");
+                sql_meseci.exec();
+                while ( sql_meseci.next() ) {
+                    QSqlQuery uporabniki;
+                    uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                    uporabniki.exec();
+                    while ( uporabniki.next() ) {
+                        QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                        vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                    }
+                }
+                sql_meseci.clear();
 
                 vrednosti[b] = QString::number(vrednost, 'f', 2);
             } // for ( int b = 0; b < 12; b++ )
@@ -298,7 +335,6 @@ void wid_izdatki::napolni_trenutni_mesec() {
         razlika = razlika / pretvori_v_double(ui->txt_februar_preteklo->text()).toDouble() * 100;
         ui->txt_februar_razlika->setText(QString::number(razlika, 'f', 1).replace(".", ",") + " %");
 
-        qDebug(QString::number(razlika, 'f', 2).toAscii());
         if ( razlika > 10 ) {
             ui->txt_februar_razlika->setPalette(pozitivno);
         }
@@ -655,7 +691,7 @@ void wid_izdatki::napolni_leto() {
         // clear previous content
         ui->tbl_letni_pregled->clear();
 
-        for ( int i = 0; i <= 5; i++ ) {
+        for ( int i = 0; i <= 6; i++ ) {
             ui->tbl_letni_pregled->removeColumn(0);
         }
 
@@ -669,24 +705,28 @@ void wid_izdatki::napolni_leto() {
         ui->tbl_letni_pregled->insertColumn(2);
         ui->tbl_letni_pregled->insertColumn(3);
         ui->tbl_letni_pregled->insertColumn(4);
+        ui->tbl_letni_pregled->insertColumn(5);
 
         QTableWidgetItem *naslov0 = new QTableWidgetItem;
         QTableWidgetItem *naslov1 = new QTableWidgetItem;
         QTableWidgetItem *naslov2 = new QTableWidgetItem;
         QTableWidgetItem *naslov3 = new QTableWidgetItem;
         QTableWidgetItem *naslov4 = new QTableWidgetItem;
+        QTableWidgetItem *naslov5 = new QTableWidgetItem;
 
         naslov0->setText("Leto");
         naslov1->setText("Skupaj");
         naslov2->setText("Projektni");
         naslov3->setText("Prosti");
         naslov4->setText("Potni nalogi");
+        naslov5->setText("Prehrana");
 
         ui->tbl_letni_pregled->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_letni_pregled->setHorizontalHeaderItem(1, naslov1);
         ui->tbl_letni_pregled->setHorizontalHeaderItem(2, naslov2);
         ui->tbl_letni_pregled->setHorizontalHeaderItem(3, naslov3);
         ui->tbl_letni_pregled->setHorizontalHeaderItem(4, naslov4);
+        ui->tbl_letni_pregled->setHorizontalHeaderItem(5, naslov5);
 
         // start collecting data
         for ( int i = 0; i < leta.count(); i++ ) {
@@ -724,6 +764,23 @@ void wid_izdatki::napolni_leto() {
                 potni_nalog += pretvori_v_double(prevedi(sql_izdatki.value(sql_izdatki.record().indexOf("stroski_skupaj")).toString())).toDouble();
 
             } // while ( sql_izdatki.next() )
+            sql_izdatki.clear();
+
+            // pristej stroske prehrane
+            double prehrana = 0.0;
+            sql_izdatki.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + leta.at(i) + "'");
+            sql_izdatki.exec();
+            while ( sql_izdatki.next() ) {
+                QSqlQuery uporabniki;
+                uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                uporabniki.exec();
+                while ( uporabniki.next() ) {
+                    QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                    skupaj += pretvori_v_double(prevedi(sql_izdatki.value(sql_izdatki.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                    prehrana += pretvori_v_double(prevedi(sql_izdatki.value(sql_izdatki.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                }
+            }
+            sql_izdatki.clear();
 
             // start filling the table
 
@@ -732,18 +789,21 @@ void wid_izdatki::napolni_leto() {
             QTableWidgetItem *celica2 = new QTableWidgetItem;
             QTableWidgetItem *celica3 = new QTableWidgetItem;
             QTableWidgetItem *celica4 = new QTableWidgetItem;
+            QTableWidgetItem *celica5 = new QTableWidgetItem;
 
             celica0->setText(leta.at(i));
             celica1->setText(QString::number(skupaj, 'f', 2).replace(".", ",") + " EUR");
             celica2->setText(QString::number(projektni, 'f', 2).replace(".", ",") + " EUR");
             celica3->setText(QString::number(skupaj - projektni - potni_nalog, 'f', 2).replace(".", ",") + " EUR");
             celica4->setText(QString::number(potni_nalog, 'f', 2).replace(".", ",") + " EUR");
+            celica5->setText(QString::number(prehrana, 'f', 2).replace(".", ",") + " EUR");
 
             ui->tbl_letni_pregled->setItem(i, 0, celica0);
             ui->tbl_letni_pregled->setItem(i, 1, celica1);
             ui->tbl_letni_pregled->setItem(i, 2, celica2);
             ui->tbl_letni_pregled->setItem(i, 3, celica3);
             ui->tbl_letni_pregled->setItem(i, 4, celica4);
+            ui->tbl_letni_pregled->setItem(i, 5, celica5);
 
         } // for ( int i = 0; i < leta.count(); i++ )
 
@@ -797,23 +857,43 @@ void wid_izdatki::napolni_izbrani_skupni() {
             skupaj += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString())).toDouble();
             potni_nalog += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stroski_skupaj")).toString())).toDouble();
         }
+        sql_napolni.clear();
+
+        // pristej stroske prehrane
+        double prehrana = 0.0;
+        sql_napolni.prepare("SELECT * FROM stroski_prehrane");
+        sql_napolni.exec();
+        while ( sql_napolni.next() ) {
+            QSqlQuery uporabniki;
+            uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+            uporabniki.exec();
+            while ( uporabniki.next() ) {
+                QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                skupaj += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                prehrana += pretvori_v_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+            }
+        }
+        sql_napolni.clear();
 
         ui->txt_skupaj_znesek_2->setText(QString::number(skupaj, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_projektni_znesek_2->setText(QString::number(projekti, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_prosti_znesek_2->setText(QString::number(skupaj - projekti - potni_nalog, 'f', 2).replace(".", ",") + " EUR");
         ui->txt_potni_nalog_znesek_2->setText(QString::number(potni_nalog, 'f', 2).replace(".", ",") + " EUR");
+        ui->txt_prehrana_znesek_2->setText(QString::number(prehrana, 'f', 2).replace(".", ",") + " EUR");
 
         if ( skupaj == 0.0 ) {
             ui->txt_skupaj_odstotek_2->setText("0,0 %");
             ui->txt_projektni_odstotek_2->setText("0,0 %");
             ui->txt_prosti_odstotek_2->setText("0,0 %");
             ui->txt_potni_nalog_odstotek_2->setText("0,0 %");
+            ui->txt_prehrana_odstotek_2->setText("0,0 %");
         }
         else {
             ui->txt_skupaj_odstotek_2->setText(QString::number(skupaj / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_projektni_odstotek_2->setText(QString::number(projekti / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_prosti_odstotek_2->setText(QString::number(( skupaj - projekti - potni_nalog ) / skupaj * 100, 'f', 2).replace(".", ",") + " %");
             ui->txt_potni_nalog_odstotek_2->setText(QString::number(potni_nalog / skupaj * 100, 'f', 2).replace(".", ",") + " %");
+            ui->txt_prehrana_odstotek_2->setText(QString::number(prehrana / skupaj * 100, 'f', 2).replace(".", ",") + " %");
         }
 
     }
@@ -880,6 +960,21 @@ void wid_izdatki::napolni_trenutni_skupni() {
                 while ( sql_meseci.next() ) {
                     vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("stroski_skupaj")).toString())).toDouble();
                 } // while ( sql_meseci.next() )
+                sql_meseci.clear();
+
+                // pristej stroske prehrane
+                sql_meseci.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + leta.at(c) + "'");
+                sql_meseci.exec();
+                while ( sql_meseci.next() ) {
+                    QSqlQuery uporabniki;
+                    uporabniki.prepare("SELECT * FROM uporabniki WHERE podjetje LIKE '" + vApp->firm() + "'");
+                    uporabniki.exec();
+                    while ( uporabniki.next() ) {
+                        QString uporabnik_id = prevedi(uporabniki.value(uporabniki.record().indexOf("id")).toString());
+                        vrednost += pretvori_v_double(prevedi(sql_meseci.value(sql_meseci.record().indexOf("izplacilo_znesek_" + uporabnik_id)).toString())).toDouble();
+                    }
+                }
+                sql_meseci.clear();
 
             } // for ( int c = 0; c < leta.count(); c++ )
 

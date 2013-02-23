@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tab_izdatki">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_mesecni">
       <attribute name="title">
@@ -76,6 +76,19 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="txt_potni_nalog_odstotek">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_16">
               <property name="text">
@@ -221,8 +234,22 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QLineEdit" name="txt_potni_nalog_odstotek">
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>stroški potnih nalogov</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_37">
+              <property name="text">
+               <string>in stroški prehrane</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="txt_prehrana_znesek">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -234,10 +261,16 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_23">
-              <property name="text">
-               <string>in stroški potnih nalogov</string>
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="txt_prehrana_odstotek">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>
@@ -1059,7 +1092,40 @@
             <item row="4" column="0">
              <widget class="QLabel" name="label_46">
               <property name="text">
-               <string>in stroški potnih nalogov</string>
+               <string>stroški potnih nalogov</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_39">
+              <property name="text">
+               <string>in stroški prehrane</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="txt_prehrana_znesek_2">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="txt_prehrana_odstotek_2">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>
