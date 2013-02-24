@@ -196,6 +196,7 @@ prijava::prijava(QWidget *parent) :
 
     }
     base.close();
+
 }
 
 prijava::~prijava() {

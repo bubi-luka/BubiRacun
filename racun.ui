@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -37,7 +37,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>697</width>
+            <width>690</width>
             <height>716</height>
            </rect>
           </property>
@@ -823,6 +823,9 @@
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SingleSelection</enum>
             </property>
@@ -856,6 +859,9 @@
          </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
          </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
@@ -1001,6 +1007,9 @@
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>
            </property>
@@ -1096,6 +1105,9 @@
           <widget class="QTableWidget" name="tbl_vnesene_opombe">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
            </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>

@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_opravila">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -2190,6 +2190,9 @@
         <widget class="QTableWidget" name="tbl_casovnice">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>

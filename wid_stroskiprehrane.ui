@@ -122,6 +122,9 @@
    </item>
    <item>
     <widget class="QTableWidget" name="tbl_stroski_prehrane">
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>

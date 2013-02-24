@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_stranka">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -80,9 +80,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-332</y>
-            <width>659</width>
-            <height>923</height>
+            <y>0</y>
+            <width>652</width>
+            <height>849</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -756,7 +756,7 @@
             <x>0</x>
             <y>0</y>
             <width>677</width>
-            <height>591</height>
+            <height>596</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
@@ -925,6 +925,9 @@
                <widget class="QTableWidget" name="tbl_kuponi">
                 <property name="editTriggers">
                  <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
                 </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
@@ -1958,7 +1961,7 @@
             <x>0</x>
             <y>0</y>
             <width>677</width>
-            <height>591</height>
+            <height>596</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2046,6 +2049,9 @@
              </property>
              <property name="editTriggers">
               <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
              </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>
