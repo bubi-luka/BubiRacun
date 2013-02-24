@@ -11,14 +11,11 @@ int main(int argc, char *argv[])
 	varnost app(argc, argv);
 
 	// create style for the application
-
-	QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
-	QFile datoteka(pot_do_stilske_datoteke + "/style.css");
-
-	datoteka.open(QFile::ReadOnly);
-	QString StyleSheet = QLatin1String(datoteka.readAll());
-
-	qApp->setStyleSheet(StyleSheet);
+    QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
+    QFile datoteka(pot_do_stilske_datoteke + "/sandy/sandy.qss");
+    datoteka.open(QFile::ReadOnly);
+    app.setStyleSheet(datoteka.readAll());
+    datoteka.close();
 
 	// create signal-slot connections
 	GlavnoOkno *varnost_GlavnoOkno = new GlavnoOkno;

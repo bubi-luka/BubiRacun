@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_prihodki">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_mesec">
       <attribute name="title">
@@ -35,7 +35,7 @@
             <x>0</x>
             <y>0</y>
             <width>859</width>
-            <height>677</height>
+            <height>681</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -482,6 +482,12 @@
               </item>
               <item>
                <widget class="QTableWidget" name="tbl_storitve">
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
                 <column>
                  <property name="text">
                   <string>tbl_storitve</string>
@@ -514,7 +520,7 @@
             <x>0</x>
             <y>0</y>
             <width>859</width>
-            <height>677</height>
+            <height>681</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -953,6 +959,12 @@
               </item>
               <item>
                <widget class="QTableWidget" name="tbl_storitve_3">
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
                 <column>
                  <property name="text">
                   <string>tbl_storitve</string>
@@ -985,7 +997,7 @@
             <x>0</x>
             <y>0</y>
             <width>859</width>
-            <height>677</height>
+            <height>681</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1344,6 +1356,12 @@
               </item>
               <item>
                <widget class="QTableWidget" name="tbl_storitve_4">
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
                 <column>
                  <property name="text">
                   <string>tbl_storitve</string>
