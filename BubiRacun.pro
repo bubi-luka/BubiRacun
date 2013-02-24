@@ -162,7 +162,8 @@ OTHER_FILES += \
 		sif_koda_namena.csv \
 		licence.txt \
 		news.txt \
-		readme.txt
+		readme.txt \
+    README.md
 
 
 
