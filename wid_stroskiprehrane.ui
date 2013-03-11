@@ -1,41 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wid_stranke</class>
- <widget class="QWidget" name="wid_stranke">
-  <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
-  </property>
+ <class>wid_stroskiprehrane</class>
+ <widget class="QWidget" name="wid_stroskiprehrane">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>941</width>
-    <height>611</height>
+    <width>739</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QCheckBox" name="cb_fizicna">
-         <property name="text">
-          <string>Fizične osebe</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="cb_pravna">
-         <property name="text">
-          <string>Pravne osebe</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Izberite leto prikaza</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cb_leto">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Strošek za malico: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_prehrana">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -51,21 +79,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_nov">
+      <widget class="QPushButton" name="btn_osvezi">
        <property name="text">
-        <string>Vnos nove stranke</string>
+        <string>Osveži</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_brisi">
-       <property name="text">
-        <string>Izbris stranke</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -85,7 +106,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -100,33 +121,20 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="tbl_stranke">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
+    <widget class="QTableWidget" name="tbl_stroski_prehrane">
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>cb_fizicna</tabstop>
-  <tabstop>cb_pravna</tabstop>
-  <tabstop>btn_nov</tabstop>
-  <tabstop>btn_brisi</tabstop>
-  <tabstop>tbl_stranke</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

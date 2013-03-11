@@ -37,6 +37,9 @@ nastavitve::nastavitve(QWidget *parent) :
             if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()) == "pot" ) {
                 ui->txt_pot->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vrednost")).toString()));
             }
+            if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()) == "delavniki" ) {
+                ui->txt_pot_do_delavnikov->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vrednost")).toString()));
+            }
         }
     }
     base.close();
@@ -44,6 +47,9 @@ nastavitve::nastavitve(QWidget *parent) :
     // ce so polja prazna, jih nastavi na privzete vrednosti
     if ( ui->txt_pot->text() == "" ) {
         ui->txt_pot->setText(QDir::homePath() + "/BubiRacun-Dokumenti");
+    }
+    if ( ui->txt_pot_do_delavnikov->text() == "" ) {
+        ui->txt_pot_do_delavnikov->setText("http://www.racunovodja.com/mdokumenti/delure2002.asp");
     }
 
 }
@@ -116,6 +122,10 @@ void nastavitve::on_btn_shrani_clicked() {
         QSqlQuery sql_shrani;
         sql_shrani.prepare("UPDATE nastavitve SET vrednost = ? WHERE naziv LIKE '" + pretvori("pot")+ "'");
         sql_shrani.bindValue(0, pretvori(ui->txt_pot->text()));
+        sql_shrani.exec();
+        sql_shrani.clear();
+        sql_shrani.prepare("UPDATE nastavitve SET vrednost = ? WHERE naziv LIKE '" + pretvori("delavniki")+ "'");
+        sql_shrani.bindValue(0, pretvori(ui->txt_pot_do_delavnikov->text()));
         sql_shrani.exec();
         sql_shrani.clear();
     }

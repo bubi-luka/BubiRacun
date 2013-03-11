@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tab_potni_stroski">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -36,9 +36,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>790</width>
-            <height>630</height>
+            <y>-77</y>
+            <width>783</width>
+            <height>666</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -422,7 +422,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>764</width>
+               <width>757</width>
                <height>617</height>
               </rect>
              </property>
@@ -443,7 +443,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>744</width>
+                   <width>737</width>
                    <height>148</height>
                   </rect>
                  </property>
@@ -578,7 +578,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>622</width>
+                     <width>602</width>
                      <height>148</height>
                     </rect>
                    </property>

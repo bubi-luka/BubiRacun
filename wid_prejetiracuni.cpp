@@ -4,6 +4,8 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QFileDialog>
+#include <QClipboard>
+#include <QTextEdit>
 
 #include "wid_prejetiracuni.h"
 #include "ui_wid_prejetiracuni.h"
@@ -80,6 +82,9 @@ wid_prejetiracuni::wid_prejetiracuni(QWidget *parent) :
                 ui->cb_leto->addItem(QString::number(i, 10));
             }
             sql_napolni.clear();
+
+            // privzeto izberi trenutno leto
+            ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
 
             // filtriraj po izdajatelju racuna
             ui->cb_izdajatelj->addItem("");
@@ -617,5 +622,49 @@ void wid_prejetiracuni::on_btn_prestevilci_clicked() {
     zakljucek.exec();
 
     napolni();
+
+}
+
+void wid_prejetiracuni::on_btn_kopiraj_clicked() {
+
+    QClipboard *odlozisce = QApplication::clipboard();
+
+    QModelIndexList selectedList = ui->tbl_racuni->selectionModel()->selectedRows();
+
+    QString html_besedilo = "<table>";
+    html_besedilo += "<tr>";
+    html_besedilo += "<th>ID</th>";
+    html_besedilo += "<th>Stevilka racuna</th>";
+    html_besedilo += "<th>Datum prejema</th>";
+    html_besedilo += "<th>Izdajatelj</th>";
+    html_besedilo += "<th>Rok placila</th>";
+    html_besedilo += "<th>Status placila</th>";
+    html_besedilo += "<th>Status racunovodstva</th>";
+    html_besedilo += "<th>Znesek</th>";
+    html_besedilo += "</tr>";
+
+    for( int i = 0; i < selectedList.count(); i++) {
+        html_besedilo += "<tr>";
+        for ( int a = 0; a < 8; a++ ) {
+            html_besedilo += "<td>";
+            html_besedilo += ui->tbl_racuni->item(selectedList.at(i).row(), a)->text();
+            html_besedilo += "</td>";
+
+        }
+        html_besedilo += "</tr>";
+    }
+
+    html_besedilo += "</table>";
+
+    QTextEdit *textedit = new QTextEdit;
+
+    textedit->setHtml(html_besedilo);
+    html_besedilo = textedit->toHtml();
+
+    odlozisce->clear();
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("text/html", html_besedilo.toUtf8());
+    odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
 
 }

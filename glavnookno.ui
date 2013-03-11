@@ -180,7 +180,7 @@ border:0;</string>
    </widget>
    <widget class="QMenu" name="menuIzpisi">
     <property name="title">
-     <string>Izpisi</string>
+     <string>Pregledi</string>
     </property>
     <addaction name="actionPrihodek"/>
     <addaction name="actionIzdatek"/>
@@ -212,6 +212,7 @@ border:0;</string>
     <addaction name="actionUporabniki"/>
     <addaction name="actionAvtomobili"/>
     <addaction name="separator"/>
+    <addaction name="actionDopusti_bolni_ke"/>
     <addaction name="separator"/>
     <addaction name="actionNastavitve"/>
    </widget>
@@ -223,6 +224,7 @@ border:0;</string>
     <addaction name="separator"/>
     <addaction name="actionKilometrina"/>
     <addaction name="actionDnevnice"/>
+    <addaction name="actionCena_malice"/>
    </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
@@ -354,6 +356,16 @@ border:0;</string>
   <action name="actionRa_uni">
    <property name="text">
     <string>Računi</string>
+   </property>
+  </action>
+  <action name="actionCena_malice">
+   <property name="text">
+    <string>Cena malice</string>
+   </property>
+  </action>
+  <action name="actionDopusti_bolni_ke">
+   <property name="text">
+    <string>Dopusti, bolniške</string>
    </property>
   </action>
  </widget>

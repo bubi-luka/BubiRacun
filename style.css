@@ -1,9 +1,123 @@
-QMainWindow::separator {
-	background:white;
-	}
+ /**
+   * Barvna skala za program BubiRacun
+   * svetlo modra: bbbbff
+   * srednje modra: 55aafe
+   * temno modra: 000060
+   * svetlo vijolična: d1bbff
+   * svetlo rumena: ffffbb
+   **/
 
-QLineEdit  {
-/*	background-color:red;
-	border:1px solid white;*/
+QDialog {
+	background-color:#55aafe;
+}
+QDialog QLabel {
+	color:#000060;
+}
+QDialog QLineEdit {
+	margin:3px;
+	padding:3px;
+	background-color:#bbbbff;
+	border:2px solid #ffffff;
+	border-radius:4px;
+	color:#000060;
+	font-weight:bold;
+}
+QDialog QLineEdit:focus {
+	background-color:#ffffff;
+	border:2px solid #000060;
 }
 
+QDialog QComboBox {
+	margin:3px;
+	padding:3px;
+	background-color:#bbbbff;
+	border:2px solid #ffffff;
+	border-radius:4px;
+	color:#000060;
+	font-weight:bold;
+}
+
+QDialog QComboBox:focus {
+	background-color:#ffffff;
+	border:2px solid #000060;
+}
+
+QDialog QComboBox:on {
+	background-color:#ffffff;
+	border:2px solid #000060;
+	font-weight:normal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QDialog QPushButton {
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+									stop: 0 #ffffff, stop: 1 #bbbbff);
+	min-width: 80px;
+	min-height:20px;
+	color:#000060;
+	font-weight:bold;
+}
+
+QDialog QPushButton:pressed {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+									stop: 0 #bbbbff, stop: 1 #ffffff);
+}
+
+QDialog QPushButton:default {
+	border-color: #000060;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ QMenuBar {
+	 background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+									   stop:0 lightgray, stop:1 darkgray);
+ }
+
+ QMenuBar::item {
+	 spacing: 3px; /* spacing between menu bar items */
+	 padding: 1px 4px;
+	 background: transparent;
+	 border-radius: 4px;
+ }
+
+ QMenuBar::item:selected { /* when selected using mouse or keyboard */
+	 background: #a8a8a8;
+ }
+
+ QMenuBar::item:pressed {
+	 background: #888888;
+ }
