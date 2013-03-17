@@ -1,5 +1,8 @@
 #include <QPalette>
 #include <QFile>
+#include <QSystemTrayIcon>
+#include <QMenu>
+#include <QApplication>
 
 #include "main.h"
 #include "prijava.h"
@@ -23,6 +26,6 @@ int main(int argc, char *argv[])
 
 	prijava *okno_prijava = new prijava;
 	okno_prijava->show();
-	return app.exec();
+    return app.exec();
 
 }

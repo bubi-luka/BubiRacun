@@ -86,6 +86,59 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     // odpremo osnovni pogled
     osnovni_pogled();
 
+    // create system tray icon
+
+    minimizeAction = new QAction(tr("Mi&nimize"), this);
+    connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+
+    maximizeAction = new QAction(tr("Ma&ximize"), this);
+    connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+
+    restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+
+    quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+    if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
+
+
+        // create context menu
+        QMenu *sys_menu = new QMenu;
+        sys_menu->addAction(minimizeAction);
+        sys_menu->addAction(maximizeAction);
+        sys_menu->addAction(restoreAction);
+        sys_menu->addSeparator();
+        sys_menu->addAction(quitAction);
+
+        QIcon ikona;
+        QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
+        ikona.addFile(pot_do_stilske_datoteke + "/sandy/ok.png");
+
+        // create system tray icon
+        ikonca = new QSystemTrayIcon(this);
+        ikonca->setContextMenu(sys_menu);
+        ikonca->setIcon(ikona);
+        ikonca->show();
+
+        connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    }
+
+}
+
+void GlavnoOkno::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:
+    case QSystemTrayIcon::DoubleClick:
+    case QSystemTrayIcon::MiddleClick:
+        ikonca->contextMenu()->show();
+        break;
+    default:
+        ;
+    }
+
 }
 
 GlavnoOkno::~GlavnoOkno()
@@ -98,6 +151,20 @@ void GlavnoOkno::on_btn_home_clicked() {
 
     osnovni_pogled();
 
+}
+
+void GlavnoOkno::setVisible(bool visible)
+{
+    minimizeAction->setEnabled(visible);
+    maximizeAction->setEnabled(!isMaximized());
+    restoreAction->setEnabled(isMaximized() || !visible);
+    QMainWindow::setVisible(visible);
+}
+
+void GlavnoOkno::closeEvent(QCloseEvent *event)
+{
+        hide();
+        event->ignore();
 }
 
 void GlavnoOkno::sekundnik() {

@@ -2,6 +2,9 @@
 #define GLAVNOOKNO_H
 
 #include <QMainWindow>
+#include <QSystemTrayIcon>
+
+class QAction;
 
 namespace Ui {
     class GlavnoOkno;
@@ -14,6 +17,10 @@ class GlavnoOkno : public QMainWindow
 public:
     explicit GlavnoOkno(QWidget *parent = 0);
     ~GlavnoOkno();
+    void setVisible(bool visible);
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void sekundnik();
@@ -44,6 +51,8 @@ private slots:
 
     void on_btn_home_clicked();
 
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+
     void podatki();
     void osnovni_pogled();
 
@@ -54,6 +63,11 @@ signals:
     void prenos(QString beseda);
 
 private:
+    QSystemTrayIcon *ikonca;
+    QAction *minimizeAction;
+    QAction *maximizeAction;
+    QAction *restoreAction;
+    QAction *quitAction;
     Ui::GlavnoOkno *ui;
 };
 
