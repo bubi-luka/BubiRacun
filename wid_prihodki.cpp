@@ -704,7 +704,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         // clear previous content
         ui->tbl_storitve->clear();
 
-        for (int i = 0; i <= 6; i++) {
+        for (int i = 0; i <= 7; i++) {
             ui->tbl_storitve->removeColumn(0);
         }
 
@@ -722,6 +722,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         ui->tbl_storitve->insertColumn(3);
         ui->tbl_storitve->insertColumn(4);
         ui->tbl_storitve->insertColumn(5);
+        ui->tbl_storitve->insertColumn(6);
 
         QTableWidgetItem *naslov0 = new QTableWidgetItem;
         QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -729,6 +730,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         QTableWidgetItem *naslov3 = new QTableWidgetItem;
         QTableWidgetItem *naslov4 = new QTableWidgetItem;
         QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
 
         naslov0->setText("ID");
         naslov1->setText("Sklop");
@@ -736,6 +738,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
         naslov5->setText("Prihodek z DDV");
+        naslov6->setText("Prihodek brez DDV");
 
         ui->tbl_storitve->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve->setHorizontalHeaderItem(1, naslov1);
@@ -743,6 +746,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         ui->tbl_storitve->setHorizontalHeaderItem(3, naslov3);
         ui->tbl_storitve->setHorizontalHeaderItem(4, naslov4);
         ui->tbl_storitve->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_storitve->setHorizontalHeaderItem(6, naslov6);
 
         ui->tbl_storitve->setColumnWidth(0, 35);
 
@@ -810,7 +814,8 @@ void wid_prihodki::napolni_mesec_tabela() {
                 ui->tbl_storitve->setColumnHidden(2, false); // skupina
                 ui->tbl_storitve->setColumnHidden(3, false); // storitev
                 ui->tbl_storitve->setColumnHidden(4, false); // ure
-                ui->tbl_storitve->setColumnHidden(5, false); // znesek
+                ui->tbl_storitve->setColumnHidden(5, false); // znesek z ddv
+                ui->tbl_storitve->setColumnHidden(6, false); // znesek brez ddv
 
                 // pripravi sql stavek za primer prikaza vseh storitev
                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -828,7 +833,8 @@ void wid_prihodki::napolni_mesec_tabela() {
                                 ui->tbl_storitve->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza izbrane storitve
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -848,7 +854,8 @@ void wid_prihodki::napolni_mesec_tabela() {
                                 ui->tbl_storitve->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza vseh storitev v izbrani skupini
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -867,7 +874,8 @@ void wid_prihodki::napolni_mesec_tabela() {
                             ui->tbl_storitve->setColumnHidden(2, false); // skupina
                             ui->tbl_storitve->setColumnHidden(3, true); // storitev
                             ui->tbl_storitve->setColumnHidden(4, false); // ure
-                            ui->tbl_storitve->setColumnHidden(5, false); // znesek
+                            ui->tbl_storitve->setColumnHidden(5, false); // znesek z ddv
+                            ui->tbl_storitve->setColumnHidden(6, false); // znesek brez ddv
 
                             // pripravi sql stavek za primer prikaza vseh skupin
                             stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -884,7 +892,8 @@ void wid_prihodki::napolni_mesec_tabela() {
                         ui->tbl_storitve->setColumnHidden(2, true); // skupina
                         ui->tbl_storitve->setColumnHidden(3, true); // storitev
                         ui->tbl_storitve->setColumnHidden(4, false); // ure
-                        ui->tbl_storitve->setColumnHidden(5, false); // znesek
+                        ui->tbl_storitve->setColumnHidden(5, false); // znesek z ddv
+                        ui->tbl_storitve->setColumnHidden(6, false); // znesek brez ddv
 
                         // pripravi sql stavek za primer prikaza vseh sklopov
                         stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "'";
@@ -901,9 +910,9 @@ void wid_prihodki::napolni_mesec_tabela() {
                 ui->tbl_storitve->setRowHeight(row, 20);
 
                 int col = 0;
-                QString polja[5] = {"id", "sklop", "skupina", "storitev", "racun"};
+                QString polja[6] = {"id", "sklop", "skupina", "storitev", "racun", "racun_brez_ddv"};
 
-                while ( col < 5 ) {
+                while ( col < 6 ) {
                     QTableWidgetItem *celica = new QTableWidgetItem;
                     if ( polja[col] == "id" ) {
                         celica->setData(Qt::DisplayRole, prevedi(sql_storitve.value(sql_storitve.record().indexOf(polja[col])).toString()).toInt());
@@ -918,6 +927,7 @@ void wid_prihodki::napolni_mesec_tabela() {
                 // sestej vsa opravila v danem mesecu (ki so del predhodno izbranih racunov), katerih storitev pripada dani vrstici
                 double sestevek_ure = 0.0;
                 double sestevek_znesek = 0.0;
+                double sestevek_znesek_brez_ddv = 0.0;
 
                 // pojdi skozi vsa opravila pri predhodno izbranih racunih in pri vsakem poisci storitev, ki jo trenutno potrebujemo
                 for ( int a = 0; a < seznam_id_racunov.count(); a++ ) {
@@ -930,6 +940,7 @@ void wid_prihodki::napolni_mesec_tabela() {
                         sestevek_ure += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("ur_dela")).toString()).toDouble();
                         sestevek_znesek += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble() +
                                                              prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_ddv")).toString()).toDouble();
+                        sestevek_znesek_brez_ddv += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble();
                     }
 
                     sql_sestevek.clear();
@@ -943,6 +954,10 @@ void wid_prihodki::napolni_mesec_tabela() {
                 QTableWidgetItem *znesek = new QTableWidgetItem;
                 znesek->setText(QString::number(sestevek_znesek, 'f', 2) + " EUR");
                 ui->tbl_storitve->setItem(row, 5, znesek);
+
+                QTableWidgetItem *znesek_brez_ddv = new QTableWidgetItem;
+                znesek_brez_ddv->setText(QString::number(sestevek_znesek_brez_ddv, 'f', 2) + " EUR");
+                ui->tbl_storitve->setItem(row, 6, znesek_brez_ddv);
 
                 // skrij polja, kjer je stevilo opravljenih ur 0
                 if ( sestevek_ure == 0.0 ) {
@@ -1138,6 +1153,7 @@ void wid_prihodki::napolni_letni_tabela() {
         ui->tbl_storitve_3->insertColumn(3);
         ui->tbl_storitve_3->insertColumn(4);
         ui->tbl_storitve_3->insertColumn(5);
+        ui->tbl_storitve_3->insertColumn(6);
 
         QTableWidgetItem *naslov0 = new QTableWidgetItem;
         QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -1145,6 +1161,7 @@ void wid_prihodki::napolni_letni_tabela() {
         QTableWidgetItem *naslov3 = new QTableWidgetItem;
         QTableWidgetItem *naslov4 = new QTableWidgetItem;
         QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
 
         naslov0->setText("ID");
         naslov1->setText("Sklop");
@@ -1152,6 +1169,7 @@ void wid_prihodki::napolni_letni_tabela() {
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
         naslov5->setText("Prihodek z DDV");
+        naslov6->setText("Prihodek brez DDV");
 
         ui->tbl_storitve_3->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve_3->setHorizontalHeaderItem(1, naslov1);
@@ -1159,6 +1177,7 @@ void wid_prihodki::napolni_letni_tabela() {
         ui->tbl_storitve_3->setHorizontalHeaderItem(3, naslov3);
         ui->tbl_storitve_3->setHorizontalHeaderItem(4, naslov4);
         ui->tbl_storitve_3->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_storitve_3->setHorizontalHeaderItem(6, naslov6);
 
         ui->tbl_storitve_3->setColumnWidth(0, 35);
 
@@ -1226,7 +1245,8 @@ void wid_prihodki::napolni_letni_tabela() {
                 ui->tbl_storitve_3->setColumnHidden(2, false); // skupina
                 ui->tbl_storitve_3->setColumnHidden(3, false); // storitev
                 ui->tbl_storitve_3->setColumnHidden(4, false); // ure
-                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek
+                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek z ddv
+                ui->tbl_storitve_3->setColumnHidden(6, false); // znesek brez ddv
 
                 // pripravi sql stavek za primer prikaza vseh storitev
                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1244,7 +1264,8 @@ void wid_prihodki::napolni_letni_tabela() {
                                 ui->tbl_storitve_3->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve_3->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve_3->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve_3->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza izbrane storitve
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1264,7 +1285,8 @@ void wid_prihodki::napolni_letni_tabela() {
                                 ui->tbl_storitve_3->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve_3->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve_3->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve_3->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve_3->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza vseh storitev v izbrani skupini
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1283,7 +1305,8 @@ void wid_prihodki::napolni_letni_tabela() {
                             ui->tbl_storitve_3->setColumnHidden(2, false); // skupina
                             ui->tbl_storitve_3->setColumnHidden(3, true); // storitev
                             ui->tbl_storitve_3->setColumnHidden(4, false); // ure
-                            ui->tbl_storitve_3->setColumnHidden(5, false); // znesek
+                            ui->tbl_storitve_3->setColumnHidden(5, false); // znesek z ddv
+                            ui->tbl_storitve_3->setColumnHidden(6, false); // znesek brez ddv
 
                             // pripravi sql stavek za primer prikaza vseh skupin
                             stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1300,7 +1323,8 @@ void wid_prihodki::napolni_letni_tabela() {
                         ui->tbl_storitve_3->setColumnHidden(2, true); // skupina
                         ui->tbl_storitve_3->setColumnHidden(3, true); // storitev
                         ui->tbl_storitve_3->setColumnHidden(4, false); // ure
-                        ui->tbl_storitve_3->setColumnHidden(5, false); // znesek
+                        ui->tbl_storitve_3->setColumnHidden(5, false); // znesek z ddv
+                        ui->tbl_storitve_3->setColumnHidden(6, false); // znesek brez ddv
 
                         // pripravi sql stavek za primer prikaza vseh sklopov
                         stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "'";
@@ -1336,6 +1360,8 @@ void wid_prihodki::napolni_letni_tabela() {
                 // pojdi skozi vsa opravila pri predhodno izbranih racunih in pri vsakem poisci storitev, ki jo trenutno potrebujemo
                 double sestevek_ure = 0.0;
                 double sestevek_znesek = 0.0;
+                double sestevek_znesek_brez_ddv = 0.0;
+
                 for ( int a = 0; a < seznam_id_racunov.count(); a++ ) {
 
                     QSqlQuery sql_sestevek;
@@ -1347,6 +1373,7 @@ void wid_prihodki::napolni_letni_tabela() {
                         sestevek_ure += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("ur_dela")).toString()).toDouble();
                         sestevek_znesek += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble() +
                                                              prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_ddv")).toString()).toDouble();
+                        sestevek_znesek_brez_ddv += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble();
                     }
 
                     sql_sestevek.clear();
@@ -1359,6 +1386,10 @@ void wid_prihodki::napolni_letni_tabela() {
                 QTableWidgetItem *znesek = new QTableWidgetItem;
                 znesek->setText(QString::number(sestevek_znesek, 'f', 2) + " EUR");
                 ui->tbl_storitve_3->setItem(row, 5, znesek);
+
+                QTableWidgetItem *znesek_brez_ddv = new QTableWidgetItem;
+                znesek_brez_ddv->setText(QString::number(sestevek_znesek_brez_ddv, 'f', 2) + " EUR");
+                ui->tbl_storitve_3->setItem(row, 6, znesek_brez_ddv);
 
                 // skrij polja, kjer je stevilo opravljenih ur 0
                 if ( sestevek_ure == 0.0 ) {
@@ -1533,7 +1564,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         // clear previous content
         ui->tbl_storitve_4->clear();
 
-        for (int i = 0; i <= 6; i++) {
+        for (int i = 0; i <= 7; i++) {
             ui->tbl_storitve_4->removeColumn(0);
         }
 
@@ -1551,6 +1582,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         ui->tbl_storitve_4->insertColumn(3);
         ui->tbl_storitve_4->insertColumn(4);
         ui->tbl_storitve_4->insertColumn(5);
+        ui->tbl_storitve_4->insertColumn(6);
 
         QTableWidgetItem *naslov0 = new QTableWidgetItem;
         QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -1558,6 +1590,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         QTableWidgetItem *naslov3 = new QTableWidgetItem;
         QTableWidgetItem *naslov4 = new QTableWidgetItem;
         QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
 
         naslov0->setText("ID");
         naslov1->setText("Sklop");
@@ -1565,6 +1598,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
         naslov5->setText("Prihodek z DDV");
+        naslov6->setText("Prihodek brez DDV");
 
         ui->tbl_storitve_4->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve_4->setHorizontalHeaderItem(1, naslov1);
@@ -1572,6 +1606,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         ui->tbl_storitve_4->setHorizontalHeaderItem(3, naslov3);
         ui->tbl_storitve_4->setHorizontalHeaderItem(4, naslov4);
         ui->tbl_storitve_4->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_storitve_4->setHorizontalHeaderItem(6, naslov6);
 
         ui->tbl_storitve_4->setColumnWidth(0, 35);
 
@@ -1638,7 +1673,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                 ui->tbl_storitve_4->setColumnHidden(2, false); // skupina
                 ui->tbl_storitve_4->setColumnHidden(3, false); // storitev
                 ui->tbl_storitve_4->setColumnHidden(4, false); // ure
-                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek
+                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek z ddv
+                ui->tbl_storitve_4->setColumnHidden(6, false); // znesek brez ddv
 
                 // pripravi sql stavek za primer prikaza vseh storitev
                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1656,7 +1692,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                                 ui->tbl_storitve_4->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve_4->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve_4->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve_4->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza izbrane storitve
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1676,7 +1713,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                                 ui->tbl_storitve_4->setColumnHidden(2, false); // skupina
                                 ui->tbl_storitve_4->setColumnHidden(3, false); // storitev
                                 ui->tbl_storitve_4->setColumnHidden(4, false); // ure
-                                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek
+                                ui->tbl_storitve_4->setColumnHidden(5, false); // znesek z ddv
+                                ui->tbl_storitve_4->setColumnHidden(6, false); // znesek brez ddv
 
                                 // pripravi sql stavek za primer prikaza vseh storitev v izbrani skupini
                                 stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1695,7 +1733,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                             ui->tbl_storitve_4->setColumnHidden(2, false); // skupina
                             ui->tbl_storitve_4->setColumnHidden(3, true); // storitev
                             ui->tbl_storitve_4->setColumnHidden(4, false); // ure
-                            ui->tbl_storitve_4->setColumnHidden(5, false); // znesek
+                            ui->tbl_storitve_4->setColumnHidden(5, false); // znesek z ddv
+                            ui->tbl_storitve_4->setColumnHidden(6, false); // znesek brez ddv
 
                             // pripravi sql stavek za primer prikaza vseh skupin
                             stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "' "
@@ -1712,7 +1751,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                         ui->tbl_storitve_4->setColumnHidden(2, true); // skupina
                         ui->tbl_storitve_4->setColumnHidden(3, true); // storitev
                         ui->tbl_storitve_4->setColumnHidden(4, false); // ure
-                        ui->tbl_storitve_4->setColumnHidden(5, false); // znesek
+                        ui->tbl_storitve_4->setColumnHidden(5, false); // znesek z ddv
+                        ui->tbl_storitve_4->setColumnHidden(6, false); // znesek brez ddv
 
                         // pripravi sql stavek za primer prikaza vseh sklopov
                         stavek_sestevek = "AND opravilo_sklop LIKE '" + sql_storitve.value(sql_storitve.record().indexOf("sklop")).toString() + "'";
@@ -1748,6 +1788,8 @@ void wid_prihodki::napolni_skupni_tabela() {
                 // pojdi skozi vsa opravila pri predhodno izbranih racunih in pri vsakem poisci storitev, ki jo trenutno potrebujemo
                 double sestevek_ure = 0.0;
                 double sestevek_znesek = 0.0;
+                double sestevek_znesek_brez_ddv = 0.0;
+
                 for ( int a = 0; a < seznam_id_racunov.count(); a++ ) {
 
                     QSqlQuery sql_sestevek;
@@ -1759,6 +1801,7 @@ void wid_prihodki::napolni_skupni_tabela() {
                         sestevek_ure += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("ur_dela")).toString()).toDouble();
                         sestevek_znesek += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble() +
                                                              prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_ddv")).toString()).toDouble();
+                        sestevek_znesek_brez_ddv += prevedi(sql_sestevek.value(sql_sestevek.record().indexOf("znesek_koncni")).toString()).toDouble();
                     }
 
                     sql_sestevek.clear();
@@ -1771,6 +1814,10 @@ void wid_prihodki::napolni_skupni_tabela() {
                 QTableWidgetItem *znesek = new QTableWidgetItem;
                 znesek->setText(QString::number(sestevek_znesek, 'f', 2) + " EUR");
                 ui->tbl_storitve_4->setItem(row, 5, znesek);
+
+                QTableWidgetItem *znesek_brez_ddv = new QTableWidgetItem;
+                znesek_brez_ddv->setText(QString::number(sestevek_znesek_brez_ddv, 'f', 2) + " EUR");
+                ui->tbl_storitve_4->setItem(row, 6, znesek_brez_ddv);
 
                 // skrij polja, kjer je stevilo opravljenih ur 0
                 if ( sestevek_ure == 0.0 ) {
