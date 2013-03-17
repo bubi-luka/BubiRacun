@@ -14,6 +14,48 @@ wid_poslovanje::wid_poslovanje(QWidget *parent) :
 {
     ui->setupUi(this);
 
+        // skrij razliko in povprecno poslovanje
+        ui->label_16->setVisible(false);
+        ui->label_17->setVisible(false);
+        ui->txt_pp_januar->setVisible(false);
+        ui->txt_razlika_januar->setVisible(false);
+        ui->txt_pp_februar->setVisible(false);
+        ui->txt_razlika_februar->setVisible(false);
+        ui->txt_pp_marec->setVisible(false);
+        ui->txt_razlika_marec->setVisible(false);
+        ui->txt_pp_april->setVisible(false);
+        ui->txt_razlika_april->setVisible(false);
+        ui->txt_pp_maj->setVisible(false);
+        ui->txt_razlika_maj->setVisible(false);
+        ui->txt_pp_junij->setVisible(false);
+        ui->txt_razlika_junij->setVisible(false);
+        ui->txt_pp_avgust->setVisible(false);
+        ui->txt_razlika_avgust->setVisible(false);
+        ui->txt_pp_julij->setVisible(false);
+        ui->txt_razlika_julij->setVisible(false);
+        ui->txt_pp_september->setVisible(false);
+        ui->txt_razlika_september->setVisible(false);
+        ui->txt_pp_oktober->setVisible(false);
+        ui->txt_razlika_oktober->setVisible(false);
+        ui->txt_pp_november->setVisible(false);
+        ui->txt_razlika_november->setVisible(false);
+        ui->txt_pp_december->setVisible(false);
+        ui->txt_razlika_december->setVisible(false);
+
+        ui->label_34->setVisible(false);
+        ui->txt_pp_januar_2->setVisible(false);
+        ui->txt_pp_februar_2->setVisible(false);
+        ui->txt_pp_marec_2->setVisible(false);
+        ui->txt_pp_april_2->setVisible(false);
+        ui->txt_pp_maj_2->setVisible(false);
+        ui->txt_pp_junij_2->setVisible(false);
+        ui->txt_pp_avgust_2->setVisible(false);
+        ui->txt_pp_julij_2->setVisible(false);
+        ui->txt_pp_september_2->setVisible(false);
+        ui->txt_pp_oktober_2->setVisible(false);
+        ui->txt_pp_november_2->setVisible(false);
+        ui->txt_pp_december_2->setVisible(false);
+
         // leto
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
