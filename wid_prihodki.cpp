@@ -735,7 +735,7 @@ void wid_prihodki::napolni_mesec_tabela() {
         naslov2->setText("Skupina");
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
-        naslov5->setText("Prihodek");
+        naslov5->setText("Prihodek z DDV");
 
         ui->tbl_storitve->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve->setHorizontalHeaderItem(1, naslov1);
@@ -1151,7 +1151,7 @@ void wid_prihodki::napolni_letni_tabela() {
         naslov2->setText("Skupina");
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
-        naslov5->setText("Prihodek");
+        naslov5->setText("Prihodek z DDV");
 
         ui->tbl_storitve_3->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve_3->setHorizontalHeaderItem(1, naslov1);
@@ -1564,7 +1564,7 @@ void wid_prihodki::napolni_skupni_tabela() {
         naslov2->setText("Skupina");
         naslov3->setText("Storitev");
         naslov4->setText("Oddelanih ur");
-        naslov5->setText("Prihodek");
+        naslov5->setText("Prihodek z DDV");
 
         ui->tbl_storitve_4->setHorizontalHeaderItem(0, naslov0);
         ui->tbl_storitve_4->setHorizontalHeaderItem(1, naslov1);
