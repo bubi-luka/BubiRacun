@@ -123,6 +123,9 @@ projekti::projekti(QWidget *parent) :
     ui->label_47->setVisible(false);
     ui->txt_st_ur_dela->setVisible(false);
 
+    // skrij polje z originalnim datumom zakljucka
+    ui->txt_orig_datum_konca_dela->setHidden(true);
+
     // napolni tabele in spustne sezname
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
@@ -222,9 +225,13 @@ void projekti::on_txt_status_projekta_currentIndexChanged() {
 
     if ( ui->txt_status_projekta->currentText().left(6) == "Zaklju" ) { // Zakljuceno
         ui->label_6->setText("Datum konca dela:");
+        ui->txt_orig_datum_konca_dela->setText(ui->txt_konec->date().toString("dd.MM.yyyy"));
+        ui->txt_konec->setDate(QDate::currentDate());
     }
     else {
         ui->label_6->setText("Predviden datum konca dela:");
+        ui->txt_konec->setDate(QDate::fromString(ui->txt_orig_datum_konca_dela->text(), "dd.MM.yyyy"));
+        ui->txt_orig_datum_konca_dela->setText("");
     }
 
 }
