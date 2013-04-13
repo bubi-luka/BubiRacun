@@ -41,14 +41,19 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     ui->setupUi(this);
 
     if ( vApp->id() == "" ) {
-        qDebug("1111");
         prijava *okno_prijava = new prijava;
         okno_prijava->show();
     }
     else {
         exit(1);
     }
+
+    // povecaj cez cel ekran
     showMaximized();
+
+    // skrijemo polja, ki jih ne potrebujemo
+    ui->txt_pozicija->setVisible(false);
+    ui->txt_uporabnik->setVisible(false);
 
 }
 
@@ -447,10 +452,6 @@ void GlavnoOkno::zacetek() {
        base.close();
 
        podatki();
-
-       // skrijemo polja, ki jih ne potrebujemo
-       ui->txt_pozicija->setVisible(false);
-       ui->txt_uporabnik->setVisible(false);
 
        // odpremo osnovni pogled
        osnovni_pogled();
