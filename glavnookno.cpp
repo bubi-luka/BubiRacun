@@ -16,6 +16,7 @@
 #include "wid_prejetiracuni.h"
 #include "wid_stranke.h"
 #include "wid_projekti.h"
+#include "prijava.h"
 #include "wid_kuponi.h"
 #include "wid_racuni.h"
 #include "wid_opombepriracunih.h"
@@ -39,91 +40,15 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(sekundnik()));
-    timer->start(1000);
-
-    QString datum = QDate::currentDate().toString("dd.MM.yyyy");
-    QString ura = QTime::currentTime().toString("HH:mm:ss");
-
-    ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
-
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
-
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
+    if ( vApp->id() == "" ) {
+        qDebug("1111");
+        prijava *okno_prijava = new prijava;
+        okno_prijava->show();
     }
     else {
-        // baza je odprta
-
-        // pogleda, ali obstajajo vnesene nastavitve, drugace prisili uporabnika v njihov vnos
-        QSqlQuery sql_nastavitve;
-        sql_nastavitve.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
-        sql_nastavitve.exec();
-        if ( sql_nastavitve.next() ) {
-            if ( sql_nastavitve.value(sql_nastavitve.record().indexOf("vrednost")).toString() == "" ) {
-                nastavitve *okno = new nastavitve;
-                okno->open();
-            }
-        }
+        exit(1);
     }
-    base.close();
-
-    podatki();
-
-    // skrijemo polja, ki jih ne potrebujemo
-    ui->txt_pozicija->setVisible(false);
-    ui->txt_uporabnik->setVisible(false);
-
-    // odpremo osnovni pogled
-    osnovni_pogled();
-
-    // create system tray icon
-
-    minimizeAction = new QAction(tr("Mi&nimize"), this);
-    connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
-
-    maximizeAction = new QAction(tr("Ma&ximize"), this);
-    connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
-
-    restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
-
-    quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-    if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
-
-
-        // create context menu
-        QMenu *sys_menu = new QMenu;
-        sys_menu->addAction(minimizeAction);
-        sys_menu->addAction(maximizeAction);
-        sys_menu->addAction(restoreAction);
-        sys_menu->addSeparator();
-        sys_menu->addAction(quitAction);
-
-        QIcon ikona;
-        QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
-        ikona.addFile(pot_do_stilske_datoteke + "/sandy/ok.png");
-
-        // create system tray icon
-        ikonca = new QSystemTrayIcon(this);
-        ikonca->setContextMenu(sys_menu);
-        ikonca->setIcon(ikona);
-        ikonca->show();
-
-        connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-    }
+    showMaximized();
 
 }
 
@@ -155,16 +80,20 @@ void GlavnoOkno::on_btn_home_clicked() {
 
 void GlavnoOkno::setVisible(bool visible)
 {
-    minimizeAction->setEnabled(visible);
-    maximizeAction->setEnabled(!isMaximized());
-    restoreAction->setEnabled(isMaximized() || !visible);
+    if ( vApp->id() != "" ) {
+        minimizeAction->setEnabled(visible);
+        maximizeAction->setEnabled(!isMaximized());
+        restoreAction->setEnabled(isMaximized() || !visible);
+    }
     QMainWindow::setVisible(visible);
 }
 
 void GlavnoOkno::closeEvent(QCloseEvent *event)
 {
+    if (ikonca->isVisible()) {
         hide();
         event->ignore();
+    }
 }
 
 void GlavnoOkno::sekundnik() {
@@ -392,6 +321,8 @@ void GlavnoOkno::on_actionRa_uni_triggered() {
 void GlavnoOkno::varnost_id_changed() {
 
     podatki();
+    zacetek();
+    osnovni_pogled();
 
 }
 
@@ -472,5 +403,96 @@ void GlavnoOkno::podatki() {
 
     ui->txt_uporabnik->setText(vApp->id());
     ui->txt_pozicija->setText(prevedi(vApp->state()));
+
+}
+
+void GlavnoOkno::zacetek() {
+
+   QTimer *timer = new QTimer(this);
+   connect(timer, SIGNAL(timeout()), this, SLOT(sekundnik()));
+   timer->start(1000);
+
+   QString datum = QDate::currentDate().toString("dd.MM.yyyy");
+   QString ura = QTime::currentTime().toString("HH:mm:ss");
+
+       ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
+
+       QString app_path = QApplication::applicationDirPath();
+       QString dbase_path = app_path + "/base.bz";
+
+       QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+       base.setDatabaseName(dbase_path);
+       base.database();
+       base.open();
+       if(base.isOpen() != true){
+           QMessageBox msgbox;
+           msgbox.setText("Baze ni bilo moc odpreti");
+           msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+           msgbox.exec();
+       }
+       else {
+           // baza je odprta
+
+           // pogleda, ali obstajajo vnesene nastavitve, drugace prisili uporabnika v njihov vnos
+           QSqlQuery sql_nastavitve;
+           sql_nastavitve.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
+           sql_nastavitve.exec();
+           if ( sql_nastavitve.next() ) {
+               if ( sql_nastavitve.value(sql_nastavitve.record().indexOf("vrednost")).toString() == "" ) {
+                   nastavitve *okno = new nastavitve;
+                   okno->open();
+               }
+           }
+       }
+       base.close();
+
+       podatki();
+
+       // skrijemo polja, ki jih ne potrebujemo
+       ui->txt_pozicija->setVisible(false);
+       ui->txt_uporabnik->setVisible(false);
+
+       // odpremo osnovni pogled
+       osnovni_pogled();
+
+       // ker kot kaze 2x odpremo glavno okno, bomo ikono zagnali le, ko je okno dejansko odprto!!
+       if ( vApp->id() != "" ) {
+           // create system tray icon
+           minimizeAction = new QAction(tr("Mi&nimize"), this);
+           connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+
+           maximizeAction = new QAction(tr("Ma&ximize"), this);
+           connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+
+           restoreAction = new QAction(tr("&Restore"), this);
+           connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+
+           quitAction = new QAction(tr("&Quit"), this);
+           connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+           if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
+
+               // create context menu
+               QMenu *sys_menu = new QMenu;
+               sys_menu->addAction(minimizeAction);
+               sys_menu->addAction(maximizeAction);
+               sys_menu->addAction(restoreAction);
+               sys_menu->addSeparator();
+               sys_menu->addAction(quitAction);
+
+               QIcon ikona;
+               QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
+               ikona.addFile(pot_do_stilske_datoteke + "/srcek.svg");
+
+               // create system tray icon
+               ikonca = new QSystemTrayIcon(this);
+               ikonca->setContextMenu(sys_menu);
+               ikonca->setIcon(ikona);
+               ikonca->show();
+
+               connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                       this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+           }
+       }
 
 }

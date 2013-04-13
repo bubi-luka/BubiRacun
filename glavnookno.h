@@ -54,6 +54,7 @@ private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void podatki();
+    void zacetek();
     void osnovni_pogled();
 
     QString pretvori(QString besedilo);
