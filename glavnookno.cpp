@@ -351,7 +351,7 @@ void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
     else if ( (event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier) ) {
         prijava *okno_prijava = new prijava;
         okno_prijava->show();
-        GlavnoOkno::close();
+//        GlavnoOkno::close();
     }
     else if ( (event->key() == Qt::Key_S) && (event->modifiers() == Qt::AltModifier) ) {
 
