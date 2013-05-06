@@ -86,8 +86,8 @@ SOURCES += \
 		nastavitve.cpp \
 		avtomobili.cpp \
 		wid_avtomobili.cpp \
-    wid_stroskiprehrane.cpp \
-    sif_cenamalice.cpp
+                wid_stroskiprehrane.cpp \
+                sif_cenamalice.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -128,8 +128,8 @@ FORMS += \
 		nastavitve.ui \
 		avtomobili.ui \
 		wid_avtomobili.ui \
-    wid_stroskiprehrane.ui \
-    sif_cenamalice.ui
+                wid_stroskiprehrane.ui \
+                sif_cenamalice.ui
 
 QT += sql
 QT += network
@@ -163,5 +163,5 @@ OTHER_FILES += \
 		licence.txt \
 		news.txt \
 		readme.txt \
-    README.md \
-    srcek.svg
+                README.md \
+                srcek.svg
