@@ -21,6 +21,8 @@ private slots:
     void on_btn_ponastavi_clicked();
     void on_btn_izhod_clicked();
     void on_btn_shrani_clicked();
+    void on_btn_import_clicked();
+    void on_btn_export_clicked();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

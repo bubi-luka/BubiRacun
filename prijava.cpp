@@ -302,11 +302,6 @@ void prijava::on_btn_prijavi_clicked() {
 
                     // ustvari varnostno kopijo
                     varnostna_kopija();
-
-                    // prikazi glavno okno
-                    GlavnoOkno *glavnookno = new GlavnoOkno;
-                    glavnookno->showMaximized();
-                    glavnookno->show();
                     this->close();
                 }
                 else {

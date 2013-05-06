@@ -5,7 +5,6 @@
 #include <QApplication>
 
 #include "main.h"
-#include "prijava.h"
 #include "varnost.h"
 #include "glavnookno.h"
 
@@ -21,11 +20,9 @@ int main(int argc, char *argv[])
     datoteka.close();
 
 	// create signal-slot connections
-	GlavnoOkno *varnost_GlavnoOkno = new GlavnoOkno;
-	QObject::connect(&app, SIGNAL(id_changed()), varnost_GlavnoOkno, SLOT(varnost_id_changed()));
-
-	prijava *okno_prijava = new prijava;
-	okno_prijava->show();
+    GlavnoOkno *glavno_okno = new GlavnoOkno;
+    QObject::connect(&app, SIGNAL(id_changed()), glavno_okno, SLOT(varnost_id_changed()));
+    glavno_okno->show();
     return app.exec();
 
 }
