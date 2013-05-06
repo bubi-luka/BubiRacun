@@ -1,10 +1,10 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QWidget>
+#include <QtWidgets>
 #include <QKeyEvent>
 #include <QtSql>
 #include <QMessageBox>
-#include <QColorGroup>
 
 #include "glavnookno.h"
 #include "ui_glavnookno.h"

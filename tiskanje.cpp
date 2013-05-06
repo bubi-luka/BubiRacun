@@ -3048,7 +3048,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                 racun_stevilka_starsa = prevedi(sql_stars.value(sql_stars.record().indexOf("stevilka_racuna")).toString());
             }
         }
-        qDebug(racun_stevilka_starsa.toAscii());
+        qDebug(racun_stevilka_starsa.toLatin1());
 
         QSqlQuery sql_pot;
         sql_pot.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
