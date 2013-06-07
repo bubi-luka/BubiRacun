@@ -131,9 +131,9 @@ FORMS += \
 		wid_stroskiprehrane.ui \
 		sif_cenamalice.ui
 
+QT	+= widgets
 QT	+= sql
 QT	+= network
-QT	+= widgets
 QT	+= printsupport
 
 OTHER_FILES += \

@@ -457,43 +457,43 @@ void GlavnoOkno::zacetek() {
        osnovni_pogled();
 
        // ker kot kaze 2x odpremo glavno okno, bomo ikono zagnali le, ko je okno dejansko odprto!!
-       if ( vApp->id() != "" ) {
-           // create system tray icon
-           minimizeAction = new QAction(tr("Mi&nimize"), this);
-           connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+//       if ( vApp->id() != "" ) {
+//           // create system tray icon
+//           minimizeAction = new QAction(tr("Mi&nimize"), this);
+//           connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
 
-           maximizeAction = new QAction(tr("Ma&ximize"), this);
-           connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+//           maximizeAction = new QAction(tr("Ma&ximize"), this);
+//           connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
 
-           restoreAction = new QAction(tr("&Restore"), this);
-           connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+//           restoreAction = new QAction(tr("&Restore"), this);
+//           connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
 
-           quitAction = new QAction(tr("&Quit"), this);
-           connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+//           quitAction = new QAction(tr("&Quit"), this);
+//           connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-           if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
+//           if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
 
-               // create context menu
-               QMenu *sys_menu = new QMenu;
-               sys_menu->addAction(minimizeAction);
-               sys_menu->addAction(maximizeAction);
-               sys_menu->addAction(restoreAction);
-               sys_menu->addSeparator();
-               sys_menu->addAction(quitAction);
+//               // create context menu
+//               QMenu *sys_menu = new QMenu;
+//               sys_menu->addAction(minimizeAction);
+//               sys_menu->addAction(maximizeAction);
+//               sys_menu->addAction(restoreAction);
+//               sys_menu->addSeparator();
+//               sys_menu->addAction(quitAction);
 
-               QIcon ikona;
-               QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
-               ikona.addFile(pot_do_stilske_datoteke + "/srcek.svg");
+//               QIcon ikona;
+//               QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
+//               ikona.addFile(pot_do_stilske_datoteke + "/srcek.svg");
 
-               // create system tray icon
-               ikonca = new QSystemTrayIcon(this);
-               ikonca->setContextMenu(sys_menu);
-               ikonca->setIcon(ikona);
-               ikonca->show();
+//               // create system tray icon
+//               ikonca = new QSystemTrayIcon(this);
+//               ikonca->setContextMenu(sys_menu);
+//               ikonca->setIcon(ikona);
+//               ikonca->show();
 
-               connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                       this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-           }
-       }
+//               connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+//                       this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+//           }
+//       }
 
 }

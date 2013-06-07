@@ -3,8 +3,9 @@
 #include <QDateTime>
 #include <QMessageBox>
 #include <QPainter>
-#include <QPrinter>
-#include <QPrintDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+
 
 #include "tiskanje.h"
 #include "ui_tiskanje.h"
