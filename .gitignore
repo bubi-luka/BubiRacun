@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # C++ objects and libs
+=======
+﻿# C++ objects and libs
+>>>>>>> master
 
 *.slo
 *.lo
@@ -17,4 +21,8 @@
 moc_*.cpp
 qrc_*.cpp
 Makefile
+<<<<<<< HEAD
 *-build-*
+=======
+*-build-*
+>>>>>>> master
