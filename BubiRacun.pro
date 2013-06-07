@@ -166,4 +166,5 @@ OTHER_FILES += \
 		news.txt \
 		readme.txt \
 		README.md \
-		srcek.svg
+		srcek.svg \
+		srcek.ico
