@@ -25,6 +25,10 @@ private slots:
     void on_btn_predplacilni_racun_clicked();
     void on_tbl_opravila_doubleClicked();
 
+    void on_rb_fizicna_toggled();
+    void on_rb_pravna_toggled();
+    void napolni_stranke();
+
     void on_txt_stranka_currentIndexChanged();
     void on_txt_stranka_id_textChanged();
     void on_txt_projekt_currentIndexChanged();

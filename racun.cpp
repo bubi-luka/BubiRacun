@@ -41,6 +41,11 @@ racun::racun(QWidget *parent) :
         ui->txt_datum_pricetka->setDate(QDate::currentDate());
         ui->txt_datum_zakljucka->setDate(QDate::currentDate());
 
+        ui->rb_fizicna->setText("");
+        ui->rb_pravna->setText("");
+        ui->rb_fizicna->setChecked(true);
+        ui->rb_pravna->setChecked(false);
+
         ui->txt_banka->clear();
         ui->txt_bic->setText("");
         ui->txt_koda_namena->clear();
@@ -138,7 +143,6 @@ racun::racun(QWidget *parent) :
             // napolni spustne sezname
             ui->txt_status_predracuna->addItem("");
             ui->txt_projekt->addItem("");
-            ui->txt_stranka->addItem("");
             ui->txt_status_placila->addItem("");
             ui->txt_status_racunovodstva->addItem("");
             ui->txt_status_oddaje_racuna->addItem("");
@@ -148,21 +152,6 @@ racun::racun(QWidget *parent) :
             sql_fill_combo.exec();
             while ( sql_fill_combo.next() ) {
                 ui->txt_status_predracuna->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("status")).toString()));
-            }
-            sql_fill_combo.clear();
-
-            sql_fill_combo.prepare("SELECT * FROM stranke");
-            sql_fill_combo.exec();
-            while (sql_fill_combo.next()) {
-                if (prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("tip")).toString()) == "1" ) {
-                    ui->txt_stranka->addItem(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString() + ") "
-                                             + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()) + ", "
-                                             + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
-                }
-                else {
-                    ui->txt_stranka->addItem(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString() + ") "
-                                             + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
-                }
             }
             sql_fill_combo.clear();
 
@@ -1364,6 +1353,23 @@ void racun::prejem(QString besedilo) {
             sql_napolni.exec();
             if (sql_napolni.next()) {
                 ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
+
+                // pripravi tip stranke, da bodo prave vrednosti v samem spustnem seznamu
+                QSqlQuery sql_stranka;
+                sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString() + "'");
+                sql_stranka.exec();
+                if ( sql_stranka.next() ) {
+                    if ( sql_stranka.value(sql_stranka.record().indexOf("tip")).toString() == "1" ) { // fizicna
+                        ui->rb_fizicna->setChecked(true);
+                        ui->rb_pravna->setChecked(false);
+                    }
+                    else { // pravna
+                        ui->rb_fizicna->setChecked(false);
+                        ui->rb_pravna->setChecked(true);
+                    }
+                }
+                sql_stranka.clear();
+
                 ui->txt_stranka_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString()));
                 ui->txt_stevilka_racuna->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_racuna")).toString()));
                 ui->txt_stevilka_starsa->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("stevilka_starsa")).toString()));
@@ -3046,6 +3052,83 @@ void racun::on_txt_banka_currentIndexChanged() {
         if ( sql_pot.next() ) {
             ui->txt_bic->setText(prevedi(sql_pot.value(sql_pot.record().indexOf("bic")).toString()));
         }
+    }
+    base.close();
+
+}
+
+void racun::on_rb_fizicna_toggled() {
+
+    if ( ui->rb_fizicna->isChecked() ) {
+        ui->rb_fizicna->setChecked(true);
+        ui->rb_pravna->setChecked(false);
+    }
+    else {
+        ui->rb_fizicna->setChecked(false);
+        ui->rb_pravna->setChecked(true);
+    }
+
+    napolni_stranke();
+
+}
+
+void racun::on_rb_pravna_toggled() {
+
+    if ( ui->rb_fizicna->isChecked() ) {
+        ui->rb_fizicna->setChecked(true);
+        ui->rb_pravna->setChecked(false);
+    }
+    else {
+        ui->rb_fizicna->setChecked(false);
+        ui->rb_pravna->setChecked(true);
+    }
+
+    napolni_stranke();
+
+}
+
+void racun::napolni_stranke() {
+
+    ui->txt_stranka->clear();
+    ui->txt_stranka->addItem("");
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni-stranke");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QSqlQuery sql_fill_combo;
+        if ( ui->rb_fizicna->isChecked() ) {
+            sql_fill_combo.prepare("SELECT * FROM stranke WHERE tip LIKE '1' ORDER BY priimek ASC");
+        }
+        else {
+            sql_fill_combo.prepare("SELECT * FROM stranke WHERE tip LIKE '2' ORDER BY priimek ASC");
+        }
+        sql_fill_combo.exec();
+        while (sql_fill_combo.next()) {
+            if (prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("tip")).toString()) == "1" ) {
+                ui->txt_stranka->addItem(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString() + ") "
+                                       + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("priimek")).toString()) + ", "
+                                       + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
+            }
+            else {
+                ui->txt_stranka->addItem(sql_fill_combo.value(sql_fill_combo.record().indexOf("id")).toString() + ") "
+                                       + prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime")).toString()));
+            }
+        }
+        sql_fill_combo.clear();
+
     }
     base.close();
 
