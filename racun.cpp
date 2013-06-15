@@ -1114,6 +1114,8 @@ void racun::on_btn_sprejmi_clicked() {
 
 void racun::napolni() {
 
+    ui->tbl_opravila->setSortingEnabled(false);
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -1202,7 +1204,7 @@ void racun::napolni() {
         }
 
         sql_fill.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) +
-                         "' ORDER BY 'vrstni_red' ASC");
+                         "' ORDER BY vrstni_red ASC");
         sql_fill.exec();
 
         int row = 0;
@@ -2986,6 +2988,36 @@ void racun::on_btn_opravilo_dol_clicked() {
 }
 
 void racun::vnesi_vrstni_red() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "vnos-vrstnega-reda");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        QSqlQuery sql_vnesi_vrstni_red;
+
+        // zaokrozi prek celotne tabele opravil
+        for ( int i = 0; i < ui->tbl_opravila->rowCount(); i++ ) {
+            sql_vnesi_vrstni_red.prepare("UPDATE opravila SET vrstni_red = ? WHERE id LIKE '" +
+                                         ui->tbl_opravila->item(i, 0)->text() + "'");
+            sql_vnesi_vrstni_red.bindValue(0, QString::number(i, 10));
+            sql_vnesi_vrstni_red.exec();
+            sql_vnesi_vrstni_red.clear();
+        }
+
+    }
+    base.close();
 
 }
 
