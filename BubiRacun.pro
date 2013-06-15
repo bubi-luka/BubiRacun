@@ -42,7 +42,8 @@ HEADERS += \
 		avtomobili.h \
 		wid_avtomobili.h \
 		wid_stroskiprehrane.h \
-		sif_cenamalice.h
+		sif_cenamalice.h \
+    sif_delavniki.h
 
 SOURCES += \
 		main.cpp \
@@ -87,7 +88,8 @@ SOURCES += \
 		avtomobili.cpp \
 		wid_avtomobili.cpp \
 		wid_stroskiprehrane.cpp \
-		sif_cenamalice.cpp
+		sif_cenamalice.cpp \
+    sif_delavniki.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -129,7 +131,8 @@ FORMS += \
 		avtomobili.ui \
 		wid_avtomobili.ui \
 		wid_stroskiprehrane.ui \
-		sif_cenamalice.ui
+		sif_cenamalice.ui \
+    sif_delavniki.ui
 
 QT	+= widgets
 QT	+= sql

@@ -145,7 +145,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>583</height>
+         <height>582</height>
         </rect>
        </property>
       </widget>
@@ -225,6 +225,7 @@ border:0;</string>
     <addaction name="actionKilometrina"/>
     <addaction name="actionDnevnice"/>
     <addaction name="actionCena_malice"/>
+    <addaction name="actionDelavniki"/>
    </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
@@ -366,6 +367,11 @@ border:0;</string>
   <action name="actionDopusti_bolni_ke">
    <property name="text">
     <string>Dopusti, bolniške</string>
+   </property>
+  </action>
+  <action name="actionDelavniki">
+   <property name="text">
+    <string>Delavniki</string>
    </property>
   </action>
  </widget>

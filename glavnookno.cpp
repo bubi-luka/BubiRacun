@@ -9,6 +9,7 @@
 #include "glavnookno.h"
 #include "ui_glavnookno.h"
 #include "sif_dnevnice.h"
+#include "sif_delavniki.h"
 #include "sif_kilometrina.h"
 #include "wid_uporabnik.h"
 #include "wid_podjetje.h"
@@ -245,6 +246,13 @@ void GlavnoOkno::on_actionKilometrina_triggered() {
 void GlavnoOkno::on_actionDnevnice_triggered() {
 
     sif_dnevnice *odpri = new sif_dnevnice;
+    odpri->show();
+
+}
+
+void GlavnoOkno::on_actionDelavniki_triggered() {
+
+    sif_delavniki *odpri = new sif_delavniki;
     odpri->show();
 
 }

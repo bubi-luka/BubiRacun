@@ -36,6 +36,7 @@ private slots:
     void on_actionOpombe_pri_ra_unih_triggered();
     void on_actionKilometrina_triggered();
     void on_actionDnevnice_triggered();
+    void on_actionDelavniki_triggered();
     void on_actionCena_malice_triggered();
     void on_actionPrihodek_triggered();
     void on_actionIzdatek_triggered();

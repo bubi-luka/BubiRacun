@@ -2,7 +2,6 @@
 #define PRIJAVA_H
 
 #include <QDialog>
-#include <QNetworkReply>
 
 #include "varnost.h"
 
@@ -26,10 +25,6 @@ private slots:
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
-
-    // prenos informacij s spletnih strani
-    void pridobi_podatke();
-    void konec_odziva(QNetworkReply *odgovor);
 
     // ustvari varnostno kopijo
     void varnostna_kopija();
