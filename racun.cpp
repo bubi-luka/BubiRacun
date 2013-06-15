@@ -441,8 +441,9 @@ void racun::on_btn_racun_clicked() {
                                                                      "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
                                                                      "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
                                                                      "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-                                                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
-                                                                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
+                                                                     "opravilo_rocno, vrstni_red) "
+                                                                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
             sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
             sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -474,6 +475,7 @@ void racun::on_btn_racun_clicked() {
             sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
             sql_kopiraj_opravila.bindValue(29, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_sklop")).toString());
             sql_kopiraj_opravila.bindValue(30, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_rocno")).toString());
+            sql_kopiraj_opravila.bindValue(31, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("vrstni_red")).toString());
             sql_kopiraj_opravila.exec();
         }
 
@@ -679,8 +681,9 @@ void racun::on_btn_predplacilni_racun_clicked() {
                                                                      "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
                                                                      "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
                                                                      "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-                                                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, opravilo_rocno) "
-                                                                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
+                                                                     "opravilo_rocno, vrstni_red) "
+                                                                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
             sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
             sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
@@ -712,6 +715,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
             sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
             sql_kopiraj_opravila.bindValue(29, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_sklop")).toString());
             sql_kopiraj_opravila.bindValue(30, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_rocno")).toString());
+            sql_kopiraj_opravila.bindValue(31, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("vrstni_red")).toString());
             sql_kopiraj_opravila.exec();
         }
 
@@ -1197,7 +1201,8 @@ void racun::napolni() {
             tip = "3";
         }
 
-        sql_fill.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) + "'");
+        sql_fill.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) +
+                         "' ORDER BY 'vrstni_red' ASC");
         sql_fill.exec();
 
         int row = 0;
@@ -1685,7 +1690,8 @@ void racun::izracunaj() {
         }
 
         QSqlQuery sql_racun;
-        sql_racun.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) + "'");
+        sql_racun.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) +
+                          "' ORDER BY 'vrstni_red' ASC");
         sql_racun.exec();
         while ( sql_racun.next() ) {
             popusti = popusti + prevedi(sql_racun.value(sql_racun.record().indexOf("znesek_popustov")).toString()).toDouble();
@@ -1775,6 +1781,7 @@ void racun::osvezi(QString beseda) {
     if ( beseda == "opravilo" ) {
         napolni();
         izracunaj();
+        vnesi_vrstni_red();
     }
 
 }
@@ -2904,6 +2911,81 @@ void racun::on_btn_dol_clicked() {
         // ponovno oznacimo premaknjeno vrstico
         ui->tbl_vnesene_opombe->selectRow(pozicija + 1);
     }
+
+}
+
+
+void racun::on_btn_opravilo_gor_clicked() {
+
+    // dolocimo polozaj izbrane vrstice
+    int id = ui->tbl_opravila->selectedItems().takeAt(0)->row();
+
+    if ( id != 0 ) {
+
+        // dodamo novo vrstico
+        ui->tbl_opravila->insertRow(0);
+
+        // zakrozimo prek vseh stolpcev
+        for ( int i = 0; i < ui->tbl_opravila->columnCount(); i++ ) {
+
+            // prestavimo polje nad izbranim v na novo dodano vrstico
+            ui->tbl_opravila->setItem(0, i, ui->tbl_opravila->takeItem(id, i));
+
+            // prestavimo izbrano polje eno polje visje
+            ui->tbl_opravila->setItem(id, i, ui->tbl_opravila->takeItem(id + 1, i));
+
+            // prestavimo prvo prestavljena polja na mesto predhodno izbrane vrstice
+            ui->tbl_opravila->setItem(id + 1, i, ui->tbl_opravila->takeItem(0, i));
+
+        }
+
+        // izbrisemo prazno vrstico
+        ui->tbl_opravila->removeRow(0);
+
+        // izberemo pred tem izbrano vrstico (premaknjeno eno vrstico visje)
+        ui->tbl_opravila->selectRow(id - 1);
+    }
+
+    vnesi_vrstni_red();
+
+}
+
+void racun::on_btn_opravilo_dol_clicked() {
+
+    // dolocimo polozaj izbrane vrstice
+    int id = ui->tbl_opravila->selectedItems().takeAt(0)->row();
+
+    if ( id != ui->tbl_opravila->rowCount() - 1 ) {
+
+        // dodamo novo vrstico
+        ui->tbl_opravila->insertRow(0);
+
+        // zakrozimo prek vseh stolpcev
+        for ( int i = 0; i < ui->tbl_opravila->columnCount(); i++ ) {
+
+            // prestavimo polje pod izbranim v na novo dodano vrstico
+            ui->tbl_opravila->setItem(0, i, ui->tbl_opravila->takeItem(id + 2, i));
+
+            // prestavimo izbrano polje eno polje nizje
+            ui->tbl_opravila->setItem(id + 2, i, ui->tbl_opravila->takeItem(id + 1, i));
+
+            // prestavimo prvo prestavljena polja na mesto predhodno izbrane vrstice
+            ui->tbl_opravila->setItem(id + 1, i, ui->tbl_opravila->takeItem(0, i));
+
+        }
+
+        // izbrisemo prazno vrstico
+        ui->tbl_opravila->removeRow(0);
+
+        // izberemo pred tem izbrano vrstico (premaknjeno eno vrstico nizje)
+        ui->tbl_opravila->selectRow(id + 1);
+    }
+
+    vnesi_vrstni_red();
+
+}
+
+void racun::vnesi_vrstni_red() {
 
 }
 

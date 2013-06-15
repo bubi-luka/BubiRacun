@@ -951,6 +951,7 @@ void prijava::tabela_opravila() {
                                                          "stevilka_stranke TEXT, "
                                                          "stevilka_projekta TEXT, "
                                                          "stevilka_racuna TEXT, "
+                                                         "vrstni_red TEXT"
                                                          "tip_racuna TEXT, "
                                                          "opravilo_sklop TEXT, "
                                                          "opravilo_skupina TEXT, "
@@ -4014,6 +4015,34 @@ void prijava::posodobi_bazo() {
                     update.clear();
 
                    posodobi_bazo();
+                }
+                if ( stevilka_baze_min == 12 ) {
+                    // dodaj nov stolpec v tabelo opravila
+
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'vrstni_red' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.13");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.13");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "15.06.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
                 }
             }
         }

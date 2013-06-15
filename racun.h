@@ -55,6 +55,10 @@ private slots:
     void on_btn_gor_clicked();
     void on_btn_dol_clicked();
 
+    void on_btn_opravilo_gor_clicked();
+    void on_btn_opravilo_dol_clicked();
+    void vnesi_vrstni_red();
+
     void on_txt_banka_currentIndexChanged();
 
     void keyPressEvent(QKeyEvent *event);

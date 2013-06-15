@@ -3554,14 +3554,16 @@ void tiskanje::natisni_izdani_racun(QString id) {
             int trenutna_pozicija = 0;
             int koncna_pozicija = 0;
 
-            sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) + "'");
+            sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
+                                 "' ORDER BY 'vrstni_red' ASC");
             sql_storitve.exec();
             while ( sql_storitve.next() ) {
                 koncna_pozicija++;
             }
             sql_storitve.clear();
 
-            sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) + "'");
+            sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
+                                 "' ORDER BY 'vrstni_red' ASC");
             sql_storitve.exec();
             while ( sql_storitve.next() ) {
                 if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_sklop")).toString()) == "Ostalo" ||
