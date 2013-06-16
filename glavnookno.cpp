@@ -34,6 +34,7 @@
 #include "wid_avtomobili.h"
 #include "wid_stroskiprehrane.h"
 #include "sif_cenamalice.h"
+#include "wid_ddv.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -328,6 +329,15 @@ void GlavnoOkno::on_actionRa_uni_triggered() {
                widrac , SLOT(tip(QString)));
     prenos("3");
     this->disconnect();
+
+}
+
+void GlavnoOkno::on_actionVrednost_DDV_triggered() {
+
+    wid_ddv *widddv = new wid_ddv;
+    ui->scrollArea->setWidget(widddv);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Sifrant DDV!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Sifrant DDV");
 
 }
 
