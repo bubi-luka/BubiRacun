@@ -63,7 +63,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="btn_nova_vrednost">
+        <widget class="QPushButton" name="btn_nov">
          <property name="text">
           <string>Nova vrednost</string>
          </property>
@@ -87,7 +87,20 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="tbl_ddv"/>
+    <widget class="QTableWidget" name="tbl_ddv">
+     <property name="editTriggers">
+      <set>QAbstractItemView::DoubleClicked</set>
+     </property>
+     <property name="dragDropOverwriteMode">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

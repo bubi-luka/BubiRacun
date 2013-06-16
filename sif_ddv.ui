@@ -150,7 +150,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_shrani">
+      <widget class="QPushButton" name="btn_sprejmi">
        <property name="text">
         <string>Shrani</string>
        </property>
