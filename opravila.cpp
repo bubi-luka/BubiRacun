@@ -132,9 +132,6 @@ opravila::opravila(QWidget *parent) :
             ui->txt_sklop->addItem("");
             ui->txt_enota->addItem("");
             ui->txt_ddv->addItem("");
-            ui->txt_ddv->addItem("20,0 %");
-            ui->txt_ddv->addItem("8,5 %");
-            ui->txt_ddv->addItem("0,0 %");
 
             QSqlQuery sql_fill;
             sql_fill.prepare("SELECT * FROM sif_storitve");
@@ -163,6 +160,12 @@ opravila::opravila(QWidget *parent) :
                 ui->txt_popusti_skupaj_1->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
             }
             sql_fill.clear();
+
+            sql_fill.prepare("SELECT * FROM sif_ddv WHERE aktivnost LIKE '1'");
+            sql_fill.exec();
+            while ( sql_fill.next() ) {
+                ui->txt_ddv->addItem(pretvori_iz_double(pretvori(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
+            }
 
         }
         base.close();
