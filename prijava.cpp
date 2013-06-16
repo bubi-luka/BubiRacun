@@ -61,6 +61,7 @@ prijava::prijava(QWidget *parent) :
     tabela_cenamalice();
     tabela_banke();
     tabela_koda_namena();
+    tabela_ddv();
 
     // vnese podatke v tabele
     vnesi_skd();
@@ -2713,6 +2714,35 @@ void prijava::vnesi_stroski_prehrane() {
 
 }
 
+void prijava::tabela_ddv() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_ddv ("                     // ustvarimo tabelo, ce se ne obstaja
+                                                         "id INTEGER PRIMARY KEY, "			// kljuc
+                                                         "vrednost TEXT, "					// vrednost ddv-ja
+                                                         "aktivnost TEXT)"					// je vrednost aktivna (1) ali neaktivna (0)
+                                                         );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
 // pretvori v in iz kodirane oblike
 QString prijava::pretvori(QString besedilo) {
 
@@ -4031,6 +4061,41 @@ void prijava::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
                     update.bindValue(0, "0.9.13");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "15.06.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 14 ) {
+                    // dodaj nov stolpec v tabelo opravila
+
+                    update.prepare("INSERT INTO sif_ddv (vrednost, aktivnost) VALUES (?, ?)");
+                    update.bindValue(0, pretvori("20.0"));
+                    update.bindValue(1, pretvori("1"));
+                    update.exec();
+                    update.clear();
+                    update.prepare("INSERT INTO sif_ddv (vrednost, aktivnost) VALUES (?, ?)");
+                    update.bindValue(0, pretvori("8.5"));
+                    update.bindValue(1, pretvori("1"));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.15");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.15");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
                     update.exec();
                     update.clear();

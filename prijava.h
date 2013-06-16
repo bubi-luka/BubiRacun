@@ -69,6 +69,7 @@ private slots:
     void tabela_cenamalice();
     void tabela_banke();
     void tabela_koda_namena();
+    void tabela_ddv();
 
     // vnese podatke v tabele
     void vnesi_skd();
