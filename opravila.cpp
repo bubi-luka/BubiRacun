@@ -390,6 +390,9 @@ void opravila::prejem(QString beseda) {
                 ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
                 ui->txt_rocni_vnos_storitve->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_rocno")).toString()));
                 ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()).replace(".", ",") + " EUR");
+                if ( ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %") == -1 ) {
+                    ui->txt_ddv->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %");
+                }
                 ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %"));
                 ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()).replace(".", ",") + " EUR");
                 ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("rocni_vnos_ur")).toString()));
