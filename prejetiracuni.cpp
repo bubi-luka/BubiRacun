@@ -16,6 +16,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "prejetiracuni_dodajddv.h"
 
 prejetiracuni::prejetiracuni(QWidget *parent) :
     QDialog(parent),
@@ -54,6 +55,7 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
         ui->txt_znesek_ddv->setText("");
         ui->txt_znesek_brez_ddv->setText("");
         ui->txt_znesek->setText("");
+        ui->txt_tipi_ddv->setText("");
 
         ui->txt_status_placila->clear();
         ui->txt_status_racunovodstva->clear();
@@ -931,5 +933,25 @@ void prejetiracuni::stevilka_racuna() {
         }
         base.close();
     }
+
+}
+
+
+void prejetiracuni::on_btn_dodaj_ddv_clicked() {
+
+    prejetiracuni_dodajddv *okno = new prejetiracuni_dodajddv;
+    okno->show();
+
+}
+
+void prejetiracuni::on_tbl_ddv_itemChanged() {
+
+    QMessageBox sporocilo;
+    sporocilo.setText("Novo besedilo");
+    sporocilo.exec();
+
+}
+
+void prejetiracuni::napolni_ddv() {
 
 }

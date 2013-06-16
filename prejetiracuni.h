@@ -40,6 +40,10 @@ private slots:
 
     void on_txt_datum_prejema_dateChanged();
 
+    void on_btn_dodaj_ddv_clicked();
+    void on_tbl_ddv_itemChanged();
+    void napolni_ddv();
+
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
     QString pretvori_iz_double(QString besedilo);

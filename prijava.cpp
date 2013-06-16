@@ -731,9 +731,8 @@ void prijava::tabela_prejeti_racuni() {
                                                          "placnik_oseba_naziv TEXT, "
                                                          "stevilka_projekta TEXT, "
                                                          "avtor TEXT, "
-                                                         "znesek_brez_ddv_00 TEXT, "
-                                                         "znesek_brez_ddv_85 TEXT, "
-                                                         "znesek_brez_ddv_20 TEXT, "
+                                                         "ddv_array TEXT, "
+                                                         "znesek_brez_ddv_array TEXT, "
                                                          "znesek_ddv TEXT, "
                                                          "znesek_brez_ddv TEXT, "
                                                          "znesek TEXT, "
@@ -4075,7 +4074,7 @@ void prijava::posodobi_bazo() {
 
                 }
                 if ( stevilka_baze_min == 14 ) {
-                    // dodaj nov stolpec v tabelo opravila
+                    // dodaj vrednosti v sifrant ddv
 
                     update.prepare("INSERT INTO sif_ddv (vrednost, aktivnost) VALUES (?, ?)");
                     update.bindValue(0, pretvori("20.0"));
@@ -4102,6 +4101,86 @@ void prijava::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
                     update.bindValue(0, "15.06.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 15 ) {
+
+                    // dodaj nova stolpca v tabelo prejeti_racuni
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'ddv_array' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'znesek_brez_ddv_array' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // preracunaj v nove vrednosti in napolni nova arraya
+                    update.prepare("SELECT * FROM prejeti_racuni");
+                    update.exec();
+                    while ( update.next() ) {
+                        QString ddv_array = "";
+                        QString znesek_brez_ddv_array = "";
+                        QString znesek = "";
+
+                        if ( prevedi(update.value(update.record().indexOf("znesek_brez_ddv_00")).toString()) != "0.00" ) {
+                            ddv_array += "0.0,0.00;";
+                            znesek_brez_ddv_array += "0.0," + prevedi(update.value(update.record().indexOf("znesek_brez_ddv_00")).toString()) + ";";
+                        }
+                        if ( prevedi(update.value(update.record().indexOf("znesek_brez_ddv_85")).toString()) != "0.00" ) {
+                            znesek = QString::number(prevedi(update.value(update.record().indexOf("znesek_brez_ddv_85")).toString()).toDouble() * 8.5 / 100, 'f', 2);
+                            ddv_array += "8.5," + znesek + ";";
+                            znesek_brez_ddv_array += "8.5," + prevedi(update.value(update.record().indexOf("znesek_brez_ddv_85")).toString()) + ";";
+                        }
+                        if ( prevedi(update.value(update.record().indexOf("znesek_brez_ddv_20")).toString()) != "0.00" ) {
+                            znesek = QString::number(prevedi(update.value(update.record().indexOf("znesek_brez_ddv_20")).toString()).toDouble() * 20 / 100, 'f', 2);
+                            ddv_array += "20.0," + znesek + ";";
+                            znesek_brez_ddv_array += "20.0," + prevedi(update.value(update.record().indexOf("znesek_brez_ddv_20")).toString()) + ";";
+                        }
+
+                        QSqlQuery sql_vnesi_array;
+                        sql_vnesi_array.prepare("UPDATE prejeti_racuni SET ddv_array = ?, znesek_brez_ddv_array = ? "
+                                                  "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        sql_vnesi_array.bindValue(0, pretvori(ddv_array));
+                        sql_vnesi_array.bindValue(1, pretvori(znesek_brez_ddv_array));
+                        sql_vnesi_array.exec();
+                        sql_vnesi_array.clear();
+
+                    }
+                    update.clear();
+
+                    // brisanje stolpcev ni mozno, zato jih izpraznimo, da njihove vrednosti ne bodo delale problemov v prihodnje
+                    update.prepare("SELECT * FROM prejeti_racuni");
+                    update.exec();
+                    while ( update.next() ) {
+                        QSqlQuery sql_delete_fields;
+                        sql_delete_fields.prepare("UPDATE prejeti_racuni SET znesek_brez_ddv_00 = ?, znesek_brez_ddv_85 = ?, znesek_brez_ddv_20 = ? "
+                                                  "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        sql_delete_fields.bindValue(0, "");
+                        sql_delete_fields.bindValue(1, "");
+                        sql_delete_fields.bindValue(2, "");
+                        sql_delete_fields.exec();
+                        sql_delete_fields.clear();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.16");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.16");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "16.06.2013");
                     update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
                     update.exec();
                     update.clear();

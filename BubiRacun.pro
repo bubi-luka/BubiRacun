@@ -45,7 +45,8 @@ HEADERS += \
 		sif_cenamalice.h \
     sif_delavniki.h \
     wid_ddv.h \
-    sif_ddv.h
+    sif_ddv.h \
+    prejetiracuni_dodajddv.h
 
 SOURCES += \
 		main.cpp \
@@ -93,7 +94,8 @@ SOURCES += \
 		sif_cenamalice.cpp \
     sif_delavniki.cpp \
     wid_ddv.cpp \
-    sif_ddv.cpp
+    sif_ddv.cpp \
+    prejetiracuni_dodajddv.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -138,7 +140,8 @@ FORMS += \
 		sif_cenamalice.ui \
     sif_delavniki.ui \
     wid_ddv.ui \
-    sif_ddv.ui
+    sif_ddv.ui \
+    prejetiracuni_dodajddv.ui
 
 QT	+= widgets
 QT	+= sql
