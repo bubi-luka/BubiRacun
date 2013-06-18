@@ -4073,7 +4073,7 @@ void prijava::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
-                if ( stevilka_baze_min == 14 ) {
+                if ( stevilka_baze_min == 13 ) {
                     // dodaj vrednosti v sifrant ddv
 
                     update.prepare("INSERT INTO sif_ddv (vrednost, aktivnost) VALUES (?, ?)");
@@ -4088,13 +4088,13 @@ void prijava::posodobi_bazo() {
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
-                    update.bindValue(0, "0.9.15");
+                    update.bindValue(0, "0.9.14");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
                     update.exec();
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
-                    update.bindValue(0, "0.9.15");
+                    update.bindValue(0, "0.9.14");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
                     update.exec();
                     update.clear();
@@ -4108,7 +4108,7 @@ void prijava::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
-                if ( stevilka_baze_min == 15 ) {
+                if ( stevilka_baze_min == 14 ) {
 
                     // dodaj nova stolpca v tabelo prejeti_racuni
                     update.prepare("ALTER TABLE prejeti_racuni ADD COLUMN 'ddv_array' TEXT");
@@ -4168,13 +4168,13 @@ void prijava::posodobi_bazo() {
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
-                    update.bindValue(0, "0.9.16");
+                    update.bindValue(0, "0.9.15");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
                     update.exec();
                     update.clear();
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
-                    update.bindValue(0, "0.9.16");
+                    update.bindValue(0, "0.9.15");
                     update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
                     update.exec();
                     update.clear();
