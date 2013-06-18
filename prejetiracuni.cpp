@@ -330,6 +330,19 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 
     // javi napake, ce ni napak vnesi v bazo
     if (napaka == "") {
+
+        // pretvorimo zneske davkov v array
+        QString ddv_array = "";
+        QString znesek_brez_ddv_array = "";
+
+        for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
+            if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+                ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()) + ";";
+                znesek_brez_ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()) + ";";
+              }
+        }
+
+        // shranimo v bazo
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
 
@@ -377,8 +390,8 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
                                   "datum_placila, rok_placila, placnik_podjetje_id, placnik_oseba_id, stevilka_projekta, avtor, "
                                   "znesek_ddv, znesek_brez_ddv, "
                                   "znesek, status_placila, status_racunovodstva, placnik_podjetje_kratki, placnik_podjetje_polni, "
-                                  "placnik_oseba_ime, placnik_oseba_priimek, placnik_oseba_naziv) "
-                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "placnik_oseba_ime, placnik_oseba_priimek, placnik_oseba_naziv, ddv_array, znesek_brez_ddv_array) "
+                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ?, stevilka_racuna = ?, izdajatelj_kratki = ?, "
@@ -386,7 +399,7 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
                                   "zadeva = ?, datum_prejema = ?, datum_placila = ?, rok_placila = ?, placnik_podjetje_id = ?, "
                                   "placnik_oseba_id = ?, stevilka_projekta = ?, avtor = ?, znesek_ddv = ?, znesek_brez_ddv = ?, znesek = ?, "
                                   "status_placila = ?, status_racunovodstva = ?, placnik_podjetje_kratki = ?, placnik_podjetje_polni = ?, "
-                                  "placnik_oseba_ime = ?, placnik_oseba_priimek = ?, placnik_oseba_naziv = ? "
+                                  "placnik_oseba_ime = ?, placnik_oseba_priimek = ?, placnik_oseba_naziv = ?, ddv_array = ?, znesek_brez_ddv_array = ? "
                                   "WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi.bindValue(0, pretvori(ui->txt_stevilka_vnosa->text()));
@@ -405,16 +418,18 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
             sql_vnesi.bindValue(13, pretvori(ui->txt_oseba->text().left(ui->txt_oseba->text().indexOf(") ", 0))));
             sql_vnesi.bindValue(14, pretvori(ui->txt_projekt->text().left(ui->txt_projekt->text().indexOf(") ", 0))));
             sql_vnesi.bindValue(15, pretvori(vApp->id()));
-            sql_vnesi.bindValue(19, pretvori(pretvori_v_double(ui->txt_znesek_ddv->text())));
-            sql_vnesi.bindValue(20, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv->text())));
-            sql_vnesi.bindValue(21, pretvori(pretvori_v_double(ui->txt_znesek->text())));
-            sql_vnesi.bindValue(22, pretvori(ui->txt_status_placila->currentText()));
-            sql_vnesi.bindValue(23, pretvori(ui->txt_status_racunovodstva->currentText()));
-            sql_vnesi.bindValue(24, pretvori(podjetje_kratki));
-            sql_vnesi.bindValue(25, pretvori(podjetje_polni));
-            sql_vnesi.bindValue(26, pretvori(ime));
-            sql_vnesi.bindValue(27, pretvori(priimek));
-            sql_vnesi.bindValue(28, pretvori(naziv));
+            sql_vnesi.bindValue(16, pretvori(pretvori_v_double(ui->txt_znesek_ddv->text())));
+            sql_vnesi.bindValue(17, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv->text())));
+            sql_vnesi.bindValue(18, pretvori(pretvori_v_double(ui->txt_znesek->text())));
+            sql_vnesi.bindValue(19, pretvori(ui->txt_status_placila->currentText()));
+            sql_vnesi.bindValue(20, pretvori(ui->txt_status_racunovodstva->currentText()));
+            sql_vnesi.bindValue(21, pretvori(podjetje_kratki));
+            sql_vnesi.bindValue(22, pretvori(podjetje_polni));
+            sql_vnesi.bindValue(23, pretvori(ime));
+            sql_vnesi.bindValue(24, pretvori(priimek));
+            sql_vnesi.bindValue(25, pretvori(naziv));
+            sql_vnesi.bindValue(26, pretvori(ddv_array));
+            sql_vnesi.bindValue(27, pretvori(znesek_brez_ddv_array));
 
             sql_vnesi.exec();
         }
@@ -994,7 +1009,6 @@ void prejetiracuni::napolni_ddv() {
         sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
         sql_fill.exec();
 
-        int row = 0;
         if (sql_fill.next()) {
             QString ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("ddv_array")).toString());
             QString znesek_brez_ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("znesek_brez_ddv_array")).toString());
@@ -1006,15 +1020,15 @@ void prejetiracuni::napolni_ddv() {
             QStringList seznam_znesek = ddv_array.split(";");
             QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
 
-            for ( int i = 0; i < seznam_ddv.count(); i++ ) {
-                seznam_ddv[i] = seznam_ddv[i].left(seznam_ddv[i].indexOf(","));
-                seznam_znesek[i] = seznam_znesek[i].right(seznam_znesek[i].length() - seznam_znesek[i].indexOf(",") - 1);
-                seznam_znesek_brez_ddv[i] = seznam_znesek_brez_ddv[i].right(seznam_znesek_brez_ddv[i].length() - seznam_znesek_brez_ddv[i].indexOf(",") - 1);
+            for ( int a = 0; a < seznam_ddv.count(); a++ ) {
+                seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
+                seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
+                seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
             }
 
             for ( int i = 0; i < seznam_ddv.count(); i++ ) {
-                ui->tbl_ddv->insertRow(row);
-                ui->tbl_ddv->setRowHeight(row, 20);
+                ui->tbl_ddv->insertRow(i);
+                ui->tbl_ddv->setRowHeight(i, 20);
 
                 for ( int j = 0; j < 3; j++ ) {
 
@@ -1065,10 +1079,12 @@ void prejetiracuni::izracunaj() {
     double znesek_brez_ddv = 0.0;
 
     for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
-        if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
-            znesek_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()).toDouble();
-            znesek_brez_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()).toDouble();
-          }
+        if ( QTableWidgetItem *polje = ui->tbl_ddv->item(row, 1) ) {
+            if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+                znesek_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()).toDouble();
+                znesek_brez_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()).toDouble();
+            }
+        }
     }
 
     double znesek_skupaj = 0.0;
