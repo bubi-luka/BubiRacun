@@ -23,6 +23,7 @@ wid_osnovni_pogled::wid_osnovni_pogled(QWidget *parent) :
     napolni_potne_naloge();
     napolni_prejete_racune();
     napolni_izdane_racune();
+    napolni_predracune();
 
 }
 
@@ -657,5 +658,280 @@ void wid_osnovni_pogled::osvezi(QString beseda) {
     else if ( beseda == "racun" ) {
         napolni_prejete_racune();
     }
+
+}
+
+void wid_osnovni_pogled::napolni_predracune() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_racuni");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        // clear previous content
+        ui->tbl_predracun->clear();
+
+        for (int i = 0; i <= 9; i++) {
+            ui->tbl_predracun->removeColumn(0);
+        }
+
+        QSqlQuery sql_clear("wid_racuni");
+        sql_clear.prepare("SELECT * FROM racuni");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_racuni->removeRow(0);
+        }
+
+        // start filling the table
+        ui->tbl_racuni->insertColumn(0);
+        ui->tbl_racuni->insertColumn(1);
+        ui->tbl_racuni->insertColumn(2);
+        ui->tbl_racuni->insertColumn(3);
+        ui->tbl_racuni->insertColumn(4);
+        ui->tbl_racuni->insertColumn(5);
+        ui->tbl_racuni->insertColumn(6);
+        ui->tbl_racuni->insertColumn(7);
+        ui->tbl_racuni->insertColumn(8);
+        ui->tbl_racuni->insertColumn(9);
+
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+        QTableWidgetItem *naslov3 = new QTableWidgetItem;
+        QTableWidgetItem *naslov4 = new QTableWidgetItem;
+        QTableWidgetItem *naslov5 = new QTableWidgetItem;
+        QTableWidgetItem *naslov6 = new QTableWidgetItem;
+        QTableWidgetItem *naslov7 = new QTableWidgetItem;
+        QTableWidgetItem *naslov8 = new QTableWidgetItem;
+        QTableWidgetItem *naslov9 = new QTableWidgetItem;
+
+        naslov0->setText("ID");
+        naslov1->setText("Tip racuna");
+        naslov2->setText("St. racuna");
+        naslov3->setText("Datum izdaje");
+        naslov4->setText("Stranka");
+        naslov5->setText("Projekt");
+        naslov6->setText("Znesek za placilo");
+        naslov7->setText("Se placati");
+        naslov8->setText("Status placila");
+        naslov9->setText("Status racunovodstva");
+
+        ui->tbl_racuni->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_racuni->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_racuni->setHorizontalHeaderItem(2, naslov2);
+        ui->tbl_racuni->setHorizontalHeaderItem(3, naslov3);
+        ui->tbl_racuni->setHorizontalHeaderItem(4, naslov4);
+        ui->tbl_racuni->setHorizontalHeaderItem(5, naslov5);
+        ui->tbl_racuni->setHorizontalHeaderItem(6, naslov6);
+        ui->tbl_racuni->setHorizontalHeaderItem(7, naslov7);
+        ui->tbl_racuni->setHorizontalHeaderItem(8, naslov8);
+        ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
+
+        ui->tbl_racuni->setColumnWidth(0, 35);
+
+        datum *delegate = new datum(this);
+        ui->tbl_racuni->setItemDelegateForColumn(3, delegate);
+
+        QString projekt = "";
+
+        QSqlQuery sql_projekt;
+        sql_projekt.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_stprojekta->text()) + "'");
+        sql_projekt.exec();
+        if ( sql_projekt.next() ) {
+            projekt = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+        }
+
+        QString stavek = "";
+
+        if ( ui->cb_racun->currentText() != "" ) {
+            stavek += " AND tip_racuna LIKE '" + pretvori(ui->cb_racun->currentText()).left(1) + "'";
+        }
+        if ( ui->cb_placilo->currentText() != "" ) {
+            stavek += " AND status_placila LIKE '" + pretvori (ui->cb_placilo->currentText()) + "'";
+        }
+        if ( ui->cb_racunovodstvo->currentText() != "" ) {
+            stavek += " AND status_racunovodstva LIKE '" + pretvori (ui->cb_racunovodstvo->currentText()) + "'";
+        }
+
+        if ( stavek != "" && ui->txt_stprojekta->text() == "*" && stavek.indexOf(" WHERE") == -1 ) {
+            stavek = " WHERE" + stavek.right(stavek.length() - 4);
+        }
+
+        QSqlQuery sql_fill("wid_racuni");
+        if ( ui->txt_stprojekta->text() != "*" ) {
+            sql_fill.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + projekt + "'" + stavek);
+        }
+        else {
+            sql_fill.prepare("SELECT * FROM racuni" + stavek);
+        }
+        sql_fill.exec();
+
+        int row = 0;
+        while (sql_fill.next()) {
+            // filtriramo glede na mesec in leto
+            QString filter = "pozitivno";
+            if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+                QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+                QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+                if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
+                    filter = "negativno";
+                }
+            }
+            else if ( ui->cb_mesec->currentText() != "" ) {
+                QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
+                if ( mesec != ui->cb_mesec->currentText().left(2) ) {
+                    filter = "negativno";
+                }
+            }
+            else if ( ui->cb_leto->currentText() != "" ) {
+                QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
+                if ( leto != ui->cb_leto->currentText() ) {
+                    filter = "negativno";
+                }
+            }
+            // filtriramo glede na javni, zasebni status racuna
+            if ( vApp->state() != pretvori("private") ) {
+
+                // doloci vse tri cifre
+                QString sklic = prevedi(sql_fill.value(sql_fill.record().indexOf("sklic")).toString());
+                sklic = sklic.right(sklic.length() - 5); // odbijemo drzavo in model
+                sklic = sklic.right(sklic.length() - 5); // odbijemo stevilko racuna
+                int cifra_1 = sklic.left(1).toInt();
+                sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_1 in dan
+                int cifra_2 = sklic.left(1).toInt();
+                sklic = sklic.right(sklic.length() - 3); // odbijemo cifro_2 in mesec
+                int cifra_3 = sklic.left(1).toInt();
+
+                // iz prvih dveh izracunaj kontrolno stevilko
+                int kontrolna = 0;
+
+                int sestevek = 3 * cifra_1 + 2 * cifra_2;
+
+                int ostanek = sestevek % 11;
+
+                kontrolna = 11 - ostanek;
+
+                if ( kontrolna >= 9 ) {
+                    kontrolna = 0;
+                }
+
+                // od cifre_3 odstej kontrolno stevilko
+                // tako dobis 0 => racun je javen ali 1 => racun je zaseben
+                int razlika = cifra_3 - kontrolna;
+
+                if ( razlika == 1 ) {
+                    filter = "negativno"; // racuna ne prikazi
+                }
+
+            }
+
+            if ( filter == "pozitivno" ) {
+                ui->tbl_racuni->insertRow(row);
+                ui->tbl_racuni->setRowHeight(row, 20);
+                int col = 0;
+                int i = 0;
+                QString polja[10] = {"id", "tip_racuna", "stevilka_racuna", "datum_izdaje", "stranka", "projekt", "znesek_za_placilo",
+                                                         "se_placati", "status_placila", "status_racunovodstva"};
+
+                while (col <= 9) {
+                    QTableWidgetItem *celica = new QTableWidgetItem;
+                    if ( polja[i] == "id" ) {
+                        celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+                    }
+                    else if ( polja[i] == "datum_izdaje" ) {
+                        celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
+                    }
+                    else if ( polja[i] == "tip_racuna" ) {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "1" ) {
+                            celica->setText("Predracun");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "2" ) {
+                            celica->setText("Predplacilo");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "3" ) {
+                            celica->setText("Racun");
+                        }
+                    }
+                    else if ( polja[i] == "stranka" ) {
+                        QSqlQuery sql_find_stranka;
+                        sql_find_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf(polja[i])).toString() + "'");
+                        sql_find_stranka.exec();
+                        if ( sql_find_stranka.next() ) {
+                            if ( prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("tip")).toString()) == "1" ) {
+                                celica->setText(prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("priimek")).toString()) + " " +
+                                                prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("ime")).toString()));
+                            }
+                            else {
+                                 celica->setText(prevedi(sql_find_stranka.value(sql_find_stranka.record().indexOf("ime")).toString()));
+                            }
+                        }
+                        else {
+                            celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                        }
+                    }
+                    else if ( polja[i] == "projekt" ) {
+                        QSqlQuery sql_kodiraj;
+                        sql_kodiraj.prepare("SELECT * FROM projekti WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("projekt")).toString() + "'");
+                        sql_kodiraj.exec();
+                        if ( sql_kodiraj.next() ) {
+                            celica->setText(prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("naslov_projekta")).toString()));
+                        }
+                    }
+                    else if ( polja[i] == "znesek_za_placilo" ) {
+                        QSqlQuery sql_kodiraj;
+                        sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
+                                                                "' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
+                        sql_kodiraj.exec();
+                        double znesek = 0.0;
+                        while ( sql_kodiraj.next() ) {
+                            znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() *
+                                    ( prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("ddv")).toString()).toDouble() + 100.0 ) / 100.0;
+                        }
+                        celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
+                    }
+                    else if ( polja[i] == "se_placati" ) {
+                        QSqlQuery sql_kodiraj;
+                        sql_kodiraj.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() +
+                                                                "' AND tip_racuna LIKE '" + sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString() + "'");
+                        sql_kodiraj.exec();
+                        double znesek = 0.0;
+                        while ( sql_kodiraj.next() ) {
+                            znesek += prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("znesek_koncni")).toString()).toDouble() *
+                                      ( prevedi(sql_kodiraj.value(sql_kodiraj.record().indexOf("ddv")).toString()).toDouble() + 100.0 ) / 100.0;
+                        }
+                        znesek -= prevedi(sql_fill.value(sql_fill.record().indexOf("avans")).toString()).toDouble();
+                        celica->setText(QString::number(znesek, 'f', 2).replace(".", ",") + " EUR");
+                    }
+                    else {
+                        celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+                    }
+                    ui->tbl_racuni->setItem(row, col, celica);
+                    col++;
+                    i++;
+                }
+                row++;
+            }
+        }
+    }
+    base.close();
+
+    ui->tbl_racuni->selectRow(izbranec);
+    ui->tbl_racuni->sortByColumn(razvrsti, Qt::AscendingOrder);
+
+
+}
+
+void wid_osnovni_pogled::on_tbl_predracun_doubleClicked() {
 
 }

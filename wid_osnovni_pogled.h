@@ -21,10 +21,12 @@ private slots:
     void napolni_potne_naloge();
     void napolni_prejete_racune();
     void napolni_izdane_racune();
+    void napolni_predracune();
 
     void on_tbl_stranke_doubleClicked();
     void on_tbl_potni_nalogi_doubleClicked();
     void on_tbl_prejeti_racuni_doubleClicked();
+    void on_tbl_predracun_doubleClicked();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

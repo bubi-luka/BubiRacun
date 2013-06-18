@@ -299,16 +299,40 @@
       </spacer>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox_5">
+      <widget class="QGroupBox" name="groupBox_6">
        <property name="minimumSize">
         <size>
-         <width>450</width>
+         <width>350</width>
          <height>350</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>450</width>
+         <width>350</width>
+         <height>350</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Seznam predračunov</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QTableWidget" name="tbl_predracun"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="minimumSize">
+        <size>
+         <width>350</width>
+         <height>350</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>350</width>
          <height>350</height>
         </size>
        </property>
@@ -390,13 +414,13 @@
       <widget class="QGroupBox" name="groupBox_4">
        <property name="minimumSize">
         <size>
-         <width>450</width>
+         <width>350</width>
          <height>350</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>450</width>
+         <width>350</width>
          <height>350</height>
         </size>
        </property>
