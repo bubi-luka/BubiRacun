@@ -2936,6 +2936,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
     QString skupaj_se_za_placati = "";
     QString skupaj_se_za_placati_ddv = "";
 
+    QStringList seznam_ddv;
+    QList<double> znesek_ddv;
+
     double skupajbrezddv = 0.0;
     double skupajddvodosnove20 = 0.0;
     double skupajddvodosnove85 = 0.0;
@@ -3550,6 +3553,14 @@ void tiskanje::natisni_izdani_racun(QString id) {
         else {
             // baza je odprta
 
+            QSqlQuery sql_ddv;
+            sql_ddv.prepare("SELECT * FROM sif_ddv ORDER BY id DESC");
+            sql_ddv.exec();
+            while ( sql_ddv.next() ) {
+                seznam_ddv.append(prevedi(sql_ddv.value(sql_ddv.record().indexOf("vrednost")).toString()));
+                znesek_ddv.append(0);
+            }
+
             QSqlQuery sql_storitve;
             int trenutna_pozicija = 0;
             int koncna_pozicija = 0;
@@ -3629,6 +3640,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
                 // izracunaj zdruzke
                 skupajbrezddv += cena;
+                int zaporedje = seznam_ddv.indexOf(prevedi(sql_storitve.value(sql_storitve.record().indexOf("ddv")).toString()));
+
+                znesek_ddv[zaporedje] += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesek_ddv")).toString())).toDouble();
+
                 if ( storitev_odstotek_ddv == "20,0" ) {
                     skupajddvodosnove20 += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesek_ddv")).toString())).toDouble();
                 }
@@ -3700,6 +3715,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                 }
 
             } // while ( sql_storitve.next() )
+
         } // base.isOpen()
         base_1.close();
 
@@ -3800,61 +3816,28 @@ void tiskanje::natisni_izdani_racun(QString id) {
             * nepotrebne vrstice. V primeru besedilnih prevodov bo seveda to izpadlo.
             **/
 
-        // nastavi parametre (20,0% DDV)
-        painter.setFont(debelo);
-        besedilo = racun.readLine() + " ";
-        if ( skupaj_ddv_od_osnove_20 != "0,00 EUR" ) {
-        // natisnemo besedilo
-            painter.drawText(QRectF(printer.width() * 3 / 5, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
-            // natisnemo besedilo
-            painter.setFont(normalno);
-            painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_ddv_od_osnove_20);
-            // nova vrstica * 2
-            pozicija += visina_vrstice;
+        QString besedilo_ddv = racun.readLine() + " ";
+        QString besedilo_od_osnove = " " + racun.readLine();
 
-            // crta pod storitvami
-            painter.setPen(*tanek_svincnik);
-            painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
-            // nova vrstica
-            pozicija += razmik_med_vrsticami;
-        }
+        for ( int stevilo_davkov = 0; stevilo_davkov < seznam_ddv.count(); stevilo_davkov++ ) {
+            if ( QString::number(znesek_ddv[stevilo_davkov], 'f', 2) != "0.00" ) {
+                // nastavi parametre (XX,X % DDV)
+                painter.setFont(debelo);
+                besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
+                // natisnemo besedilo
+                painter.drawText(QRectF(printer.width() * 3 / 5, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+                // natisnemo besedilo
+                painter.setFont(normalno);
+                painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov], 'f', 2).replace(".", ",") + " EUR");
+                // nova vrstica * 2
+                pozicija += visina_vrstice;
 
-        // nastavi parametre (8,5% DDV)
-        painter.setFont(debelo);
-        besedilo = racun.readLine() + " ";
-        if ( skupaj_ddv_od_osnove_85 != "0,00 EUR" ) {
-        // natisnemo besedilo
-            painter.drawText(QRectF(printer.width() * 3 / 5, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
-            // natisnemo besedilo
-            painter.setFont(normalno);
-            painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_ddv_od_osnove_85);
-            // nova vrstica * 2
-            pozicija += visina_vrstice;
-
-            // crta
-            painter.setPen(*tanek_svincnik);
-            painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
-            // nova vrstica
-            pozicija += razmik_med_vrsticami;
-        }
-
-        // nastavi parametre (0,0% DDV)
-        painter.setFont(debelo);
-        besedilo = racun.readLine() + " ";
-        if ( skupaj_ddv_od_osnove_00 != "0,00 EUR" ) {
-        // natisnemo besedilo
-            painter.drawText(QRectF(printer.width() * 3 / 5, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
-            // natisnemo besedilo
-            painter.setFont(normalno);
-            painter.drawText(QRectF(printer.width()  * 3 / 5 + velikost_besedila.width() + 10, pozicija, printer.width()  * 2 / 5 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_ddv_od_osnove_00);
-            // nova vrstica * 2
-            pozicija += visina_vrstice;
-
-            // crta
-            painter.setPen(*tanek_svincnik);
-            painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
-            // nova vrstica
-            pozicija += razmik_med_vrsticami;
+                // crta pod storitvami
+                painter.setPen(*tanek_svincnik);
+                painter.drawLine(printer.width()  * 3 / 5 - 10, pozicija, printer.width(), pozicija);
+                // nova vrstica
+                pozicija += razmik_med_vrsticami;
+            }
         }
 
         // nastavi parametre ("Skupaj v EUR: ")
@@ -4102,6 +4085,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
         pozicija += visina_vrstice + razmik_med_vrsticami;
 
         painter.end();
+
 
 }
 

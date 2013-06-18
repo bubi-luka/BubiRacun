@@ -16,6 +16,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "prejetiracuni_dodajddv.h"
 
 prejetiracuni::prejetiracuni(QWidget *parent) :
     QDialog(parent),
@@ -48,9 +49,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
         ui->txt_oseba->setText("");
         ui->txt_projekt->setText("");
 
-        ui->txt_znesek_brez_ddv_20->setText("");
-        ui->txt_znesek_brez_ddv_85->setText("");
-        ui->txt_znesek_brez_ddv_0->setText("");
         ui->txt_znesek_ddv->setText("");
         ui->txt_znesek_brez_ddv->setText("");
         ui->txt_znesek->setText("");
@@ -60,14 +58,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 
         // dodamo obliko zapisa
         ui->txt_stevilka_vnosa->setInputMask("PR-9999-999;_");
-
-        // dodamo validatorje
-        QRegExp rx_valuta("([0-9]){0,15}([(.|,)][0-9]{0,2}){0,1}( (E|e)(U|u)(R|r))?");
-        QValidator *v_valuta = new QRegExpValidator(rx_valuta, this);
-
-        ui->txt_znesek_brez_ddv_0->setValidator(v_valuta);
-        ui->txt_znesek_brez_ddv_85->setValidator(v_valuta);
-        ui->txt_znesek_brez_ddv_20->setValidator(v_valuta);
 
         // dodamo prazno prvo vrstico v spustne sezname
         ui->txt_posta->addItem("");
@@ -212,16 +202,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 
     QString napaka = "";
 
-    if ( ui->txt_znesek_brez_ddv_0->text() == "" ) {
-        ui->txt_znesek_brez_ddv_0->setText("0.00");
-    }
-    if ( ui->txt_znesek_brez_ddv_85->text() == "" ) {
-        ui->txt_znesek_brez_ddv_85->setText("0.00");
-    }
-    if ( ui->txt_znesek_brez_ddv_20->text() == "" ) {
-        ui->txt_znesek_brez_ddv_20->setText("0.00");
-    }
-
 /*
     // nastavitev polja za napako
     QFont font_error;
@@ -350,6 +330,19 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 
     // javi napake, ce ni napak vnesi v bazo
     if (napaka == "") {
+
+        // pretvorimo zneske davkov v array
+        QString ddv_array = "";
+        QString znesek_brez_ddv_array = "";
+
+        for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
+            if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+                ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()) + ";";
+                znesek_brez_ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()) + ";";
+              }
+        }
+
+        // shranimo v bazo
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
 
@@ -395,19 +388,18 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
                 sql_vnesi.prepare("INSERT INTO prejeti_racuni (stevilka_vnosa, stevilka_racuna, izdajatelj_kratki, "
                                   "izdajatelj_polni, ulica, hisna_stevilka, postna_stevilka, posta, zadeva, datum_prejema, "
                                   "datum_placila, rok_placila, placnik_podjetje_id, placnik_oseba_id, stevilka_projekta, avtor, "
-                                  "znesek_brez_ddv_00, znesek_brez_ddv_85, znesek_brez_ddv_20, znesek_ddv, znesek_brez_ddv, "
+                                  "znesek_ddv, znesek_brez_ddv, "
                                   "znesek, status_placila, status_racunovodstva, placnik_podjetje_kratki, placnik_podjetje_polni, "
-                                  "placnik_oseba_ime, placnik_oseba_priimek, placnik_oseba_naziv) "
-                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "placnik_oseba_ime, placnik_oseba_priimek, placnik_oseba_naziv, ddv_array, znesek_brez_ddv_array) "
+                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi.prepare("UPDATE prejeti_racuni SET stevilka_vnosa = ?, stevilka_racuna = ?, izdajatelj_kratki = ?, "
                                   "izdajatelj_polni = ?, ulica = ?, hisna_stevilka = ?, postna_stevilka = ?, posta = ?, "
                                   "zadeva = ?, datum_prejema = ?, datum_placila = ?, rok_placila = ?, placnik_podjetje_id = ?, "
-                                  "placnik_oseba_id = ?, stevilka_projekta = ?, avtor = ?, znesek_brez_ddv_00 = ?, "
-                                  "znesek_brez_ddv_85 = ?, znesek_brez_ddv_20 = ?, znesek_ddv = ?, znesek_brez_ddv = ?, znesek = ?, "
+                                  "placnik_oseba_id = ?, stevilka_projekta = ?, avtor = ?, znesek_ddv = ?, znesek_brez_ddv = ?, znesek = ?, "
                                   "status_placila = ?, status_racunovodstva = ?, placnik_podjetje_kratki = ?, placnik_podjetje_polni = ?, "
-                                  "placnik_oseba_ime = ?, placnik_oseba_priimek = ?, placnik_oseba_naziv = ? "
+                                  "placnik_oseba_ime = ?, placnik_oseba_priimek = ?, placnik_oseba_naziv = ?, ddv_array = ?, znesek_brez_ddv_array = ? "
                                   "WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi.bindValue(0, pretvori(ui->txt_stevilka_vnosa->text()));
@@ -426,19 +418,18 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
             sql_vnesi.bindValue(13, pretvori(ui->txt_oseba->text().left(ui->txt_oseba->text().indexOf(") ", 0))));
             sql_vnesi.bindValue(14, pretvori(ui->txt_projekt->text().left(ui->txt_projekt->text().indexOf(") ", 0))));
             sql_vnesi.bindValue(15, pretvori(vApp->id()));
-            sql_vnesi.bindValue(16, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_0->text())));
-            sql_vnesi.bindValue(17, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_85->text())));
-            sql_vnesi.bindValue(18, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_20->text())));
-            sql_vnesi.bindValue(19, pretvori(pretvori_v_double(ui->txt_znesek_ddv->text())));
-            sql_vnesi.bindValue(20, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv->text())));
-            sql_vnesi.bindValue(21, pretvori(pretvori_v_double(ui->txt_znesek->text())));
-            sql_vnesi.bindValue(22, pretvori(ui->txt_status_placila->currentText()));
-            sql_vnesi.bindValue(23, pretvori(ui->txt_status_racunovodstva->currentText()));
-            sql_vnesi.bindValue(24, pretvori(podjetje_kratki));
-            sql_vnesi.bindValue(25, pretvori(podjetje_polni));
-            sql_vnesi.bindValue(26, pretvori(ime));
-            sql_vnesi.bindValue(27, pretvori(priimek));
-            sql_vnesi.bindValue(28, pretvori(naziv));
+            sql_vnesi.bindValue(16, pretvori(pretvori_v_double(ui->txt_znesek_ddv->text())));
+            sql_vnesi.bindValue(17, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv->text())));
+            sql_vnesi.bindValue(18, pretvori(pretvori_v_double(ui->txt_znesek->text())));
+            sql_vnesi.bindValue(19, pretvori(ui->txt_status_placila->currentText()));
+            sql_vnesi.bindValue(20, pretvori(ui->txt_status_racunovodstva->currentText()));
+            sql_vnesi.bindValue(21, pretvori(podjetje_kratki));
+            sql_vnesi.bindValue(22, pretvori(podjetje_polni));
+            sql_vnesi.bindValue(23, pretvori(ime));
+            sql_vnesi.bindValue(24, pretvori(priimek));
+            sql_vnesi.bindValue(25, pretvori(naziv));
+            sql_vnesi.bindValue(26, pretvori(ddv_array));
+            sql_vnesi.bindValue(27, pretvori(znesek_brez_ddv_array));
 
             sql_vnesi.exec();
         }
@@ -455,27 +446,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
         msgbox.setText("Dolocena polja niso pravilno izpolnjena");
         msgbox.exec();
     }
-
-}
-
-void prejetiracuni::on_txt_znesek_brez_ddv_0_editingFinished() {
-
-    ui->txt_znesek_brez_ddv_0->setText(pretvori_iz_double(ui->txt_znesek_brez_ddv_0->text()));
-    izracunaj();
-
-}
-
-void prejetiracuni::on_txt_znesek_brez_ddv_85_editingFinished() {
-
-    ui->txt_znesek_brez_ddv_85->setText(pretvori_iz_double(ui->txt_znesek_brez_ddv_85->text()));
-    izracunaj();
-
-}
-
-void prejetiracuni::on_txt_znesek_brez_ddv_20_editingFinished() {
-
-    ui->txt_znesek_brez_ddv_20->setText(pretvori_iz_double(ui->txt_znesek_brez_ddv_20->text()));
-    izracunaj();
 
 }
 
@@ -577,6 +547,7 @@ void prejetiracuni::prejem(QString besedilo) {
         ui->btn_sprejmi->setText("Vnesi racun");
         ui->btn_izpisi->setEnabled(false);
         ui->txt_datum_prejema->setEnabled(true);
+        napolni_ddv();
     }
     else {
         ui->btn_sprejmi->setText("Polnim");
@@ -653,9 +624,6 @@ void prejetiracuni::prejem(QString besedilo) {
                     ui->cb_projekt->setChecked(true);
                 }
 
-                ui->txt_znesek_brez_ddv_0->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_00")).toString()));
-                ui->txt_znesek_brez_ddv_85->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_85")).toString()));
-                ui->txt_znesek_brez_ddv_20->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv_20")).toString()));
                 ui->txt_znesek_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_ddv")).toString()));
                 ui->txt_znesek_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek_brez_ddv")).toString()));
                 ui->txt_znesek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("znesek")).toString()));
@@ -680,6 +648,8 @@ void prejetiracuni::prejem(QString besedilo) {
         base.close();
 
         ui->btn_sprejmi->setText("Popravi racun");
+
+        napolni_ddv();
     }
 
 }
@@ -693,31 +663,6 @@ QString prejetiracuni::pretvori(QString besedilo) {
 QString prejetiracuni::prevedi(QString besedilo) {
 
     return kodiranje().odkodiraj(besedilo);
-
-}
-
-void prejetiracuni::izracunaj() {
-
-    double znesek_brez_ddv = 0;
-    double znesek = 0;
-
-    /*
-    * Vhodno besedilo je oblikovana stevilka v obliki XXX,XX EUR
-    * preoblikujemo jo v obliko za double XXX.XX in nato sestejemo ustrezna besedila
-    * na koncu sestevke preoblikujemo nazaj v XXX,XX EUR obliko
-    */
-
-    znesek_brez_ddv = pretvori_v_double(ui->txt_znesek_brez_ddv_0->text()).toDouble();
-    znesek_brez_ddv += pretvori_v_double(ui->txt_znesek_brez_ddv_20->text()).toDouble();
-    znesek_brez_ddv += pretvori_v_double(ui->txt_znesek_brez_ddv_85->text()).toDouble();
-
-    znesek = pretvori_v_double(ui->txt_znesek_brez_ddv_0->text()).toDouble();
-    znesek += (pretvori_v_double(ui->txt_znesek_brez_ddv_20->text()).toDouble() * 1.2);
-    znesek += (pretvori_v_double(ui->txt_znesek_brez_ddv_85->text()).toDouble() * 1.085);
-
-    ui->txt_znesek->setText(pretvori_iz_double(QString::number(znesek, 'f', 2)));
-    ui->txt_znesek_brez_ddv->setText(pretvori_iz_double(QString::number(znesek_brez_ddv, 'f', 2)));
-    ui->txt_znesek_ddv->setText(pretvori_iz_double(QString::number(znesek - znesek_brez_ddv, 'f', 2)));
 
 }
 
@@ -931,5 +876,223 @@ void prejetiracuni::stevilka_racuna() {
         }
         base.close();
     }
+
+}
+
+void prejetiracuni::on_btn_dodaj_ddv_clicked() {
+
+    // v string spravi vse davke, ki jih imamo ze v tabeli
+    QString davki = "";
+    for ( int i = 0; i < ui->tbl_ddv->rowCount(); i++ ) {
+        QString davek = ui->tbl_ddv->item(i, 0)->text();
+        davek = pretvori_v_double(davek);
+        davki += ";" + davek + ";";
+        davki.replace(";;", ";");
+    }
+
+    // odpri okno, kjer dodamo nove davcne stopnje
+    prejetiracuni_dodajddv *okno = new prejetiracuni_dodajddv;
+    okno->show();
+
+    // poslji podatke o obstojecih davcnih stopnjah
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               okno , SLOT(prejem(QString)));
+    prenos(davki);
+    this->disconnect();
+
+    // prejmi nove davcne stopnje
+    QObject::connect(okno, SIGNAL(poslji(QString)),
+               this , SLOT(dodaj(QString)));
+
+}
+
+void prejetiracuni::on_tbl_ddv_itemChanged(QTableWidgetItem *celica) {
+
+    // pridobi podatke o celici
+    int row = celica->row();
+    int col = celica->column();
+    QString vrednost = celica->text();
+    QString stara_vrednost = celica->text();
+
+    // izvajaj kalkulacije samo na celicah EUR vrednosti
+    if ( col > 0 ) {
+        // pretvori besedilo v ustrezno obliko
+        vrednost = pretvori_v_double(vrednost);
+        vrednost = pretvori_iz_double(vrednost);
+        if ( stara_vrednost != vrednost ) {
+            QTableWidgetItem *polje;
+            polje = new QTableWidgetItem;
+            polje->setText(vrednost);
+            if ( col == 1 ) {
+                polje->setFlags(polje->flags() ^ Qt::ItemIsEditable);
+            }
+            ui->tbl_ddv->setItem(row, col, polje);
+
+            // preracunaj znesek ddv
+            if ( col == 2 ) {
+                double znesek_brez_ddv = 0.0;
+                double ddv = 0.0;
+                double znesek_ddv = 0.0;
+
+                ddv = pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()).toDouble();
+                znesek_brez_ddv = pretvori_v_double(vrednost).toDouble();
+
+                znesek_ddv = znesek_brez_ddv * ddv / 100;
+
+                vrednost = pretvori_iz_double(QString::number(znesek_ddv, 'f', 2));
+
+                if ( vrednost != ui->tbl_ddv->item(row, 1)->text() ) {
+                    QTableWidgetItem *sosednje_polje;
+                    sosednje_polje = new QTableWidgetItem;
+                    sosednje_polje->setText(vrednost);
+                    sosednje_polje->setFlags(sosednje_polje->flags() ^ Qt::ItemIsEditable);
+                    ui->tbl_ddv->setItem(row, 1, sosednje_polje);
+                }
+            }
+        }
+    }
+
+    izracunaj();
+
+}
+
+void prejetiracuni::napolni_ddv() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        // clear previous content
+        ui->tbl_ddv->clear();
+
+        for (int i = 0; i <= 2; i++) {
+            ui->tbl_ddv->removeColumn(0);
+        }
+
+        QSqlQuery sql_clear;
+        sql_clear.prepare("SELECT * FROM prejeti_racuni");
+        sql_clear.exec();
+        while (sql_clear.next()) {
+            ui->tbl_ddv->removeRow(0);
+        }
+
+        // start filling the table
+        ui->tbl_ddv->insertColumn(0);
+        ui->tbl_ddv->insertColumn(1);
+        ui->tbl_ddv->insertColumn(2);
+
+        QTableWidgetItem *naslov0 = new QTableWidgetItem;
+        QTableWidgetItem *naslov1 = new QTableWidgetItem;
+        QTableWidgetItem *naslov2 = new QTableWidgetItem;
+
+        naslov0->setText("Stopnja DDV");
+        naslov1->setText("Znesek DDV");
+        naslov2->setText("Znesek brez DDV");
+
+        ui->tbl_ddv->setHorizontalHeaderItem(0, naslov0);
+        ui->tbl_ddv->setHorizontalHeaderItem(1, naslov1);
+        ui->tbl_ddv->setHorizontalHeaderItem(2, naslov2);
+
+        QSqlQuery sql_fill;
+        sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
+        sql_fill.exec();
+
+        if (sql_fill.next()) {
+            QString ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("ddv_array")).toString());
+            QString znesek_brez_ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("znesek_brez_ddv_array")).toString());
+
+            ddv_array = ddv_array.left(ddv_array.length() - 1);
+            znesek_brez_ddv_array = znesek_brez_ddv_array.left(znesek_brez_ddv_array.length() - 1);
+
+            QStringList seznam_ddv = ddv_array.split(";");
+            QStringList seznam_znesek = ddv_array.split(";");
+            QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
+
+            for ( int a = 0; a < seznam_ddv.count(); a++ ) {
+                seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
+                seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
+                seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
+            }
+
+            for ( int i = 0; i < seznam_ddv.count(); i++ ) {
+                ui->tbl_ddv->insertRow(i);
+                ui->tbl_ddv->setRowHeight(i, 20);
+
+                for ( int j = 0; j < 3; j++ ) {
+
+                    QTableWidgetItem *celica = new QTableWidgetItem;
+                    if ( j == 0 ) {
+                        celica->setText(seznam_ddv[i].replace(".", ",") + " %");
+                        celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+                    }
+                    else if ( j == 1 ) {
+                        celica->setText(seznam_znesek[i].replace(".", ","));
+                        celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+                    }
+                    else if ( j == 2 ) {
+                        celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
+                    }
+                    ui->tbl_ddv->setItem(i, j, celica);
+
+                }
+            }
+        }
+    }
+    base.close();
+
+}
+
+void prejetiracuni::dodaj(QString besedilo) {
+
+    ui->tbl_ddv->insertRow(ui->tbl_ddv->rowCount());
+    ui->tbl_ddv->setRowHeight(ui->tbl_ddv->rowCount() - 1, 20);
+
+    QTableWidgetItem *celica;
+    celica = new QTableWidgetItem;
+    celica->setText(pretvori_v_double(besedilo).replace(".", ",") + " %");
+    celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+    ui->tbl_ddv->setItem(ui->tbl_ddv->rowCount() - 1, 0, celica);
+
+    celica = new QTableWidgetItem;
+    celica->setText("0,00 EUR");
+    celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+    ui->tbl_ddv->setItem(ui->tbl_ddv->rowCount() - 1, 1, celica);
+
+}
+
+void prejetiracuni::izracunaj() {
+
+    // gremo skozi vse vrstice in sestevamo
+    double znesek_ddv = 0.0;
+    double znesek_brez_ddv = 0.0;
+
+    for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
+        if ( QTableWidgetItem *polje = ui->tbl_ddv->item(row, 1) ) {
+            if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+                znesek_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()).toDouble();
+                znesek_brez_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()).toDouble();
+            }
+        }
+    }
+
+    double znesek_skupaj = 0.0;
+    znesek_skupaj = znesek_ddv + znesek_brez_ddv;
+
+    // izpisemo dobljeno
+    ui->txt_znesek_ddv->setText(pretvori_iz_double(QString::number(znesek_ddv, 'f', 2)));
+    ui->txt_znesek_brez_ddv->setText(pretvori_iz_double(QString::number(znesek_brez_ddv, 'f', 2)));
+    ui->txt_znesek->setText(pretvori_iz_double(QString::number(znesek_skupaj, 'f', 2)));
 
 }

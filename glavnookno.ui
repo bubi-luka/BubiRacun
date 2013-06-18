@@ -222,6 +222,8 @@ border:0;</string>
     </property>
     <addaction name="actionOpombe_pri_ra_unih"/>
     <addaction name="separator"/>
+    <addaction name="actionVrednost_DDV"/>
+    <addaction name="separator"/>
     <addaction name="actionKilometrina"/>
     <addaction name="actionDnevnice"/>
     <addaction name="actionCena_malice"/>
@@ -372,6 +374,11 @@ border:0;</string>
   <action name="actionDelavniki">
    <property name="text">
     <string>Delavniki</string>
+   </property>
+  </action>
+  <action name="actionVrednost_DDV">
+   <property name="text">
+    <string>Vrednost DDV</string>
    </property>
   </action>
  </widget>

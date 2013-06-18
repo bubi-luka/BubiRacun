@@ -132,9 +132,6 @@ opravila::opravila(QWidget *parent) :
             ui->txt_sklop->addItem("");
             ui->txt_enota->addItem("");
             ui->txt_ddv->addItem("");
-            ui->txt_ddv->addItem("20,0 %");
-            ui->txt_ddv->addItem("8,5 %");
-            ui->txt_ddv->addItem("0,0 %");
 
             QSqlQuery sql_fill;
             sql_fill.prepare("SELECT * FROM sif_storitve");
@@ -163,6 +160,12 @@ opravila::opravila(QWidget *parent) :
                 ui->txt_popusti_skupaj_1->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
             }
             sql_fill.clear();
+
+            sql_fill.prepare("SELECT * FROM sif_ddv WHERE aktivnost LIKE '1'");
+            sql_fill.exec();
+            while ( sql_fill.next() ) {
+                ui->txt_ddv->addItem(pretvori_iz_double(pretvori(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
+            }
 
         }
         base.close();
@@ -387,6 +390,9 @@ void opravila::prejem(QString beseda) {
                 ui->txt_storitev->setCurrentIndex(ui->txt_storitev->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_storitev")).toString())));
                 ui->txt_rocni_vnos_storitve->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("opravilo_rocno")).toString()));
                 ui->txt_urna_postavka_brez_ddv->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_brez_ddv")).toString()).replace(".", ",") + " EUR");
+                if ( ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %") == -1 ) {
+                    ui->txt_ddv->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %");
+                }
                 ui->txt_ddv->setCurrentIndex(ui->txt_ddv->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("ddv")).toString()).replace(".", ",") + " %"));
                 ui->txt_urna_postavka->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("urna_postavka_z_ddv")).toString()).replace(".", ",") + " EUR");
                 ui->txt_rocni_vnos->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("rocni_vnos_ur")).toString()));
