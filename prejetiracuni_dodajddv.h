@@ -24,10 +24,14 @@ private slots:
     void on_rb_aktivni_toggled();
     void on_rb_vsi_toggled();
 
-    void on_tbl_ddv_itemSelectionChanged();
+    void on_tbl_ddv_doubleClicked();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
+    QString pretvori_iz_double(QString besedilo);
+    QString pretvori_v_double(QString besedilo);
+
+    void napolni();
 
     void prejem(QString besedilo);
 

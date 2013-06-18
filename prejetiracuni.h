@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QDate>
+#include <QTableWidgetItem>
 
 namespace Ui {
     class prejetiracuni;
@@ -23,10 +24,6 @@ private slots:
 
     void keyPressEvent(QKeyEvent *event);
 
-    void on_txt_znesek_brez_ddv_0_editingFinished();
-    void on_txt_znesek_brez_ddv_85_editingFinished();
-    void on_txt_znesek_brez_ddv_20_editingFinished();
-
     void on_txt_izberi_osebo_currentIndexChanged(QString besedilo);
     void on_txt_izberi_projekt_currentIndexChanged(QString besedilo);
 
@@ -41,7 +38,7 @@ private slots:
     void on_txt_datum_prejema_dateChanged();
 
     void on_btn_dodaj_ddv_clicked();
-    void on_tbl_ddv_itemChanged();
+    void on_tbl_ddv_itemChanged(QTableWidgetItem *celica);
     void napolni_ddv();
 
     QString pretvori(QString besedilo);
@@ -50,12 +47,14 @@ private slots:
     QString pretvori_v_double(QString besedilo);
 
     void prejem(QString besedilo);
-    void izracunaj();
     void stevilka_racuna();
+    void dodaj(QString besedilo);
+    void izracunaj();
 
 signals:
     void poslji(QString beseda);
     void tiskaj(QString vrsta, QString stevilke, QString format);
+    void prenos(QString beseda);
 
 private:
     Ui::prejetiracuni *ui;
