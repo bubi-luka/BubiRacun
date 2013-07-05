@@ -45,7 +45,8 @@ private slots:
 
     void on_btn_vnesi_zapis_2_clicked();
     void on_btn_pocisti_2_clicked();
-    void on_tbl_zapisi_2_doubleClicked();
+    void on_tbl_zapisi_2_clicked();
+    void on_btn_izbris_zapisa_2_clicked();
     void napolni_zapise();
     void on_cb_stara_stevilka_racuna_toggled();
     void on_cb_stevilka_starsa_toggled();

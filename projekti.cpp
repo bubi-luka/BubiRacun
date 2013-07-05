@@ -1602,7 +1602,7 @@ void projekti::on_btn_vnesi_zapis_clicked() {
 
 }
 
-void projekti::on_tbl_zapisi_doubleClicked() {
+void projekti::on_tbl_zapisi_clicked() {
 
     QString id = ui->tbl_zapisi->selectedItems().takeAt(0)->text();
 
@@ -1636,6 +1636,36 @@ void projekti::on_tbl_zapisi_doubleClicked() {
     base.close();
 
     ui->btn_vnesi_zapis->setText("Popravi zapis");
+
+}
+
+
+void projekti::on_btn_izbris_zapisa_clicked() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        // delete selected note
+        QSqlQuery sql_notes;
+        sql_notes.prepare("DELETE FROM opombe WHERE id LIKE '" + ui->txt_id_zapisa->text() + "'");
+        sql_notes.exec();
+    }
+    base.close();
+
+    napolni_zapise();
 
 }
 

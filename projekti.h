@@ -64,7 +64,8 @@ private slots:
 
     void on_btn_vnesi_zapis_clicked();
     void on_btn_pocisti_clicked();
-    void on_tbl_zapisi_doubleClicked();
+    void on_tbl_zapisi_clicked();
+    void on_btn_izbris_zapisa_clicked();
     void napolni_zapise();
 
     void napolni_casovnice();

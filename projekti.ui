@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>634</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -1065,6 +1065,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="btn_izbris_zapisa">
+             <property name="text">
+              <string>Izbriši</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer_18">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1124,7 +1131,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>441</height>
+               <height>489</height>
               </rect>
              </property>
             </widget>
@@ -1265,7 +1272,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>441</height>
+               <height>489</height>
               </rect>
              </property>
             </widget>
@@ -1389,7 +1396,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>495</height>
+               <height>549</height>
               </rect>
              </property>
             </widget>
