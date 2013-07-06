@@ -101,6 +101,7 @@ signals:
     void prenos2(QString besedilo);
     void secret(QString pass);
     void obvestilo(QString obvestilo);
+    void poslji(QString beseda);
 
 private:
     Ui::prijava *ui;

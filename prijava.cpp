@@ -19,6 +19,9 @@ prijava::prijava(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // reset user
+    vApp->set_id("");
+
     // ustvari tabelo s podatki o programu in bazi
     glavna_tabela();
 
@@ -236,7 +239,7 @@ void prijava::on_btn_prijavi_clicked() {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "login");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -249,70 +252,63 @@ void prijava::on_btn_prijavi_clicked() {
     else {
         // baza je odprta
 
-        QStringList seznam_id_org; // gre za seznam id-jev obstojecega user name-a
-        QStringList seznam_id; // gre za seznam id-jev urejen po vrstnem redu
+        QString user_id = "";
 
         QSqlQuery sql_preveri;
         sql_preveri.prepare("SELECT * FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text().toLower()) + "'");
         sql_preveri.exec();
-        while ( sql_preveri.next() ) {
-            seznam_id_org.append(prevedi(sql_preveri.value(sql_preveri.record().indexOf("id")).toString()));
-        }
+        if ( !sql_preveri.next() ) { // uporabnik ne obstaja
 
-        // ker sort() deluje tako, da je zadnji string 9 in ne 10, je potrebno dodati toliko nicel, da so vsi stringi enako dolgi
-        int dolzina = seznam_id_org.last().length();
-
-        for ( int i = 0; i < seznam_id_org.count(); i++ ) {
-            QString dodatek;
-            for ( int a = 1; a < dolzina - seznam_id_org.at(i).length(); a++ ) {
-                dodatek += "0";
-            }
-            seznam_id.append(dodatek + seznam_id_org.at(i));
-        }
-
-        seznam_id.sort();
-
-        if ( seznam_id.isEmpty() ) { // seznam je prazen, uporabnika s tem imenom ni v bazi
             ui->txt_uporabnik->setText("");
             ui->txt_geslo->setText("");
+
+            vApp->set_id("");
 
             QMessageBox msgbox;
             msgbox.setText("Uporabnisko ime ni pravilno!");
             msgbox.setInformativeText("V bazi ne obstaja uporabnik s tem uporabniskim imenom.");
             msgbox.exec();
+
         }
         else { // uporabnik obstaja
-            QSqlQuery sql_uporabnik;
-            sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(seznam_id.last()) + "'");
-            sql_uporabnik.exec();
-            if ( sql_uporabnik.next() ) {
-                if ( prevedi(sql_uporabnik.value(sql_uporabnik.record().indexOf("geslo")).toString()) == ui->txt_geslo->text() ) {
-                    // nastavi uporabnika, stanje, pravice uporabnika
-                    vApp->set_id(pretvori(seznam_id.last())); // nastavi uporabniske pravice
-                    if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
-                        vApp->set_state(pretvori("private")); // samo za oci pisarja
-                    }
-                    else {
-                        vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
-                    }
 
-                    // ustvari varnostno kopijo
-                    varnostna_kopija();
-                    this->close();
+            user_id = prevedi(sql_preveri.value(sql_preveri.record().indexOf("id")).toString());
+
+            if ( prevedi(sql_preveri.value(sql_preveri.record().indexOf("geslo")).toString()) != ui->txt_geslo->text() ) { // geslo se ne ujema
+
+                ui->txt_geslo->setText("");
+
+                vApp->set_id("");
+
+                QMessageBox msgbox;
+                msgbox.setText("Geslo ni pravilno!");
+                msgbox.setInformativeText("Vnesli ste napacno geslo! Poskusite ponovno!");
+                msgbox.exec();
+
+            }
+            else { // geslo se ujema
+
+                // nastavi uporabnika, stanje, pravice uporabnika
+                vApp->set_id(pretvori(user_id)); // nastavi uporabniske pravice
+
+                if ( ui->txt_uporabnik->text().left(1) == ui->txt_uporabnik->text().left(1).toLower() ) { // ce je velika zacetnica smo na odprtem dostopu
+                    vApp->set_state(pretvori("private")); // samo za oci pisarja
                 }
                 else {
-                    ui->txt_geslo->setText("");
-
-                    QMessageBox msgbox;
-                    msgbox.setText("Geslo ni pravilno!");
-                    msgbox.setInformativeText("Vnesli ste napacno geslo! Poskusite ponovno!");
-                    msgbox.exec();
+                    vApp->set_state(pretvori("public")); // odprto za oci ljudske mnozice
                 }
+
+                // ustvari varnostno kopijo
+                varnostna_kopija();
+
+                // skrij prijavno okno in odpri glavno okno
+                poslji("login-ok");
+
             }
         }
-
     }
     base.close();
+
 }
 
 // ustvari varnostno kopijo
