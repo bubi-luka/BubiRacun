@@ -40,6 +40,7 @@
 #include "prijava.h"
 #include "podjetje.h"
 #include "uporabnik.h"
+#include "setup.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
     QMainWindow(parent),
@@ -48,17 +49,10 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     ui->setupUi(this);
 
     // first run
+    setup().start_first_run();
     zagon();
 
-    /*
-    if ( vApp->id() == "" ) {
-        prijava *okno_prijava = new prijava;
-        okno_prijava->show();
-    }
-    else {
-        exit(1);
-    }
-
+/*
     // povecaj cez cel ekran
     showMaximized();
 
@@ -80,7 +74,7 @@ void GlavnoOkno::zagon() {
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
 
-        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zagonska");
         base.setDatabaseName(dbase_path);
         base.database();
         base.open();
@@ -110,19 +104,21 @@ void GlavnoOkno::zagon() {
                     first_use = "user";
                 }
             }
+            sql_check.clear();
 
             // check if we have all the necessary settings in place
-            if ( first_use == "" ) {
-                sql_check.prepare("SELECT * FROM uporabniki");
-                sql_check.exec();
-                if ( !sql_check.next() ) {
-                    first_use = "user";
-                }
-            }
+//            if ( first_use == "" ) {
+//                sql_check.prepare("SELECT * FROM uporabniki");
+//                sql_check.exec();
+//                if ( !sql_check.next() ) {
+//                    first_use = "user";
+//                }
+//            }
+//            sql_check.clear();
 
             // open correct widget
 
-            qDebug(first_use.toUtf8());
+            qDebug("To je: " + first_use.toUtf8());
 
             if ( first_use == "firm" ) {
                 podjetje *widpodjetje = new podjetje;
@@ -130,11 +126,36 @@ void GlavnoOkno::zagon() {
                 ui->lbl_pozicija->setText("Vnesite podatke o podjetju!");
                 setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o podjetju");
 
+                QObject::connect(this, SIGNAL(prenos(QString)),
+                           widpodjetje , SLOT(prejem(QString)));
+                prenos("Novo podjetje");
+                this->disconnect();
+
                 // receive signal to refresh table
                 QObject::connect(widpodjetje, SIGNAL(poslji(QString)),
                            this , SLOT(osvezi(QString)));
+                this->disconnect();
             }
             else if ( first_use == "user" ) {
+                uporabnik *widuporabnik = new uporabnik;
+                ui->scrollArea->setWidget(widuporabnik);
+                ui->lbl_pozicija->setText("Vnesite podatke o uporabniku!");
+                setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o uporabniku");
+
+                QObject::connect(this, SIGNAL(prenos(QString)),
+                           widuporabnik , SLOT(prejem(QString)));
+                prenos("Nov zaposleni");
+                this->disconnect();
+
+                // receive signal to refresh table
+                QObject::connect(widuporabnik, SIGNAL(poslji(QString)),
+                           this , SLOT(osvezi(QString)));
+                this->disconnect();
+            }
+/*            else if ( first_use == "settings" ) {
+
+            }
+         */   else {
                 prijava *widprijava = new prijava;
                 ui->scrollArea->setWidget(widprijava);
                 ui->lbl_pozicija->setText("Vnesite prijavne podatke!");
@@ -142,20 +163,7 @@ void GlavnoOkno::zagon() {
 
                 // receive signal to refresh table
                 QObject::connect(widprijava, SIGNAL(poslji(QString)),
-                           this , SLOT(osvezi(QString)));
-            }
-            else if ( first_use == "settings" ) {
-
-            }
-            else {
-                prijava *widprijava = new prijava;
-                ui->scrollArea->setWidget(widprijava);
-                ui->lbl_pozicija->setText("Vnesite prijavne podatke!");
-                setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Prijava");
-
-                // receive signal to refresh table
-                QObject::connect(widprijava, SIGNAL(poslji(QString)),
-                           this , SLOT(osvezi(QString)));
+                         this , SLOT(osvezi(QString)));
             }
 
         }
