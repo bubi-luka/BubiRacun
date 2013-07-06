@@ -97,7 +97,7 @@ podjetje::podjetje(QWidget *parent) :
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -189,7 +189,12 @@ podjetje::~podjetje() {
 
 void podjetje::on_btn_izhod_clicked() {
 
-    close();
+    if ( vApp->id() == "" ) {
+        exit(0);
+    }
+    else {
+        close();
+    }
 
 }
 
@@ -405,8 +410,10 @@ void podjetje::on_btn_potrdi_clicked() {
         // send signal to reload widget
         poslji("podjetje");
 
-        // close this window
-        close();
+        if ( vApp->id() != "" ) {
+            this->close();
+        }
+
     }
     else {
         QMessageBox msgbox;
@@ -482,7 +489,7 @@ void podjetje::prejem(QString besedilo) {
         QString app_path = QApplication::applicationDirPath();
         QString dbase_path = app_path + "/base.bz";
 
-        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-prejem");
         base.setDatabaseName(dbase_path);
         base.database();
         base.open();
@@ -580,7 +587,7 @@ void podjetje::on_txt_lastnik_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-lastnik");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -617,7 +624,7 @@ void podjetje::on_txt_kontaktna_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-kontaktna");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -655,7 +662,7 @@ void podjetje::on_txt_odgovorna_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-odgovorna");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -693,7 +700,7 @@ void podjetje::on_txt_skd_besedilo_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-skd");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -721,7 +728,7 @@ void podjetje::on_txt_skd_textChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-sprememba-skd");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -749,7 +756,7 @@ void podjetje::on_txt_posta_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-postna");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -777,7 +784,7 @@ void podjetje::on_txt_postna_stevilka_textChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-sprememba-postne");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();

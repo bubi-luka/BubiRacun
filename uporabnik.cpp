@@ -57,7 +57,7 @@ uporabnik::uporabnik(QWidget *parent) :
         msgbox.exec();
     }
     else {
-        QSqlQuery sql_fill_combo;
+/*        QSqlQuery sql_fill_combo;
         sql_fill_combo.prepare("SELECT * FROM sif_posta");
         sql_fill_combo.exec();
         while (sql_fill_combo.next()) {
@@ -87,7 +87,7 @@ uporabnik::uporabnik(QWidget *parent) :
         sql_fill_combo.exec();
         while (sql_fill_combo.next()) {
             ui->txt_pogodba->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("pogodba")).toString()));
-        }
+        }*/
     }
     base.close();
 
@@ -100,7 +100,12 @@ uporabnik::~uporabnik()
 
 void uporabnik::on_btn_izhod_clicked() {
 
-    close();
+    if ( vApp->id() == "" ) {
+        exit(0);
+    }
+    else {
+        close();
+    }
 
 }
 
@@ -514,45 +519,47 @@ void uporabnik::on_btn_sprejmi_clicked() {
             sql_vnesi_uporabnika.bindValue(22, pretvori(podjetje));
             sql_vnesi_uporabnika.exec();
 
+            // ob vnosu novega uporabnika vnesi njegove stolpce v tabelo stroski prehrane
+            if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") {
+                QSqlQuery sql_uporabnik;
+                sql_uporabnik.prepare("SELECT* FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text()) + "'");
+                sql_uporabnik.exec();
+                if ( sql_uporabnik.next() ) {
+                    QSqlQuery sql_stroski_prehrane;
+                    sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'bolezen_" +
+                                   pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                   "' TEXT");
+                    sql_stroski_prehrane.exec();
+                    sql_stroski_prehrane.clear();
+                    sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'dopust_" +
+                                   pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                   "' TEXT");
+                    sql_stroski_prehrane.exec();
+                    sql_stroski_prehrane.clear();
+                    sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_dni_" +
+                                   pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                   "' TEXT");
+                    sql_stroski_prehrane.exec();
+                    sql_stroski_prehrane.clear();
+                    sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_znesek_" +
+                                   pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
+                                   "' TEXT");
+                    sql_stroski_prehrane.exec();
+                    sql_stroski_prehrane.clear();
+                }
+            }
+
         }
         base.close();
 
         // send signal to reload widget
         poslji("uporabnik");
-        vApp->set_id(vApp->id());
-
-        // ob vnosu novega uporabnika vnesi njegove stolpce v tabelo stroski prehrane
-        if (ui->btn_sprejmi->text() == "Vnesi zaposlenega") {
-            QSqlQuery sql_uporabnik;
-            sql_uporabnik.prepare("SELECT* FROM uporabniki WHERE user_name LIKE '" + pretvori(ui->txt_uporabnik->text()) + "'");
-            sql_uporabnik.exec();
-            if ( sql_uporabnik.next() ) {
-                QSqlQuery sql_stroski_prehrane;
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'bolezen_" +
-                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                               "' TEXT");
-                sql_stroski_prehrane.exec();
-                sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'dopust_" +
-                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                               "' TEXT");
-                sql_stroski_prehrane.exec();
-                sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_dni_" +
-                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                               "' TEXT");
-                sql_stroski_prehrane.exec();
-                sql_stroski_prehrane.clear();
-                sql_stroski_prehrane.prepare("ALTER TABLE stroski_prehrane ADD COLUMN 'izplacilo_znesek_" +
-                               pretvori(sql_uporabnik.value(sql_uporabnik.record().indexOf("id")).toString()) +
-                               "' TEXT");
-                sql_stroski_prehrane.exec();
-                sql_stroski_prehrane.clear();
-            }
-        }
 
         // close this window
-        close();
+        if ( vApp->id() != "" ) {
+            this->close();
+        }
+
     }
     else {
         QMessageBox msgbox;
@@ -707,7 +714,7 @@ void uporabnik::on_txt_posta_currentIndexChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-postna");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -735,7 +742,7 @@ void uporabnik::on_txt_postna_stevilka_textChanged(QString besedilo) {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-postna-spremenjena");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();
@@ -763,7 +770,7 @@ void uporabnik::napolni_avtomobile() {
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-avtomobili");
     base.setDatabaseName(dbase_path);
     base.database();
     base.open();

@@ -24,6 +24,8 @@ protected:
 
 private slots:
     void sekundnik();
+    void zagon();
+
     void on_actionUporabniki_triggered();
     void on_actionPodjetje_triggered();
     void on_actionPotni_nalogi_triggered();
@@ -58,6 +60,7 @@ private slots:
     void podatki();
     void zacetek();
     void osnovni_pogled();
+    void osvezi(QString besedilo);
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

@@ -46,7 +46,8 @@ HEADERS += \
     sif_delavniki.h \
     wid_ddv.h \
     sif_ddv.h \
-    prejetiracuni_dodajddv.h
+    prejetiracuni_dodajddv.h \
+    setup.h
 
 SOURCES += \
 		main.cpp \
@@ -95,7 +96,8 @@ SOURCES += \
     sif_delavniki.cpp \
     wid_ddv.cpp \
     sif_ddv.cpp \
-    prejetiracuni_dodajddv.cpp
+    prejetiracuni_dodajddv.cpp \
+    setup.cpp
 
 FORMS += \
 		glavnookno.ui \
