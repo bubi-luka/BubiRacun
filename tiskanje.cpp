@@ -1826,7 +1826,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
         // narisemo besedilo
         painter.drawText(sirina_besedila, pozicija, polje_1 - razmik_med_vrsticami * 2, velikost_besedila.height(), Qt::AlignRight | Qt::TextWordWrap, besedilo);
         // nastavimo besedilo
-        besedilo = QString::number(cena_dnevnic.replace(",", ".").toDouble() + razdalja.toDouble() * kilometrina.toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
+        besedilo = QString::number(cena_dnevnic.replace(",", ".").toDouble() + razdalja.replace(",", ".").toDouble() * kilometrina.replace(",", ".").toDouble() + znesek_drugih_stroskov.replace(",", ".").toDouble(), 'f', 2).replace(".", ",");
         // nastavimo tip pisave
         painter.setFont(stalno_besedilo);
         // nastavimo polozaj na listu, kjer zapisemo besedilo
