@@ -3,7 +3,7 @@
  <class>prijava</class>
  <widget class="QDialog" name="prijava">
   <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
+   <enum>Qt::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -12,6 +12,9 @@
     <width>569</width>
     <height>469</height>
    </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>BenRačun: Prijava v aplikacijo</string>
@@ -63,7 +66,11 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_uporabnik"/>
+          <widget class="QLineEdit" name="txt_uporabnik">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
