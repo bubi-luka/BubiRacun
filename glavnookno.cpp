@@ -53,7 +53,7 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     zagon();
 
     // povecaj cez cel ekran
-//    showMaximized();
+    showMaximized();
 
     // skrijemo polja, ki jih ne potrebujemo
     ui->txt_pozicija->setVisible(false);
