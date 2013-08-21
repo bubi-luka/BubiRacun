@@ -72,9 +72,11 @@ wid_racuni::wid_racuni(QWidget *parent) :
             ui->cb_mesec->addItem("10) Oktober");
             ui->cb_mesec->addItem("11) November");
             ui->cb_mesec->addItem("12) December");
+            ui->cb_mesec->addItem("Ni vnosa");
 
             // filtriraj po letu
             ui->cb_leto->addItem("");
+            ui->cb_leto->addItem("Ni vnosa");
 
             sql_napolni.prepare("SELECT * FROM racuni WHERE avtor_oseba LIKE '" + pretvori(vApp->id()) + "'");
             sql_napolni.exec();
@@ -148,6 +150,9 @@ void wid_racuni::on_cb_racun_currentIndexChanged() {
 
 void wid_racuni::on_cb_mesec_currentIndexChanged() {
 
+    if (ui->cb_mesec->currentText() == "Ni vnosa" ) {
+        ui->cb_leto->setCurrentText("Ni vnosa");
+    }
     if ( ui->btn_nov->text() != "" ) {
         napolni();
     }
@@ -156,6 +161,9 @@ void wid_racuni::on_cb_mesec_currentIndexChanged() {
 
 void wid_racuni::on_cb_leto_currentIndexChanged() {
 
+    if (ui->cb_leto->currentText() == "Ni vnosa" ) {
+        ui->cb_mesec->setCurrentText("Ni vnosa");
+    }
     if ( ui->btn_nov->text() != "" ) {
         napolni();
     }
@@ -307,7 +315,12 @@ void wid_racuni::napolni() {
         while (sql_fill.next()) {
             // filtriramo glede na mesec in leto
             QString filter = "pozitivno";
-            if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
+            if ( ui->cb_mesec->currentText() == "Ni vnosa" && ui->cb_leto->currentText() == "Ni vnosa" ) {
+                if ( sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString() != "" ) {
+                    filter = "negativno";
+                }
+            }
+            else if ( ui->cb_mesec->currentText() != "" && ui->cb_leto->currentText() != "" ) {
                 QString leto = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).right(4);
                 QString mesec = prevedi(sql_fill.value(sql_fill.record().indexOf("datum_izdaje")).toString()).left(5).right(2);
                 if ( mesec != ui->cb_mesec->currentText().left(2) || leto != ui->cb_leto->currentText() ) {
