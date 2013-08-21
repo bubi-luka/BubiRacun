@@ -52,39 +52,49 @@ QString varnost::state() const {
 //Setters
 void varnost::set_id(const QString &id) {
 
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
+    if ( id != "" ) {
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        // the database is opened
-        QSqlQuery sql_set_user_data;
-        sql_set_user_data.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + id + "'");
-        sql_set_user_data.exec();
-        if ( sql_set_user_data.next() ) {
-            m_id = sql_set_user_data.value(sql_set_user_data.record().indexOf("id")).toString();
-            m_name = sql_set_user_data.value(sql_set_user_data.record().indexOf("ime")).toString();
-            m_surname = sql_set_user_data.value(sql_set_user_data.record().indexOf("priimek")).toString();
-            m_firm = sql_set_user_data.value(sql_set_user_data.record().indexOf("podjetje")).toString();
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "varnost-set-id");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
+        }
+        else {
+            // the database is opened
+            QSqlQuery sql_set_user_data;
+            sql_set_user_data.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + id + "'");
+            sql_set_user_data.exec();
+            if ( sql_set_user_data.next() ) {
+                m_id = sql_set_user_data.value(sql_set_user_data.record().indexOf("id")).toString();
+                m_name = sql_set_user_data.value(sql_set_user_data.record().indexOf("ime")).toString();
+                m_surname = sql_set_user_data.value(sql_set_user_data.record().indexOf("priimek")).toString();
+                m_firm = sql_set_user_data.value(sql_set_user_data.record().indexOf("podjetje")).toString();
 
-            QSqlQuery sql_set_permission_data;
-            sql_set_permission_data.prepare("SELECT * FROM sif_dovoljenja WHERE id LIKE '" + sql_set_user_data.value(sql_set_user_data.record().indexOf("dovoljenje")).toString() + "'");
-            sql_set_permission_data.exec();
-            if ( sql_set_permission_data.next() ) {
-                set_permission(sql_set_permission_data.value(sql_set_permission_data.record().indexOf("dovoljenje")).toString());
+                QSqlQuery sql_set_permission_data;
+                sql_set_permission_data.prepare("SELECT * FROM sif_dovoljenja WHERE id LIKE '" + sql_set_user_data.value(sql_set_user_data.record().indexOf("dovoljenje")).toString() + "'");
+                sql_set_permission_data.exec();
+                if ( sql_set_permission_data.next() ) {
+                    set_permission(sql_set_permission_data.value(sql_set_permission_data.record().indexOf("dovoljenje")).toString());
+                }
             }
         }
+        base.close();
     }
-    base.close();
+    else {
+        m_id = "";
+        m_name = "";
+        m_surname = "";
+        m_firm = "";
+        m_permission = "";
+        m_state = "";
+    }
 
     emit id_changed();
 

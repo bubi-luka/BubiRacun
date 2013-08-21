@@ -181,4 +181,5 @@ OTHER_FILES += \
 		readme.txt \
 		README.md \
 		srcek.svg \
-		srcek.ico
+		srcek.ico \
+    bubi.svg

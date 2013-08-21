@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QFile>
 #include <QDir>
+#include <QKeyEvent>
 
 #include "prijava.h"
 #include "ui_prijava.h"
@@ -19,9 +20,12 @@ prijava::prijava(QWidget *parent) :
     ui->setupUi(this);
 
     // reset user
-//    vApp->set_id("");
+    vApp->set_id("");
 
-//    ui->txt_uporabnik->setFocus();
+    this->activateWindow();
+    this->setFocus();
+
+    ui->txt_uporabnik->setFocus();
 
 }
 
@@ -117,7 +121,7 @@ void prijava::on_btn_prijavi_clicked() {
                 varnostna_kopija();
 
                 // skrij prijavno okno in odpri glavno okno
-                poslji("login-ok");
+                poslji("loginok");
 
             }
         }
@@ -227,5 +231,16 @@ QString prijava::pretvori(QString besedilo) {
 QString prijava::prevedi(QString besedilo) {
 
     return kodiranje().odkodiraj(besedilo);
+
+}
+
+void prijava::keyPressEvent(QKeyEvent *event) {
+
+    if ( event->key() == Qt::Key_Escape ) {
+        on_btn_brisi_clicked();
+    }
+    else if ( ( event->key() == Qt::Key_Enter ) || ( event->key() == Qt::Key_Return ) ) {
+        on_btn_prijavi_clicked();
+    }
 
 }

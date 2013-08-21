@@ -52,124 +52,133 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     setup().start_first_run();
     zagon();
 
-/*
     // povecaj cez cel ekran
     showMaximized();
 
     // skrijemo polja, ki jih ne potrebujemo
     ui->txt_pozicija->setVisible(false);
     ui->txt_uporabnik->setVisible(false);
-*/
+
 }
 
 void GlavnoOkno::zagon() {
 
-        // disable menu and buttons
-        ui->menubar->setEnabled(false);
-        ui->btn_home->setEnabled(false);
+    vApp->set_id("");
 
-        // has the program been used before (do we have at least one firm and one user)?
-        QString first_use = "";
+    // disable menu and buttons
+    ui->menubar->setEnabled(false);
+    ui->btn_home->setEnabled(false);
 
-        QString app_path = QApplication::applicationDirPath();
-        QString dbase_path = app_path + "/base.bz";
+    // set labels to empty
+    ui->txt_pozicija->setText("");
+    ui->txt_uporabnik->setText("");
+    ui->lbl_pozdrav->clear();
+    ui->lbl_pozicija->clear();
+    ui->lbl_pozdrav->setText("");
+    ui->lbl_pozicija->setText("");
 
-        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zagonska");
-        base.setDatabaseName(dbase_path);
-        base.database();
-        base.open();
-        if(base.isOpen() != true){
-            QMessageBox msgbox;
-            msgbox.setText("Baze ni bilo moc odpreti");
-            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-            msgbox.exec();
+    // has the program been used before (do we have at least one firm and one user)?
+    QString first_use = "";
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zagonska");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        QSqlQuery sql_check;
+
+        //check, if we have a valid firm
+        sql_check.prepare("SELECT * FROM podjetje");
+        sql_check.exec();
+        if ( !sql_check.next() ) {
+            first_use = "firm";
         }
-        else {
+        sql_check.clear();
 
-            QSqlQuery sql_check;
-
-            //check, if we have a valid firm
-            sql_check.prepare("SELECT * FROM podjetje");
+        //check, if we have a valid user
+        if ( first_use == "" ) {
+            sql_check.prepare("SELECT * FROM uporabniki");
             sql_check.exec();
             if ( !sql_check.next() ) {
-                first_use = "firm";
+                first_use = "user";
             }
-            sql_check.clear();
+        }
+        sql_check.clear();
 
-            //check, if we have a valid user
-            if ( first_use == "" ) {
-                sql_check.prepare("SELECT * FROM uporabniki");
-                sql_check.exec();
-                if ( !sql_check.next() ) {
-                    first_use = "user";
-                }
-            }
-            sql_check.clear();
-
-            // check if we have all the necessary settings in place
-//            if ( first_use == "" ) {
-//                sql_check.prepare("SELECT * FROM uporabniki");
-//                sql_check.exec();
-//                if ( !sql_check.next() ) {
-//                    first_use = "user";
-//                }
+        // check if we have all the necessary settings in place
+//        if ( first_use == "" ) {
+//            sql_check.prepare("SELECT * FROM uporabniki");
+//            sql_check.exec();
+//            if ( !sql_check.next() ) {
+//               first_use = "user";
 //            }
-//            sql_check.clear();
+//        }
+//        sql_check.clear();
 
-            // open correct widget
+        // open correct widget
 
-            qDebug("To je: " + first_use.toUtf8());
+        if ( first_use == "firm" ) {
+            podjetje *widpodjetje = new podjetje;
+            ui->scrollArea->setWidget(widpodjetje);
+            ui->lbl_pozicija->setText("Vnesite podatke o podjetju!");
+            setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o podjetju");
 
-            if ( first_use == "firm" ) {
-                podjetje *widpodjetje = new podjetje;
-                ui->scrollArea->setWidget(widpodjetje);
-                ui->lbl_pozicija->setText("Vnesite podatke o podjetju!");
-                setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o podjetju");
+            QObject::connect(this, SIGNAL(prenos(QString)),
+                       widpodjetje , SLOT(prejem(QString)));
+            prenos("Novo podjetje");
+            this->disconnect();
 
-                QObject::connect(this, SIGNAL(prenos(QString)),
-                           widpodjetje , SLOT(prejem(QString)));
-                prenos("Novo podjetje");
-                this->disconnect();
+            // receive signal to refresh table
+            QObject::connect(widpodjetje, SIGNAL(poslji(QString)),
+                       this , SLOT(osvezi(QString)));
+            this->disconnect();
+        }
+        else if ( first_use == "user" ) {
+            uporabnik *widuporabnik = new uporabnik;
+            ui->scrollArea->setWidget(widuporabnik);
+            ui->lbl_pozicija->setText("Vnesite podatke o uporabniku!");
+            setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o uporabniku");
 
-                // receive signal to refresh table
-                QObject::connect(widpodjetje, SIGNAL(poslji(QString)),
-                           this , SLOT(osvezi(QString)));
-                this->disconnect();
-            }
-            else if ( first_use == "user" ) {
-                uporabnik *widuporabnik = new uporabnik;
-                ui->scrollArea->setWidget(widuporabnik);
-                ui->lbl_pozicija->setText("Vnesite podatke o uporabniku!");
-                setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Podatki o uporabniku");
+            QObject::connect(this, SIGNAL(prenos(QString)),
+                       widuporabnik , SLOT(prejem(QString)));
+            prenos("Nov zaposleni");
+            this->disconnect();
 
-                QObject::connect(this, SIGNAL(prenos(QString)),
-                           widuporabnik , SLOT(prejem(QString)));
-                prenos("Nov zaposleni");
-                this->disconnect();
-
-                // receive signal to refresh table
-                QObject::connect(widuporabnik, SIGNAL(poslji(QString)),
-                           this , SLOT(osvezi(QString)));
-                this->disconnect();
-            }
-/*            else if ( first_use == "settings" ) {
-
-            }
-         */   else {
-                prijava *widprijava = new prijava;
-                ui->scrollArea->setWidget(widprijava);
-                ui->lbl_pozicija->setText("Vnesite prijavne podatke!");
-                setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Prijava");
-
-                // receive signal to refresh table
-                QObject::connect(widprijava, SIGNAL(poslji(QString)),
-                         this , SLOT(osvezi(QString)));
-            }
+            // receive signal to refresh table
+            QObject::connect(widuporabnik, SIGNAL(poslji(QString)),
+                       this , SLOT(osvezi(QString)));
+            this->disconnect();
+        }
+/*        else if ( first_use == "settings" ) {
 
         }
-        base.close();
+     */   else {
+            prijava *widprijava = new prijava;
+            ui->scrollArea->setWidget(widprijava);
+            widprijava->show();
+            widprijava->setFocus();
 
-        zacetek();
+            ui->lbl_pozicija->setText("Vnesite prijavne podatke!");
+            setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Prijava");
+
+            // receive signal to refresh table
+            QObject::connect(widprijava, SIGNAL(poslji(QString)),
+                     this , SLOT(osvezi(QString)));
+        }
+
+    }
+    base.close();
+
+    zacetek();
 
 }
 
@@ -184,20 +193,6 @@ void GlavnoOkno::osvezi(QString besedilo) {
 
 }
 
-void GlavnoOkno::iconActivated(QSystemTrayIcon::ActivationReason reason) {
-
-    switch (reason) {
-    case QSystemTrayIcon::Trigger:
-    case QSystemTrayIcon::DoubleClick:
-    case QSystemTrayIcon::MiddleClick:
-        ikonca->contextMenu()->show();
-        break;
-    default:
-        ;
-    }
-
-}
-
 GlavnoOkno::~GlavnoOkno()
 {
     delete ui;
@@ -208,24 +203,6 @@ void GlavnoOkno::on_btn_home_clicked() {
 
     osnovni_pogled();
 
-}
-
-void GlavnoOkno::setVisible(bool visible)
-{
-    if ( vApp->id() != "" ) {
-        minimizeAction->setEnabled(visible);
-        maximizeAction->setEnabled(!isMaximized());
-        restoreAction->setEnabled(isMaximized() || !visible);
-    }
-    QMainWindow::setVisible(visible);
-}
-
-void GlavnoOkno::closeEvent(QCloseEvent *event)
-{
-    if (ikonca->isVisible()) {
-        hide();
-        event->ignore();
-    }
 }
 
 void GlavnoOkno::sekundnik() {
@@ -496,10 +473,11 @@ QString GlavnoOkno::prevedi(QString besedilo) {
 void GlavnoOkno::keyPressEvent(QKeyEvent *event) {
 
     if ( event->key() == Qt::Key_Escape ) {
-        osnovni_pogled();
+        if ( vApp->id() != "" ) {
+            osnovni_pogled();
+        }
     }
     else if ( (event->key() == Qt::Key_Delete) && (event->modifiers() == Qt::AltModifier) ) {
-        qDebug("testiw");
         zagon();
     }
     else if ( (event->key() == Qt::Key_S) && (event->modifiers() == Qt::AltModifier) ) {
@@ -565,7 +543,7 @@ void GlavnoOkno::podatki() {
 
 void GlavnoOkno::zacetek() {
 
-   QTimer *timer = new QTimer(this);
+/*   QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(sekundnik()));
    timer->start(1000);
 
@@ -573,79 +551,5 @@ void GlavnoOkno::zacetek() {
    QString ura = QTime::currentTime().toString("HH:mm:ss");
 
        ui->lbl_datum->setText("Danes je: " + datum + " " + ura);
-
-//       QString app_path = QApplication::applicationDirPath();
-//       QString dbase_path = app_path + "/base.bz";
-
-//       QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-//       base.setDatabaseName(dbase_path);
-//       base.database();
-//       base.open();
-//       if(base.isOpen() != true){
-//           QMessageBox msgbox;
-//           msgbox.setText("Baze ni bilo moc odpreti");
-//           msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-//           msgbox.exec();
-//       }
-//       else {
-//           // baza je odprta
-
-//           // pogleda, ali obstajajo vnesene nastavitve, drugace prisili uporabnika v njihov vnos
-//           QSqlQuery sql_nastavitve;
-//           sql_nastavitve.prepare("SELECT * FROM nastavitve WHERE naziv LIKE '" + pretvori("pot") + "'");
-//           sql_nastavitve.exec();
-//           if ( sql_nastavitve.next() ) {
-//               if ( sql_nastavitve.value(sql_nastavitve.record().indexOf("vrednost")).toString() == "" ) {
-//                   nastavitve *okno = new nastavitve;
-//                   okno->open();
-//               }
-//           }
-//       }
-//       base.close();
-
-//       podatki();
-
-//       // odpremo osnovni pogled
-//       osnovni_pogled();
-
-       // ker kot kaze 2x odpremo glavno okno, bomo ikono zagnali le, ko je okno dejansko odprto!!
-//       if ( vApp->id() != "" ) {
-//           // create system tray icon
-//           minimizeAction = new QAction(tr("Mi&nimize"), this);
-//           connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
-
-//           maximizeAction = new QAction(tr("Ma&ximize"), this);
-//           connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
-
-//           restoreAction = new QAction(tr("&Restore"), this);
-//           connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
-
-//           quitAction = new QAction(tr("&Quit"), this);
-//           connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-//           if ( QSystemTrayIcon::isSystemTrayAvailable() == true ) {
-
-//               // create context menu
-//               QMenu *sys_menu = new QMenu;
-//               sys_menu->addAction(minimizeAction);
-//               sys_menu->addAction(maximizeAction);
-//               sys_menu->addAction(restoreAction);
-//               sys_menu->addSeparator();
-//               sys_menu->addAction(quitAction);
-
-//               QIcon ikona;
-//               QString pot_do_stilske_datoteke = QApplication::applicationDirPath();
-//               ikona.addFile(pot_do_stilske_datoteke + "/srcek.svg");
-
-//               // create system tray icon
-//               ikonca = new QSystemTrayIcon(this);
-//               ikonca->setContextMenu(sys_menu);
-//               ikonca->setIcon(ikona);
-//               ikonca->show();
-
-//               connect(ikonca, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-//                       this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-//           }
-//       }
-
+*/
 }

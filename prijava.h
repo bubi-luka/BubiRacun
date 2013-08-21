@@ -28,6 +28,8 @@ private slots:
     // ustvari varnostno kopijo
     void varnostna_kopija();
 
+    void keyPressEvent(QKeyEvent *event);
+
 signals:
     void prenos1(QString besedilo);
     void prenos2(QString besedilo);
