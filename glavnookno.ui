@@ -3,7 +3,7 @@
  <class>GlavnoOkno</class>
  <widget class="QMainWindow" name="GlavnoOkno">
   <property name="windowModality">
-   <enum>Qt::NonModal</enum>
+   <enum>Qt::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>

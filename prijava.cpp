@@ -22,9 +22,8 @@ prijava::prijava(QWidget *parent) :
     // reset user
     vApp->set_id("");
 
-    this->activateWindow();
-    this->setFocus();
-
+//    this->activateWindow();
+//    this->setFocus();
     ui->txt_uporabnik->setFocus();
 
 }
