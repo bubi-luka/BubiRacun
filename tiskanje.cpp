@@ -3905,7 +3905,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
             pozicija += razmik_med_vrsticami + visina_vrstice;
         }
         else if ( racun_tip == "1" ) {
-            besedilo = racun.readLine() + racun.readLine();
+            besedilo = racun.readLine() + racun.readLine() + racun.readLine() + racun.readLine();
         }
 
         if ( racun_tip != "1" ) { // predplacilo in racun
@@ -3962,7 +3962,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                 pozicija += razmik_med_vrsticami;
             }
             else {
-                besedilo = racun.readLine() + racun.readLine();
+                besedilo = racun.readLine() + racun.readLine() + racun.readLine();
             }
         }
         if ( racun_tip == "3" ) { // samo racun
