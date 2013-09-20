@@ -1,7 +1,7 @@
 1000,Ljubljana
-1001,Ljubljana -0 P.P.
-1210,Ljubljana -0 Šentvid
-1211,Ljubljana -0 Šmartno
+1001,Ljubljana - P.P.
+1210,Ljubljana - Šentvid
+1211,Ljubljana - Šmartno
 1215,Medvode
 1216,Smlednik
 1217,Vodice
@@ -12,7 +12,7 @@
 1223,Blagovica
 1225,Lukovica
 1230,Domžale
-1231,Ljubljana -0 Črnuče
+1231,Ljubljana - Črnuče
 1233,Dob
 1234,Mengeš
 1235,Radomlje
@@ -21,8 +21,8 @@
 1242,Stahovica
 1251,Moravče
 1252,Vače
-1260,Ljubljana -0 Polje
-1261,Ljubljana -0 Dobrunje
+1260,Ljubljana - Polje
+1261,Ljubljana - Dobrunje
 1262,Dol pri Ljubljani
 1270,Litija
 1272,Polšnik
@@ -35,7 +35,7 @@
 1290,Grosuplje
 1291,Škofljica
 1292,Ig
-1293,Šmarje -0 Sap
+1293,Šmarje - Sap
 1294,Višnja Gora
 1295,Ivančna Gorica
 1296,Šentvid pri Stični
@@ -43,7 +43,7 @@
 1303,Zagradec
 1310,Ribnica
 1311,Turjak
-1312,Videm -0 Dobrepolje
+1312,Videm - Dobrepolje
 1313,Struge
 1314,Rob
 1315,Velike Lašče
@@ -89,7 +89,7 @@
 1433,Radeče
 1434,Loka pri Zidanem Mostu
 2000,Maribor
-2001,Maribor -0 P.P.
+2001,Maribor - P.P.
 2201,Zgornja Kungota
 2204,Miklavž na Dravskem polju
 2205,Starše
@@ -187,7 +187,7 @@
 2393,Črna na Koroškem
 2394,Kotlje
 3000,Celje
-3001,Celje -0 P.P.
+3001,Celje - P.P.
 3201,Šmartno v Rožni dolini
 3202,Ljubečna
 3203,Nova Cerkev
@@ -238,7 +238,7 @@
 3313,Polzela
 3314,Braslovče
 3320,Velenje
-3322,Velenje -0 P.P.
+3322,Velenje - P.P.
 3325,Šoštanj
 3326,Topolšica
 3327,Šmartno ob Paki
@@ -261,7 +261,7 @@
 4207,Cerklje na Gorenjskem
 4208,Šenčur
 4209,Žabnica
-4210,Brnik -0 Aerodrom
+4210,Brnik - Aerodrom
 4211,Mavčiče
 4212,Visoko
 4220,Škofja Loka
@@ -292,11 +292,11 @@
 4280,Kranjska Gora
 4281,Mojstrana
 4282,Gozd Martuljek
-4283,Rateče -0 Planica
+4283,Rateče - Planica
 4290,Tržič
 4294,Križe
 5000,Nova Gorica
-5001,Nova Gorica -0 P.P.
+5001,Nova Gorica - P.P.
 3204,Dobrna
 5210,Deskle
 5211,Kojsko
@@ -378,7 +378,7 @@
 6330,Piran/Pirano
 6333,Sečovlje/Sicciole
 8000,Novo mesto
-8001,Novo mesto -0 P.P.
+8001,Novo mesto - P.P.
 8210,Trebnje
 8211,Dobrnič
 8212,Velika Loka
@@ -440,7 +440,7 @@
 8361,Dvor
 8362,Hinje
 9000,Murska Sobota
-9001,Murska Sobota -0 P.P.
+9001,Murska Sobota - P.P.
 9201,Puconci
 9202,Mačkovci
 9203,Petrovci
@@ -497,11 +497,11 @@
 1538,DZS
 1516,Elektro Ljubljana
 1528,Emona
-1540,EPPS -0 Elektronsko pismo Pošte Slovenije
+1540,EPPS - Elektronsko pismo Pošte Slovenije
 1504,Gospodarska zbornica Slovenije
 1521,Iskra Invest
 1545,Kanal A
-1542,KDD -0 Centralna klirinško depotna družba
+1542,KDD - Centralna klirinško depotna družba
 1525,Klinični center Ljubljana
 1544,Droga Kolinska
 1514,Kompas
