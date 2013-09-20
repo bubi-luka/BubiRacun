@@ -778,6 +778,9 @@ void wid_potninalogi::prejem(QString besedilo) {
 
 void wid_potninalogi::on_btn_prestevilci_clicked() {
 
+    QString ime_gumba = ui->btn_prestevilci->text();
+    QString trenutni_vnos = "";
+    QString stevilo_vseh_vnosov = "";
 
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
@@ -794,6 +797,16 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     }
     else {
         // baza je odprta
+
+        ui->btn_prestevilci->setText("... priprave na prestevilcevanje ...");
+        QSqlQuery sql_vnosi;
+        sql_vnosi.prepare("SELECT * FROM potni_nalogi");
+        sql_vnosi.exec();
+        int st_vnosov = 0;
+        while ( sql_vnosi.next() ) {
+            st_vnosov++;
+        }
+        stevilo_vseh_vnosov = QString::number(st_vnosov, 10);
 
         // poisci vsa leta; dobimo seznam vseh let, v katerih smo uradovali
         QStringList leta;
@@ -873,8 +886,15 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
 
             } // for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ )
 
+            vApp->processEvents();
+            ui->btn_prestevilci->setText("... prestevilcujem ...");
             // pojdi cez cel seznam vnosov (notri so IDji po vrstnem redu) in vsakega izpisi ( kasneje popravi )
             for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
+
+                            vApp->processEvents();
+                trenutni_vnos = QString::number(i_seznam_vnosov, 10);
+                ui->btn_prestevilci->setText(trenutni_vnos + "/" + stevilo_vseh_vnosov);
+            vApp->processEvents();
 
                 zaporedna_stevilka++;
                 QString zaporedna = "";
@@ -887,7 +907,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
                 else {
                     zaporedna = "" + QString::number(zaporedna_stevilka, 10);
                 }
-
+            vApp->processEvents();
                 // prestevilci potovanje - stevilka naloga
                 QSqlQuery sql_potni_nalog;
                 sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
@@ -900,7 +920,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
                     sql_popravi_stevilko.exec();
                 }
                 sql_potni_nalog.clear();
-
+            vApp->processEvents();
                 // prestevilci stroske - stevilka naloga
                 sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
                 sql_potni_nalog.exec();
@@ -911,7 +931,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
                     sql_popravi_stevilko.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
                     sql_popravi_stevilko.exec();
                 }
-
+            vApp->processEvents();
                 // prestevilci potni nalog - stevilka naloga
                 QSqlQuery sql_prestevilci;
                 sql_prestevilci.prepare("UPDATE potni_nalogi SET stevilka_naloga = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
@@ -932,6 +952,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     }
     base.close();
 
+    ui->btn_prestevilci->setText("... koncujem ...");
     // sporocilo ob zakljucku prestevilcevanja
     QMessageBox zakljucek;
     zakljucek.setText("Prestevilcenje zakljuceno");
@@ -939,6 +960,8 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     zakljucek.exec();
 
     napolni();
+
+    ui->btn_prestevilci->setText(ime_gumba);
 
 }
 
