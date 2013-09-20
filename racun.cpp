@@ -2822,8 +2822,7 @@ void racun::on_tbl_vse_opombe_doubleClicked() {
         ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
     }
     else { // jo odstrani
-        QString nov_id = id.left(id.length() - 1 ); // odstrani vejico
-        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(nov_id));
+        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
     }
 
     if ( ui->txt_vnesene_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
