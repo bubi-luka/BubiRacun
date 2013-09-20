@@ -2,16 +2,23 @@
 <ui version="4.0">
  <class>sif_cenamalice</class>
  <widget class="QDialog" name="sif_cenamalice">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>257</width>
-    <height>117</height>
+    <height>125</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Urejanje cene malice</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

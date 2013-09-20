@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje projekta</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tab_projekti">

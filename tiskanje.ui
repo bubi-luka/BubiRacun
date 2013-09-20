@@ -9,12 +9,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
+    <width>382</width>
     <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Urejanje tiskanja</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

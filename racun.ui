@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje izdanega računa</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_racuni">

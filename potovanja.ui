@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje potovanja</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">

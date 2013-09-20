@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje stranke</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_8">
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">

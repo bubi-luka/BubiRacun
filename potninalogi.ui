@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje potnega naloga</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tab_potni_stroski">
@@ -36,9 +40,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-77</y>
-            <width>783</width>
-            <height>666</height>
+            <y>0</y>
+            <width>795</width>
+            <height>638</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -422,8 +426,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>757</width>
-               <height>617</height>
+               <width>769</width>
+               <height>646</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -443,7 +447,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>737</width>
+                   <width>749</width>
                    <height>148</height>
                   </rect>
                  </property>
@@ -578,7 +582,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>602</width>
+                     <width>607</width>
                      <height>148</height>
                     </rect>
                    </property>
@@ -594,7 +598,16 @@
                    <bool>false</bool>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_4">
-                   <property name="margin">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
                     <number>0</number>
                    </property>
                    <item row="0" column="0">
