@@ -951,6 +951,9 @@ void racun::on_btn_sprejmi_clicked() {
                         else {
                            narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
                            if ( sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString() == "1" ) {
+                               narocnik_davcna = pretvori("SI") + sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
+                           }
+                           else {
                                narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
                            }
                         }
