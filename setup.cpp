@@ -3946,6 +3946,40 @@ void setup::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
+                if ( stevilka_baze_min == 15 ) {
+
+                    // popravi vnose za poštne številke
+                    update.prepare("SELECT * FROM sif_posta WHERE posta LIKE '% -0 %'");
+                    update.exec();
+                    while ( update.next() ) {
+                        QSqlQuery posodobi;
+                        posodobi.prepare("UPDATE sif_posta set posta = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        posodobi.bindValue(0, update.value(update.record().indexOf("posta")).toString().replace("-0", "-"));
+                        posodobi.exec();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.16");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.16");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "20.09.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
             }
         }
 
