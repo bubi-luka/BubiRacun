@@ -918,7 +918,6 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
 
                 // prestevilci potni nalog - stevilka naloga
                 QSqlQuery sql_prestevilci;
-                qDebug("PN-" + leta.value(i_leta).toUtf8() + "-" + zaporedna.toUtf8());
                 sql_prestevilci.prepare("UPDATE potni_nalogi SET stevilka_naloga = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
                 sql_prestevilci.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
                 sql_prestevilci.exec();
