@@ -1,3 +1,5 @@
+#include <QApplication>
+#include <QDialog>
 #include <QMessageBox>
 #include <QtSql>
 #include <QObject>
@@ -1545,6 +1547,7 @@ void setup::vnesi_skd() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString skd_stevilka = vrstica.left(vrstica.indexOf(";", 0));
             QString skd_besedilo = vrstica.right(vrstica.length() - vrstica.indexOf(";", 0) - 1);
@@ -1595,6 +1598,7 @@ void setup::vnesi_posta() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString posta_stevilka = vrstica.left(vrstica.indexOf(",", 0));
             QString posta_besedilo = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
@@ -1645,6 +1649,7 @@ void setup::vnesi_dovoljenja() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString ime = vrstica.left(vrstica.indexOf(",", 0));
             QString opis = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
@@ -1695,6 +1700,7 @@ void setup::vnesi_nazive() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString naziv = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1743,6 +1749,7 @@ void setup::vnesi_pogodbe() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString pogodba = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1791,6 +1798,7 @@ void setup::vnesi_status_projekta() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString naziv = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1839,6 +1847,7 @@ void setup::vnesi_status_racuna() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString status = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1887,6 +1896,7 @@ void setup::vnesi_status_placila() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString status = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1935,6 +1945,7 @@ void setup::vnesi_status_racunovodstva() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString status = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -1983,6 +1994,7 @@ void setup::vnesi_popuste() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString popust = vrstica.left(vrstica.indexOf(",", 0));
             QString vrednost = vrstica.right(vrstica.length() - vrstica.indexOf(",", 0) - 1);
@@ -2033,6 +2045,7 @@ void setup::vnesi_vire_strank() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString vir = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -2081,6 +2094,7 @@ void setup::vnesi_namen_potnega_naloga() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString namen = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -2129,6 +2143,7 @@ void setup::vnesi_prevoz() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString vrstica = besedilo.readLine();
             QString prevoz = vrstica.left(vrstica.indexOf(",", 0));
 
@@ -2177,6 +2192,7 @@ void setup::vnesi_predracune() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString predracun = besedilo.readLine();
 
             QSqlQuery sql_check_table;
@@ -2224,6 +2240,7 @@ void setup::vnesi_storitve() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString opravilo = besedilo.readLine();
             QString sklop = opravilo.left(opravilo.indexOf(",", 0));
             opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
@@ -2289,6 +2306,7 @@ void setup::vnesi_oddaja_racuna() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString status = besedilo.readLine();
 
             QSqlQuery sql_check_table;
@@ -2336,6 +2354,7 @@ void setup::vnesi_nastavitve() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString naziv = besedilo.readLine();
 
             QSqlQuery sql_check_table;
@@ -2383,6 +2402,7 @@ void setup::vnesi_banke() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString opravilo = besedilo.readLine();
             QString ime_banke = opravilo.left(opravilo.indexOf(";", 0));
             opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
@@ -2441,6 +2461,7 @@ void setup::vnesi_koda_namena() {
         */
         QTextStream besedilo(&datoteka);
         while (!besedilo.atEnd()) {
+            qApp->processEvents();
             QString opravilo = besedilo.readLine();
             QString koda = opravilo.left(opravilo.indexOf(";", 0));
             opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(";", 0) - 1);
@@ -2556,6 +2577,7 @@ void setup::posodobi_bazo() {
         podatki.prepare("SELECT * FROM glavna");
         podatki.exec();
         while ( podatki.next() ) {
+            qApp->processEvents();
             if ( podatki.value(podatki.record().indexOf("parameter")).toString() == "Verzija programa" ) {
                 stevilka_programa = podatki.value(podatki.record().indexOf("vrednost")).toString();
                 zaporedna_stevilka_stevilke_programa = podatki.value(podatki.record().indexOf("razlicica")).toInt();
@@ -2682,6 +2704,8 @@ void setup::posodobi_bazo() {
                     sql_izbor.prepare("SELECT * FROM potovanja ORDER BY id ASC");
                     sql_izbor.exec();
                     while ( sql_izbor.next() ) {
+            qApp->processEvents();
+                        qApp->processEvents();
                         QString naslov = prevedi(sql_izbor.value(sql_izbor.record().indexOf("naslov")).toString());
                         QString naslov_ulica = naslov.left(naslov.indexOf("\n"));
                         naslov = naslov.right(naslov.length() - 1 - naslov.indexOf("\n"));
@@ -2721,6 +2745,8 @@ void setup::posodobi_bazo() {
                     sql_izbor.prepare("SELECT * FROM potni_nalogi");
                     sql_izbor.exec();
                     while ( sql_izbor.next() ) {
+            qApp->processEvents();
+                        qApp->processEvents();
                         QSqlQuery sql_prenos;
                         sql_prenos.prepare("UPDATE potovanja_old SET naziv_ciljnega_podjetja = ?, namen_potovanja = ? WHERE potni_nalog LIKE '" +
                                                              sql_izbor.value(sql_izbor.record().indexOf("stevilka_naloga")).toString() + "'");
@@ -2754,6 +2780,8 @@ void setup::posodobi_bazo() {
                     sql_izbor.prepare("SELECT * FROM potovanja_old ORDER BY id ASC");
                     sql_izbor.exec();
                     while ( sql_izbor.next() ) {
+            qApp->processEvents();
+                        qApp->processEvents();
                         QSqlQuery sql_prenos;
                         sql_prenos.prepare("INSERT INTO potovanja (potni_nalog, kraj_odhoda, kraj_prihoda, cas_odhoda, "
                                                              "cas_prihoda, kilometri, naslov_ulica, naslov_stevilka, naslov_postna_stevilka, naslov_posta, "
@@ -2821,6 +2849,8 @@ void setup::posodobi_bazo() {
                     sql_izbor.prepare("SELECT * FROM potni_nalogi ORDER BY id ASC");
                     sql_izbor.exec();
                     while ( sql_izbor.next() ) {
+            qApp->processEvents();
+                        qApp->processEvents();
                         QSqlQuery sql_prenos;
                         sql_prenos.prepare("INSERT INTO potni_nalogi_old (stevilka_naloga, datum_naloga, namen_naloga, naziv_ciljnega_podjetja, "
                                                              "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
@@ -2904,6 +2934,7 @@ void setup::posodobi_bazo() {
                     sql_izbor.prepare("SELECT * FROM potni_nalogi_old ORDER BY id ASC");
                     sql_izbor.exec();
                     while ( sql_izbor.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_prenos;
                         sql_prenos.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, "
                                                              "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
@@ -3006,6 +3037,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND status_racuna LIKE 'Zvripnzj'");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_delete;
                         sql_delete.prepare("UPDATE racuni SET status_placila = '' WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
                         sql_delete.exec();
@@ -3016,6 +3048,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND status_racuna LIKE ''");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_delete;
                         sql_delete.prepare("UPDATE racuni SET status_placila = '' WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
                         sql_delete.exec();
@@ -3042,6 +3075,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM opravila WHERE casovnice NOT LIKE ''");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QString casovnice = prevedi(update.value(update.record().indexOf("casovnice")).toString());
                         QString nove_casovnice = "";
 
@@ -3130,6 +3164,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM uporabniki");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         // preveri, ali registracija ze obstaja v bazi avtomobilov
                         QSqlQuery preveri;
                         preveri.prepare("SELECT * FROM avtomobili WHERE registrska_stevilka LIKE '" + update.value(update.record().indexOf("registracija")).toString() + "'");
@@ -3208,6 +3243,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM uporabniki");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_uporabnik;
                         sql_uporabnik.prepare("UPDATE uporabniki SET aktivnost = ?, starsi = ? WHERE id LIKE '" +
                                               update.value(update.record().indexOf("id")).toString() + "'");
@@ -3311,6 +3347,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM potni_nalogi");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_podjetje;
                         sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" +
                                               update.value(update.record().indexOf("predlagatelj_podjetje")).toString() + "'");
@@ -3422,6 +3459,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM prejeti_racuni");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QSqlQuery sql_podjetje;
                         sql_podjetje.prepare("SELECT * FROM podjetje WHERE id LIKE '" + update.value(update.record().indexOf("placnik_podjetje")).toString() + "'");
                         sql_podjetje.exec();
@@ -3555,6 +3593,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM racuni");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QString podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov, podjetje_naslov_stevilka,
                                 podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv,
                                 podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip;
@@ -3880,6 +3919,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM prejeti_racuni");
                     update.exec();
                     while ( update.next() ) {
+            qApp->processEvents();
                         QString ddv_array = "";
                         QString znesek_brez_ddv_array = "";
                         QString znesek = "";
@@ -3914,6 +3954,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM prejeti_racuni");
                     update.exec();
                     while ( update.next() ) {
+                        qApp->processEvents();
                         QSqlQuery sql_delete_fields;
                         sql_delete_fields.prepare("UPDATE prejeti_racuni SET znesek_brez_ddv_00 = ?, znesek_brez_ddv_85 = ?, znesek_brez_ddv_20 = ? "
                                                   "WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
@@ -3952,6 +3993,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM sif_posta WHERE posta LIKE '% -0 %'");
                     update.exec();
                     while ( update.next() ) {
+                        qApp->processEvents();
                         QSqlQuery posodobi;
                         posodobi.prepare("UPDATE sif_posta set posta = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
                         posodobi.bindValue(0, update.value(update.record().indexOf("posta")).toString().replace("-0", "-"));
@@ -3986,6 +4028,7 @@ void setup::posodobi_bazo() {
                     update.prepare("SELECT * FROM potni_nalogi");
                     update.exec();
                     while ( update.next() ) {
+                        qApp->processEvents();
                         QString stevilka_naloga = update.value(update.record().indexOf("stevilka_naloga")).toString();
                         QString id_naloga = update.value(update.record().indexOf("id")).toString();
 
