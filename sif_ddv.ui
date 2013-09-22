@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>sif_ddv</class>
  <widget class="QDialog" name="sif_ddv">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Uredi DDV</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>

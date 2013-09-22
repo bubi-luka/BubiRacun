@@ -823,7 +823,7 @@ void podjetje::on_btn_logotip_clicked() {
 
     // izberi sliko za logotip
     QString pot_do_logotipa = "";
-    pot_do_logotipa = QFileDialog::getOpenFileName(this, "Izberite logotip podjetja", QDir::homePath(), "Slika (*.png *.jpg *.jpeg)");
+    pot_do_logotipa = QFileDialog::getOpenFileName(this, "Izberite logotip podjetja", QDir::homePath(), "Slika (*.png *.jpg *.jpeg *.svg)");
     QFile datoteka(pot_do_logotipa);
 
     // izberi mapo za shranjevanje logotipa

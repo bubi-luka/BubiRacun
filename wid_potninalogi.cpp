@@ -108,7 +108,7 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
             sql_napolni.exec();
             while ( sql_napolni.next() ) {
                 QSqlQuery sql_stranke;
-                sql_stranke.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString() + "'");
+                sql_stranke.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("id")).toString() + "'");
                 sql_stranke.exec();
                 while ( sql_stranke.next() ) {
                     if ( ui->cb_stranka->findText(prevedi(sql_stranke.value(sql_stranke.record().indexOf("naziv_ciljnega_podjetja")).toString())) == -1 ) {
@@ -133,7 +133,7 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
             sql_napolni.exec();
             while ( sql_napolni.next() ) {
                 QSqlQuery sql_kraj;
-                sql_kraj.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stevilka_naloga")).toString() + "'");
+                sql_kraj.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("id")).toString() + "'");
                 sql_kraj.exec();
                 while ( sql_kraj.next() ) {
                     if ( ui->cb_kraj->findText(prevedi(sql_kraj.value(sql_kraj.record().indexOf("kraj_prihoda")).toString()), Qt::MatchFixedString) == -1 ) {
@@ -179,6 +179,8 @@ wid_potninalogi::wid_potninalogi(QWidget *parent) :
             ui->btn_brisi->setVisible(false);
             ui->btn_brisi->setEnabled(false);
         }
+
+        ui->tbl_potninalogi->sortByColumn(2, Qt::AscendingOrder);
 
 }
 
@@ -371,7 +373,7 @@ void wid_potninalogi::napolni() {
         ui->tbl_potninalogi->setHorizontalHeaderItem(10, naslov10);
         ui->tbl_potninalogi->setHorizontalHeaderItem(11, naslov11);
 
-        ui->tbl_potninalogi->setColumnWidth(0, 35);
+        ui->tbl_potninalogi->setColumnWidth(0, 0);
 
         datum *delegate = new datum(this);
         ui->tbl_potninalogi->setItemDelegateForColumn(3, delegate);
@@ -522,7 +524,7 @@ void wid_potninalogi::napolni() {
                         QString s_namen_naloga = "";
 
                         QSqlQuery sql_zdruzek;
-                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
                         sql_zdruzek.exec();
                         while ( sql_zdruzek.next() ) {
                             QSqlQuery sql_besedilo;
@@ -550,7 +552,7 @@ void wid_potninalogi::napolni() {
                         }
 
                         QSqlQuery sql_zdruzek;
-                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
                         sql_zdruzek.exec();
                         while ( sql_zdruzek.next() ) {
                             if ( !s_kraj_prihoda.contains(prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("kraj_prihoda")).toString()) + ", ") ) {
@@ -573,7 +575,7 @@ void wid_potninalogi::napolni() {
                         }
 
                         QSqlQuery sql_zdruzek;
-                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("stevilka_naloga")).toString() + "'");
+                        sql_zdruzek.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_fill.value(sql_fill.record().indexOf("id")).toString() + "'");
                         sql_zdruzek.exec();
                         while ( sql_zdruzek.next() ) {
                             if ( !s_podjetje.contains(prevedi(sql_zdruzek.value(sql_zdruzek.record().indexOf("naziv_ciljnega_podjetja")).toString()) + ", ") ) {
@@ -665,11 +667,11 @@ void wid_potninalogi::on_btn_brisi_clicked() {
     }
     else {
         QSqlQuery sql_brisi;
-        sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + pretvori(stnaloga) + "'");
+        sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + id + "'");
         sql_brisi.exec();
         sql_brisi.clear();
 
-        sql_brisi.prepare("DELETE FROM stroski WHERE potninalog LIKE '" + pretvori(stnaloga) + "'");
+        sql_brisi.prepare("DELETE FROM stroski WHERE potninalog LIKE '" + id + "'");
         sql_brisi.exec();
         sql_brisi.clear();
 
@@ -778,6 +780,10 @@ void wid_potninalogi::prejem(QString besedilo) {
 
 void wid_potninalogi::on_btn_prestevilci_clicked() {
 
+    QString ime_gumba = ui->btn_prestevilci->text();
+    QString trenutni_vnos = "";
+    int i_trenutni_vnos = 0;
+    QString stevilo_vseh_vnosov = "";
 
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
@@ -794,6 +800,16 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     }
     else {
         // baza je odprta
+
+        ui->btn_prestevilci->setText("... priprave na prestevilcevanje ...");
+        QSqlQuery sql_vnosi;
+        sql_vnosi.prepare("SELECT * FROM potni_nalogi");
+        sql_vnosi.exec();
+        int st_vnosov = 0;
+        while ( sql_vnosi.next() ) {
+            st_vnosov++;
+        }
+        stevilo_vseh_vnosov = QString::number(st_vnosov, 10);
 
         // poisci vsa leta; dobimo seznam vseh let, v katerih smo uradovali
         QStringList leta;
@@ -873,8 +889,18 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
 
             } // for ( int i_meseci = 0; i_meseci < meseci.count(); i_meseci++ )
 
+            vApp->processEvents();
+
+            ui->btn_prestevilci->setText("... prestevilcujem ...");
             // pojdi cez cel seznam vnosov (notri so IDji po vrstnem redu) in vsakega izpisi ( kasneje popravi )
             for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
+
+                vApp->processEvents();
+                i_trenutni_vnos++;
+                trenutni_vnos = QString::number(i_trenutni_vnos, 10);
+                ui->btn_prestevilci->setText(trenutni_vnos + "/" + stevilo_vseh_vnosov);
+
+                vApp->processEvents();
 
                 zaporedna_stevilka++;
                 QString zaporedna = "";
@@ -888,29 +914,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
                     zaporedna = "" + QString::number(zaporedna_stevilka, 10);
                 }
 
-                // prestevilci potovanje - stevilka naloga
-                QSqlQuery sql_potni_nalog;
-                sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
-                sql_potni_nalog.exec();
-                while ( sql_potni_nalog.next() ) {
-                    QSqlQuery sql_popravi_stevilko;
-                    sql_popravi_stevilko.prepare("UPDATE potovanja SET potni_nalog = ? WHERE potni_nalog LIKE '" +
-                                                 sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString() + "'");
-                    sql_popravi_stevilko.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
-                    sql_popravi_stevilko.exec();
-                }
-                sql_potni_nalog.clear();
-
-                // prestevilci stroske - stevilka naloga
-                sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
-                sql_potni_nalog.exec();
-                while ( sql_potni_nalog.next() ) {
-                    QSqlQuery sql_popravi_stevilko;
-                    sql_popravi_stevilko.prepare("UPDATE stroski SET potninalog = ? WHERE potninalog LIKE '" +
-                                                 sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString() + "'");
-                    sql_popravi_stevilko.bindValue(0, pretvori("PN-" + leta.value(i_leta) + "-" + zaporedna));
-                    sql_popravi_stevilko.exec();
-                }
+                vApp->processEvents();
 
                 // prestevilci potni nalog - stevilka naloga
                 QSqlQuery sql_prestevilci;
@@ -932,6 +936,7 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     }
     base.close();
 
+    ui->btn_prestevilci->setText("... koncujem ...");
     // sporocilo ob zakljucku prestevilcevanja
     QMessageBox zakljucek;
     zakljucek.setText("Prestevilcenje zakljuceno");
@@ -939,6 +944,8 @@ void wid_potninalogi::on_btn_prestevilci_clicked() {
     zakljucek.exec();
 
     napolni();
+
+    ui->btn_prestevilci->setText(ime_gumba);
 
 }
 

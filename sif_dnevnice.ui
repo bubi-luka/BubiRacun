@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>sif_dnevnice</class>
  <widget class="QDialog" name="sif_dnevnice">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Urejanje cen dnevnic</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -9,12 +9,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
+    <width>735</width>
     <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>BenRačun: Urejanje stranke</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
    <item row="1" column="0">
@@ -64,7 +68,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_stranka">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -81,8 +85,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>652</width>
-            <height>849</height>
+            <width>680</width>
+            <height>910</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -120,7 +124,16 @@
                      <property name="sizeConstraint">
                       <enum>QLayout::SetDefaultConstraint</enum>
                      </property>
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -164,7 +177,16 @@
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -217,7 +239,16 @@
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -258,7 +289,16 @@
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -755,8 +795,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>677</width>
-            <height>596</height>
+            <width>693</width>
+            <height>594</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
@@ -1960,8 +2000,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>677</width>
-            <height>596</height>
+            <width>693</width>
+            <height>594</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">

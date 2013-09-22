@@ -951,6 +951,9 @@ void racun::on_btn_sprejmi_clicked() {
                         else {
                            narocnik_naziv = sql_narocnik.value(sql_narocnik.record().indexOf("priimek")).toString();
                            if ( sql_narocnik.value(sql_narocnik.record().indexOf("davcni_zavezanec")).toString() == "1" ) {
+                               narocnik_davcna = pretvori("SI") + sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
+                           }
+                           else {
                                narocnik_davcna = sql_narocnik.value(sql_narocnik.record().indexOf("davcna")).toString();
                            }
                         }
@@ -2819,8 +2822,7 @@ void racun::on_tbl_vse_opombe_doubleClicked() {
         ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
     }
     else { // jo odstrani
-        QString nov_id = id.left(id.length() - 1 ); // odstrani vejico
-        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(nov_id));
+        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
     }
 
     if ( ui->txt_vnesene_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda

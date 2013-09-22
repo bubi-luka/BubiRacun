@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>BenRačun: Urejanje podjetja</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -80,9 +84,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-299</y>
-            <width>672</width>
-            <height>923</height>
+            <y>0</y>
+            <width>684</width>
+            <height>988</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -751,7 +755,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>592</height>
+            <height>590</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1004,7 +1008,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>592</height>
+            <height>590</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1257,7 +1261,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>592</height>
+            <height>590</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">

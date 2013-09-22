@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>BenRačun: Prijava v aplikacijo</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>srcek.svg</normaloff>srcek.svg</iconset>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>

@@ -48,9 +48,7 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // first run
-    setup().start_first_run();
-    zagon();
+    vApp->processEvents();
 
     // povecaj cez cel ekran
     showMaximized();
@@ -59,6 +57,14 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
     ui->txt_pozicija->setVisible(false);
     ui->txt_uporabnik->setVisible(false);
 
+    // first run
+    ui->lbl_pozdrav->setText("Poteka posodabljanje baze. To opravilo obicajno zahteva nekaj minut! Hvala za razumevanje!");
+    vApp->processEvents();
+
+    setup().start_first_run();
+    zagon();
+
+    vApp->processEvents();
 }
 
 void GlavnoOkno::zagon() {
