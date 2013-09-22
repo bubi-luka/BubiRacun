@@ -3980,6 +3980,49 @@ void setup::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
+                if ( stevilka_baze_min == 16 ) {
+
+                    // popravi potne naloge, potovanja in stroške potnih nalogov
+                    update.prepare("SELECT * FROM potni_nalogi");
+                    update.exec();
+                    while ( update.next() ) {
+                        QString stevilka_naloga = update.value(update.record().indexOf("stevilka_naloga")).toString();
+                        QString id_naloga = update.value(update.record().indexOf("id")).toString();
+
+                        QSqlQuery potovanje;
+                        potovanje.prepare("UPDATE potovanja SET potni_nalog = ? WHERE potni_nalog LIKE '" + stevilka_naloga + "'");
+                        potovanje.bindValue(0, id_naloga);
+                        potovanje.exec();
+                        potovanje.clear();
+
+                        potovanje.prepare("UPDATE stroski SET potninalog = ? WHERE potninalog LIKE '" + stevilka_naloga + "'");
+                        potovanje.bindValue(0, id_naloga);
+                        potovanje.exec();
+                        potovanje.clear();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.17");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.17");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "22.09.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
             }
         }
 

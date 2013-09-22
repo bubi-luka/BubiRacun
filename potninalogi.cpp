@@ -85,7 +85,7 @@ potninalogi::potninalogi(QWidget *parent) :
 
         // onemogocimo dolocena polja
         ui->txt_id->setEnabled(false);
-//		ui->txt_stevilka_naloga->setEnabled(false);
+        ui->txt_stevilka_naloga->setEnabled(false);
 
         ui->txt_cena_prevoza->setEnabled(false);
         ui->txt_cena_dnevnic->setEnabled(false);
@@ -1069,7 +1069,7 @@ void potninalogi::prejem(QString besedilo) {
     ui->wid_st->setWidget(widst);
     QObject::connect(this, SIGNAL(prenos(QString)),
                  widst , SLOT(prejem(QString)));
-    prenos(ui->txt_stevilka_naloga->text());
+    prenos(ui->txt_id->text());
     this->disconnect();
 
     QObject::connect(widst, SIGNAL(prenesi()),
@@ -1080,7 +1080,7 @@ void potninalogi::prejem(QString besedilo) {
 
     QObject::connect(this, SIGNAL(prenos(QString)),
                  widpot , SLOT(prejem(QString)));
-    prenos(ui->txt_stevilka_naloga->text());
+    prenos(ui->txt_id->text());
     this->disconnect();
 
     QObject::connect(widpot, SIGNAL(prenesi()),
@@ -1131,7 +1131,7 @@ void potninalogi::izracun() {
 
         // stroski, povezani s potjo
         QSqlQuery sql_pot;
-        sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_stevilka_naloga->text()) + "'");
+        sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_id->text()) + "'");
         sql_pot.exec();
         while ( sql_pot.next() ) {
             QString i = prevedi(sql_pot.value(sql_pot.record().indexOf("kilometri")).toString());
@@ -1219,7 +1219,7 @@ void potninalogi::izracun() {
 
         // ostali stroski
         QSqlQuery sql_ostalo;
-        sql_ostalo.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(ui->txt_stevilka_naloga->text()) + "'");
+        sql_ostalo.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(ui->txt_id->text()) + "'");
         sql_ostalo.exec();
         while ( sql_ostalo.next() ) {
             ostalo = ostalo + prevedi(sql_ostalo.value(sql_ostalo.record().indexOf("cena")).toString()).replace(";", ".").toDouble();
@@ -1228,9 +1228,9 @@ void potninalogi::izracun() {
 
         // stroski skupaj
         ui->txt_stroski_skupaj->setText(pretvori_iz_double(QString::number(
-                                                                                                                 pretvori_v_double(ui->txt_cena_prevoza->text()).toDouble() +
-                                                                                                                 pretvori_v_double(ui->txt_cena_dnevnic->text()).toDouble() +
-                                                                                                                 pretvori_v_double(ui->txt_ostali_stroski->text()).toDouble(), 'f', 2)));
+                                                                           pretvori_v_double(ui->txt_cena_prevoza->text()).toDouble() +
+                                                                           pretvori_v_double(ui->txt_cena_dnevnic->text()).toDouble() +
+                                                                           pretvori_v_double(ui->txt_ostali_stroski->text()).toDouble(), 'f', 2)));
     }
     base.close();
 
