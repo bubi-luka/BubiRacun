@@ -3994,9 +3994,14 @@ void setup::posodobi_bazo() {
                     update.exec();
                     while ( update.next() ) {
                         qApp->processEvents();
+
+                        QString ime_poste = prevedi(update.value(update.record().indexOf("posta")).toString());
+                        ime_poste = ime_poste.replace("-0", "-");
+                        ime_poste = pretvori(ime_poste);
+
                         QSqlQuery posodobi;
                         posodobi.prepare("UPDATE sif_posta set posta = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
-                        posodobi.bindValue(0, update.value(update.record().indexOf("posta")).toString().replace("-0", "-"));
+                        posodobi.bindValue(0, ime_poste);
                         posodobi.exec();
                     }
                     update.clear();
@@ -4059,6 +4064,48 @@ void setup::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
                     update.bindValue(0, "22.09.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 17 ) {
+
+                    // popravi vnose za poštne številke
+                    update.prepare("SELECT * FROM sif_posta WHERE posta LIKE '% - %'");
+                    update.exec();
+                    while ( update.next() ) {
+                        qApp->processEvents();
+
+                        QString ime_poste = update.value(update.record().indexOf("posta")).toString();
+                        ime_poste = ime_poste.replace("-", "- ");
+                        ime_poste = prevedi(ime_poste);
+                        ime_poste = ime_poste.replace("- ", "-");
+                        ime_poste = pretvori(ime_poste);
+
+                        QSqlQuery posodobi;
+                        posodobi.prepare("UPDATE sif_posta set posta = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        posodobi.bindValue(0, ime_poste);
+                        posodobi.exec();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.18");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.18");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "23.09.2013");
                     update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
                     update.exec();
                     update.clear();
