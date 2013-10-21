@@ -458,7 +458,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
                 // podatki o drugih stroskih
                 QSqlQuery sql_stroski;
-                sql_stroski.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(stevilka_naloga) + "'");
+                sql_stroski.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(id) + "'");
                 sql_stroski.exec();
                 double stroski = 0.0;
                 while ( sql_stroski.next() ) {
@@ -491,7 +491,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
                 // podatki o potovanju
                 QSqlQuery sql_pot;
-                sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString() + "'");
+                sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(id) + "'");
                 sql_pot.exec();
                 QString rel_start = "";
                 QString rel_cilj = "";
