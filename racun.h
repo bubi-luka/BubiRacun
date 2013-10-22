@@ -42,6 +42,7 @@ private slots:
     void on_rb_predracun_toggled();
     void on_rb_predplacilo_toggled();
     void on_rb_racun_toggled();
+    void on_rb_storno_toggled();
 
     void on_btn_vnesi_zapis_2_clicked();
     void on_btn_pocisti_2_clicked();

@@ -458,7 +458,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
                 // podatki o drugih stroskih
                 QSqlQuery sql_stroski;
-                sql_stroski.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(stevilka_naloga) + "'");
+                sql_stroski.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" + pretvori(id) + "'");
                 sql_stroski.exec();
                 double stroski = 0.0;
                 while ( sql_stroski.next() ) {
@@ -491,7 +491,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
                 // podatki o potovanju
                 QSqlQuery sql_pot;
-                sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString() + "'");
+                sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(id) + "'");
                 sql_pot.exec();
                 QString rel_start = "";
                 QString rel_cilj = "";
@@ -3075,7 +3075,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
     else if ( racun_tip == "2" ) {
         datoteka.setFileName(app_path + "/racun-besedilo-predplacilo.csv");
     }
-    else if ( racun_tip == "3" ) {
+    else if ( racun_tip == "3" || racun_tip == "4") {
         datoteka.setFileName(app_path + "/racun-besedilo-racun.csv");
     }
 
@@ -3111,6 +3111,11 @@ void tiskanje::natisni_izdani_racun(QString id) {
         mapa.mkdir("03-racuni");
         mapa.cd("03-racuni");
         ime_datoteke = "izdani-racun";
+    }
+    else if ( racun_tip == "4" ) {
+        mapa.mkdir("03-stornacije");
+        mapa.cd("03-stornacije");
+        ime_datoteke = "izdane-stornacije";
     }
 
     // podatki o printerju
@@ -3244,6 +3249,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
         // nastavi parametre
         painter.setFont(debelo);
         besedilo = racun.readLine() + " ";
+        if ( racun_tip == "4" ) {
+            besedilo = "Stornacija st.: ";
+        }
         // dolocimo velikost kvadrata, ki ga tvori besedilo ("(Pred)Racun st.: ")
         velikost_besedila = painter.boundingRect(printer.width() / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
         // nastavimo parametre
@@ -3286,7 +3294,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
         // nova vrstica
         pozicija += visina_vrstice + razmik_med_vrsticami;
 
-        if ( racun_tip != "3" ) {
+        if ( racun_tip != "3" && racun_tip != "4" ) {
             // nastavi parametre
             painter.setFont(debelo);
             besedilo = racun.readLine() + " ";
@@ -3435,7 +3443,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
             if ( racun_tip == "1") { // pri predracunu
                 painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
             }
-            else if ( racun_tip == "3" ) { // pri racunu
+            else if ( racun_tip == "3" || racun_tip == "4" ) { // pri racunu
                 painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
             }
             // nova vrstica
@@ -3757,7 +3765,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
         else if ( racun_tip == "2" ) {
             visina_odseka = 5 * visina_vrstice + 10 * razmik_med_vrsticami;
         }
-        else if ( racun_tip == "3" ) {
+        else if ( racun_tip == "3" || racun_tip == "4" ) {
             visina_odseka = 7 * visina_vrstice + 14 * razmik_med_vrsticami;
         }
 
@@ -3965,7 +3973,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                 besedilo = racun.readLine() + racun.readLine() + racun.readLine();
             }
         }
-        if ( racun_tip == "3" ) { // samo racun
+        if ( racun_tip == "3" || racun_tip == "4" ) { // samo racun
             // nastavi parametre ("Se za placilo: ")
             painter.setFont(debelo);
             besedilo = racun.readLine() + " ";

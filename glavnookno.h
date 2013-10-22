@@ -45,6 +45,7 @@ private slots:
     void on_actionPredra_uni_triggered();
     void on_actionPredpla_ilni_ra_uni_triggered();
     void on_actionRa_uni_triggered();
+    void on_actionStornirani_ra_uni_triggered();
     void on_actionVrednost_DDV_triggered();
     void keyPressEvent(QKeyEvent *event);
 

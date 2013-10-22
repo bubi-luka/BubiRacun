@@ -640,6 +640,7 @@ void setup::tabela_racuni() {
                                  "sklic TEXT, "
                                  "tip_racuna TEXT, "
                                  "status_racuna TEXT, "
+                                 "stornacija TEXT, "
                                  "stranka TEXT, "
                                  "projekt TEXT, "
                                  "avtor_oseba TEXT, "
@@ -4106,6 +4107,47 @@ void setup::posodobi_bazo() {
 
                     update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
                     update.bindValue(0, "23.09.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 18 ) {
+
+                    // dodaj polje k racunu za stornacijo
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'stornacija' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    // vnesi vsem racunom vrednost stornacije == 0
+
+                    update.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3'");
+                    update.exec();
+                    while ( update.next() ) {
+                        qApp->processEvents();
+                        QSqlQuery posodobi;
+                        posodobi.prepare("UPDATE racuni SET stornacija = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        posodobi.bindValue(0, "0");
+                        posodobi.exec();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.19");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.19");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "21.10.2013");
                     update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
                     update.exec();
                     update.clear();

@@ -29,6 +29,7 @@ racun::racun(QWidget *parent) :
         // pocisti polja
         ui->btn_sprejmi->setText("Odpiram");
 
+        ui->lbl_storno->setText("");
         ui->txt_id->setText("");
         ui->txt_stevilka_racuna->setText("");
         ui->txt_stara_stevilka_racuna->setText("");
@@ -361,8 +362,8 @@ void racun::on_btn_racun_clicked() {
                                   "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
                                   "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
                                   "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, "
-                                  "stevilka_starsa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                  "stevilka_starsa, stornacija) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         sql_vnesi_projekt.bindValue(0, pretvori(""));
         sql_vnesi_projekt.bindValue(1, pretvori("3")); // predplacilo (2), racun (3)
         sql_vnesi_projekt.bindValue(2, pretvori(""));
@@ -410,6 +411,7 @@ void racun::on_btn_racun_clicked() {
         sql_vnesi_projekt.bindValue(44, narocnik_posta);
         sql_vnesi_projekt.bindValue(45, narocnik_davcna);
         sql_vnesi_projekt.bindValue(46, ui->txt_id->text());
+        sql_vnesi_projekt.bindValue(47, "0");
         sql_vnesi_projekt.exec();
 
         // poiscemo id pravkar vnesenega zapisa
@@ -552,7 +554,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
                         if ( ui->rb_predracun->isChecked()) { // predracun
                             podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
                         }
-                        else if ( ui->rb_racun->isChecked() ) { // racun
+                        else if ( ui->rb_racun->isChecked() || ui->rb_storno->isChecked() ) { // racun
                             podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
                         }
                         else { // predplacilni racun
@@ -928,7 +930,7 @@ void racun::on_btn_sprejmi_clicked() {
                             if ( ui->rb_predracun->isChecked()) { // predracun
                                 podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
                             }
-                            else if ( ui->rb_racun->isChecked() ) { // racun
+                            else if ( ui->rb_racun->isChecked() || ui->rb_storno->isChecked() ) { // racun
                                 podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
                             }
                             else { // predplacilni racun
@@ -1000,6 +1002,9 @@ void racun::on_btn_sprejmi_clicked() {
             }
             else if ( ui->rb_racun->isChecked() ) {
                 sql_vnesi_projekt.bindValue(1, pretvori("3")); // racun
+            }
+            else if ( ui->rb_storno->isChecked() ) {
+                sql_vnesi_projekt.bindValue(1, pretvori("4")); // storno
             }
             else {
                 sql_vnesi_projekt.bindValue(1, pretvori("")); // prazno
@@ -1195,6 +1200,9 @@ void racun::napolni() {
         else if ( ui->rb_racun->isChecked() ) {
             tip = "3";
         }
+        else if ( ui->rb_storno->isChecked() ) {
+            tip = "4";
+        }
 
         sql_fill.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) +
                          "' ORDER BY vrstni_red ASC");
@@ -1358,6 +1366,20 @@ void racun::prejem(QString besedilo) {
             if (sql_napolni.next()) {
                 ui->txt_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("id")).toString()));
 
+                // ce je racun storniran, vnesi lbl_storno napis STORNIRANO v rdecih crkah
+                if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("stornacija")).toString()) == "1" ) {
+                    QPalette storno;
+                    storno.setColor(QPalette::WindowText, QColor(255,0,0)); // rdeca
+                    ui->lbl_storno->setPalette(storno);
+                    ui->lbl_storno->setText("STORNIRANO");
+                }
+                else {
+                    QPalette storno;
+                    storno.setColor(QPalette::WindowText, QColor(0,0,0)); // crna
+                    ui->lbl_storno->setPalette(storno);
+                    ui->lbl_storno->setText("");
+                }
+
                 // pripravi tip stranke, da bodo prave vrednosti v samem spustnem seznamu
                 QSqlQuery sql_stranka;
                 sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("stranka")).toString() + "'");
@@ -1395,6 +1417,9 @@ void racun::prejem(QString besedilo) {
                 }
                 else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()) == "3") {
                     ui->rb_racun->setChecked(true);
+                }
+                else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()) == "4") {
+                    ui->rb_storno->setChecked(true);
                 }
 
                 ui->txt_banka->setCurrentIndex(ui->txt_banka->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("podjetje_banka")).toString())));
@@ -1490,6 +1515,9 @@ void racun::prejem(QString besedilo) {
             }
             else if ( ui->rb_racun->isChecked() ) {
                 tip_racuna = "3";
+            }
+            else if ( ui->rb_storno->isChecked() ) {
+                tip_racuna = "4";
             }
             QSqlQuery sql_opravila;
             sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) +
@@ -1700,6 +1728,9 @@ void racun::izracunaj() {
         else if ( ui->rb_racun->isChecked() ) {
             tip = "3";
         }
+        else if ( ui->rb_storno->isChecked() ) {
+            tip = "4";
+        }
 
         QSqlQuery sql_racun;
         sql_racun.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip) +
@@ -1773,6 +1804,9 @@ void racun::on_btn_opravilo_clicked() {
     }
     else if ( ui->rb_racun->isChecked() ) {
         tip_racuna = "3";
+    }
+    else if ( ui->rb_storno->isChecked() ) {
+        tip_racuna = "4";
     }
 
     opravila *uredi = new opravila;
@@ -1980,6 +2014,50 @@ void racun::on_rb_racun_toggled() {
 
 }
 
+void racun::on_rb_storno_toggled() {
+
+    if ( ui->rb_storno->isChecked() ) {
+        ui->txt_status_predracuna->setHidden(true);
+        ui->lbl_status_predracuna->setHidden(true);
+        ui->txt_status_placila->setHidden(false);
+        ui->lbl_status_placila->setHidden(false);
+        ui->txt_status_racunovodstva->setHidden(false);
+        ui->lbl_status_racunovodstva->setHidden(false);
+
+        ui->txt_odstotek_avansa->setEnabled(false);
+        ui->txt_datum_pricetka->setHidden(false);
+        ui->lbl_datum_pricetka->setHidden(false);
+
+        ui->lbl_stevilka_starsa->setVisible(true);
+        ui->cb_stevilka_starsa->setVisible(true);
+        ui->txt_stevilka_starsa->setVisible(true);
+
+//        ui->btn_racun->setVisible(false);
+        ui->btn_predplacilni_racun->setVisible(false);
+
+        ui->lbl_avans_placan->setVisible(true);
+        ui->txt_datum_placila_avansa->setVisible(true);
+
+        ui->lbl_racun_placan->setVisible(true);
+        ui->txt_datum_placila_racuna->setVisible(true);
+
+        setWindowTitle(windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->tab_podatki->setWindowTitle(ui->tab_podatki->windowTitle().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->lbl_stevilka_racuna->setText(ui->lbl_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->lbl_stara_stevilka_racuna->setText(ui->lbl_stara_stevilka_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->lbl_datum_izdaje_racuna->setText(ui->lbl_datum_izdaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->lbl_datum_konca->setText("Datum zakljucka");
+        ui->lbl_status_oddaje_racuna->setText(ui->lbl_status_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+        ui->lbl_datum_oddaje_racuna->setText(ui->lbl_datum_oddaje_racuna->text().remove("predplacilnega ").replace(" predra", " ra"));
+
+        ui->txt_koda_namena->setVisible(true);
+        ui->label_29->setVisible(true);
+        ui->txt_koda_namena_avans->setVisible(false);
+        ui->label_28->setVisible(false);
+    }
+
+}
+
 void racun::on_txt_odstotek_avansa_editingFinished() {
 
     ui->txt_odstotek_avansa->setText(pretvori_iz_double(pretvori_v_double(ui->txt_odstotek_avansa->text())) + " %");
@@ -2066,23 +2144,31 @@ void racun::stevilka_racuna() {
                 }
             }
 
-            // zapisi stevilko potnega naloga
+            // zapisi stevilko racuna
             if ( tvori == true ) {
                 // izracunamo zaporedno stevilko racuna v tekocem letu
                 QSqlQuery sql_stetje_racunov;
                 QString tip_racuna = "";
                 if ( ui->rb_predracun->isChecked() ) {
-                    tip_racuna = "1";
+                    sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
+                                               "' AND tip_racuna LIKE '" + pretvori("1") + "' ORDER BY stevilka_racuna ASC");
                 }
                 else if ( ui->rb_predplacilo->isChecked() ) {
-                    tip_racuna = "2";
+                    sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
+                                               "' AND tip_racuna LIKE '" + pretvori("2") + "' ORDER BY stevilka_racuna ASC");
                 }
                 else if ( ui->rb_racun->isChecked() ) {
-                    tip_racuna = "3";
+                    sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
+                                               "' AND ( tip_racuna LIKE '" + pretvori("3") +
+                                               "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+                }
+                else if ( ui->rb_storno->isChecked() ) {
+                    sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
+                                               "' AND ( tip_racuna LIKE '" + pretvori("3") +
+                                               "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
                 }
 
-                sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-                                                                     "' AND tip_racuna LIKE '" + pretvori(tip_racuna) + "' ORDER BY stevilka_racuna ASC");
+
                 sql_stetje_racunov.exec();
                 while ( sql_stetje_racunov.next() ) {
                     int st_racuna = 0;
@@ -2381,6 +2467,9 @@ void racun::napolni_zapise() {
         else if ( ui->rb_racun->isChecked() ) {
             tip_racuna = "3";
         }
+        else if ( ui->rb_storno->isChecked() ) {
+            tip_racuna = "4";
+        }
 
         QSqlQuery sql_fill;
         sql_fill.prepare("SELECT * FROM opombe WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '" + pretvori(tip_racuna) + "' ORDER BY id ASC");
@@ -2522,6 +2611,9 @@ void racun::on_btn_vnesi_zapis_2_clicked() {
         }
         else if ( ui->rb_racun->isChecked() ) {
             sql_vnesi_zapis.bindValue(3, pretvori("3"));
+        }
+        else if ( ui->rb_storno->isChecked() ) {
+            sql_vnesi_zapis.bindValue(3, pretvori("4"));
         }
         sql_vnesi_zapis.bindValue(4, pretvori(ui->txt_datum_zapisa_2->text()));
         sql_vnesi_zapis.bindValue(5, pretvori(ui->txt_naslov_zapisa_2->text()));
