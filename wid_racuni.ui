@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
+    <width>965</width>
     <height>628</height>
    </rect>
   </property>
@@ -101,6 +101,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_storno">
+       <property name="text">
+        <string>Storno računa</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btn_nov">

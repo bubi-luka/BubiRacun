@@ -33,12 +33,14 @@ private slots:
     void on_btn_nov_clicked();
     void on_btn_brisi_clicked();
     void on_btn_kopiraj_clicked();
+    void on_btn_storno_clicked();
 
     void osvezi(QString beseda);
     void prejem(QString besedilo);
     void tip(QString besedilo);
     void napolni();
     void napolni_sorodnike();
+    QString stevilka_racuna();
 
     void on_btn_prestevilci_clicked();
 

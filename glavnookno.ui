@@ -186,6 +186,7 @@ border:0;</string>
      <addaction name="actionPredra_uni"/>
      <addaction name="actionPredpla_ilni_ra_uni"/>
      <addaction name="actionRa_uni"/>
+     <addaction name="actionStornirani_ra_uni"/>
     </widget>
     <addaction name="actionPotni_nalogi"/>
     <addaction name="actionPrejeti_ra_uni"/>
@@ -392,6 +393,11 @@ border:0;</string>
   <action name="actionVrednost_DDV">
    <property name="text">
     <string>Vrednost DDV</string>
+   </property>
+  </action>
+  <action name="actionStornirani_ra_uni">
+   <property name="text">
+    <string>Stornirani računi</string>
    </property>
   </action>
  </widget>

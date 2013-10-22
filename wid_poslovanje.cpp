@@ -199,6 +199,8 @@ void wid_poslovanje::napolni_mesec() {
             QSqlQuery sql_avans;
             double znesek_avans = 0.0;
             double znesek_ostanek = 0.0;
+            double znesek_storno = 0.0;
+
             sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila_avansa LIKE '%." +
                                                 pretvori("01." + meseci[b] + "." + trenutno_leto).right(7) + "'" +
                                                 " AND status_racuna LIKE '" + pretvori("Potrjen") + "'");
@@ -226,7 +228,14 @@ void wid_poslovanje::napolni_mesec() {
                 znesek_ostanek -= pretvori_v_double(prevedi(sql_preostanek.value(sql_preostanek.record().indexOf("avans")).toString())).toDouble();
             }
 
-            vrednost_prejetih[b] = QString::number(znesek_avans + znesek_ostanek, 'f', 2);
+            QSqlQuery sql_storno;
+            sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4' AND datum_placila LIKE '%." + pretvori("01." + meseci[b] + "." + trenutno_leto).right(7) + "'");
+            sql_storno.exec();
+            while ( sql_storno.next() ) {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+
+            vrednost_prejetih[b] = QString::number(znesek_avans + znesek_ostanek - znesek_storno, 'f', 2);
 
             // poslovanje
             vrednost_poslovanja[b] = QString::number(znesek_avans + znesek_ostanek - vrednost, 'f', 2);
@@ -915,6 +924,7 @@ void wid_poslovanje::napolni_leto() {
             // poisci, kateri avansi so bili placani v danem mesecu
             double znesek_avans = 0.0;
             double znesek_ostanek = 0.0;
+            double znesek_storno = 0.0;
 
             QSqlQuery sql_avans;
             sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila LIKE '%." +
@@ -944,7 +954,14 @@ void wid_poslovanje::napolni_leto() {
                 znesek_ostanek -= pretvori_v_double(prevedi(sql_preostanek.value(sql_preostanek.record().indexOf("avans")).toString())).toDouble();
             }
 
-            prejemki = znesek_avans + znesek_ostanek;
+            QSqlQuery sql_storno;
+            sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4' AND datum_placila LIKE '%." + pretvori("01.01." + leta.at(i)).right(4) + "'");
+            sql_storno.exec();
+            while ( sql_storno.next() ) {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+
+            prejemki = znesek_avans + znesek_ostanek - znesek_storno;
 
             // start filling the table
 
@@ -1038,6 +1055,7 @@ void wid_poslovanje::napolni_skupni() {
             double vrednost = 0.0;
             double znesek_avans = 0.0;
             double znesek_ostanek = 0.0;
+            double znesek_storno = 0.0;
 
             // zanka gre skozi vsa leta
             for ( int c = 0; c < leta.count(); c++ ) {
@@ -1106,13 +1124,20 @@ void wid_poslovanje::napolni_skupni() {
                     // odstejemo ze placan avans
                     znesek_ostanek -= pretvori_v_double(prevedi(sql_preostanek.value(sql_preostanek.record().indexOf("avans")).toString())).toDouble();
                 }
+                QSqlQuery sql_storno;
+                sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4' AND datum_placila LIKE '%." +
+                                                  pretvori("01." + meseci[b] + "." + leta.at(c)).right(7) + "'");
+                sql_storno.exec();
+                while ( sql_storno.next() ) {
+                    znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                }
 
             } // for ( int c = 0; c < leta.count(); c++ )
 
             vrednost_izdanih[b] = QString::number(vrednost, 'f', 2);
-            vrednost_prejetih[b] = QString::number(znesek_avans + znesek_ostanek, 'f', 2);
-            vrednost_poslovanja[b] = QString::number(znesek_avans + znesek_ostanek - vrednost, 'f', 2);
-            povprecna_vrednost_poslovanja[b] = QString::number(( znesek_avans + znesek_ostanek - vrednost ) / leta.count(), 'f', 2);
+            vrednost_prejetih[b] = QString::number(znesek_avans + znesek_ostanek - znesek_storno, 'f', 2);
+            vrednost_poslovanja[b] = QString::number(znesek_avans + znesek_ostanek - vrednost - znesek_storno, 'f', 2);
+            povprecna_vrednost_poslovanja[b] = QString::number(( znesek_avans + znesek_ostanek - vrednost -znesek_storno ) / leta.count(), 'f', 2);
 
         } // for ( int b = 0; b < 12; b++ )
 

@@ -42,10 +42,27 @@
             <x>0</x>
             <y>0</y>
             <width>702</width>
-            <height>761</height>
+            <height>791</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLabel" name="lbl_storno">
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>lbl_storno</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
@@ -151,6 +168,13 @@
                    <widget class="QRadioButton" name="rb_racun">
                     <property name="text">
                      <string>Račun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="rb_storno">
+                    <property name="text">
+                     <string>Storno</string>
                     </property>
                    </widget>
                   </item>
