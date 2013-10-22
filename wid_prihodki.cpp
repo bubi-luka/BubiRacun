@@ -563,6 +563,10 @@ void wid_prihodki::napolni_mesec() {
     double znesek_ostanek_fizicne = 0.0;
     double znesek_ostanek_pravne = 0.0;
 
+    double znesek_storno = 0.0;
+    double znesek_storno_fizicne = 0.0;
+    double znesek_storno_pravne = 0.0;
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -648,12 +652,27 @@ void wid_prihodki::napolni_mesec() {
             }
         }
 
+        QSqlQuery sql_storno;
+        sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4' AND datum_placila LIKE '%." +
+                                         pretvori(ui->txt_mesec->currentText().left(2) + "." + ui->txt_leto->currentText()) + "'");
+        sql_storno.exec();
+        while ( sql_storno.next() ) {
+            if ( prevedi(sql_storno.value(sql_storno.record().indexOf("tip")).toString()) == "1" ) {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_fizicne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+            else {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_pravne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+        }
+
     }
     base.close();
 
-    double znesek_skupaj = znesek_avans + znesek_ostanek;
-    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
-    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
+    double znesek_skupaj = znesek_avans + znesek_ostanek - znesek_storno;
+    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne - znesek_storno_fizicne;
+    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne - znesek_storno_pravne;
 
     ui->txt_skupaj_znesek->setText(pretvori_iz_double(QString::number(znesek_skupaj, 'f', 2)) + " EUR");
     ui->txt_fizicne_osebe_znesek->setText(pretvori_iz_double(QString::number(znesek_skupaj_fizicne, 'f', 2)) + " EUR");
@@ -992,6 +1011,10 @@ void wid_prihodki::napolni_letni() {
     double znesek_ostanek_fizicne = 0.0;
     double znesek_ostanek_pravne = 0.0;
 
+    double znesek_storno = 0.0;
+    double znesek_storno_fizicne = 0.0;
+    double znesek_storno_pravne = 0.0;
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -1079,12 +1102,26 @@ void wid_prihodki::napolni_letni() {
             }
         }
 
+        QSqlQuery sql_storno;
+        sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4' AND datum_placila LIKE '%." +  pretvori(ui->txt_leto->currentText()) + "'");
+        sql_storno.exec();
+        while ( sql_storno.next() ) {
+            if ( prevedi(sql_storno.value(sql_storno.record().indexOf("tip")).toString()) == "1" ) {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_fizicne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+            else {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_pravne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+        }
+
     }
     base.close();
 
-    double znesek_skupaj = znesek_avans + znesek_ostanek;
-    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
-    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
+    double znesek_skupaj = znesek_avans + znesek_ostanek - znesek_storno;
+    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne - znesek_storno_fizicne;
+    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne - znesek_storno_pravne;
 
     ui->txt_skupaj_znesek_3->setText(pretvori_iz_double(QString::number(znesek_skupaj, 'f', 2)) + " EUR");
     ui->txt_fizicne_osebe_znesek_3->setText(pretvori_iz_double(QString::number(znesek_skupaj_fizicne, 'f', 2)) + " EUR");
@@ -1424,6 +1461,10 @@ void wid_prihodki::napolni_skupni() {
     double znesek_ostanek_fizicne = 0.0;
     double znesek_ostanek_pravne = 0.0;
 
+    double znesek_storno = 0.0;
+    double znesek_storno_fizicne = 0.0;
+    double znesek_storno_pravne = 0.0;
+
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
 
@@ -1508,12 +1549,26 @@ void wid_prihodki::napolni_skupni() {
             }
         }
 
+        QSqlQuery sql_storno;
+        sql_storno.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '4'");
+        sql_storno.exec();
+        while ( sql_storno.next() ) {
+            if ( prevedi(sql_storno.value(sql_storno.record().indexOf("tip")).toString()) == "1" ) {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_fizicne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+            else {
+                znesek_storno += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+                znesek_storno_pravne += pretvori_v_double(prevedi(sql_storno.value(sql_storno.record().indexOf("znesek_koncni")).toString())).toDouble();
+            }
+        }
+
     }
     base.close();
 
-    double znesek_skupaj = znesek_avans + znesek_ostanek;
-    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
-    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
+    double znesek_skupaj = znesek_avans + znesek_ostanek - znesek_storno;
+    double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne - znesek_storno_fizicne;
+    double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne - znesek_storno_pravne;
 
     ui->txt_skupaj_znesek_4->setText(pretvori_iz_double(QString::number(znesek_skupaj, 'f', 2)) + " EUR");
     ui->txt_fizicne_osebe_znesek_4->setText(pretvori_iz_double(QString::number(znesek_skupaj_fizicne, 'f', 2)) + " EUR");

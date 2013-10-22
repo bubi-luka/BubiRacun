@@ -440,6 +440,20 @@ void GlavnoOkno::on_actionRa_uni_triggered() {
 
 }
 
+void GlavnoOkno::on_actionStornirani_ra_uni_triggered() {
+
+    wid_racuni *widrac = new wid_racuni;
+    ui->scrollArea->setWidget(widrac);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Stornirani racuni!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Stornirani racuni");
+
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               widrac , SLOT(tip(QString)));
+    prenos("4");
+    this->disconnect();
+
+}
+
 void GlavnoOkno::on_actionVrednost_DDV_triggered() {
 
     wid_ddv *widddv = new wid_ddv;
