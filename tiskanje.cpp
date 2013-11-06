@@ -828,7 +828,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
             QString besedilo_naloga = " " + potni_nalog.readLine() + " ";
 
             QSqlQuery sql_potovanje;
-            sql_potovanje.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(stevilka_naloga) + "'");
+            sql_potovanje.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(id) + "'");
             sql_potovanje.exec();
             while ( sql_potovanje.next() ) {
 
