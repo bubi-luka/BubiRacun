@@ -126,6 +126,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="rb_predracun">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Predračun</string>
                     </property>
@@ -146,6 +149,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="rb_predplacilo">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Predplačilo</string>
                     </property>
@@ -166,6 +172,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="rb_racun">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Račun</string>
                     </property>
@@ -173,6 +182,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="rb_storno">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Storno</string>
                     </property>
