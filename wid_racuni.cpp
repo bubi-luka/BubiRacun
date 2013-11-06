@@ -196,6 +196,8 @@ void wid_racuni::on_cb_racunovodstvo_currentIndexChanged() {
 
 void wid_racuni::napolni() {
 
+    ui->btn_print->setText("Polnim");
+
     int izbranec = 0;
     int razvrsti = 0;
 
@@ -494,6 +496,8 @@ void wid_racuni::napolni() {
     ui->tbl_racuni->selectRow(izbranec);
     ui->tbl_racuni->sortByColumn(razvrsti, Qt::AscendingOrder);
 
+    ui->btn_print->setText("Natisni");
+
 }
 
 void wid_racuni::napolni_sorodnike() {
@@ -646,15 +650,24 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
 
 }
 
-void wid_racuni::on_tbl_racuni_clicked() {
+void wid_racuni::on_tbl_racuni_itemSelectionChanged() {
 
-    napolni_sorodnike();
+    if ( ui->btn_print->text() != "Polnim" ) {
+        if ( ui->tbl_racuni->selectedItems().count() == 11 ) { // pri enem oznacenem polju omogoci gumbe, pri vecih pa ne
+            napolni_sorodnike();
 
-    if ( ui->tbl_racuni->selectedItems().takeAt(10)->text() == "DA" ) {
-        ui->btn_storno->setEnabled(false);
-    }
-    else {
-        ui->btn_storno->setEnabled(true);
+            // stornacije so mozne samo na racunih, ne pa na predracunih, stornacijah in predplacilnih racunih
+            if ( ui->tbl_racuni->selectedItems().takeAt(10)->text() != "NE" ) {
+                ui->btn_storno->setEnabled(false);
+            }
+            else {
+                ui->btn_storno->setEnabled(true);
+            }
+        }
+        else {
+            ui->tbl_sorodniki->clear();
+            ui->btn_storno->setEnabled(false);
+        }
     }
 
 }
