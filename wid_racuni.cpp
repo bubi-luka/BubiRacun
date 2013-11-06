@@ -872,12 +872,11 @@ void wid_racuni::on_btn_storno_clicked() {
             }
             qDebug("Podatki o racunu prepisani");
 
-            // poiscemo ID pravkar vnesenega zapisa
-
+        // poiscemo ID pravkar vnesenega zapisa
             qDebug("Iscemo nov id pravkar zapisanega racuna");
             QString nov_id = "";
             QSqlQuery sql_nov_id;
-            sql_nov_id.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(st_racuna) + "'");
+            sql_nov_id.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(st_racuna) + "' AND tip_racuna LIKE '4'");
             sql_nov_id.exec();
             if ( sql_nov_id.next() ) {
                 nov_id = prevedi(sql_nov_id.value(sql_nov_id.record().indexOf("id")).toString());
