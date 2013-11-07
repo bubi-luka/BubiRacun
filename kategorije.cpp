@@ -148,43 +148,55 @@ void kategorije::on_btn_zbrisi_clicked() {
 
 void kategorije::on_btn_shrani_clicked() {
 
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
-
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
+    // preverimo vnosna polja
+    bool napaka = false;
+    if ( ui->txt_kategorija->text() == "" ) {
+        napaka = true;
+        QMessageBox box_napaka;
+        box_napaka.setText("Napaka pri vnosu");
+        box_napaka.setInformativeText("Prosim, vnesite ime kategorije!");
+        box_napaka.exec();
     }
-    else {
-        // baza je odprta
 
-        QSqlQuery sql_vnesi;
-        if (ui->btn_shrani->text() == "Vnesi") { // vnesi novo kategorijo
-            sql_vnesi.prepare("INSERT INTO sif_kategorije (kategorija, indeks, aktivnost) VALUES (?, ?, ?)");
-        }
-        else { // popravi ze obstojeci vnos
-            sql_vnesi.prepare("UPDATE sif_kategorije SET kategorija = ?, indeks = ?, aktivnost = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
-        }
-        sql_vnesi.bindValue(0, pretvori(ui->txt_kategorija->text()));
-        sql_vnesi.bindValue(1, pretvori(ui->txt_indeks->text()));
-        if ( ui->cb_aktivnost->isChecked() ) {
-            sql_vnesi.bindValue(2, pretvori("1"));
+    if ( napaka == false ) {
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
+
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "popusti");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
         }
         else {
-           sql_vnesi.bindValue(2, pretvori("0"));
-        }
-        sql_vnesi.exec();
-    }
-    base.close();
+            // baza je odprta
 
-    // da osvežimo tabelo, jo ponovno naložimo
-    napolni_tabelo_kategorij();
+            QSqlQuery sql_vnesi;
+            if (ui->btn_shrani->text() == "Vnesi") { // vnesi novo kategorijo
+                sql_vnesi.prepare("INSERT INTO sif_kategorije (kategorija, indeks, aktivnost) VALUES (?, ?, ?)");
+            }
+            else { // popravi ze obstojeci vnos
+                sql_vnesi.prepare("UPDATE sif_kategorije SET kategorija = ?, indeks = ?, aktivnost = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+            }
+            sql_vnesi.bindValue(0, pretvori(ui->txt_kategorija->text()));
+            sql_vnesi.bindValue(1, pretvori(ui->txt_indeks->text()));
+            if ( ui->cb_aktivnost->isChecked() ) {
+                sql_vnesi.bindValue(2, pretvori("1"));
+            }
+            else {
+               sql_vnesi.bindValue(2, pretvori("0"));
+            }
+            sql_vnesi.exec();
+        }
+        base.close();
+
+        // da osvežimo tabelo, jo ponovno naložimo
+        napolni_tabelo_kategorij();
+    }
 
 }
 
