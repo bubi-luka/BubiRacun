@@ -49,6 +49,8 @@ void setup::start_first_run() {
     tabela_namen_potnega_naloga();
     tabela_prevoz();
     tabela_predracuni();
+    tabela_kategorije();
+    tabela_podkategorije();
     tabela_storitev();
     tabela_oddaje_racuna();
     tabela_opombe_pri_racunih();
@@ -74,7 +76,6 @@ void setup::start_first_run() {
     vnesi_namen_potnega_naloga();
     vnesi_prevoz();
     vnesi_predracune();
-    vnesi_storitve();
     vnesi_oddaja_racuna();
     vnesi_nastavitve();
     vnesi_banke();
@@ -1275,6 +1276,67 @@ void setup::tabela_predracuni() {
 
 }
 
+void setup::tabela_kategorije() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_kategorije ("
+                                                         "id INTEGER PRIMARY KEY, "
+                                                         "kategorija TEXT, "
+                                                         "indeks TEXT, "
+                                                         "aktivnost TEXT)"
+                                         );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+void setup::tabela_podkategorije() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_podkategorije ("
+                                                         "id INTEGER PRIMARY KEY, "
+                                                         "kategorija TEXT, "
+                                                         "podkategorija TEXT, "
+                                                         "indeks TEXT, "
+                                                         "aktivnost TEXT)"
+                                         );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
 void setup::tabela_storitev() {
 
     QString app_path = QApplication::applicationDirPath();
@@ -1294,14 +1356,18 @@ void setup::tabela_storitev() {
         // baza je odprta
         QSqlQuery sql_create_table;
         sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_storitve ("
-                                                         "id INTEGER PRIMARY KEY, "
-                                                         "sklop TEXT, "
-                                                         "skupina TEXT, "
-                                                         "storitev TEXT, "
-                                                         "urna_postavka TEXT, "
-                                                         "ddv TEXT, "
-                                                         "enota TEXT)"
-                                         );
+                                 "id INTEGER PRIMARY KEY, "
+                                 "sifra TEXT, "
+                                 "kategorija TEXT, "
+                                 "podkategorija TEXT, "
+                                 "storitev TEXT, "
+                                 "enota TEXT, "
+                                 "stopnja_ddv TEXT, "
+                                 "znesek_brez_ddv TEXT, "
+                                 "znesek_ddv TEXT, "
+                                 "znesek_z_ddv TEXT, "
+                                 "aktivnost TEXT)"
+                                 );
         sql_create_table.exec();
     }
     base.close();
@@ -2203,72 +2269,6 @@ void setup::vnesi_predracune() {
                 QSqlQuery sql_insert_data;
                 sql_insert_data.prepare("INSERT INTO sif_status_predracuna (status) VALUES (?)");
                 sql_insert_data.bindValue(0, pretvori(predracun));
-                sql_insert_data.exec();
-            }
-        }
-    }
-    base.close();
-    datoteka.remove();
-
-}
-
-void setup::vnesi_storitve() {
-
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
-
-    QFile datoteka(app_path + "/storitve.csv");
-    if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return;
-    }
-
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        // baza je odprta
-
-        /*
-        *	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-        * prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
-        */
-        QTextStream besedilo(&datoteka);
-        while (!besedilo.atEnd()) {
-            qApp->processEvents();
-            QString opravilo = besedilo.readLine();
-            QString sklop = opravilo.left(opravilo.indexOf(",", 0));
-            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-            QString skupina = opravilo.left(opravilo.indexOf(",", 0));
-            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-            QString storitev = opravilo.left(opravilo.indexOf(",", 0));
-            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-            QString cena = opravilo.left(opravilo.indexOf(",", 0));
-            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-            QString ddv = opravilo.left(opravilo.indexOf(",", 0));
-            opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-            QString enota = opravilo.left(opravilo.indexOf(",", 0));
-        opravilo = opravilo.right(opravilo.length() - opravilo.indexOf(",", 0) - 1);
-
-            QSqlQuery sql_check_table;
-            sql_check_table.prepare("SELECT * FROM sif_storitve WHERE sklop LIKE '" + pretvori(sklop) + "' AND storitev LIKE '" + pretvori(storitev) + "' AND skupina LIKE '" + pretvori(skupina) + "'");
-            sql_check_table.exec();
-            if ( !sql_check_table.next() ) {
-                QSqlQuery sql_insert_data;
-                sql_insert_data.prepare("INSERT INTO sif_storitve (sklop, skupina, storitev, urna_postavka, ddv, enota) "
-                                                                "VALUES (?, ?, ?, ?, ?, ?)");
-                sql_insert_data.bindValue(0, pretvori(sklop));
-                sql_insert_data.bindValue(1, pretvori(skupina));
-                sql_insert_data.bindValue(2, pretvori(storitev));
-                sql_insert_data.bindValue(3, pretvori(cena));
-                sql_insert_data.bindValue(4, pretvori(ddv));
-                sql_insert_data.bindValue(5, pretvori(enota));
                 sql_insert_data.exec();
             }
         }
@@ -4155,9 +4155,53 @@ void setup::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
+                if ( stevilka_baze_min == 19 ) {
+
+                    // izbrisi tabelo storitev
+                    update.prepare("DROP TABLE IF EXISTS sif_storitve");
+                    update.exec();
+                    update.clear();
+
+                    // naredi novo tabelo za storitve, saj smo staro zbrisali
+                    update.prepare("CREATE TABLE IF NOT EXISTS sif_storitve ("
+                                   "id INTEGER PRIMARY KEY, "
+                                   "sifra TEXT, "
+                                   "kategorija TEXT, "
+                                   "podkategorija TEXT, "
+                                   "storitev TEXT, "
+                                   "enota TEXT, "
+                                   "stopnja_ddv TEXT, "
+                                   "znesek_brez_ddv TEXT, "
+                                   "znesek_ddv TEXT, "
+                                   "znesek_z_ddv TEXT, "
+                                   "aktivnost TEXT)"
+                                   );
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.20");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.20");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "07.11.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
             }
         }
-
     }
     base.close();
 

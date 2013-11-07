@@ -47,7 +47,11 @@ HEADERS += \
     wid_ddv.h \
     sif_ddv.h \
     prejetiracuni_dodajddv.h \
-    setup.h
+    setup.h \
+    wid_storitve.h \
+    storitve.h \
+    kategorije.h \
+    podkategorije.h
 
 SOURCES += \
 		main.cpp \
@@ -97,7 +101,11 @@ SOURCES += \
     wid_ddv.cpp \
     sif_ddv.cpp \
     prejetiracuni_dodajddv.cpp \
-    setup.cpp
+    setup.cpp \
+    wid_storitve.cpp \
+    storitve.cpp \
+    kategorije.cpp \
+    podkategorije.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -143,7 +151,11 @@ FORMS += \
     sif_delavniki.ui \
     wid_ddv.ui \
     sif_ddv.ui \
-    prejetiracuni_dodajddv.ui
+    prejetiracuni_dodajddv.ui \
+    wid_storitve.ui \
+    storitve.ui \
+    kategorije.ui \
+    podkategorije.ui
 
 QT	+= widgets
 QT	+= sql

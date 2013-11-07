@@ -36,6 +36,9 @@
 #include "wid_stroskiprehrane.h"
 #include "sif_cenamalice.h"
 #include "wid_ddv.h"
+#include "wid_storitve.h"
+#include "kategorije.h"
+#include "podkategorije.h"
 
 #include "prijava.h"
 #include "podjetje.h"
@@ -460,6 +463,29 @@ void GlavnoOkno::on_actionVrednost_DDV_triggered() {
     ui->scrollArea->setWidget(widddv);
     ui->lbl_pozicija->setText("Nahajate se na tabeli Sifrant DDV!");
     setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Sifrant DDV");
+
+}
+
+void GlavnoOkno::on_actionStoritve_triggered() {
+
+    wid_storitve *widstoritev = new wid_storitve;
+    ui->scrollArea->setWidget(widstoritev);
+    ui->lbl_pozicija->setText("Nahajate se na tabeli Sifrant storitev!");
+    setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Sifrant storitev");
+
+}
+
+void GlavnoOkno::on_actionKategorije_triggered() {
+
+    kategorije *okno = new kategorije;
+    okno->show();
+
+}
+
+void GlavnoOkno::on_actionPodkategorije_triggered() {
+
+    podkategorije *okno = new podkategorije;
+    okno->show();
 
 }
 

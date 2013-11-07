@@ -48,6 +48,8 @@ private slots:
     void tabela_namen_potnega_naloga();
     void tabela_prevoz();
     void tabela_predracuni();
+    void tabela_kategorije();
+    void tabela_podkategorije();
     void tabela_storitev();
     void tabela_oddaje_racuna();
     void tabela_opombe_pri_racunih();
@@ -73,7 +75,6 @@ private slots:
     void vnesi_namen_potnega_naloga();
     void vnesi_prevoz();
     void vnesi_predracune();
-    void vnesi_storitve();
     void vnesi_oddaja_racuna();
     void vnesi_nastavitve();
     void vnesi_banke();

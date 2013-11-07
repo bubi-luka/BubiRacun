@@ -3,7 +3,7 @@
  <class>GlavnoOkno</class>
  <widget class="QMainWindow" name="GlavnoOkno">
   <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
+   <enum>Qt::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -234,6 +234,10 @@ border:0;</string>
     <property name="title">
      <string>Šifranti</string>
     </property>
+    <addaction name="actionStoritve"/>
+    <addaction name="actionKategorije"/>
+    <addaction name="actionPodkategorije"/>
+    <addaction name="separator"/>
     <addaction name="actionOpombe_pri_ra_unih"/>
     <addaction name="separator"/>
     <addaction name="actionVrednost_DDV"/>
@@ -242,6 +246,7 @@ border:0;</string>
     <addaction name="actionDnevnice"/>
     <addaction name="actionCena_malice"/>
     <addaction name="actionDelavniki"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
@@ -398,6 +403,21 @@ border:0;</string>
   <action name="actionStornirani_ra_uni">
    <property name="text">
     <string>Stornirani računi</string>
+   </property>
+  </action>
+  <action name="actionStoritve">
+   <property name="text">
+    <string>Storitve</string>
+   </property>
+  </action>
+  <action name="actionKategorije">
+   <property name="text">
+    <string>Kategorije</string>
+   </property>
+  </action>
+  <action name="actionPodkategorije">
+   <property name="text">
+    <string>Podkategorije</string>
    </property>
   </action>
  </widget>
