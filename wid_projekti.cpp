@@ -451,6 +451,7 @@ QString wid_projekti::prevedi(QString besedilo) {
     return kodiranje().odkodiraj(besedilo);
 
 }
+
 void wid_projekti::on_btn_kopiraj_clicked() {
 
     QClipboard *odlozisce = QApplication::clipboard();
