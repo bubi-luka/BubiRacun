@@ -25,18 +25,16 @@ private slots:
     void on_cb_kategorija_currentIndexChanged();
     void on_cb_podkategorija_currentIndexChanged();
     void on_cb_aktivnost_currentIndexChanged();
+    void on_txt_iskalnik_textChanged();
 
     void on_btn_pobrisi_filtre_clicked();
-
-/*
-    void on_tbl_storitve_doubleClicked();
+    void on_btn_nov_clicked();
     void on_btn_osvezi_clicked();
-   */ void on_btn_nov_clicked();/*
     void on_btn_aktiviraj_clicked();
 
+    void on_tbl_storitve_doubleClicked();
+
     void osvezi(QString beseda);
-    void prejem(QString besedilo);
-    void tip(QString besedilo);*/
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

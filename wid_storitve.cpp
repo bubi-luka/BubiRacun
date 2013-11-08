@@ -39,6 +39,29 @@ void wid_storitve::on_btn_nov_clicked() {
 
 }
 
+void wid_storitve::on_tbl_storitve_doubleClicked() {
+
+    storitve *nova = new storitve;
+    nova->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               nova , SLOT(prejem(QString)));
+    prenos(ui->tbl_storitve->selectedItems().takeAt(0)->text()); // v novo okno prenesemo zaporedni ID storitve, ki jo popravljamo
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(nova, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}
+
+void wid_storitve::osvezi(QString beseda) {
+
+    if ( beseda == "storitve" ) {
+        on_btn_osvezi_clicked();
+    }
+
+}
+
 void wid_storitve::napolni_kategorije() {
 
     ui->cb_kategorija->clear();
@@ -120,6 +143,53 @@ void wid_storitve::on_btn_pobrisi_filtre_clicked() {
     ui->cb_aktivnost->setCurrentIndex(ui->cb_aktivnost->findText(""));
     ui->cb_kategorija->setCurrentIndex(ui->cb_kategorija->findText(""));
     ui->cb_podkategorija->setCurrentIndex(ui->cb_podkategorija->findText(""));
+
+}
+
+void wid_storitve::on_btn_osvezi_clicked() {
+
+    napolni();
+
+}
+
+void wid_storitve::on_btn_aktiviraj_clicked() {
+
+    QString seznam_id = "";
+    QModelIndexList selectedList = ui->tbl_storitve->selectionModel()->selectedRows();
+
+    for( int i = 0; i < selectedList.count(); i++ ) {
+        if ( ui->tbl_storitve->item(selectedList.at(i).row(), 0)->text() != "" ) {
+
+            QString aktivnost = "1"; // neaktivno bomo spremenili v aktnivno!!!
+            if ( ui->tbl_storitve->item(selectedList.at(i).row(), 10)->text() == "Aktivna" ) {
+                aktivnost = "0"; // aktivno bomo spremenili v neaktivno!!!
+            }
+
+            QString app_path = QApplication::applicationDirPath();
+            QString dbase_path = app_path + "/base.bz";
+
+            QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_tabelo");
+            base.setDatabaseName(dbase_path);
+            base.database();
+            base.open();
+            if(base.isOpen() != true){
+                QMessageBox msgbox;
+                msgbox.setText("Baze ni bilo moc odpreti");
+                msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+                msgbox.exec();
+            }
+            else {
+                // the database is opened
+                QSqlQuery sql_change;
+                sql_change.prepare("UPDATE sif_storitve SET aktivnost = ? WHERE id LIKE '" + ui->tbl_storitve->item(selectedList.at(i).row(), 0)->text() + "'");
+                sql_change.bindValue(0, aktivnost);
+                sql_change.exec();
+            }
+            base.close();
+        }
+    }
+
+    on_btn_osvezi_clicked();
 
 }
 
@@ -252,8 +322,8 @@ void wid_storitve::napolni() {
             }
             stavek += "( storitev LIKE '%" + pretvori(ui->txt_iskalnik->text()) + "%' OR ";
             stavek += "sifra LIKE '%" + pretvori(ui->txt_iskalnik->text()) + "%' OR ";
-            stavek += "kategorija LIKE '%" + pretvori(ui->txt_iskalnik->text()) + "%' OR ";
-            stavek += "podkategorija LIKE '%" + pretvori(ui->txt_iskalnik->text()) + "%' )";
+            stavek += "kategorija LIKE '" + pretvori(ui->txt_iskalnik->text()) + "%' OR ";
+            stavek += "podkategorija LIKE '" + pretvori(ui->txt_iskalnik->text()) + "%' )";
         }
 
         if ( stavek != "" ) {
@@ -278,13 +348,19 @@ void wid_storitve::napolni() {
                 if ( polja[i] == "id" ) {
                     celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
                 }
-                if ( polja[i] == "aktivnost" ) {
+                else if ( polja[i] == "aktivnost" ) {
                     if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // storitev je aktivna
                         celica->setText("Aktivna");
                     }
                     else { // storitev ni aktivna, status je 0
                         celica->setText("Ni aktivna");
                     }
+                }
+                else if ( polja[i] == "stopnja_ddv" ) {
+                    celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())) + "%");
+                }
+                else if ( polja[i] == "znesek_brez_ddv" || polja[i] == "znesek_ddv" || polja[i] == "znesek_z_ddv" ) {
+                    celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())) + " EUR");
                 }
                 else {
                     celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -319,6 +395,12 @@ void wid_storitve::on_cb_podkategorija_currentIndexChanged() {
 }
 
 void wid_storitve::on_cb_aktivnost_currentIndexChanged() {
+
+    napolni();
+
+}
+
+void wid_storitve::on_txt_iskalnik_textChanged() {
 
     napolni();
 
