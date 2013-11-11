@@ -39,6 +39,7 @@
 #include "wid_storitve.h"
 #include "kategorije.h"
 #include "podkategorije.h"
+#include "sif_enote.h"
 
 #include "prijava.h"
 #include "podjetje.h"
@@ -485,6 +486,13 @@ void GlavnoOkno::on_actionKategorije_triggered() {
 void GlavnoOkno::on_actionPodkategorije_triggered() {
 
     podkategorije *okno = new podkategorije;
+    okno->show();
+
+}
+
+void GlavnoOkno::on_actionEnote_triggered() {
+
+    sif_enote *okno = new sif_enote;
     okno->show();
 
 }

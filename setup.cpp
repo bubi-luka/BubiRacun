@@ -60,6 +60,7 @@ void setup::start_first_run() {
     tabela_banke();
     tabela_koda_namena();
     tabela_ddv();
+    tabela_enote();
 
     // vnese podatke v tabele
     vnesi_skd();
@@ -2516,6 +2517,36 @@ void setup::tabela_ddv() {
                                                          "vrednost TEXT, "					// vrednost ddv-ja
                                                          "aktivnost TEXT)"					// je vrednost aktivna (1) ali neaktivna (0)
                                                          );
+        sql_create_table.exec();
+    }
+    base.close();
+
+}
+
+void setup::tabela_enote() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS sif_enote ("   // ustvarimo tabelo, ce se ne obstaja
+                                 "id INTEGER PRIMARY KEY, "                 // kljuc
+                                 "ime TEXT, "                               // ime enote
+                                 "enota TEXT, "                             // oznaka enote
+                                 "aktivnost TEXT)"                          // je vrednost aktivna (1) ali neaktivna (0)
+                                );
         sql_create_table.exec();
     }
     base.close();

@@ -237,6 +237,7 @@ border:0;</string>
     <addaction name="actionStoritve"/>
     <addaction name="actionKategorije"/>
     <addaction name="actionPodkategorije"/>
+    <addaction name="actionEnote"/>
     <addaction name="separator"/>
     <addaction name="actionOpombe_pri_ra_unih"/>
     <addaction name="separator"/>
@@ -418,6 +419,11 @@ border:0;</string>
   <action name="actionPodkategorije">
    <property name="text">
     <string>Podkategorije</string>
+   </property>
+  </action>
+  <action name="actionEnote">
+   <property name="text">
+    <string>Enote</string>
    </property>
   </action>
  </widget>
