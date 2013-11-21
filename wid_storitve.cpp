@@ -360,7 +360,7 @@ void wid_storitve::napolni() {
                     celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())) + "%");
                 }
                 else if ( polja[i] == "znesek_brez_ddv" || polja[i] == "znesek_ddv" || polja[i] == "znesek_z_ddv" ) {
-                    celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())) + " EUR");
+                    celica->setText(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())));
                 }
                 else {
                     celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));

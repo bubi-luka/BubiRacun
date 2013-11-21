@@ -244,7 +244,7 @@ void storitve::napolni_enote() {
         sql_fill.prepare("SELECT * FROM sif_enote WHERE aktivnost LIKE '1'");
         sql_fill.exec();
         while ( sql_fill.next() ) {
-            ui->cb_enota->addItem(pretvori_iz_double(pretvori(sql_fill.value(sql_fill.record().indexOf("enota")).toString())));
+            ui->cb_enota->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString()));
         }
     }
     base.close();
@@ -275,7 +275,7 @@ void storitve::napolni_davke() {
         sql_fill.prepare("SELECT * FROM sif_ddv WHERE aktivnost LIKE '1'");
         sql_fill.exec();
         while ( sql_fill.next() ) {
-            ui->cb_stopnja_ddv->addItem(pretvori_iz_double(pretvori(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
+            ui->cb_stopnja_ddv->addItem(pretvori_iz_double(prevedi(sql_fill.value(sql_fill.record().indexOf("vrednost")).toString())) + " %");
         }
     }
     base.close();
