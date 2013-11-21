@@ -51,6 +51,7 @@ private slots:
     void on_actionKategorije_triggered();
     void on_actionPodkategorije_triggered();
     void on_actionEnote_triggered();
+    void on_actionIzhod_triggered();
     void keyPressEvent(QKeyEvent *event);
 
     void on_btn_home_clicked();

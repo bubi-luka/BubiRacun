@@ -497,6 +497,12 @@ void GlavnoOkno::on_actionEnote_triggered() {
 
 }
 
+void GlavnoOkno::on_actionIzhod_triggered() {
+
+    close();
+
+}
+
 void GlavnoOkno::varnost_id_changed() {
 
     if ( vApp->id() == "" ) {
