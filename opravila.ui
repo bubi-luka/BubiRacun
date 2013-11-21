@@ -305,7 +305,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Skupina</string>
+               <string>Podkategorija</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -365,7 +365,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_52">
               <property name="text">
-               <string>Tip</string>
+               <string>Kategorija</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -577,6 +577,26 @@
              <widget class="QLineEdit" name="txt_rocni_vnos_storitve">
               <property name="text">
                <string>txt_rocni_vnos_storitve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_54">
+              <property name="text">
+               <string>Šifra</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="txt_sifra">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>txt_sifra</string>
               </property>
              </widget>
             </item>
