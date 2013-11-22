@@ -2918,6 +2918,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString racun_stevilka_starsa = "";
 
 	QString storitev_ime = "";
+	QString storitev_sifra = "";
 	QString storitev_kolicina = "";
 	QString storitev_cena_brez_ddv_na_enoto = "";
 	QString storitev_popust = "";
@@ -3484,7 +3485,8 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		double sirina_vecja = printer.width() / 8;
 		double sirina_manjsa = printer.width() / 11;
-		double crta_1 = 0;
+		double crta_0 = 0;
+		double crta_1 = sirina_manjsa;
 		double crta_2 = printer.width() - sirina_vecja - sirina_manjsa * 5;
 		double crta_3 = crta_2 + sirina_manjsa;
 		double crta_4 = crta_3 + sirina_manjsa;
@@ -3492,6 +3494,14 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		double crta_6 = crta_5 + sirina_manjsa;
 		double crta_7 = crta_6 + sirina_manjsa;
 		double crta_8 = printer.width();
+
+		besedilo = racun.readLine();
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Sifra")
+		velikost_besedila = painter.boundingRect(crta_0, pozicija, crta_1, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		// nastavimo parametre
+		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
+		// natisnemo besedilo
+		painter.drawText(QRectF(crta_0, pozicija, crta_1, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
@@ -3584,22 +3594,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 								 "' ORDER BY vrstni_red ASC");
 			sql_storitve.exec();
 			while ( sql_storitve.next() ) {
-				if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_sklop")).toString()) == "Ostalo" ||
-						 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) == "Ostalo") {
-					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
-				}
-				else if ( prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString()) == "Ostalo" ) {
-					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
-												 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_rocno")).toString());
-				}
-				else {
-					storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_skupina")).toString()) + ": " +
-												 prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
+				storitev_sifra = prevedi(sql_storitve.value(sql_storitve.record().indexOf("sifra")).toString());
+				if ( storitev_sifra == "" ) {
+					storitev_sifra = "000000";
 				}
 
-				if ( storitev_ime.right(2) == ": " ) {
-					storitev_ime = storitev_ime.left(storitev_ime.length() - 2);
-				}
+				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
 
 				storitev_enota = prevedi(sql_storitve.value(sql_storitve.record().indexOf("enota")).toString());
 
@@ -3668,7 +3668,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					pozicija = visina_glave;
 				}
 
-				// natisnemo besedilo
+				// natisnemo besedilo (Sifra)
+				painter.drawText(QRectF(crta_0, pozicija, crta_1, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_sifra);
+
+				// natisnemo besedilo (Storitev)
 				painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap | Qt::AlignVCenter, storitev_ime);
 
 				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
