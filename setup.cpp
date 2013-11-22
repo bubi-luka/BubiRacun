@@ -4259,6 +4259,44 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 21 ) {
+
+					// dodaj polje v tabelo opravil
+					QSqlQuery sql_preberi;
+					sql_preberi.prepare("SELECT * FROM opravila WHERE opravilo_rocno NOT LIKE ''");
+					sql_preberi.exec();
+					while ( sql_preberi.next() ) {
+						update.prepare("UPDATE opravila SET opravilo_storitev = ?, sifra = ?, opravilo_rocno  = ? WHERE id LIKE '" +
+									   pretvori(sql_preberi.value(sql_preberi.record().indexOf("id")).toString()) + "'");
+						update.bindValue(0, sql_preberi.value(sql_preberi.record().indexOf("opravilo_rocno")).toString());
+						update.bindValue(1, "999999");
+						update.bindValue(2, "");
+						update.exec();
+						update.clear();
+					}
+
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.22");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.22");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					update.bindValue(0, "22.11.2013");
+					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
 			}
 		}
 	}
