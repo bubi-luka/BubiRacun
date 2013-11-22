@@ -234,8 +234,8 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 										   "popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_kupon, "
 										   "popust_akcija, podrazitev_vikend, podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, "
 										   "pribitek_hitrost, pribitek_zapleti, tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, "
-										   "znesek_koncni, enota, opravilo_sklop, opravilo_rocno, sifra) VALUES "
-										   "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+										   "znesek_koncni, enota, opravilo_sklop, sifra) VALUES "
+										   "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_opravilo.prepare("UPDATE opravila SET stevilka_stranke = ?, stevilka_projekta = ?, stevilka_racuna = ?, tip_racuna = ?, "
@@ -244,18 +244,17 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 																	 "popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, podrazitev_hitrost = ?, "
 																	 "podrazitev_zapleti = ?, pribitek_vikend = ?, pribitek_hitrost = ?, pribitek_zapleti = ?, tip_ur = ?, "
 																	 "ur_dela = ?, rocni_vnos_ur = ?, znesek_popustov = ?, znesek_ddv = ?, znesek_koncni = ?, enota = ?, "
-																	 "opravilo_sklop = ?, opravilo_rocno = ?, sifra = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+																	 "opravilo_sklop = ?, sifra = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_opravilo.bindValue(0, pretvori(ui->txt_id_stranka->text()));
 			sql_vnesi_opravilo.bindValue(1, pretvori(ui->txt_id_projekt->text()));
 			sql_vnesi_opravilo.bindValue(2, pretvori(ui->txt_id_racun->text()));
 			sql_vnesi_opravilo.bindValue(3, pretvori(ui->txt_id_tip->text()));
-			if ( ui->txt_sklop->currentText() != "Ostalo" && ui->txt_skupina->currentText() != "Ostalo" && ui->txt_storitev->currentText() != "Ostalo" ) {
-				sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
-				sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_storitev->currentText()));
+			sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
+			if ( ui->cb_rocni->isChecked() ) {
+				sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_rocni_vnos_storitve->text()));
 			}
-			else { // ce je katerikoli od spustnih seznamov "Ostalo"
-				sql_vnesi_opravilo.bindValue(4, pretvori(ui->txt_skupina->currentText()));
+			else {
 				sql_vnesi_opravilo.bindValue(5, pretvori(ui->txt_storitev->currentText()));
 			}
 			sql_vnesi_opravilo.bindValue(6, pretvori(pretvori_v_double(ui->txt_urna_postavka_brez_ddv->text())));
@@ -317,8 +316,7 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 			sql_vnesi_opravilo.bindValue(27, pretvori(pretvori_v_double(ui->txt_znesek_brez_ddv_na_racunu->text())));
 			sql_vnesi_opravilo.bindValue(28, pretvori(ui->txt_enota->currentText()));
 			sql_vnesi_opravilo.bindValue(29, pretvori(ui->txt_sklop->currentText()));
-			sql_vnesi_opravilo.bindValue(30, pretvori(ui->txt_rocni_vnos_storitve->text()));
-			sql_vnesi_opravilo.bindValue(31, pretvori(ui->txt_sifra->text()));
+			sql_vnesi_opravilo.bindValue(30, pretvori(ui->txt_sifra->text()));
 			sql_vnesi_opravilo.exec();
 
 			// send signal to reload widget
@@ -329,6 +327,22 @@ void opravila::on_btn_sprejmi_clicked() { // ne preverja polj
 		}
 	}
 	base.close();
+
+}
+void opravila::on_cb_rocni_toggled() {
+
+	if ( ui->cb_rocni->isChecked() ) {
+		ui->txt_sifra->setText("999999");
+		ui->txt_rocni_vnos_storitve->setVisible(true);
+		ui->label_53->setVisible(true);
+		ui->txt_storitev->setCurrentIndex(0);
+	}
+	else {
+		ui->txt_sifra->setText("");
+		ui->txt_rocni_vnos_storitve->setVisible(false);
+		ui->label_53->setVisible(false);
+		ui->txt_rocni_vnos_storitve->setText("");
+	}
 
 }
 
@@ -631,11 +645,10 @@ void opravila::on_txt_storitev_currentIndexChanged() {
 	ui->txt_urna_postavka_brez_ddv->setText("");
 	ui->txt_ddv->setCurrentIndex(0);
 	ui->txt_urna_postavka->setText("");
-	ui->label_53->setHidden(true);
-	ui->txt_rocni_vnos_storitve->setHidden(true);
-	ui->txt_rocni_vnos_storitve->setText("");
 
-	if ( ui->txt_storitev->currentText() != "" && ui->txt_storitev->currentText() != "Ostalo" ) {
+	if ( ui->txt_storitev->currentText() != "" ) {
+		ui->cb_rocni->setChecked(false);
+
 		QString app_path = QApplication::applicationDirPath();
 		QString dbase_path = app_path + "/base.bz";
 
