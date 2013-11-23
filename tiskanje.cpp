@@ -287,7 +287,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 	QString cena_dnevnic_1 = "0.00";
 	QString cena_dnevnic_2 = "0.00";
 	QString cena_dnevnic = "0.00";
-	QString opombe;
+	QString opombe = "";
 
 	// podatki o predlagatelju - podjetje
 	QString predlagatelj_podjetje_ime;
@@ -2916,6 +2916,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString racun_opombe = "";
 	QString racun_id_starsa = "";
 	QString racun_stevilka_starsa = "";
+	QString razlog_stornacije = "";
 
 	QString storitev_ime = "";
 	QString storitev_sifra = "";
@@ -3000,6 +3001,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			}
 			racun_stevilka_sklica = prevedi(sql_racun.value(sql_racun.record().indexOf("sklic")).toString());
 			racun_opombe = prevedi(sql_racun.value(sql_racun.record().indexOf("opombe")).toString());
+			razlog_stornacije = prevedi(sql_racun.value(sql_racun.record().indexOf("razlog_stornacije")).toString());
 
 			podjetje_oseba = prevedi(sql_racun.value(sql_racun.record().indexOf("avtor_oseba")).toString());
 //            narocnik = prevedi(sql_racun.value(sql_racun.record().indexOf("stranka")).toString());
@@ -3172,12 +3174,17 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		// nastravitve
 		QFont normalno("Arial", 10);
 		QFont debelo("Arial", 10, QFont::Bold);
+		QFont veliko("Arial", 14, QFont::Bold);
 		QFont malo("Arial", 8);
 
 		QPen *debel_svincnik = new QPen;
 		QPen *tanek_svincnik = new QPen;
+		QPen *rdec_svincnik = new QPen;
+		QPen *crn_svincnik = new QPen;
 		debel_svincnik->setWidth(2.0);
 		tanek_svincnik->setWidth(1.0);
+		rdec_svincnik->setColor(Qt::red);
+		crn_svincnik->setColor(Qt::black);
 
 		// narisemo glavo in nogo prve strani
 		int visina_glave = natisni_glavo_izdani_racun(painter, id);
@@ -3249,10 +3256,25 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// nastavi parametre
 		painter.setFont(debelo);
-		besedilo = racun.readLine() + " ";
-		if ( racun_tip == "4" ) {
-			besedilo = "Stornacija st.: ";
+
+		if ( razlog_stornacije != "" ) {
+			// dolocimo velikost kvadrata, ki ga tvori besedilo (STORNIRANO)
+			besedilo = "STORNIRANO";
+			painter.setFont(veliko);
+			painter.setPen(*rdec_svincnik);
+			velikost_besedila = painter.boundingRect( ( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo parametre
+			visina_vrstice = velikost_besedila.height();
+			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_1; // razmik med vrsticami, za lazje branje dokumenta
+			// natisnemo besedilo
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+			painter.setPen(*crn_svincnik);
+			painter.setFont(debelo);
 		}
+
+		besedilo = racun.readLine() + " ";
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("(Pred)Racun st.: ")
 		velikost_besedila = painter.boundingRect( ( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// nastavimo parametre
@@ -4033,6 +4055,59 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
 
+	// razlog stornacije
+		// opomba morebitne stornacije
+		besedilo = racun.readLine();
+		if ( razlog_stornacije != "" ) {
+			// napisemo naslov
+			painter.setFont(debelo);
+			// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
+			velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo parametre
+			visina_vrstice = velikost_besedila.height();
+			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+
+			// preveri, ce je potrebna nova stran
+			if( pozicija + visina_noge + visina_vrstice + razmik_med_vrsticami >= printer.height() ) {
+				printer.newPage();
+
+				int visina_glave = natisni_glavo_izdani_racun(painter, id);
+				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
+
+				pozicija = visina_glave;
+			}
+
+			// natisnemo besedilo
+			painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+
+			// napisemo razlog stornacije
+			painter.setFont(normalno);
+			besedilo = razlog_stornacije;
+
+			// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
+			velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo parametre
+			visina_vrstice = velikost_besedila.height();
+			razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+
+			// preveri, ce je potrebna nova stran
+			if( pozicija + visina_noge + visina_vrstice + razmik_med_vrsticami >= printer.height() ) {
+				printer.newPage();
+
+				int visina_glave = natisni_glavo_izdani_racun(painter, id);
+				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
+
+				pozicija = visina_glave;
+			}
+
+			// natisnemo besedilo
+			painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+		}
+
 	// opombe
 		// priprava baze in polnenje storitve
 		QSqlDatabase base_2 = QSqlDatabase::addDatabase("QSQLITE");
@@ -4059,6 +4134,32 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			sql_opombe.exec();
 			if ( sql_opombe.next() ) {
 				opombe = prevedi(sql_opombe.value(sql_opombe.record().indexOf("opombe")).toString()).replace(",,", ",");
+			}
+
+			if ( opombe != "" ) {
+				// napisemo naslov
+				painter.setFont(debelo);
+				besedilo = "Opombe";
+				// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
+				velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// nastavimo parametre
+				visina_vrstice = velikost_besedila.height();
+				razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
+
+				// preveri, ce je potrebna nova stran
+				if( pozicija + visina_noge + visina_vrstice + razmik_med_vrsticami >= printer.height() ) {
+					printer.newPage();
+
+					int visina_glave = natisni_glavo_izdani_racun(painter, id);
+					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
+
+					pozicija = visina_glave;
+				}
+
+				// natisnemo besedilo
+				painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// nova vrstica
+				pozicija += visina_vrstice + razmik_med_vrsticami;
 			}
 
 			preostanek_opombe = opombe;
