@@ -17,6 +17,7 @@
 #include "varnost.h"
 #include "tiskanje.h"
 #include "datum.h"
+#include "razlog_stornacije.h"
 
 wid_racuni::wid_racuni(QWidget *parent) :
 	QWidget(parent),
@@ -399,6 +400,13 @@ void wid_racuni::napolni() {
 
 				while (col <= 10) {
 					QTableWidgetItem *celica = new QTableWidgetItem;
+
+					// storniranim vrsticam spremenimo barvo ozadja in besedila
+					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("stornacija")).toString()) == "1" ) {
+						celica->setBackgroundColor(Qt::red);
+						celica->setTextColor(Qt::black);
+					}
+
 					if ( polja[i] == "id" ) {
 						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
 					}
@@ -483,6 +491,7 @@ void wid_racuni::napolni() {
 					else {
 						celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
 					}
+
 					ui->tbl_racuni->setItem(row, col, celica);
 					col++;
 					i++;
@@ -799,141 +808,18 @@ void wid_racuni::on_btn_storno_clicked() {
 		else {
 			// baza je odprta
 
-		// oznaci trenutni racun kot storniran
-			QSqlQuery oznaci;
-			oznaci.prepare("UPDATE racuni SET stornacija = '1' WHERE id LIKE '" + pretvori(id) + "'");
-			oznaci.exec();
+			// povprasaj za razlog stornacije, sele nato ga izvedi
+			razlog_stornacije *vnesi_razlog = new razlog_stornacije;
+			vnesi_razlog->show();
+			QObject::connect(this, SIGNAL(prenos(QString)),
+					   vnesi_razlog , SLOT(prejem(QString)));
+			prenos(ui->tbl_racuni->selectedItems().takeAt(0)->text()); // ce racun ze obstaja, naprej posljemo id. racuna
+			this->disconnect();
 
-		// prepisi trenutni racun v bazo storniranih, zneski so negativni
+			// receive signal to refresh table
+			QObject::connect(vnesi_razlog, SIGNAL(poslji(QString)),
+					   this , SLOT(osvezi(QString)));
 
-			// na novo izracunamo stevilko racuna
-			QString st_racuna = stevilka_racuna();
-
-			// doloci spremenljivke, ki jih ni v sami formi programa
-
-			QSqlQuery izberi;
-			izberi.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
-			izberi.exec();
-			if ( izberi.next() ) {
-
-				QSqlQuery prepisi;
-				prepisi.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
-								"datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
-								"status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, "
-								"rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
-								"podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
-								"podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
-								"izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, "
-								"narocnik_davcna, stevilka_starsa"
-								") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-								"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				prepisi.bindValue(0, pretvori(st_racuna));
-				prepisi.bindValue(1, pretvori("4"));
-				prepisi.bindValue(2, izberi.value(izberi.record().indexOf("status_racuna")).toString());
-				prepisi.bindValue(3, izberi.value(izberi.record().indexOf("stranka")).toString());
-				prepisi.bindValue(4, izberi.value(izberi.record().indexOf("projekt")).toString());
-				prepisi.bindValue(5, izberi.value(izberi.record().indexOf("avtor_oseba")).toString());
-				prepisi.bindValue(6, izberi.value(izberi.record().indexOf("datum_pricetka")).toString());
-				prepisi.bindValue(7, izberi.value(izberi.record().indexOf("datum_konca")).toString());
-				prepisi.bindValue(8, izberi.value(izberi.record().indexOf("datum_izdaje")).toString());
-				prepisi.bindValue(9, izberi.value(izberi.record().indexOf("datum_placila")).toString());
-				prepisi.bindValue(10, izberi.value(izberi.record().indexOf("status_placila")).toString());
-				prepisi.bindValue(11, izberi.value(izberi.record().indexOf("status_racunovodstva")).toString());
-				prepisi.bindValue(12, izberi.value(izberi.record().indexOf("avans")).toString());
-				prepisi.bindValue(13, izberi.value(izberi.record().indexOf("odstotek_avansa")).toString());
-				prepisi.bindValue(14, izberi.value(izberi.record().indexOf("status_oddaje_racuna")).toString());
-				prepisi.bindValue(15, izberi.value(izberi.record().indexOf("datum_oddaje_racuna")).toString());
-				prepisi.bindValue(16, izberi.value(izberi.record().indexOf("stara_stevilka_racuna")).toString());
-				prepisi.bindValue(17, izberi.value(izberi.record().indexOf("sklic")).toString());
-				prepisi.bindValue(18, izberi.value(izberi.record().indexOf("datum_placila_avansa")).toString());
-				prepisi.bindValue(19, izberi.value(izberi.record().indexOf("opombe")).toString());
-				prepisi.bindValue(20, izberi.value(izberi.record().indexOf("rok_placila")).toString());
-				prepisi.bindValue(21, izberi.value(izberi.record().indexOf("podjetje_id")).toString());
-				prepisi.bindValue(22, izberi.value(izberi.record().indexOf("podjetje_kratki")).toString());
-				prepisi.bindValue(23, izberi.value(izberi.record().indexOf("podjetje_polni")).toString());
-				prepisi.bindValue(24, izberi.value(izberi.record().indexOf("podjetje_naslov_ulica")).toString());
-				prepisi.bindValue(25, izberi.value(izberi.record().indexOf("podjetje_naslov_stevilka")).toString());
-				prepisi.bindValue(26, izberi.value(izberi.record().indexOf("podjetje_naslov_posta")).toString());
-				prepisi.bindValue(27, izberi.value(izberi.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
-				prepisi.bindValue(28, izberi.value(izberi.record().indexOf("podjetje_url")).toString());
-				prepisi.bindValue(29, izberi.value(izberi.record().indexOf("podjetje_email")).toString());
-				prepisi.bindValue(30, izberi.value(izberi.record().indexOf("podjetje_telefon")).toString());
-				prepisi.bindValue(31, izberi.value(izberi.record().indexOf("podjetje_ddv")).toString());
-				prepisi.bindValue(32, izberi.value(izberi.record().indexOf("podjetje_bic")).toString());
-				prepisi.bindValue(33, izberi.value(izberi.record().indexOf("podjetje_banka")).toString());
-				prepisi.bindValue(34, izberi.value(izberi.record().indexOf("podjetje_tekoci_racun")).toString());
-				prepisi.bindValue(35, izberi.value(izberi.record().indexOf("podjetje_koda_namena")).toString());
-				prepisi.bindValue(36, izberi.value(izberi.record().indexOf("podjetje_logotip")).toString());
-				prepisi.bindValue(37, izberi.value(izberi.record().indexOf("izdajatelj_id")).toString());
-				prepisi.bindValue(38, izberi.value(izberi.record().indexOf("izdajatelj_ime")).toString());
-				prepisi.bindValue(39, izberi.value(izberi.record().indexOf("izdajatelj_priimek")).toString());
-				prepisi.bindValue(40, izberi.value(izberi.record().indexOf("izdajatelj_naziv")).toString());
-				prepisi.bindValue(41, izberi.value(izberi.record().indexOf("narocnik_id")).toString());
-				prepisi.bindValue(42, izberi.value(izberi.record().indexOf("narocnik_naziv")).toString());
-				prepisi.bindValue(43, izberi.value(izberi.record().indexOf("narocnik_naslov")).toString());
-				prepisi.bindValue(44, izberi.value(izberi.record().indexOf("narocnik_posta")).toString());
-				prepisi.bindValue(45, izberi.value(izberi.record().indexOf("narocnik_davcna")).toString());
-				prepisi.bindValue(46, izberi.value(izberi.record().indexOf("stevilka_starsa")).toString());
-				prepisi.exec();
-			}
-
-		// poiscemo ID pravkar vnesenega zapisa
-
-			QString nov_id = "";
-			QSqlQuery sql_nov_id;
-			sql_nov_id.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(st_racuna) + "' AND tip_racuna LIKE '4'");
-			sql_nov_id.exec();
-			if ( sql_nov_id.next() ) {
-				nov_id = prevedi(sql_nov_id.value(sql_nov_id.record().indexOf("id")).toString());
-			}
-
-		// kopira opravila iz racuna v storno
-			QSqlQuery sql_poisci_opravila;
-			sql_poisci_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori("3") + "'");
-			sql_poisci_opravila.exec();
-			while ( sql_poisci_opravila.next() ) {
-				QSqlQuery sql_kopiraj_opravila;
-				sql_kopiraj_opravila.prepare("INSERT INTO opravila (stevilka_stranke, stevilka_projekta, stevilka_racuna, tip_racuna, opravilo_skupina, "
-																		 "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
-																		 "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
-																		 "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
-																		 "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
-																		 "opravilo_rocno, vrstni_red) "
-																		 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				sql_kopiraj_opravila.bindValue(0, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_stranke")).toString());
-				sql_kopiraj_opravila.bindValue(1, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("stevilka_projekta")).toString());
-				sql_kopiraj_opravila.bindValue(2, pretvori(nov_id));
-				sql_kopiraj_opravila.bindValue(3, pretvori("4")); // storno == 4
-				sql_kopiraj_opravila.bindValue(4, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_skupina")).toString());
-				sql_kopiraj_opravila.bindValue(5, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_storitev")).toString());
-				sql_kopiraj_opravila.bindValue(6, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("urna_postavka_brez_ddv")).toString());
-				sql_kopiraj_opravila.bindValue(7, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("urna_postavka_z_ddv")).toString());
-				sql_kopiraj_opravila.bindValue(8, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("ddv")).toString());
-				sql_kopiraj_opravila.bindValue(9, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_fb1")).toString());
-				sql_kopiraj_opravila.bindValue(10, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_fb2")).toString());
-				sql_kopiraj_opravila.bindValue(11, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_komb1")).toString());
-				sql_kopiraj_opravila.bindValue(12, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_komb2")).toString());
-				sql_kopiraj_opravila.bindValue(13, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_stranka")).toString());
-				sql_kopiraj_opravila.bindValue(14, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_kupon")).toString());
-				sql_kopiraj_opravila.bindValue(15, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("popust_akcija")).toString());
-				sql_kopiraj_opravila.bindValue(16, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("podrazitev_vikend")).toString());
-				sql_kopiraj_opravila.bindValue(17, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("podrazitev_hitrost")).toString());
-				sql_kopiraj_opravila.bindValue(18, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("podrazitev_zapleti")).toString());
-				sql_kopiraj_opravila.bindValue(19, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("pribitek_vikend")).toString());
-				sql_kopiraj_opravila.bindValue(20, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("pribitek_hitrost")).toString());
-				sql_kopiraj_opravila.bindValue(21, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("pribitek_zapleti")).toString());
-				sql_kopiraj_opravila.bindValue(22, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("tip_ur")).toString());
-				sql_kopiraj_opravila.bindValue(23, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("ur_dela")).toString());
-				sql_kopiraj_opravila.bindValue(24, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("rocni_vnos_ur")).toString());
-				sql_kopiraj_opravila.bindValue(25, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_popustov")).toString());
-				sql_kopiraj_opravila.bindValue(26, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_ddv")).toString());
-				sql_kopiraj_opravila.bindValue(27, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("znesek_koncni")).toString());
-				sql_kopiraj_opravila.bindValue(28, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("enota")).toString());
-				sql_kopiraj_opravila.bindValue(29, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_sklop")).toString());
-				sql_kopiraj_opravila.bindValue(30, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("opravilo_rocno")).toString());
-				sql_kopiraj_opravila.bindValue(31, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("vrstni_red")).toString());
-				sql_kopiraj_opravila.exec();
-			}
 		}
 
 		base.close();
