@@ -158,7 +158,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>591</height>
+         <height>585</height>
         </rect>
        </property>
       </widget>
@@ -172,7 +172,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -186,11 +186,11 @@ border:0;</string>
      <addaction name="actionPredra_uni"/>
      <addaction name="actionPredpla_ilni_ra_uni"/>
      <addaction name="actionRa_uni"/>
-     <addaction name="actionStornirani_ra_uni"/>
     </widget>
     <addaction name="actionPotni_nalogi"/>
     <addaction name="actionPrejeti_ra_uni"/>
     <addaction name="menuIzdani_ra_uni"/>
+    <addaction name="actionDobropisi"/>
    </widget>
    <widget class="QMenu" name="menuIzpisi">
     <property name="title">
@@ -431,6 +431,11 @@ border:0;</string>
   <action name="actionIzhod">
    <property name="text">
     <string>Izhod</string>
+   </property>
+  </action>
+  <action name="actionDobropisi">
+   <property name="text">
+    <string>Dobropisi</string>
    </property>
   </action>
  </widget>
