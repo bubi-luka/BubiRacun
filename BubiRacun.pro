@@ -52,7 +52,8 @@ HEADERS += \
                 storitve.h \
                 kategorije.h \
                 podkategorije.h \
-                sif_enote.h
+                sif_enote.h \
+    razlog_stornacije.h
 
 SOURCES += \
 		main.cpp \
@@ -107,7 +108,8 @@ SOURCES += \
                 storitve.cpp \
                 kategorije.cpp \
                 podkategorije.cpp \
-                sif_enote.cpp
+                sif_enote.cpp \
+    razlog_stornacije.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -158,7 +160,8 @@ FORMS += \
                 storitve.ui \
                 kategorije.ui \
                 podkategorije.ui \
-                sif_enote.ui
+                sif_enote.ui \
+    razlog_stornacije.ui
 
 QT	+= widgets
 QT	+= sql

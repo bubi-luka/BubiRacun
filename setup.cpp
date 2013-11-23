@@ -643,6 +643,7 @@ void setup::tabela_racuni() {
 								 "tip_racuna TEXT, "
 								 "status_racuna TEXT, "
 								 "stornacija TEXT, "
+								 "razlog_stornacije TEXT, "
 								 "stranka TEXT, "
 								 "projekt TEXT, "
 								 "avtor_oseba TEXT, "
@@ -4261,7 +4262,7 @@ void setup::posodobi_bazo() {
 				}
 				if ( stevilka_baze_min == 21 ) {
 
-					// dodaj polje v tabelo opravil
+					// popravi vsa rocno vnesena opravila na normalno vnesena in njihovo sifro na 999999
 					QSqlQuery sql_preberi;
 					sql_preberi.prepare("SELECT * FROM opravila WHERE opravilo_rocno NOT LIKE ''");
 					sql_preberi.exec();
@@ -4290,6 +4291,34 @@ void setup::posodobi_bazo() {
 
 					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
 					update.bindValue(0, "22.11.2013");
+					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
+				if ( stevilka_baze_min == 22 ) {
+
+					// dodaj nov stolpec v tabelo racunov - razlog stornacije
+					update.prepare("ALTER TABLE racuni ADD COLUMN 'razlog_stornacije' TEXT");
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.23");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.23");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					update.bindValue(0, "23.11.2013");
 					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
 					update.exec();
 					update.clear();
