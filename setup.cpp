@@ -4326,6 +4326,34 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 23 ) {
+
+					// odstrani vse stornacijske racune
+					update.prepare("DELETE FROM racuni WHERE tip_racuna LIKE '" + pretvori("4") + "'");
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.24");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.24");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					update.bindValue(0, "23.11.2013");
+					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
 			}
 		}
 	}
