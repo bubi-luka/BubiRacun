@@ -34,6 +34,7 @@ private slots:
 	void on_btn_brisi_clicked();
 	void on_btn_kopiraj_clicked();
 	void on_btn_storno_clicked();
+	void on_btn_dobropis_clicked();
 
 	void osvezi(QString beseda);
 	void prejem(QString besedilo);

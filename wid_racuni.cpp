@@ -30,6 +30,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		ui->txt_stprojekta->setVisible(false);
 		ui->btn_brisi->setEnabled(false);
 		ui->btn_brisi->setVisible(false);
+		ui->btn_dobropis->setEnabled(false);
+		ui->btn_dobropis->setVisible(false);
 
 		// napolni filtrirne spustne sezname
 		QString gumb = ui->btn_nov->text();
@@ -58,7 +60,7 @@ wid_racuni::wid_racuni(QWidget *parent) :
 			ui->cb_racun->addItem("1) Predracun");
 			ui->cb_racun->addItem("2) Predplacilo");
 			ui->cb_racun->addItem("3) Racun");
-			ui->cb_racun->addItem("4) Stornacija");
+			ui->cb_racun->addItem("4) Dobropis");
 
 			// filtriraj po mesecu
 			ui->cb_mesec->addItem("");
@@ -144,8 +146,16 @@ wid_racuni::~wid_racuni()
 
 void wid_racuni::on_cb_racun_currentIndexChanged(int indeks) {
 
+	ui->btn_dobropis->setEnabled(false);
+	ui->btn_dobropis->setVisible(false);
+	ui->btn_storno->setEnabled(false);
+
 	if ( ui->cb_racun->currentText().left(3) == "3) " ) {
 		ui->btn_storno->setEnabled(true);
+	}
+	else if ( ui->cb_racun->currentText().left(3) == "4) " ) {
+		ui->btn_dobropis->setEnabled(true);
+		ui->btn_dobropis->setVisible(true);
 	}
 	else {
 		ui->btn_storno->setEnabled(false);
@@ -435,7 +445,7 @@ void wid_racuni::napolni() {
 							celica->setText("Racun");
 						}
 						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "4" ) {
-							celica->setText("Stornacija");
+							celica->setText("Dobropis");
 						}
 					}
 					else if ( polja[i] == "stranka" ) {
@@ -828,6 +838,24 @@ void wid_racuni::on_btn_storno_clicked() {
 
 		napolni_sorodnike();
 	}
+
+}
+
+
+void wid_racuni::on_btn_dobropis_clicked() {
+
+	qDebug("Nov racun" + ui->txt_stprojekta->text().toUtf8());
+
+	racun *uredi = new racun;
+	uredi->show();
+	QObject::connect(this, SIGNAL(prenos(QString)),
+			   uredi , SLOT(prejem(QString)));
+	prenos("Nov racun" + ui->cb_racun->currentText().left(1)); // ce racun ne obstaja, naprej posljemo st. projekta
+	this->disconnect();
+
+	// receive signal to refresh table
+	QObject::connect(uredi, SIGNAL(poslji(QString)),
+			   this , SLOT(osvezi(QString)));
 
 }
 
