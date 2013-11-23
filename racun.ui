@@ -42,7 +42,7 @@
             <x>0</x>
             <y>0</y>
             <width>702</width>
-            <height>791</height>
+            <height>751</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -181,12 +181,12 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="rb_storno">
+                   <widget class="QRadioButton" name="rb_dobropis">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
                     <property name="text">
-                     <string>Storno</string>
+                     <string>Dobropis</string>
                     </property>
                    </widget>
                   </item>
