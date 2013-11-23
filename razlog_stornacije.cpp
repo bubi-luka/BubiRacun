@@ -72,6 +72,12 @@ void razlog_stornacije::on_btn_shrani_clicked() {
 
 }
 
+void razlog_stornacije::on_btn_izhod_clicked() {
+
+	close();
+
+}
+
 void razlog_stornacije::keyPressEvent(QKeyEvent *event) {
 
 	if (event->key() == Qt::Key_Return)

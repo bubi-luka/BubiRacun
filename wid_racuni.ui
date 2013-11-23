@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
+    <width>1096</width>
     <height>628</height>
    </rect>
   </property>
@@ -103,20 +103,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_dobropis">
-       <property name="text">
-        <string>Tvori Dobropis</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_storno">
-       <property name="text">
-        <string>Storno računa</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btn_nov">
        <property name="text">
         <string>Vnos novega računa</string>
@@ -124,26 +110,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_brisi">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QPushButton" name="btn_refresh">
        <property name="text">
-        <string>Izbris računa</string>
+        <string>Osveži</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_prestevilci">
+      <widget class="QPushButton" name="btn_print">
        <property name="text">
-        <string>Preštevilči</string>
+        <string>Natisni</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_kopiraj">
+      <widget class="QPushButton" name="btn_print_pdf">
        <property name="text">
-        <string>Copy - Paste</string>
+        <string>Natisni kot PDF</string>
        </property>
       </widget>
      </item>
@@ -232,33 +215,50 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_refresh">
-       <property name="text">
-        <string>Osveži</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_print">
-       <property name="text">
-        <string>Natisni</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_print_pdf">
-       <property name="text">
-        <string>Natisni kot PDF</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btn_print_seznam">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="text">
         <string>Natisni seznam</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_kopiraj">
+       <property name="text">
+        <string>Copy - Paste</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_brisi">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Izbris računa</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_prestevilci">
+       <property name="text">
+        <string>Preštevilči</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_storno">
+       <property name="text">
+        <string>Storno računa</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_dobropis">
+       <property name="text">
+        <string>Tvori Dobropis</string>
        </property>
       </widget>
      </item>
@@ -274,11 +274,7 @@
   <tabstop>cb_racunovodstvo</tabstop>
   <tabstop>txt_stprojekta</tabstop>
   <tabstop>btn_nov</tabstop>
-  <tabstop>btn_brisi</tabstop>
   <tabstop>tbl_racuni</tabstop>
-  <tabstop>btn_refresh</tabstop>
-  <tabstop>btn_print</tabstop>
-  <tabstop>btn_print_pdf</tabstop>
   <tabstop>btn_print_seznam</tabstop>
  </tabstops>
  <resources/>
