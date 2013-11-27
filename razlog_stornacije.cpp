@@ -48,12 +48,30 @@ void razlog_stornacije::on_btn_shrani_clicked() {
 		else {
 			// baza je odprta
 
+			// spremenimo status racuna na storinirano
 			QSqlQuery sql_vnesi;
 			sql_vnesi.prepare("UPDATE racuni SET razlog_stornacije = ?, stornacija = ? WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'"
 							  " AND tip_racuna LIKE '" + pretvori("3") + "'");
 			sql_vnesi.bindValue(0, pretvori(ui->txt_razlog->toPlainText()));
 			sql_vnesi.bindValue(1, pretvori("1"));
 			sql_vnesi.exec();
+			sql_vnesi.clear();
+
+			// poiscemo starsevski predracun
+			QString stars_id = "";
+			sql_vnesi.prepare("SELECT * from racuni WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'"
+							  " AND tip_racuna LIKE '" + pretvori("3") + "'");
+			sql_vnesi.exec();
+			if ( sql_vnesi.next() ) {
+				stars_id = prevedi(sql_vnesi.value(sql_vnesi.record().indexOf("stevilka_starsa")).toString());
+			}
+			sql_vnesi.clear();
+
+			// popravimo starsevski predracun na odprt - omogoca izdajo novega racuna vezanega na isti predracun
+			sql_vnesi.prepare("UPDATE racuni SET status_racuna = '' WHERE id LIKE '" + pretvori(stars_id) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
+			sql_vnesi.exec();
+			sql_vnesi.clear();
+
 		}
 		base.close();
 
