@@ -2918,6 +2918,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString racun_stevilka_starsa = "";
 	QString razlog_stornacije = "";
 
+	QString storitev_id = "";
 	QString storitev_ime = "";
 	QString storitev_sifra = "";
 	QString storitev_kolicina = "";
@@ -3506,68 +3507,77 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		painter.setFont(debelo);
 
 		double sirina_vecja = printer.width() / 8;
-		double sirina_manjsa = printer.width() / 11;
-		double crta_0 = 0;
-		double crta_1 = sirina_manjsa;
-		double crta_2 = printer.width() - sirina_vecja - sirina_manjsa * 5;
-		double crta_3 = crta_2 + sirina_manjsa;
-		double crta_4 = crta_3 + sirina_manjsa;
-		double crta_5 = crta_4 + sirina_vecja;
-		double crta_6 = crta_5 + sirina_manjsa;
-		double crta_7 = crta_6 + sirina_manjsa;
-		double crta_8 = printer.width();
+		double sirina_manjsa = printer.width() / 12;
+		double crta_0 = 0;														// Zacetek
+		double crta_1 = sirina_manjsa / 2;										// Pozicija
+		double crta_2 = crta_1 + sirina_manjsa;									// Sifra
+		double crta_3 = printer.width() - sirina_vecja - sirina_manjsa * 5;		// Storitev
+		double crta_4 = crta_3 + sirina_manjsa;									// Kolicina
+		double crta_5 = crta_4 + sirina_manjsa;									// Enota
+		double crta_6 = crta_5 + sirina_vecja;									// Cena na enoto brez DDV
+		double crta_7 = crta_6 + sirina_manjsa;									// Popust
+		double crta_8 = crta_7 + sirina_manjsa;									// Stopnja DDV
+		double crta_9 = printer.width();										// Vrednost brez DDV
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Sifra")
-		velikost_besedila = painter.boundingRect(crta_0, pozicija, crta_1, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		velikost_besedila = painter.boundingRect(crta_0, pozicija, sirina_manjsa / 2, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
 		// natisnemo besedilo
-		painter.drawText(QRectF(crta_0, pozicija, crta_1, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		painter.drawText(QRectF(crta_0, pozicija, sirina_manjsa / 2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+
+		besedilo = racun.readLine();
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Sifra")
+		velikost_besedila = painter.boundingRect(crta_1, pozicija, sirina_manjsa, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		// nastavimo parametre
+		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
+		// natisnemo besedilo
+		painter.drawText(QRectF(crta_1, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
-		velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		velikost_besedila = painter.boundingRect(crta_2, pozicija, printer.width() - sirina_vecja - sirina_manjsa * 6 - sirina_manjsa / 2, pozicija, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height() * 3 + razmik_med_vrsticami;
 		// natisnemo besedilo
-		painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		painter.drawText(QRectF(crta_2, pozicija, printer.width() - sirina_vecja - sirina_manjsa * 6 - sirina_manjsa / 2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
-		velikost_besedila = painter.boundingRect(crta_2, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// natisnemo besedilo
-		painter.drawText(QRectF(crta_2, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-
-		besedilo = racun.readLine();
-		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Enota")
 		velikost_besedila = painter.boundingRect(crta_3, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
 		painter.drawText(QRectF(crta_3, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
-		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Cena na enoto brez DDV")
-		velikost_besedila = painter.boundingRect(crta_4, pozicija, sirina_vecja, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Enota")
+		velikost_besedila = painter.boundingRect(crta_4, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
-		painter.drawText(QRectF(crta_4, pozicija, sirina_vecja, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+		painter.drawText(QRectF(crta_4, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+
+		besedilo = racun.readLine();
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Cena na enoto brez DDV")
+		velikost_besedila = painter.boundingRect(crta_5, pozicija, sirina_vecja, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// natisnemo besedilo
+		painter.drawText(QRectF(crta_5, pozicija, sirina_vecja, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Popust %")
-		velikost_besedila = painter.boundingRect(crta_5, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-		// natisnemo besedilo
-		painter.drawText(QRectF(crta_5, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-
-		besedilo = racun.readLine();
-		// dolocimo velikost kvadrata, ki ga tvori besedilo ("DDV %")
 		velikost_besedila = painter.boundingRect(crta_6, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
 		painter.drawText(QRectF(crta_6, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		besedilo = racun.readLine();
-		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Vrednost brez DDV")
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("DDV %")
 		velikost_besedila = painter.boundingRect(crta_7, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
 		painter.drawText(QRectF(crta_7, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
+
+		besedilo = racun.readLine();
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Vrednost brez DDV")
+		velikost_besedila = painter.boundingRect(crta_8, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// natisnemo besedilo
+		painter.drawText(QRectF(crta_8, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 
 		// nova pozicija = nova vrstica v tabeli
 		pozicija += visina_vrstice;
@@ -3615,11 +3625,17 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
 								 "' ORDER BY vrstni_red ASC");
 			sql_storitve.exec();
+
+			int i = 1; // za zaporedno stevilko storitve
+
 			while ( sql_storitve.next() ) {
 				storitev_sifra = prevedi(sql_storitve.value(sql_storitve.record().indexOf("sifra")).toString());
 				if ( storitev_sifra == "" ) {
 					storitev_sifra = "000000";
 				}
+
+				storitev_id = QString::number(i, 10) + ".";
+				i++;
 
 				storitev_ime = prevedi(sql_storitve.value(sql_storitve.record().indexOf("opravilo_storitev")).toString());
 
@@ -3676,7 +3692,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				// tiskanje storitve
 				painter.setFont(normalno);
 				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
-				velikost_besedila = painter.boundingRect(crta_1, pozicija, crta_2, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_ime);
+				velikost_besedila = painter.boundingRect(crta_2, pozicija, printer.width() - sirina_vecja - sirina_manjsa * 6 - sirina_manjsa / 2, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_ime);
 				// nastavimo parametre
 				visina_vrstice = velikost_besedila.height() + razmik_med_vrsticami;
 
@@ -3690,41 +3706,32 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					pozicija = visina_glave;
 				}
 
+				// natisnemo besedilo (Pozicija)
+				painter.drawText(QRectF(crta_0, pozicija, sirina_manjsa / 2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_id);
+
 				// natisnemo besedilo (Sifra)
-				painter.drawText(QRectF(crta_0, pozicija, crta_1, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_sifra);
+				painter.drawText(QRectF(crta_1, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_sifra);
 
 				// natisnemo besedilo (Storitev)
-				painter.drawText(QRectF(crta_1, pozicija, crta_2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap | Qt::AlignVCenter, storitev_ime);
+				painter.drawText(QRectF(crta_2, pozicija, printer.width() - sirina_vecja - sirina_manjsa * 6 - sirina_manjsa / 2, visina_vrstice), Qt::AlignLeft | Qt::TextWordWrap | Qt::AlignVCenter, storitev_ime);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Kolicina")
-				velikost_besedila = painter.boundingRect(crta_2, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_kolicina);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_2, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_kolicina);
+				// natisnemo besedilo ("Kolicina")
+				painter.drawText(QRectF(crta_3, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_kolicina);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Enota")
-				velikost_besedila = painter.boundingRect(crta_3, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_enota);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_3, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_enota);
+				// natisnemo besedilo ("Enota")
+				painter.drawText(QRectF(crta_4, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_enota);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Cena na enoto brez DDV")
-				velikost_besedila = painter.boundingRect(crta_4, pozicija, sirina_vecja, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_cena_brez_ddv_na_enoto);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_4, pozicija, sirina_vecja, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_cena_brez_ddv_na_enoto);
+				// natisnemo besedilo ("Cena na enoto brez DDV")
+				painter.drawText(QRectF(crta_5, pozicija, sirina_vecja, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_cena_brez_ddv_na_enoto);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Popust %")
-				velikost_besedila = painter.boundingRect(crta_5, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_popust);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_5, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_popust);
+				// natisnemo besedilo ("Popust %")
+				painter.drawText(QRectF(crta_6, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_popust);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("DDV %")
-				velikost_besedila = painter.boundingRect(crta_6, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_odstotek_ddv);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_6, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_odstotek_ddv);
+				// natisnemo besedilo ("DDV %")
+				painter.drawText(QRectF(crta_7, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_odstotek_ddv);
 
-				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Vrednost brez DDV")
-				velikost_besedila = painter.boundingRect(crta_7, pozicija, sirina_manjsa, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_cena_brez_ddv);
-				// natisnemo besedilo
-				painter.drawText(QRectF(crta_7, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_cena_brez_ddv);
+				// natisnemo besedilo ("Vrednost brez DDV")
+				painter.drawText(QRectF(crta_8, pozicija, sirina_manjsa, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_cena_brez_ddv);
 
 				// nova pozicija = nova vrstica v tabeli
 				pozicija += visina_vrstice + razmik_med_vrsticami / 2;
