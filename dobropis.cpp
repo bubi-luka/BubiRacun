@@ -61,7 +61,7 @@ void dobropis::napolni_racun() {
 		msgbox.exec();
 	}
 	else {
-		// the database is opened
+		// the database is open
 
 		QSqlQuery sql_racun;
 		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(ui->txt_id_racuna->text()) + "'");
