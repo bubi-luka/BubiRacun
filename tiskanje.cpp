@@ -372,7 +372,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				predlagatelj_podjetje_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_naslov_ulica")).toString());
 				predlagatelj_podjetje_naslov_st = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_naslov_stevilka")).toString());
 				predlagatelj_podjetje_postna_st = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_postna_stevilka")).toString());
-				predlagatelj_podjetje_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_posta")).toString());
+				predlagatelj_podjetje_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_naslov_posta")).toString());
 				preglagatelj_podjetje_logotip = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_logotip")).toString());
 
 				// podatki o predlagatelju - oseba
@@ -1925,6 +1925,46 @@ void tiskanje::natisni_potni_nalog(QString id) {
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
+		// nastavimo besedilo (Opomba)
+		besedilo = potni_nalog.readLine() + ": ";
+
+		if ( ui->cb_opombe->isChecked() && opombe != "" ) {
+
+			// nastavimo tip pisave
+			painter.setFont(stalno_besedilo);
+			// nastavimo polozaj na listu, kjer zapisemo besedilo
+			sirina_besedila = 0;
+			velikost_besedila = painter.boundingRect(sirina_besedila, 0, painter.window().width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// narisemo besedilo
+			painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
+
+			if ( opombe != "" ) {
+				besedilo = opombe;
+				// nastavimo tip pisave
+				painter.setFont(vstavljeno_besedilo);
+				// nastavimo polozaj na listu, kjer zapisemo besedilo
+				velikost_besedila = painter.boundingRect(sirina_besedila, 0, painter.window().width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// narisemo besedilo
+				painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			}
+			pozicija += velikost_besedila.height() + 2 * razmik_med_vrsticami;
+
+		}
+
+		// morebitni preskok na novo stran ( 14 vrstic )
+		besedilo = "Hello World!";
+		velikost_besedila = painter.boundingRect(0, 0, painter.window().width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+		if ( ( pozicija + visina_noge + velikost_besedila.height() * 14 + razmik_med_vrsticami * 14 ) >= painter.window().height() ) { // prelom na novo stran
+			printer.newPage();
+
+			// natisnemo novo glavo in nogo
+			visina_glave = natisni_glavo_potni_nalog(painter, id);
+			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
+		}
+
 		// zapomnimo si zgornjo visino
 		prvotna_visina = pozicija;
 
@@ -2140,41 +2180,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		painter.drawText(painter.window().width() * 2 / 3, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// nastavimo novo pozicijo besedila
 		pozicija += velikost_besedila.height() + razmik_med_vrsticami;
-
-		// preskok na novo stran - Opombe
-		if ( ui->cb_opombe->isChecked() && opombe != "" ) {
-			printer.newPage();
-
-			// natisnemo novo glavo in nogo
-			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
-			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
-
-			// nastavimo besedilo (Opomba)
-			besedilo = potni_nalog.readLine();
-			// nastavimo tip pisave
-			painter.setFont(naslovno_besedilo);
-			// nastavimo polozaj na listu, kjer zapisemo besedilo
-			sirina_besedila = 0;
-			velikost_besedila = painter.boundingRect(sirina_besedila, 0, painter.window().width(), 0, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-			// narisemo besedilo
-			painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignCenter | Qt::TextWordWrap, besedilo);
-			// nastavimo novo pozicijo besedila
-			pozicija += velikost_besedila.height() + razmik_med_vrsticami;
-
-			// nastavimo besedilo
-			besedilo = opombe;
-			// nastavimo tip pisave
-			painter.setFont(vstavljeno_besedilo);
-			// nastavimo polozaj na listu, kjer zapisemo besedilo
-			sirina_besedila = 0;
-			velikost_besedila = painter.boundingRect(sirina_besedila, 0, painter.window().width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// narisemo besedilo
-			painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-			// nastavimo novo pozicijo besedila
-			pozicija += velikost_besedila.height() + razmik_med_vrsticami;
-
-		}
 
 		painter.end();
 }
