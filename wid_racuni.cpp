@@ -18,6 +18,7 @@
 #include "tiskanje.h"
 #include "datum.h"
 #include "razlog_stornacije.h"
+#include "dobropis.h"
 
 wid_racuni::wid_racuni(QWidget *parent) :
 	QWidget(parent),
@@ -152,10 +153,10 @@ void wid_racuni::on_cb_racun_currentIndexChanged(int indeks) {
 
 	if ( ui->cb_racun->currentText().left(3) == "3) " ) {
 		ui->btn_storno->setEnabled(true);
-	}
-	else if ( ui->cb_racun->currentText().left(3) == "4) " ) {
 		ui->btn_dobropis->setEnabled(true);
 		ui->btn_dobropis->setVisible(true);
+	}
+	else if ( ui->cb_racun->currentText().left(3) == "4) " ) {
 	}
 	else {
 		ui->btn_storno->setEnabled(false);
@@ -844,13 +845,11 @@ void wid_racuni::on_btn_storno_clicked() {
 
 void wid_racuni::on_btn_dobropis_clicked() {
 
-	qDebug("Nov racun" + ui->txt_stprojekta->text().toUtf8());
-
-	racun *uredi = new racun;
+	dobropis *uredi = new dobropis;
 	uredi->show();
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
-	prenos("Nov racun" + ui->cb_racun->currentText().left(1)); // ce racun ne obstaja, naprej posljemo st. projekta
+	prenos("Nov dobropis" + ui->tbl_racuni->selectedItems().takeAt(0)->text()); // ce racun ne obstaja, naprej posljemo st. projekta
 	this->disconnect();
 
 	// receive signal to refresh table
