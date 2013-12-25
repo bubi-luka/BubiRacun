@@ -743,8 +743,13 @@ void setup::tabela_opravila() {
 														 "znesek_popustov TEXT, "
 														 "znesek_ddv TEXT, "
 														 "znesek_koncni TEXT, "
-														 "casovnice TEXT)"
-										);
+								 "dobropis TEXT, "
+								 "dobropis_st_ur TEXT, "
+								 "dobropis_znesek TEXT, "
+								 "dobropis_ddv TEXT, "
+								 "dobropis_koncni TEXT, "
+								 "casovnice TEXT)"
+								 );
 		sql_create_table.exec();
 	}
 	base.close();
@@ -4354,7 +4359,48 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 24 ) {
+
+					// dodaj nove stolpce v tabelo opravil - dobropis
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis' TEXT");
+					update.exec();
+					update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_st_ur' TEXT");
+					update.exec();
+					update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_znesek' TEXT");
+					update.exec();
+					update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_ddv' TEXT");
+					update.exec();
+					update.clear();
+					update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_koncni' TEXT");
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.25");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.25");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					update.bindValue(0, "25.12.2013");
+					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+				}
 			}
+
 		}
 	}
 	base.close();

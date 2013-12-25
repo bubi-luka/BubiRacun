@@ -2164,13 +2164,11 @@ void racun::stevilka_racuna() {
 				}
 				else if ( ui->rb_racun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND ( tip_racuna LIKE '" + pretvori("3") +
-											   "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+											   "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_dobropis->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND ( tip_racuna LIKE '" + pretvori("3") +
-											   "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+											   "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
 				}
 
 
@@ -2194,9 +2192,23 @@ void racun::stevilka_racuna() {
 					st_racuna = "0" + st_racuna;
 				}
 
+				QString predpona = "";
+
+				if ( ui->rb_predracun->isChecked() ) {
+					predpona = "P";
+				}
+				else if ( ui->rb_predplacilo->isChecked() ) {
+					predpona = "A";
+				}
+				else if ( ui->rb_racun->isChecked() ) {
+					predpona = "R";
+				}
+				else if ( ui->rb_dobropis->isChecked() ) {
+					predpona = "D";
+				}
 				// imamo dovolj podatkov za tvorbo stevilke racuna
 
-				ui->txt_stevilka_racuna->setText(leto.right(2) + st_racuna);
+				ui->txt_stevilka_racuna->setText(predpona + leto.right(2) + st_racuna);
 			}
 
 			/**
