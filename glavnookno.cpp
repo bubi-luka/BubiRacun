@@ -52,6 +52,8 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+    ui->menubar->setEnabled(false);
+
 	vApp->processEvents();
 
 	// povecaj cez cel ekran
