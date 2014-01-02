@@ -54,7 +54,7 @@ HEADERS += \
                 podkategorije.h \
                 sif_enote.h \
     razlog_stornacije.h \
-    dobropis.h
+    wid_dobropis.h
 
 SOURCES += \
 		main.cpp \
@@ -111,7 +111,7 @@ SOURCES += \
                 podkategorije.cpp \
                 sif_enote.cpp \
     razlog_stornacije.cpp \
-    dobropis.cpp
+    wid_dobropis.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -164,7 +164,7 @@ FORMS += \
                 podkategorije.ui \
                 sif_enote.ui \
     razlog_stornacije.ui \
-    dobropis.ui
+    wid_dobropis.ui
 
 QT	+= widgets
 QT	+= sql

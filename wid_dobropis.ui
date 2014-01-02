@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dobropis</class>
- <widget class="QDialog" name="dobropis">
+ <author/>
+ <comment/>
+ <exportmacro/>
+ <class>wid_dobropis</class>
+ <widget name="wid_dobropis" class="QWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -447,3 +449,4 @@
  <resources/>
  <connections/>
 </ui>
+
