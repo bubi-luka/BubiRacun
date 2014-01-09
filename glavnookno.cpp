@@ -308,8 +308,8 @@ void GlavnoOkno::on_actionVizitka_triggered() {
 
 void GlavnoOkno::on_action_asovnice_triggered() {
 
-	wid_casovnice *widcas = new wid_casovnice;
-	ui->scrollArea->setWidget(widcas);
+    wid_casovnice *widcas = new wid_casovnice;
+    ui->scrollArea->setWidget(widcas);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Casovnice!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Casovnice");
 

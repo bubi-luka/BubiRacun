@@ -19,6 +19,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "wid_dobropis.h"
 
 racun::racun(QWidget *parent) :
 	QDialog(parent),
@@ -122,7 +123,9 @@ racun::racun(QWidget *parent) :
 		ui->txt_datum_placila_racuna->setVisible(false);
 		ui->btn_racun->setVisible(false);
 		ui->txt_vse_opombe->setHidden(true);
-		ui->txt_vnesene_opombe->setHidden(true);
+        ui->txt_vnesene_opombe->setHidden(true);
+
+        ui->tab_racuni->removeTab(3);
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -218,7 +221,7 @@ racun::racun(QWidget *parent) :
 
 		ui->btn_sprejmi->setText("Vnesi racun");
 
-		napolni_vse_opombe();
+        napolni_vse_opombe();
 
 }
 
@@ -2059,7 +2062,24 @@ void racun::on_rb_dobropis_toggled() {
 		ui->label_29->setVisible(true);
 		ui->txt_koda_namena_avans->setVisible(false);
 		ui->label_28->setVisible(false);
+
+        // napolni opravila pri dobropisu
+        wid_dobropis *widdob = new wid_dobropis;
+        ui->scr_dobropis->setWidget(widdob);
+
+        // povezi signale pri opravilih dobropisa med seboj
+        QObject::connect(this, SIGNAL(prenos(QString)),
+                   widdob , SLOT(prejem(QString)));
+        prenos("Dobropis" + ui->txt_id->text());
+        this->disconnect();
+
+        ui->tab_racuni->insertTab(3, ui->tab_dobropis, "Opravila");
+        ui->tab_racuni->removeTab(2);
 	}
+    else {
+        ui->tab_racuni->insertTab(2, ui->tab_opravila, "Opravila");
+        ui->tab_racuni->removeTab(3);
+    }
 
 }
 

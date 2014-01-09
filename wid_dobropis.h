@@ -16,19 +16,22 @@ public:
     ~wid_dobropis();
 
 private slots:
+    void prejem(QString besedilo);
+
     void on_btn_izhod_clicked();
     void on_btn_izprazni_clicked();
     void on_btn_potrdi_clicked();
 
-    void prejem(QString besedilo);
+    void on_tbl_storitve_itemSelectionChanged();
+    void on_txt_st_enot_na_dobropisu_editingFinished();
+
     void napolni_racun();
     void napolni_tabelo();
-    void on_tbl_storitve_itemSelectionChanged();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
-
-
+    QString pretvori_v_double(QString besedilo);
+    QString pretvori_iz_double(QString besedilo);
 
 /*
     void on_btn_izvozi_clicked();
@@ -55,14 +58,11 @@ private slots:
     void izracun();
     void stevilka_racuna();
     void registrska_stevilka();
-
-    QString pretvori_v_double(QString besedilo);
-    QString pretvori_iz_double(QString besedilo);*/
+*/
 
 signals:
-/*	void poslji(QString beseda);
+    void poslji(QString beseda);
     void prenos(QString beseda);
-    void tiskaj(QString vrsta, QString stevilke, QString format);*/
 
 private:
     Ui::wid_dobropis *ui;

@@ -12,9 +12,9 @@ wid_dobropis::wid_dobropis(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    ui->txt_id_projekt->setVisible(false);
-//    ui->txt_id_racuna->setVisible(false);
-//    ui->txt_id_stranka->setVisible(false);
+    ui->txt_id_projekt->setVisible(false);
+    ui->txt_id_racuna->setVisible(false);
+    ui->txt_id_stranka->setVisible(false);
 
 }
 
@@ -37,10 +37,10 @@ void wid_dobropis::on_btn_izprazni_clicked() {
 
 void wid_dobropis::prejem(QString besedilo) {
 
-    if ( besedilo.left(12) == "Nov dobropis" ) {
-//        ui->txt_id_racuna->setText(besedilo.right(besedilo.length() - 8));
-//        napolni_racun();
-//        napolni_tabelo();
+    if ( besedilo.left(8) == "Dobropis" ) {
+        ui->txt_id_racuna->setText(besedilo.right(besedilo.length() - 8));
+        napolni_racun();
+        napolni_tabelo();
     }
 
 }
@@ -72,6 +72,7 @@ void wid_dobropis::napolni_racun() {
         }
     }
     base.close();
+
 }
 
 void wid_dobropis::napolni_tabelo() {
@@ -148,7 +149,7 @@ void wid_dobropis::napolni_tabelo() {
                 ui->tbl_storitve->setRowHeight(row, 20);
                 int col = 0;
                 int i = 0;
-                QString polja[5] = {"id", "opravilo_storitev", "ur_dela", "dobropis", "ur_dobropisa"};
+                QString polja[5] = {"id", "opravilo_storitev", "ur_dela", "dobropis", "dobropis_st_ur"};
 
                 while (col <= 4) {
                     QTableWidgetItem *celica = new QTableWidgetItem;
@@ -162,16 +163,16 @@ void wid_dobropis::napolni_tabelo() {
                     if ( polja[i] == "id" ) {
                         celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
                     }
-                    if ( polja[i] == "stornacija" ) {
-                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // racun je storniran
+                    else if ( polja[i] == "dobropis" ) {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // storitev je na dobropistu
                             celica->setText("DA");
                         }
-                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "0" ) { // racun ni storniran
+                        else { // storitev ni na dobropisu
                             celica->setText("NE");
                         }
-                        else { // ne gre za racun ampak za predracun, predplacilni racun ali stornacijo
-                            celica->setText("");
-                        }
+                    }
+                    else if ( polja[i] == "ur_dela" || polja[i] == "dobropis_st_ur" ) {
+                        celica->setText(prevedi(pretvori_iz_double(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString())));
                     }
                     else {
                         celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
@@ -201,6 +202,25 @@ QString wid_dobropis::prevedi(QString besedilo) {
 
 }
 
+QString wid_dobropis::pretvori_v_double(QString besedilo) {
+
+    besedilo.replace(",", ".");
+    besedilo.remove(QRegExp("[^0-9\\.]"));
+
+    besedilo = QString::number(besedilo.toDouble(), 'f', 2);
+
+    return besedilo;
+
+}
+
+QString wid_dobropis::pretvori_iz_double(QString besedilo) {
+
+    besedilo.replace(".",",");
+
+    return besedilo;
+
+}
+
 void wid_dobropis::on_tbl_storitve_itemSelectionChanged() {
 
     if ( ui->tbl_storitve->selectedItems().count() == 0 ) {
@@ -226,5 +246,57 @@ void wid_dobropis::on_tbl_storitve_itemSelectionChanged() {
 }
 
 void wid_dobropis::on_btn_potrdi_clicked() {
+
+    // shrani spremembe nazaj v tabelo
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni-tabelo-racunov");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        QString dobropis = "";
+
+        if ( ui->cb_aktivirana->isChecked() ) {
+            dobropis = "1";
+        }
+        else {
+            dobropis = "0";
+        }
+
+        QSqlQuery sql_shrani;
+        sql_shrani.prepare("UPDATE opravila SET dobropis = ?, dobropis_st_ur = ? WHERE id LIKE '" + pretvori(ui->txt_id_storitve->text()) + "'");
+        sql_shrani.bindValue(0, pretvori(dobropis));
+        sql_shrani.bindValue(1, pretvori(ui->txt_st_enot_na_dobropisu->text()));
+        sql_shrani.exec();
+    }
+    base.close();
+
+    // osvezi pogled v tabeli opravil
+    napolni_tabelo();
+
+}
+
+void wid_dobropis::on_txt_st_enot_na_dobropisu_editingFinished() {
+
+    ui->txt_st_enot_na_dobropisu->setText(pretvori_iz_double(pretvori_v_double(ui->txt_st_enot_na_dobropisu->text())));
+    double ure_opravljene = 0.0;
+    double ure_dobropis = 0.0;
+
+    ure_opravljene = pretvori_v_double(ui->txt_st_enot_na_racunu->text()).toDouble();
+    ure_dobropis = pretvori_v_double(ui->txt_st_enot_na_dobropisu->text()).toDouble();
+
+    if ( ure_opravljene < ure_dobropis ) {
+        ui->txt_st_enot_na_dobropisu->setText(pretvori_iz_double(pretvori_v_double(ui->txt_st_enot_na_racunu->text())));
+    }
 
 }

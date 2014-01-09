@@ -83,7 +83,7 @@ private slots:
 signals:
 	void poslji(QString beseda);
 	void prenos(QString beseda);
-	void tiskaj(QString vrsta, QString stevilke, QString format);
+    void tiskaj(QString vrsta, QString stevilke, QString format);
 
 private:
 	Ui::racun *ui;

@@ -41,7 +41,7 @@ private slots:
 	void tip(QString besedilo);
 	void napolni();
 	void napolni_sorodnike();
-	QString stevilka_racuna();
+    QString stevilka_racuna(QString tip);
 
 	void on_btn_prestevilci_clicked();
 
