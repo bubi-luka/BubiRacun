@@ -41,6 +41,7 @@ void wid_dobropis::prejem(QString besedilo) {
         ui->txt_id_racuna->setText(besedilo.right(besedilo.length() - 8));
         napolni_racun();
         napolni_tabelo();
+        izracunaj();
     }
 
 }
@@ -190,6 +191,49 @@ void wid_dobropis::napolni_tabelo() {
 
 }
 
+void wid_dobropis::izracunaj() {
+
+    // nastavimo spremenljivke
+    double dobropis_znesek = 0.0;
+    double dobropis_ddv = 0.0;
+    double dobropis_koncni = 0.0;
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni-tabelo-racunov");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        // sestej vse zneske pod tabelo
+        QSqlQuery sql_sestej;
+        sql_sestej.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id_racuna->text()) + "'");
+        sql_sestej.exec();
+        while ( sql_sestej.next() ) {
+            dobropis_znesek += pretvori_v_double(prevedi(sql_sestej.value(sql_sestej.record().indexOf("dobropis_znesek")).toString())).toDouble();
+            dobropis_ddv += pretvori_v_double(prevedi(sql_sestej.value(sql_sestej.record().indexOf("dobropis_ddv")).toString())).toDouble();
+            dobropis_koncni += pretvori_v_double(prevedi(sql_sestej.value(sql_sestej.record().indexOf("dobropis_koncni")).toString())).toDouble();
+        }
+
+        // prikazemo zneske v poljih zdruzkov pod tabelo
+        ui->txt_znesek_brez_ddv->setText(QString::number(dobropis_znesek, 'f', 2));
+        ui->txt_znesek_ddv->setText(QString::number(dobropis_ddv, 'f', 2));
+        ui->txt_znesek_z_ddv->setText(QString::number(dobropis_koncni, 'f', 2));
+
+    }
+    base.close();
+
+}
+
 QString wid_dobropis::pretvori(QString besedilo) {
 
     return kodiranje().zakodiraj(besedilo);
@@ -264,8 +308,11 @@ void wid_dobropis::on_btn_potrdi_clicked() {
     else {
         // the database is opened
 
+        // nastavimo spremenljivke
         QString dobropis = "";
+        double dobropis_st_ur = 0.0;
 
+        // ugotovimo, ali je opravilo na dobropisu ali ne
         if ( ui->cb_aktivirana->isChecked() ) {
             dobropis = "1";
         }
@@ -273,16 +320,86 @@ void wid_dobropis::on_btn_potrdi_clicked() {
             dobropis = "0";
         }
 
-        QSqlQuery sql_shrani;
-        sql_shrani.prepare("UPDATE opravila SET dobropis = ?, dobropis_st_ur = ? WHERE id LIKE '" + pretvori(ui->txt_id_storitve->text()) + "'");
-        sql_shrani.bindValue(0, pretvori(dobropis));
-        sql_shrani.bindValue(1, pretvori(ui->txt_st_enot_na_dobropisu->text()));
-        sql_shrani.exec();
+        if ( dobropis == "0" ) {
+            ui->txt_st_enot_na_dobropisu->setText("0.00");
+        }
+
+        dobropis_st_ur = pretvori_v_double(ui->txt_st_enot_na_dobropisu->text()).toDouble();
+
+        // nastavimo spremenljivke
+        double urna_postavka = 0.0;
+        double opravilo_znesek = 0.0;
+        double opravilo_ddv = 0.0;
+        double opravilo_koncno = 0.0;
+
+        // preracunamo vrednost glede na popuste in podrazitve
+        QSqlQuery sql_pridobi;
+        sql_pridobi.prepare("SELECT * FROM opravila WHERE id LIKE '" + pretvori(ui->txt_id_storitve->text()) + "'");
+        sql_pridobi.exec();
+        if ( sql_pridobi.next() ) {
+
+            if ( dobropis == "1" ) {
+                // preracunaj popuste
+                double popusti = 0.0;
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_fb1")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_fb2")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_komb1")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_komb1")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_stranka")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_kupon")).toString())).toDouble();
+                popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_akcija")).toString())).toDouble();
+
+                // preracunaj podrazitve
+                double podrazitve = 0.0;
+                if ( prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("pribitek_vikend")).toString()) == "1" ) {
+                    podrazitve += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("podrazitev_vikend")).toString())).toDouble();
+                }
+                if ( prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("pribitek_hitrost")).toString()) == "1" ) {
+                    podrazitve += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("podrazitev_hitrost")).toString())).toDouble();
+                }
+                if ( prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("pribitek_zapleti")).toString()) == "1" ) {
+                    podrazitve += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("podrazitev_zapleti")).toString())).toDouble();
+                }
+
+                // upostevaj pri urni postavki
+                urna_postavka = pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("urna_postavka_brez_ddv")).toString())).toDouble();
+                urna_postavka = ( 1 + podrazitve / 100 ) * urna_postavka;
+
+                opravilo_znesek = dobropis_st_ur * urna_postavka;
+                opravilo_znesek = opravilo_znesek * ( 1 - popusti / 100 );
+
+                opravilo_ddv = opravilo_znesek * pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("ddv")).toString())).toDouble() / 100;
+
+                opravilo_koncno = opravilo_znesek + opravilo_ddv;
+            }
+
+            // ce je opravilo na dobropisu, vnesemo izracunane parametre, drugace jih prepisemo z 0
+            QSqlQuery sql_shrani;
+            sql_shrani.prepare("UPDATE opravila SET dobropis = ?, dobropis_st_ur = ?, dobropis_znesek = ?, dobropis_ddv = ?, dobropis_koncni = ? WHERE id LIKE '" + pretvori(ui->txt_id_storitve->text()) + "'");
+            sql_shrani.bindValue(0, pretvori(dobropis));
+            sql_shrani.bindValue(1, pretvori(QString::number(dobropis_st_ur, 'f', 2)));
+            sql_shrani.bindValue(2, pretvori(QString::number(opravilo_znesek, 'f', 2)));
+            sql_shrani.bindValue(3, pretvori(QString::number(opravilo_ddv, 'f', 2)));
+            sql_shrani.bindValue(4, pretvori(QString::number(opravilo_koncno, 'f', 2)));
+            sql_shrani.exec();
+        }
     }
     base.close();
 
     // osvezi pogled v tabeli opravil
     napolni_tabelo();
+    izracunaj();
+
+}
+
+void wid_dobropis::on_cb_aktivirana_toggled() {
+
+    if ( ui->cb_aktivirana->isChecked() ) {
+        ui->txt_st_enot_na_dobropisu->setText(ui->txt_st_enot_na_racunu->text());
+    }
+    else {
+        ui->txt_st_enot_na_dobropisu->setText("0.00");
+    }
 
 }
 
