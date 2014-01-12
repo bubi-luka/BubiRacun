@@ -203,4 +203,5 @@ OTHER_FILES += \
 		README.md \
 		srcek.svg \
 		srcek.ico \
-                bubi.svg
+                bubi.svg \
+    racun-besedilo-dobropis.csv
