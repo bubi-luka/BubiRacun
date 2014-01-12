@@ -19,6 +19,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "tiskanje.h"
+#include "wid_dobropis.h"
 
 racun::racun(QWidget *parent) :
 	QDialog(parent),
@@ -122,7 +123,9 @@ racun::racun(QWidget *parent) :
 		ui->txt_datum_placila_racuna->setVisible(false);
 		ui->btn_racun->setVisible(false);
 		ui->txt_vse_opombe->setHidden(true);
-		ui->txt_vnesene_opombe->setHidden(true);
+        ui->txt_vnesene_opombe->setHidden(true);
+
+        ui->tab_racuni->removeTab(3);
 
 		// napolni spustne sezname
 		QString app_path = QApplication::applicationDirPath();
@@ -218,7 +221,7 @@ racun::racun(QWidget *parent) :
 
 		ui->btn_sprejmi->setText("Vnesi racun");
 
-		napolni_vse_opombe();
+        napolni_vse_opombe();
 
 }
 
@@ -554,7 +557,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
 						if ( ui->rb_predracun->isChecked()) { // predracun
 							podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
 						}
-						else if ( ui->rb_racun->isChecked() || ui->rb_storno->isChecked() ) { // racun
+						else if ( ui->rb_racun->isChecked() || ui->rb_dobropis->isChecked() ) { // racun
 							podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
 						}
 						else { // predplacilni racun
@@ -930,7 +933,7 @@ void racun::on_btn_sprejmi_clicked() {
 							if ( ui->rb_predracun->isChecked()) { // predracun
 								podjetje_koda_namena = pretvori(ui->txt_koda_namena_avans->currentText().left(4));
 							}
-							else if ( ui->rb_racun->isChecked() || ui->rb_storno->isChecked() ) { // racun
+							else if ( ui->rb_racun->isChecked() || ui->rb_dobropis->isChecked() ) { // racun
 								podjetje_koda_namena = pretvori(ui->txt_koda_namena->currentText().left(4));
 							}
 							else { // predplacilni racun
@@ -1003,8 +1006,8 @@ void racun::on_btn_sprejmi_clicked() {
 			else if ( ui->rb_racun->isChecked() ) {
 				sql_vnesi_projekt.bindValue(1, pretvori("3")); // racun
 			}
-			else if ( ui->rb_storno->isChecked() ) {
-				sql_vnesi_projekt.bindValue(1, pretvori("4")); // storno
+			else if ( ui->rb_dobropis->isChecked() ) {
+				sql_vnesi_projekt.bindValue(1, pretvori("4")); // dobropis
 			}
 			else {
 				sql_vnesi_projekt.bindValue(1, pretvori("")); // prazno
@@ -1200,7 +1203,7 @@ void racun::napolni() {
 		else if ( ui->rb_racun->isChecked() ) {
 			tip = "3";
 		}
-		else if ( ui->rb_storno->isChecked() ) {
+		else if ( ui->rb_dobropis->isChecked() ) {
 			tip = "4";
 		}
 
@@ -1296,7 +1299,12 @@ void racun::prejem(QString besedilo) {
 		ui->btn_opravilo->setEnabled(false);
 		ui->btn_brisi_opravilo->setEnabled(false);
 
-		ui->rb_predracun->setChecked(true);
+		if ( besedilo == "Nov racun4" ) {
+			ui->rb_dobropis->setChecked(true);
+		}
+		else {
+			ui->rb_predracun->setChecked(true);
+		}
 
 		ui->txt_status_oddaje_racuna->setEnabled(false);
 
@@ -1419,7 +1427,7 @@ void racun::prejem(QString besedilo) {
 					ui->rb_racun->setChecked(true);
 				}
 				else if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("tip_racuna")).toString()) == "4") {
-					ui->rb_storno->setChecked(true);
+					ui->rb_dobropis->setChecked(true);
 				}
 
 				ui->txt_banka->setCurrentIndex(ui->txt_banka->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("podjetje_banka")).toString())));
@@ -1516,7 +1524,7 @@ void racun::prejem(QString besedilo) {
 			else if ( ui->rb_racun->isChecked() ) {
 				tip_racuna = "3";
 			}
-			else if ( ui->rb_storno->isChecked() ) {
+			else if ( ui->rb_dobropis->isChecked() ) {
 				tip_racuna = "4";
 			}
 			QSqlQuery sql_opravila;
@@ -1571,7 +1579,7 @@ void racun::prejem(QString besedilo) {
 
 				// preverimo, ali za dan predracun obstaja kaksen racun
 				QSqlQuery sql_preveri_starse;
-				sql_preveri_starse.prepare("SELECT * FROM racuni WHERE stevilka_starsa LIKE '" + pretvori(ui->txt_id->text()) + "' AND tip_racuna LIKE '3'");
+				sql_preveri_starse.prepare("SELECT * FROM racuni WHERE stevilka_starsa LIKE '" + pretvori(ui->txt_id->text()) + "'");
 				sql_preveri_starse.exec();
 				while ( sql_preveri_starse.next() ) {
 					if ( prevedi(sql_preveri_starse.value(sql_preveri_starse.record().indexOf("stornacija")).toString()) == "1" ) {
@@ -1596,7 +1604,7 @@ void racun::prejem(QString besedilo) {
 
 				int i = 0;
 
-				if ( obstoj_racuna_brez_stornacije == true || obstoj_predracuna == true ) {
+				while ( sql_preveri_starse.next() ) {
 //					ui->txt_stevilka_racuna->setEnabled(false);
 					ui->cb_stara_stevilka_racuna->setEnabled(false);
 					ui->txt_status_predracuna->setEnabled(false);
@@ -1752,7 +1760,7 @@ void racun::izracunaj() {
 		else if ( ui->rb_racun->isChecked() ) {
 			tip = "3";
 		}
-		else if ( ui->rb_storno->isChecked() ) {
+		else if ( ui->rb_dobropis->isChecked() ) {
 			tip = "4";
 		}
 
@@ -1829,7 +1837,7 @@ void racun::on_btn_opravilo_clicked() {
 	else if ( ui->rb_racun->isChecked() ) {
 		tip_racuna = "3";
 	}
-	else if ( ui->rb_storno->isChecked() ) {
+	else if ( ui->rb_dobropis->isChecked() ) {
 		tip_racuna = "4";
 	}
 
@@ -2038,9 +2046,9 @@ void racun::on_rb_racun_toggled() {
 
 }
 
-void racun::on_rb_storno_toggled() {
+void racun::on_rb_dobropis_toggled() {
 
-	if ( ui->rb_storno->isChecked() ) {
+	if ( ui->rb_dobropis->isChecked() ) {
 		ui->txt_status_predracuna->setHidden(true);
 		ui->lbl_status_predracuna->setHidden(true);
 		ui->txt_status_placila->setHidden(false);
@@ -2078,7 +2086,24 @@ void racun::on_rb_storno_toggled() {
 		ui->label_29->setVisible(true);
 		ui->txt_koda_namena_avans->setVisible(false);
 		ui->label_28->setVisible(false);
+
+        // napolni opravila pri dobropisu
+        wid_dobropis *widdob = new wid_dobropis;
+        ui->scr_dobropis->setWidget(widdob);
+
+        // povezi signale pri opravilih dobropisa med seboj
+        QObject::connect(this, SIGNAL(prenos(QString)),
+                   widdob , SLOT(prejem(QString)));
+        prenos("Dobropis" + ui->txt_id->text());
+        this->disconnect();
+
+        ui->tab_racuni->insertTab(3, ui->tab_dobropis, "Opravila");
+        ui->tab_racuni->removeTab(2);
 	}
+    else {
+        ui->tab_racuni->insertTab(2, ui->tab_opravila, "Opravila");
+        ui->tab_racuni->removeTab(3);
+    }
 
 }
 
@@ -2183,13 +2208,11 @@ void racun::stevilka_racuna() {
 				}
 				else if ( ui->rb_racun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND ( tip_racuna LIKE '" + pretvori("3") +
-											   "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+											   "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
 				}
-				else if ( ui->rb_storno->isChecked() ) {
+				else if ( ui->rb_dobropis->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND ( tip_racuna LIKE '" + pretvori("3") +
-											   "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+											   "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
 				}
 
 
@@ -2213,9 +2236,23 @@ void racun::stevilka_racuna() {
 					st_racuna = "0" + st_racuna;
 				}
 
+				QString predpona = "";
+
+				if ( ui->rb_predracun->isChecked() ) {
+					predpona = "P";
+				}
+				else if ( ui->rb_predplacilo->isChecked() ) {
+					predpona = "A";
+				}
+				else if ( ui->rb_racun->isChecked() ) {
+					predpona = "R";
+				}
+				else if ( ui->rb_dobropis->isChecked() ) {
+					predpona = "D";
+				}
 				// imamo dovolj podatkov za tvorbo stevilke racuna
 
-				ui->txt_stevilka_racuna->setText(leto.right(2) + st_racuna);
+				ui->txt_stevilka_racuna->setText(predpona + leto.right(2) + st_racuna);
 			}
 
 			/**
@@ -2491,7 +2528,7 @@ void racun::napolni_zapise() {
 		else if ( ui->rb_racun->isChecked() ) {
 			tip_racuna = "3";
 		}
-		else if ( ui->rb_storno->isChecked() ) {
+		else if ( ui->rb_dobropis->isChecked() ) {
 			tip_racuna = "4";
 		}
 
@@ -2636,7 +2673,7 @@ void racun::on_btn_vnesi_zapis_2_clicked() {
 		else if ( ui->rb_racun->isChecked() ) {
 			sql_vnesi_zapis.bindValue(3, pretvori("3"));
 		}
-		else if ( ui->rb_storno->isChecked() ) {
+		else if ( ui->rb_dobropis->isChecked() ) {
 			sql_vnesi_zapis.bindValue(3, pretvori("4"));
 		}
 		sql_vnesi_zapis.bindValue(4, pretvori(ui->txt_datum_zapisa_2->text()));

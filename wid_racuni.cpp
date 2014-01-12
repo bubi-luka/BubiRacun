@@ -18,6 +18,7 @@
 #include "tiskanje.h"
 #include "datum.h"
 #include "razlog_stornacije.h"
+#include "wid_dobropis.h"
 
 wid_racuni::wid_racuni(QWidget *parent) :
 	QWidget(parent),
@@ -30,6 +31,8 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		ui->txt_stprojekta->setVisible(false);
 		ui->btn_brisi->setEnabled(false);
 		ui->btn_brisi->setVisible(false);
+		ui->btn_dobropis->setEnabled(false);
+		ui->btn_dobropis->setVisible(false);
 
 		// napolni filtrirne spustne sezname
 		QString gumb = ui->btn_nov->text();
@@ -58,7 +61,7 @@ wid_racuni::wid_racuni(QWidget *parent) :
 			ui->cb_racun->addItem("1) Predracun");
 			ui->cb_racun->addItem("2) Predplacilo");
 			ui->cb_racun->addItem("3) Racun");
-			ui->cb_racun->addItem("4) Stornacija");
+			ui->cb_racun->addItem("4) Dobropis");
 
 			// filtriraj po mesecu
 			ui->cb_mesec->addItem("");
@@ -144,8 +147,16 @@ wid_racuni::~wid_racuni()
 
 void wid_racuni::on_cb_racun_currentIndexChanged(int indeks) {
 
+	ui->btn_dobropis->setEnabled(false);
+	ui->btn_dobropis->setVisible(false);
+	ui->btn_storno->setEnabled(false);
+
 	if ( ui->cb_racun->currentText().left(3) == "3) " ) {
 		ui->btn_storno->setEnabled(true);
+		ui->btn_dobropis->setEnabled(true);
+		ui->btn_dobropis->setVisible(true);
+	}
+	else if ( ui->cb_racun->currentText().left(3) == "4) " ) {
 	}
 	else {
 		ui->btn_storno->setEnabled(false);
@@ -227,7 +238,7 @@ void wid_racuni::napolni() {
 		// clear previous content
 		ui->tbl_racuni->clear();
 
-		for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 11; i++) {
 			ui->tbl_racuni->removeColumn(0);
 		}
 
@@ -248,8 +259,9 @@ void wid_racuni::napolni() {
 		ui->tbl_racuni->insertColumn(6);
 		ui->tbl_racuni->insertColumn(7);
 		ui->tbl_racuni->insertColumn(8);
-		ui->tbl_racuni->insertColumn(9);
-		ui->tbl_racuni->insertColumn(10);
+        ui->tbl_racuni->insertColumn(9);
+        ui->tbl_racuni->insertColumn(10);
+        ui->tbl_racuni->insertColumn(11);
 
 		QTableWidgetItem *naslov0 = new QTableWidgetItem;
 		QTableWidgetItem *naslov1 = new QTableWidgetItem;
@@ -260,8 +272,9 @@ void wid_racuni::napolni() {
 		QTableWidgetItem *naslov6 = new QTableWidgetItem;
 		QTableWidgetItem *naslov7 = new QTableWidgetItem;
 		QTableWidgetItem *naslov8 = new QTableWidgetItem;
-		QTableWidgetItem *naslov9 = new QTableWidgetItem;
-		QTableWidgetItem *naslov10 = new QTableWidgetItem;
+        QTableWidgetItem *naslov9 = new QTableWidgetItem;
+        QTableWidgetItem *naslov10 = new QTableWidgetItem;
+        QTableWidgetItem *naslov11 = new QTableWidgetItem;
 
 		naslov0->setText("ID");
 		naslov1->setText("Tip racuna");
@@ -272,8 +285,9 @@ void wid_racuni::napolni() {
 		naslov6->setText("Znesek za placilo");
 		naslov7->setText("Se placati");
 		naslov8->setText("Status placila");
-		naslov9->setText("Status racunovodstva");
-		naslov10->setText("Stornacija");
+        naslov9->setText("Status racunovodstva");
+        naslov10->setText("Stornacija");
+        naslov11->setText("Dobropis");
 
 		ui->tbl_racuni->setHorizontalHeaderItem(0, naslov0);
 		ui->tbl_racuni->setHorizontalHeaderItem(1, naslov1);
@@ -284,10 +298,11 @@ void wid_racuni::napolni() {
 		ui->tbl_racuni->setHorizontalHeaderItem(6, naslov6);
 		ui->tbl_racuni->setHorizontalHeaderItem(7, naslov7);
 		ui->tbl_racuni->setHorizontalHeaderItem(8, naslov8);
-		ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
-		ui->tbl_racuni->setHorizontalHeaderItem(10, naslov10);
+        ui->tbl_racuni->setHorizontalHeaderItem(9, naslov9);
+        ui->tbl_racuni->setHorizontalHeaderItem(10, naslov10);
+        ui->tbl_racuni->setHorizontalHeaderItem(11, naslov11);
 
-		ui->tbl_racuni->setColumnWidth(0, 35);
+        ui->tbl_racuni->setColumnWidth(0, 0);
 
 		datum *delegate = new datum(this);
 		ui->tbl_racuni->setItemDelegateForColumn(3, delegate);
@@ -395,32 +410,47 @@ void wid_racuni::napolni() {
 				ui->tbl_racuni->setRowHeight(row, 20);
 				int col = 0;
 				int i = 0;
-				QString polja[11] = {"id", "tip_racuna", "stevilka_racuna", "datum_izdaje", "stranka", "projekt", "znesek_za_placilo",
-									 "se_placati", "status_placila", "status_racunovodstva", "stornacija"};
+                QString polja[12] = {"id", "tip_racuna", "stevilka_racuna", "datum_izdaje", "stranka", "projekt", "znesek_za_placilo",
+                                     "se_placati", "status_placila", "status_racunovodstva", "stornacija", "dobropis"};
 
-				while (col <= 10) {
+                while (col <= 11) {
 					QTableWidgetItem *celica = new QTableWidgetItem;
 
-					// storniranim vrsticam spremenimo barvo ozadja in besedila
+                    // storniranim/dobropisanim vrsticam spremenimo barvo ozadja in besedila
 					if ( prevedi(sql_fill.value(sql_fill.record().indexOf("stornacija")).toString()) == "1" ) {
 						celica->setBackgroundColor(Qt::red);
 						celica->setTextColor(Qt::black);
 					}
+                    if ( prevedi(sql_fill.value(sql_fill.record().indexOf("dobropis")).toString()) == "1" ) {
+                        celica->setBackgroundColor(Qt::blue);
+                        celica->setTextColor(Qt::white);
+                    }
 
 					if ( polja[i] == "id" ) {
 						celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
-					}
-					if ( polja[i] == "stornacija" ) {
-						if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // racun je storniran
-							celica->setText("DA");
-						}
-						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "0" ) { // racun ni storniran
-							celica->setText("NE");
-						}
-						else { // ne gre za racun ampak za predracun, predplacilni racun ali stornacijo
-							celica->setText("");
-						}
-					}
+                    }
+                    else if ( polja[i] == "stornacija" ) {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // racun je storniran
+                            celica->setText("DA");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "0" ) { // racun ni storniran
+                            celica->setText("NE");
+                        }
+                        else { // ne gre za racun ampak za predracun, predplacilni racun ali stornacijo
+                            celica->setText("");
+                        }
+                    }
+                    else if ( polja[i] == "dobropis" ) {
+                        if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "1" ) { // racun je storniran
+                            celica->setText("DA");
+                        }
+                        else if ( prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()) == "0" ) { // racun ni storniran
+                            celica->setText("NE");
+                        }
+                        else { // ne gre za racun ampak za predracun, predplacilni racun ali stornacijo
+                            celica->setText("");
+                        }
+                    }
 					else if ( polja[i] == "datum_izdaje" ) {
 						celica->setData(Qt::DisplayRole, QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy"));
 					}
@@ -435,7 +465,7 @@ void wid_racuni::napolni() {
 							celica->setText("Racun");
 						}
 						else if ( prevedi(sql_fill.value(sql_fill.record().indexOf("tip_racuna")).toString()) == "4" ) {
-							celica->setText("Stornacija");
+							celica->setText("Dobropis");
 						}
 					}
 					else if ( polja[i] == "stranka" ) {
@@ -662,21 +692,34 @@ void wid_racuni::on_tbl_racuni_doubleClicked() {
 void wid_racuni::on_tbl_racuni_itemSelectionChanged() {
 
 	if ( ui->btn_print->text() != "Polnim" ) {
-		if ( ui->tbl_racuni->selectedItems().count() == 11 ) { // pri enem oznacenem polju omogoci gumbe, pri vecih pa ne
-			napolni_sorodnike();
+        if ( ui->tbl_racuni->selectedItems().count() == 12 ) { // pri enem oznacenem polju omogoci gumbe, pri vecih pa ne
+            napolni_sorodnike();
+            ui->btn_storno->setEnabled(true);
+            ui->btn_dobropis->setEnabled(true);
 
-			// stornacije so mozne samo na racunih, ne pa na predracunih, stornacijah in predplacilnih racunih
-			if ( ui->tbl_racuni->selectedItems().takeAt(10)->text() != "NE" ) {
-				ui->btn_storno->setEnabled(false);
-			}
-			else {
-				ui->btn_storno->setEnabled(true);
-			}
+            // preverimo, ce gre res za racun
+            if ( ui->tbl_racuni->selectedItems().takeAt(1)->text() == "Racun" ) {
+                // stornacije so mozne samo ce racun se ni storniran
+                if ( ui->tbl_racuni->selectedItems().takeAt(10)->text() != "NE" &&  ui->tbl_racuni->selectedItems().takeAt(11)->text() != "NE" ) {
+                    ui->btn_storno->setEnabled(false);
+                    ui->btn_dobropis->setEnabled(false);
+                }
+                else {
+                    ui->btn_storno->setEnabled(true);
+                    ui->btn_dobropis->setEnabled(true);
+                }
+            }
+            else {
+                ui->btn_storno->setEnabled(false);
+                ui->btn_dobropis->setEnabled(false);
+            }
 		}
 		else {
 			ui->tbl_sorodniki->clear();
 			ui->btn_storno->setEnabled(false);
+            ui->btn_dobropis->setEnabled(false);
 		}
+
 	}
 
 }
@@ -831,7 +874,93 @@ void wid_racuni::on_btn_storno_clicked() {
 
 }
 
-QString wid_racuni::stevilka_racuna() {
+
+void wid_racuni::on_btn_dobropis_clicked() {
+
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "tvori_dobropis");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // na novo izracunamo stevilko dobropisa
+        QString stevilka_dobropisa = stevilka_racuna("4");
+
+        // prepisemo podatke iz racuna v dobropis
+        QSqlQuery sql_vnesi_projekt;
+        sql_vnesi_projekt.prepare("INSERT INTO racuni (stevilka_racuna, tip_racuna, status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
+                                  "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
+                                  "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, "
+                                  "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
+                                  "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
+                                  "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, "
+                                  "stevilka_starsa, stornacija) "
+                                  "SELECT '" + stevilka_dobropisa + "', '4', status_racuna, stranka, projekt, avtor_oseba, datum_pricetka, "
+                                  "datum_konca, datum_izdaje, datum_placila, status_placila, status_racunovodstva, avans, odstotek_avansa, "
+                                  "status_oddaje_racuna, datum_oddaje_racuna, stara_stevilka_racuna, sklic, datum_placila_avansa, opombe, "
+                                  "rok_placila, podjetje_id, podjetje_kratki, podjetje_polni, podjetje_naslov_ulica, podjetje_naslov_stevilka, "
+                                  "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
+                                  "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
+                                  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, "
+                                  "id, stornacija FROM racuni "
+                                  "WHERE id LIKE '" + pretvori(ui->tbl_racuni->selectedItems().takeAt(0)->text())  + "'");
+        sql_vnesi_projekt.exec();
+
+        // na racunu oznacimo, da gre za dobropis
+        QSqlQuery sql_oznaci_dobropis;
+        sql_oznaci_dobropis.prepare("UPDATE racuni SET 'dobropis' = '1' WHERE id LIKE '" + pretvori(ui->tbl_racuni->selectedItems().takeAt(0)->text())  + "'");
+        sql_oznaci_dobropis.exec();
+
+        // poiscemo id pravkar vnesenega zapisa
+        QSqlQuery sql_nov_id;
+        QString nov_id = "";
+        sql_nov_id.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("4") + "' ORDER BY id ASC");
+        sql_nov_id.exec();
+        while ( sql_nov_id.next() ) {
+            nov_id = prevedi(sql_nov_id.value(sql_nov_id.record().indexOf("id")).toString());
+        }
+
+        // kopira opravila iz predracuna v racun
+        QSqlQuery sql_kopiraj_opravila;
+        sql_kopiraj_opravila.prepare("INSERT INTO opravila (stevilka_stranke, stevilka_projekta, stevilka_racuna, tip_racuna, opravilo_skupina, "
+                                     "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
+                                     "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
+                                     "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
+                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
+                                     "opravilo_rocno, vrstni_red) "
+                                     "SELECT stevilka_stranke, stevilka_projekta, '" + nov_id + "', '4', opravilo_skupina, "
+                                     "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
+                                     "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
+                                     "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
+                                     "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
+                                     "opravilo_rocno, vrstni_red FROM opravila "
+                                     "WHERE stevilka_racuna LIKE '" + pretvori(ui->tbl_racuni->selectedItems().takeAt(0)->text()) + "' AND tip_racuna LIKE '3'");
+        sql_kopiraj_opravila.exec();
+
+    }
+    base.close();
+
+    // prestavi tabelo na pravkar tvorjen dobropis
+    ui->cb_racun->setCurrentIndex(ui->cb_racun->findText("4) ", Qt::MatchStartsWith));
+    ui->tbl_racuni->selectRow(ui->tbl_racuni->rowCount() - 1);
+
+    on_tbl_racuni_doubleClicked();
+
+}
+
+QString wid_racuni::stevilka_racuna(QString tip) {
 
 	QString st_racuna = "";
 
@@ -858,8 +987,7 @@ QString wid_racuni::stevilka_racuna() {
 		// izracunamo zaporedno stevilko racuna v tekocem letu
 		QSqlQuery sql_stetje_racunov;
 		sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-								   "' AND ( tip_racuna LIKE '" + pretvori("3") +
-								   "' OR tip_racuna LIKE '" + pretvori("4") + "' ) ORDER BY stevilka_racuna ASC");
+                                   "' AND tip_racuna LIKE '" + pretvori(tip) + "'' ORDER BY stevilka_racuna ASC");
 		sql_stetje_racunov.exec();
 		while ( sql_stetje_racunov.next() ) {
 			int st_racuna = 0;

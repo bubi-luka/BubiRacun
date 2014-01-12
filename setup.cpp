@@ -564,7 +564,10 @@ void setup::tabela_stranke() {
 														 "pod_hitrost TEXT, "
 														 "pod_zapleti TEXT, "
 														 "avtor_podjetje TEXT, "
-														 "avtor_oseba TEXT)"
+                                                         "avtor_oseba TEXT, "
+                                                         "banka TEXT, "
+                                                         "bic_banke TEXT, "
+                                                         "trr TEXT)"
 														);
 		sql_create_table.exec();
 	}
@@ -643,6 +646,7 @@ void setup::tabela_racuni() {
 								 "tip_racuna TEXT, "
 								 "status_racuna TEXT, "
 								 "stornacija TEXT, "
+                                 "dobropis TEXT, "
 								 "razlog_stornacije TEXT, "
 								 "stranka TEXT, "
 								 "projekt TEXT, "
@@ -743,8 +747,13 @@ void setup::tabela_opravila() {
 														 "znesek_popustov TEXT, "
 														 "znesek_ddv TEXT, "
 														 "znesek_koncni TEXT, "
-														 "casovnice TEXT)"
-										);
+								 "dobropis TEXT, "
+								 "dobropis_st_ur TEXT, "
+								 "dobropis_znesek TEXT, "
+								 "dobropis_ddv TEXT, "
+								 "dobropis_koncni TEXT, "
+								 "casovnice TEXT)"
+								 );
 		sql_create_table.exec();
 	}
 	base.close();
@@ -4326,7 +4335,149 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 23 ) {
+
+					// odstrani vse stornacijske racune
+					update.prepare("DELETE FROM racuni WHERE tip_racuna LIKE '" + pretvori("4") + "'");
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					update.bindValue(0, "0.9.24");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					update.bindValue(0, "0.9.24");
+					update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					update.exec();
+					update.clear();
+
+					update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					update.bindValue(0, "23.11.2013");
+					update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					update.exec();
+					update.clear();
+
+					posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 24 ) {
+
+                    // dodaj nove stolpce v tabelo opravil - dobropis
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_st_ur' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_znesek' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_ddv' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE opravila ADD COLUMN 'dobropis_koncni' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.25");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.25");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "25.12.2013");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 25 ) {
+
+                    // dodaj nove stolpce v tabelo racunov - dobropis
+                    update.prepare("ALTER TABLE racuni ADD COLUMN 'dobropis' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3'");
+                    update.exec();
+                    while ( update.next() ) {
+                        qApp->processEvents();
+                        QSqlQuery posodobi;
+                        posodobi.prepare("UPDATE racuni SET dobropis = ? WHERE id LIKE '" + update.value(update.record().indexOf("id")).toString() + "'");
+                        posodobi.bindValue(0, "0");
+                        posodobi.exec();
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.26");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.26");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "2.1.2014");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 26 ) {
+
+                    // dodaj nove stolpce v tabelo strank - podatki o banki
+                    update.prepare("ALTER TABLE stranke ADD COLUMN 'banka' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE stranke ADD COLUMN 'bic_banke' TEXT");
+                    update.exec();
+                    update.clear();
+                    update.prepare("ALTER TABLE stranke ADD COLUMN 'trr' TEXT");
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.27");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.27");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "12.1.2014");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
 			}
+
 		}
 	}
 	base.close();

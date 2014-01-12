@@ -18,6 +18,7 @@ public:
 private slots:
 	void on_btn_brisi_clicked();
 	void on_btn_shrani_clicked();
+	void on_btn_izhod_clicked();
 	void keyPressEvent(QKeyEvent *event);
 
 	void prejem(QString besedilo);
