@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>735</width>
-    <height>699</height>
+    <width>737</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,9 +84,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>680</width>
-            <height>910</height>
+            <y>-329</y>
+            <width>682</width>
+            <height>1030</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -575,6 +575,40 @@
                   </item>
                  </layout>
                 </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="label_48">
+                  <property name="text">
+                   <string>Banka</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="8" column="0">
+                 <widget class="QLabel" name="label_49">
+                  <property name="text">
+                   <string>Številka transakcijskega računa</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="8" column="1">
+                 <widget class="QLineEdit" name="txt_trr"/>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QComboBox" name="txt_banka"/>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="label_50">
+                  <property name="text">
+                   <string>Bic banke</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QLineEdit" name="txt_bic">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
               <item row="0" column="1">
@@ -795,8 +829,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>693</width>
-            <height>594</height>
+            <width>695</width>
+            <height>600</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
@@ -2000,8 +2034,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>693</width>
-            <height>594</height>
+            <width>695</width>
+            <height>600</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">

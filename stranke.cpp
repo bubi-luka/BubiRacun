@@ -207,6 +207,14 @@ stranke::stranke(QWidget *parent) :
             }
             sql_fill_combo.clear();
 
+            ui->txt_banka->addItem("");
+            sql_fill_combo.prepare("SELECT * FROM sif_banke ORDER BY ime_banke ASC");
+            sql_fill_combo.exec();
+            while ( sql_fill_combo.next() ) {
+                ui->txt_banka->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("ime_banke")).toString()));
+            }
+            sql_fill_combo.clear();
+
             // fill cupon numbers
             int i = 1;
             QString leto = QDate::currentDate().toString("yyyy");
@@ -1022,8 +1030,9 @@ void stranke::on_btn_vnesi_clicked() {
                                                                     "kontakt, telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, "
                                                                     "placilnost, vir, vir_id, vir_kupon, vir_ime, vir_besedilo, pop_facebook_1, pop_facebook_2, "
                                                                     "pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_kupon, pop_akcija, pop_vsi_facebook, "
-                                                                    "pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba, davcni_zavezanec) "
-                                                                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+                                                                    "pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba, davcni_zavezanec, "
+                                                                    "banka, bic_banke, trr) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                                                                    "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
             }
             else { // popravi ze obstojeci vnos
                 sql_vnesi_stranko.prepare("UPDATE stranke SET ime = ?, priimek = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
@@ -1032,8 +1041,8 @@ void stranke::on_btn_vnesi_clicked() {
                                                                     "vir_kupon = ?, vir_ime = ?, vir_besedilo = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
                                                                     "pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_kupon = ?, pop_akcija = ?, "
                                                                     "pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
-                                                                    "avtor_podjetje = ?, avtor_oseba = ?, davcni_zavezanec = ? WHERE id "
-                                                                    "LIKE '" + ui->txt_id->text() + "'");
+                                                                    "avtor_podjetje = ?, avtor_oseba = ?, davcni_zavezanec = ?, banka = ?, bic_banke = ?, trr = ? "
+                                                                    "WHERE id LIKE '" + ui->txt_id->text() + "'");
             }
             sql_vnesi_stranko.bindValue(0, pretvori(ui->txt_ime->text()));
             sql_vnesi_stranko.bindValue(1, pretvori(ui->txt_priimek->text()));
@@ -1114,7 +1123,9 @@ void stranke::on_btn_vnesi_clicked() {
             else {
                 sql_vnesi_stranko.bindValue(37, pretvori("0"));
             }
-
+            sql_vnesi_stranko.bindValue(38, pretvori(ui->txt_banka->currentText()));
+            sql_vnesi_stranko.bindValue(39, pretvori(ui->txt_bic->text()));
+            sql_vnesi_stranko.bindValue(40, pretvori(ui->txt_trr->text()));
             sql_vnesi_stranko.exec();
 
 /*			// delo s kuponi
@@ -1308,6 +1319,10 @@ void stranke::prejem(QString besedilo) {
                 ui->txt_podrazitev_vikend->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pod_vikend")).toString())));
                 ui->txt_podrazitev_hitrost->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pod_hitrost")).toString())));
                 ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pod_zapleti")).toString())));
+
+                ui->txt_banka->setCurrentIndex(ui->txt_banka->findText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("banka")).toString())));
+                ui->txt_bic->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("bic_banke")).toString()));
+                ui->txt_trr->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("trr")).toString()));
 
                 sql_napolni.clear();
 
@@ -1994,5 +2009,35 @@ void stranke::on_txt_podrazitev_hitrost_editingFinished() {
 void stranke::on_txt_podrazitev_zapleti_editingFinished() {
 
     ui->txt_podrazitev_zapleti->setText(pretvori_iz_double(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+
+}
+
+void stranke::on_txt_banka_currentIndexChanged() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "banka-bic");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // v bazi poiscemo pot do mesta shranjevanja podatkov
+        QSqlQuery sql_pot;
+        sql_pot.prepare("SELECT * FROM sif_banke WHERE ime_banke LIKE '" + pretvori(ui->txt_banka->currentText()) + "'");
+        sql_pot.exec();
+        if ( sql_pot.next() ) {
+            ui->txt_bic->setText(prevedi(sql_pot.value(sql_pot.record().indexOf("bic")).toString()));
+        }
+    }
+    base.close();
 
 }

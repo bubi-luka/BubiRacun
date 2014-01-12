@@ -63,6 +63,8 @@ private slots:
 	void on_cb_leto_currentIndexChanged();
 	void on_cb_projekt_currentIndexChanged();
 
+    void on_txt_banka_currentIndexChanged();
+
 	void on_tbl_projekti_doubleClicked();
 	void on_tbl_kuponi_doubleClicked();
 
