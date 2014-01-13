@@ -3060,7 +3060,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
             sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("narocnik_id")).toString() + "'");
             sql_stranka.exec();
             if ( sql_stranka.next() ) {
-                qDebug("Notri smo");
                 narocnik_banka = prevedi(sql_stranka.value(sql_stranka.record().indexOf("banka")).toString());
                 narocnik_bic = prevedi(sql_stranka.value(sql_stranka.record().indexOf("bic_banke")).toString());
                 narocnik_trr = prevedi(sql_stranka.value(sql_stranka.record().indexOf("trr")).toString());
@@ -4008,7 +4007,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			besedilo = racun.readLine() + racun.readLine() + racun.readLine() + racun.readLine();
 		}
 
-		if ( racun_tip != "1" ) { // predplacilo in racun
+        if ( racun_tip != "1" && racun_tip != "4" ) { // predplacilo in racun
 			if ( racun_avans != "0,0 % " ) {
 				// nastavi parametre ("Placano po predracunu st: ")
 				painter.setFont(debelo);
@@ -4065,7 +4064,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				besedilo = racun.readLine() + racun.readLine() + racun.readLine();
 			}
 		}
-		if ( racun_tip == "3" || racun_tip == "4" ) { // samo racun
+        if ( racun_tip == "3" ) { // samo racun
 			// nastavi parametre ("Se za placilo: ")
 			painter.setFont(debelo);
 			besedilo = racun.readLine() + " ";
@@ -4123,9 +4122,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		}
 
 	// razlog stornacije
-		// opomba morebitne stornacije
-		besedilo = racun.readLine();
-		if ( razlog_stornacije != "" ) {
+        // opomba morebitne stornacije
+        besedilo = racun.readLine();
+        if ( razlog_stornacije != "" ) {
 			// napisemo naslov
 			painter.setFont(debelo);
 			// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
