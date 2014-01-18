@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>921</width>
-    <height>707</height>
+    <width>968</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tab_opravila">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -302,20 +302,20 @@
          <layout class="QHBoxLayout" name="horizontalLayout_37">
           <item>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="1">
-             <widget class="QLabel" name="label">
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Skupina</string>
+               <string>Storitev</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_2">
+            <item row="0" column="1">
+             <widget class="QLabel" name="label">
               <property name="text">
-               <string>Storitev</string>
+               <string>Podkategorija</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -365,7 +365,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_52">
               <property name="text">
-               <string>Tip</string>
+               <string>Kategorija</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -410,16 +410,6 @@
              <widget class="QLabel" name="label_4">
               <property name="text">
                <string>DDV</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="6">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Urna postavka z DDV</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -517,7 +507,84 @@
               </item>
              </layout>
             </item>
-            <item row="3" column="6">
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_54">
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Šifra</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="txt_sifra">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>txt_sifra</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="6">
+             <widget class="QLabel" name="label_53">
+              <property name="text">
+               <string>Ročni vnos storitve</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="6">
+             <widget class="QLineEdit" name="txt_rocni_vnos_storitve">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>txt_rocni_vnos_storitve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QLabel" name="label_5">
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Urna postavka z DDV</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="3">
              <layout class="QHBoxLayout" name="horizontalLayout_36">
               <item>
                <spacer name="horizontalSpacer_56">
@@ -563,22 +630,52 @@
               </item>
              </layout>
             </item>
-            <item row="0" column="6">
-             <widget class="QLabel" name="label_53">
+            <item row="2" column="6">
+             <widget class="QLabel" name="label_55">
               <property name="text">
-               <string>Ročni vnos storitve</string>
+               <string>Ročni vnos</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="1" column="6">
-             <widget class="QLineEdit" name="txt_rocni_vnos_storitve">
-              <property name="text">
-               <string>txt_rocni_vnos_storitve</string>
-              </property>
-             </widget>
+            <item row="3" column="6">
+             <layout class="QHBoxLayout" name="horizontalLayout_20">
+              <item>
+               <spacer name="horizontalSpacer_47">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cb_rocni">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_46">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -978,8 +1075,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>866</width>
-            <height>729</height>
+            <width>913</width>
+            <height>746</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">

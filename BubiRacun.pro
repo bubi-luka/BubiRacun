@@ -43,11 +43,18 @@ HEADERS += \
 		wid_avtomobili.h \
 		wid_stroskiprehrane.h \
 		sif_cenamalice.h \
-    sif_delavniki.h \
-    wid_ddv.h \
-    sif_ddv.h \
-    prejetiracuni_dodajddv.h \
-    setup.h
+                sif_delavniki.h \
+                wid_ddv.h \
+                sif_ddv.h \
+                prejetiracuni_dodajddv.h \
+                setup.h \
+                wid_storitve.h \
+                storitve.h \
+                kategorije.h \
+                podkategorije.h \
+                sif_enote.h \
+    razlog_stornacije.h \
+    wid_dobropis.h
 
 SOURCES += \
 		main.cpp \
@@ -93,11 +100,18 @@ SOURCES += \
 		wid_avtomobili.cpp \
 		wid_stroskiprehrane.cpp \
 		sif_cenamalice.cpp \
-    sif_delavniki.cpp \
-    wid_ddv.cpp \
-    sif_ddv.cpp \
-    prejetiracuni_dodajddv.cpp \
-    setup.cpp
+                sif_delavniki.cpp \
+                wid_ddv.cpp \
+                sif_ddv.cpp \
+                prejetiracuni_dodajddv.cpp \
+                setup.cpp \
+                wid_storitve.cpp \
+                storitve.cpp \
+                kategorije.cpp \
+                podkategorije.cpp \
+                sif_enote.cpp \
+    razlog_stornacije.cpp \
+    wid_dobropis.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -140,10 +154,17 @@ FORMS += \
 		wid_avtomobili.ui \
 		wid_stroskiprehrane.ui \
 		sif_cenamalice.ui \
-    sif_delavniki.ui \
-    wid_ddv.ui \
-    sif_ddv.ui \
-    prejetiracuni_dodajddv.ui
+                sif_delavniki.ui \
+                wid_ddv.ui \
+                sif_ddv.ui \
+                prejetiracuni_dodajddv.ui \
+                wid_storitve.ui \
+                storitve.ui \
+                kategorije.ui \
+                podkategorije.ui \
+                sif_enote.ui \
+    razlog_stornacije.ui \
+    wid_dobropis.ui
 
 QT	+= widgets
 QT	+= sql
@@ -182,4 +203,5 @@ OTHER_FILES += \
 		README.md \
 		srcek.svg \
 		srcek.ico \
-    bubi.svg
+                bubi.svg \
+    racun-besedilo-dobropis.csv
