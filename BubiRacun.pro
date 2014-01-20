@@ -194,7 +194,6 @@ OTHER_FILES += \
                 sif_koda_namena.csv \
                 licence.txt \
                 news.txt \
-                readme.txt \
                 README.md \
                 srcek.svg \
                 srcek.ico \

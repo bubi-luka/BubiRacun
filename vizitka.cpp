@@ -105,6 +105,8 @@ void Vizitka::insert_licence() {
         ui->txt_pogoji_uporabe->appendPlainText(besedilo.readLine());
     }
 
+    ui->txt_pogoji_uporabe->moveCursor(QTextCursor::Start);
+
 }
 
 void Vizitka::insert_news() {
@@ -120,12 +122,14 @@ void Vizitka::insert_news() {
         ui->txt_novosti->appendPlainText(besedilo.readLine());
     }
 
+    ui->txt_novosti->moveCursor(QTextCursor::Start);
+
 }
 
 void Vizitka::insert_program_info() {
 
     QString app_path = QApplication::applicationDirPath();
-    QFile datoteka(app_path + "/readme.txt");
+    QFile datoteka(app_path + "/README.md");
     if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return;
     }
@@ -134,5 +138,7 @@ void Vizitka::insert_program_info() {
     while (!besedilo.atEnd()) {
         ui->txt_predstavitev_programa->appendPlainText(besedilo.readLine());
     }
+
+    ui->txt_predstavitev_programa->moveCursor(QTextCursor::Start);
 
 }
