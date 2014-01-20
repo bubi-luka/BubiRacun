@@ -53,8 +53,8 @@ HEADERS += \
                 kategorije.h \
                 podkategorije.h \
                 sif_enote.h \
-    razlog_stornacije.h \
-    wid_dobropis.h
+                razlog_stornacije.h \
+                wid_dobropis.h
 
 SOURCES += \
 		main.cpp \
@@ -110,8 +110,8 @@ SOURCES += \
                 kategorije.cpp \
                 podkategorije.cpp \
                 sif_enote.cpp \
-    razlog_stornacije.cpp \
-    wid_dobropis.cpp
+                razlog_stornacije.cpp \
+                wid_dobropis.cpp
 
 FORMS += \
 		glavnookno.ui \
@@ -163,45 +163,48 @@ FORMS += \
                 kategorije.ui \
                 podkategorije.ui \
                 sif_enote.ui \
-    razlog_stornacije.ui \
-    wid_dobropis.ui
+                razlog_stornacije.ui \
+                wid_dobropis.ui
+
+OTHER_FILES += \
+                potni-nalog-besedilo.csv \
+                base.bz \
+                posta.csv \
+                skd.csv \
+                dovoljenja.csv \
+                status_projekta.csv \
+                popusti.csv \
+                nazivi.csv \
+                vir-strank.csv \
+                status_racuna.csv \
+                status_placila.csv \
+                status_racunovodstva.csv \
+                namen_potnega_naloga.csv \
+                prevozna_sredstva.csv \
+                status_predracuna.csv \
+                storitve.csv \
+                status_oddaje_racuna.csv \
+                racun-besedilo-predracun.csv \
+                racun-besedilo-predplacilo.csv \
+                racun-besedilo-racun.csv \
+                potni-nalog-besedilo-glava.csv \
+                style.css \
+                sif_nastavitve.csv \
+                sif_banke.csv \
+                sif_koda_namena.csv \
+                licence.txt \
+                news.txt \
+                readme.txt \
+                README.md \
+                srcek.svg \
+                srcek.ico \
+                bubi.svg \
+                racun-besedilo-dobropis.csv \
+                ikona.rc
 
 QT	+= widgets
 QT	+= sql
 QT	+= network
 QT	+= printsupport
 
-OTHER_FILES += \
-		potni-nalog-besedilo.csv \
-		base.bz \
-		posta.csv \
-		skd.csv \
-		dovoljenja.csv \
-		status_projekta.csv \
-		popusti.csv \
-		nazivi.csv \
-		vir-strank.csv \
-		status_racuna.csv \
-		status_placila.csv \
-		status_racunovodstva.csv \
-		namen_potnega_naloga.csv \
-		prevozna_sredstva.csv \
-		status_predracuna.csv \
-		storitve.csv \
-		status_oddaje_racuna.csv \
-		racun-besedilo-predracun.csv \
-		racun-besedilo-predplacilo.csv \
-		racun-besedilo-racun.csv \
-		potni-nalog-besedilo-glava.csv \
-		style.css \
-		sif_nastavitve.csv \
-		sif_banke.csv \
-		sif_koda_namena.csv \
-		licence.txt \
-		news.txt \
-		readme.txt \
-		README.md \
-		srcek.svg \
-		srcek.ico \
-                bubi.svg \
-    racun-besedilo-dobropis.csv
+RC_FILE = ikona.rc
