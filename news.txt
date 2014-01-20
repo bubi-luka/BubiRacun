@@ -1,1 +1,16 @@
-tole so samo novice, kaj je kaj novega...
+Kaj je novega?
+==========
+
+0.9.27
+----------
+- za Windows okolje je vpeljana ikona programa,
+- dodana je datoteka z licenco,
+- dodana je datoteka z novicami,
+- posodobljena je datoteka z opisom in kratkimi navodili o uporabi programa,
+- izbrisana je datoteka readme.txt, ki je bila zgolj duplikat
+
+0.9.26
+----------
+- vpeljani so dobropisi,
+- popravljene in na svoje mesto postavljene so stornacije,
+- več manjših popravkov skozi celoten program
