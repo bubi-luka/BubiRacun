@@ -307,6 +307,23 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>cb_kategorija</tabstop>
+  <tabstop>cb_podkategorija</tabstop>
+  <tabstop>btn_sifra</tabstop>
+  <tabstop>txt_sifra</tabstop>
+  <tabstop>txt_storitev</tabstop>
+  <tabstop>cb_enota</tabstop>
+  <tabstop>txt_cena_brez_ddv</tabstop>
+  <tabstop>cb_stopnja_ddv</tabstop>
+  <tabstop>txt_znesek_ddv</tabstop>
+  <tabstop>txt_znesek_skupaj</tabstop>
+  <tabstop>cb_aktivnost</tabstop>
+  <tabstop>btn_vnesi</tabstop>
+  <tabstop>btn_izbrisi</tabstop>
+  <tabstop>btn_izhod</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
