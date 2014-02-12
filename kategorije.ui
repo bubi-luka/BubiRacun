@@ -227,6 +227,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>txt_kategorija</tabstop>
+  <tabstop>txt_indeks</tabstop>
+  <tabstop>cb_aktivnost</tabstop>
+  <tabstop>btn_shrani</tabstop>
+  <tabstop>btn_zbrisi</tabstop>
+  <tabstop>rb_vsi</tabstop>
+  <tabstop>rb_aktivni</tabstop>
+  <tabstop>tbl_kategorije</tabstop>
+  <tabstop>btn_izhod</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
