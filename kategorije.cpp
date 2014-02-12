@@ -87,7 +87,7 @@ void kategorije::napolni_tabelo_kategorij() {
         ui->tbl_kategorije->setColumnWidth(0, 35);
 
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT * FROM sif_kategorije" + stavek);
+        sql_fill.prepare("SELECT * FROM sif_kategorije ORDER BY indeks ASC" + stavek);
         sql_fill.exec();
 
         int row = 0;
