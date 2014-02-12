@@ -632,6 +632,14 @@ void opravila::on_txt_skupina_currentIndexChanged() { // podkategorije
 				ui->txt_storitev->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString()));
 			}
 			sql_fill.clear();
+
+            // ce ni vnesene nobene storitve, vklopi rocni vnos storitev, drugace to izklopi
+            if ( ui->txt_storitev->count() <= 1 ) {
+                ui->cb_rocni->setChecked(true);
+            }
+            else {
+                ui->cb_rocni->setChecked(false);
+            }
 		}
 		base.close();
 
