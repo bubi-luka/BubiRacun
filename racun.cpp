@@ -122,7 +122,7 @@ racun::racun(QWidget *parent) :
 		ui->txt_id_zapisa_2->setVisible(false);
 		ui->txt_datum_placila_racuna->setVisible(false);
 		ui->btn_racun->setVisible(false);
-		ui->txt_vse_opombe->setHidden(true);
+        ui->txt_vse_opombe->setHidden(true);
         ui->txt_vnesene_opombe->setHidden(true);
 
         ui->tab_racuni->removeTab(3);
@@ -628,7 +628,7 @@ void racun::on_btn_predplacilni_racun_clicked() {
 		sql_vnesi_projekt.bindValue(16, pretvori(ui->txt_stara_stevilka_racuna->text()));
 		sql_vnesi_projekt.bindValue(17, pretvori(ui->txt_sklic->text()));
 		sql_vnesi_projekt.bindValue(18, pretvori(""));
-		sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_id->text()));
+        sql_vnesi_projekt.bindValue(19, pretvori(ui->txt_vnesene_opombe->text()));
 		sql_vnesi_projekt.bindValue(20, pretvori(ui->txt_rok_placila->text()));
 		sql_vnesi_projekt.bindValue(21, podjetje_id);
 		sql_vnesi_projekt.bindValue(22, podjetje_kratki);
@@ -2971,20 +2971,20 @@ void racun::napolni_vnesene_opombe() {
 
 void racun::on_tbl_vse_opombe_doubleClicked() {
 
-	QString id = "," + ui->tbl_vse_opombe->selectedItems().takeAt(0)->text() + ",";
+    QString id = "," + ui->tbl_vse_opombe->selectedItems().takeAt(0)->text() + ",";
 
 	if ( ui->txt_vse_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
-		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
+        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text() + id);
 	}
 	else { // jo odstrani
-		ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
+        ui->txt_vse_opombe->setText(ui->txt_vse_opombe->text().remove(id));
 	}
 
 	if ( ui->txt_vnesene_opombe->text().indexOf(id, 0) == -1 ) { // ce opomba se ni bila dodana, jo doda
-		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text() + id);
+        ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text() + id);
 	}
 	else { // jo odstrani
-		ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text().remove(id));
+        ui->txt_vnesene_opombe->setText(ui->txt_vnesene_opombe->text().remove(id));
 	}
 
 }
