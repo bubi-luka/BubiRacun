@@ -170,7 +170,7 @@ void storitve::napolni_kategorije() {
         // baza je odprta
 
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT * FROM sif_kategorije WHERE aktivnost LIKE '1'");
+        sql_fill.prepare("SELECT * FROM sif_kategorije WHERE aktivnost LIKE '1' ORDER BY indeks ASC");
         sql_fill.exec();
         while ( sql_fill.next() ) {
             ui->cb_kategorija->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("kategorija")).toString()));
@@ -205,7 +205,7 @@ void storitve::napolni_podkategorije() {
         // baza je odprta
 
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT * FROM sif_podkategorije WHERE aktivnost LIKE '1' AND kategorija LIKE '" + pretvori(ui->cb_kategorija->currentText()) + "'");
+        sql_fill.prepare("SELECT * FROM sif_podkategorije WHERE aktivnost LIKE '1' AND kategorija LIKE '" + pretvori(ui->cb_kategorija->currentText()) + "'  ORDER BY indeks ASC");
         sql_fill.exec();
         while ( sql_fill.next() ) {
             ui->cb_podkategorija->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("podkategorija")).toString()));

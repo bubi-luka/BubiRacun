@@ -85,7 +85,7 @@ void wid_storitve::napolni_kategorije() {
         ui->cb_kategorija->addItem("");
 
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT* FROM sif_kategorije WHERE aktivnost LIKE '1'");
+        sql_fill.prepare("SELECT* FROM sif_kategorije WHERE aktivnost LIKE '1' ORDER BY indeks ASC");
         sql_fill.exec();
         while ( sql_fill.next() ) {
             ui->cb_kategorija->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("kategorija")).toString()));
@@ -118,7 +118,7 @@ void wid_storitve::napolni_podkategorije() {
         ui->cb_podkategorija->addItem("");
 
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT* FROM sif_podkategorije WHERE aktivnost LIKE '1' AND kategorija LIKE '" + pretvori(ui->cb_kategorija->currentText()) + "'");
+        sql_fill.prepare("SELECT* FROM sif_podkategorije WHERE aktivnost LIKE '1' AND kategorija LIKE '" + pretvori(ui->cb_kategorija->currentText()) + "' ORDER BY indeks ASC");
         sql_fill.exec();
         while ( sql_fill.next() ) {
             ui->cb_podkategorija->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("podkategorija")).toString()));
@@ -198,13 +198,13 @@ void wid_storitve::napolni() {
     ui->btn_nov->setText("Polnim");
 
     int izbranec = 0;
-    int razvrsti = 0;
+    int razvrsti = 1;
 
     if ( ui->tbl_storitve->selectedItems().count() > 0 ) {
         izbranec = ui->tbl_storitve->selectedItems().takeAt(0)->row();
+        razvrsti = ui->tbl_storitve->horizontalHeader()->sortIndicatorSection();
     }
 
-    razvrsti = ui->tbl_storitve->horizontalHeader()->sortIndicatorSection();
 
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
