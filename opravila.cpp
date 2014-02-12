@@ -135,14 +135,14 @@ opravila::opravila(QWidget *parent) :
 			ui->txt_ddv->addItem("");
 
 			QSqlQuery sql_fill;
-			sql_fill.prepare("SELECT * FROM sif_kategorije");
+            sql_fill.prepare("SELECT * FROM sif_kategorije WHERE aktivnost LIKE '1' ORDER BY indeks ASC");
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
 			   ui->txt_sklop->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("kategorija")).toString()));
 			}
 			sql_fill.clear();
 
-			sql_fill.prepare("SELECT * FROM sif_enote");
+            sql_fill.prepare("SELECT * FROM sif_enote WHERE aktivnost LIKE '1'");
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
 			   ui->txt_enota->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("enota")).toString()));
@@ -551,7 +551,7 @@ void opravila::on_btn_izracunaj_clicked() {
 
 }
 
-void opravila::on_txt_sklop_currentIndexChanged() {
+void opravila::on_txt_sklop_currentIndexChanged() { // to so kategorije
 
 	// pocisti storitve
 	ui->txt_skupina->clear();
@@ -582,7 +582,8 @@ void opravila::on_txt_sklop_currentIndexChanged() {
 			ui->txt_skupina->addItem("");
 
 			QSqlQuery sql_fill;
-			sql_fill.prepare("SELECT * FROM sif_podkategorije WHERE kategorija LIKE '" + pretvori(ui->txt_sklop->currentText()) + "'");
+            sql_fill.prepare("SELECT * FROM sif_podkategorije WHERE kategorija LIKE '" + pretvori(ui->txt_sklop->currentText()) +
+                             "' AND aktivnost LIKE '1' ORDER BY indeks ASC");
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
 				ui->txt_skupina->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("podkategorija")).toString()));
@@ -596,7 +597,7 @@ void opravila::on_txt_sklop_currentIndexChanged() {
 
 }
 
-void opravila::on_txt_skupina_currentIndexChanged() {
+void opravila::on_txt_skupina_currentIndexChanged() { // podkategorije
 
 	// pocisti storitve
 	ui->txt_storitev->clear();
@@ -625,7 +626,7 @@ void opravila::on_txt_skupina_currentIndexChanged() {
 
 			QSqlQuery sql_fill;
 			sql_fill.prepare("SELECT * FROM sif_storitve WHERE kategorija LIKE '" + pretvori(ui->txt_sklop->currentText()) + "' "
-							 "AND podkategorija LIKE '" + pretvori(ui->txt_skupina->currentText()) + "'");
+                             "AND podkategorija LIKE '" + pretvori(ui->txt_skupina->currentText()) + "' AND aktivnost LIKE '1' ORDER BY sifra ASC");
 			sql_fill.exec();
 			while ( sql_fill.next() ) {
 				ui->txt_storitev->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("storitev")).toString()));
@@ -808,7 +809,7 @@ void opravila::napolni_casovnice() {
 
 		QString seznam_casovnic = "";
 		QSqlQuery vnesi;
-		vnesi.prepare("SELECT * FROM opravila WHERE id LIKE '" + ui->txt_id->text() + "'");
+        vnesi.prepare("SELECT * FROM opravila WHERE id LIKE '" + ui->txt_id->text() + "' ORDER BY sifra ASC");
 		vnesi.exec();
 		if ( vnesi.next() ) {
 			seznam_casovnic = vnesi.value(vnesi.record().indexOf("casovnice")).toString();
