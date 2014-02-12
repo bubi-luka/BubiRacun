@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>770</width>
+    <width>1134</width>
     <height>749</height>
    </rect>
   </property>
@@ -69,6 +69,12 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>BenRačun</string>
            </property>
@@ -85,6 +91,12 @@
           <widget class="QLineEdit" name="txt_razlicica_programa">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
+            </size>
            </property>
            <property name="text">
             <string>0.9</string>
@@ -103,6 +115,12 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item row="3" column="0">
@@ -117,6 +135,12 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item row="4" column="0">
@@ -130,6 +154,12 @@
           <widget class="QLineEdit" name="txt_avtor_programa">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
+            </size>
            </property>
            <property name="text">
             <string>Pr' Bubijih</string>
@@ -156,7 +186,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>16777215</width>
+             <width>550</width>
              <height>100</height>
             </size>
            </property>
@@ -185,9 +215,15 @@
          </item>
          <item row="1" column="0">
           <widget class="QPlainTextEdit" name="txt_novosti">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
+             <width>500</width>
              <height>300</height>
             </size>
            </property>
@@ -201,10 +237,22 @@
            <property name="enabled">
             <bool>true</bool>
            </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
+             <width>550</width>
              <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>550</width>
+             <height>16777215</height>
             </size>
            </property>
            <property name="readOnly">

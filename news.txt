@@ -1,6 +1,16 @@
 Kaj je novega?
 ==========
 
+0.9.28
+----------
+- napaka: pri predplačilnem računu ni bilo možno vnesti in natisniti opomb
+- napaka: pri tvorbi računa iz predračuna so se prenesla opravila, ne pa tudi šifre opravil
+- funkcija: kategorije, podkategorije in storitve so sortirane glede na svoje indekse
+- funkcija: tabele kategorij, podkategorij, storitev in enot imajo možnost razvrščanja po stolpcih
+- olepšava: poenoten položaj gumbov pri pregledu seznama potnih nalogov
+- olepšava: izboljšana postavitev postavk v meniju pri storitvah
+- olepšava: drugačna razporeditev polj v Vizitki programa
+
 0.9.27
 ----------
 - za Windows okolje je vpeljana ikona programa,
