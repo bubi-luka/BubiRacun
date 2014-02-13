@@ -158,7 +158,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>585</height>
+         <height>591</height>
         </rect>
        </property>
       </widget>
@@ -172,7 +172,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -236,9 +236,9 @@ border:0;</string>
     <property name="title">
      <string>Šifranti</string>
     </property>
-    <addaction name="actionStoritve"/>
     <addaction name="actionKategorije"/>
     <addaction name="actionPodkategorije"/>
+    <addaction name="actionStoritve"/>
     <addaction name="actionEnote"/>
     <addaction name="separator"/>
     <addaction name="actionOpombe_pri_ra_unih"/>

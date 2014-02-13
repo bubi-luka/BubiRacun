@@ -63,6 +63,9 @@ void podkategorije::napolni_tabelo_podkategorij() {
             stavek = " WHERE " + stavek;
         }
 
+        // dodamo sortiranje
+        stavek += " ORDER BY kategorija ASC, indeks ASC";
+
         // clear previous content
         ui->tbl_podkategorije->clear();
 
@@ -176,7 +179,7 @@ void podkategorije::napolni_kategorije() {
 
         // napolnimo kategorije z novimi zadetki
         QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT * FROM sif_kategorije WHERE aktivnost LIKE '1'");
+        sql_fill.prepare("SELECT * FROM sif_kategorije WHERE aktivnost LIKE '1' ORDER BY indeks ASC");
         sql_fill.exec();
         while ( sql_fill.next() ) {
             ui->cb_filter_kategorije->addItem(prevedi(sql_fill.value(sql_fill.record().indexOf("kategorija")).toString()));

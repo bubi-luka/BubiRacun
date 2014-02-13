@@ -88,6 +88,9 @@
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -240,6 +243,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_id</tabstop>
+  <tabstop>cb_kategorija</tabstop>
+  <tabstop>txt_podkategorija</tabstop>
+  <tabstop>txt_indeks</tabstop>
+  <tabstop>cb_aktivnost</tabstop>
+  <tabstop>btn_shrani</tabstop>
+  <tabstop>btn_zbrisi</tabstop>
+  <tabstop>rb_vsi</tabstop>
+  <tabstop>rb_aktivni</tabstop>
+  <tabstop>cb_filter_kategorije</tabstop>
+  <tabstop>tbl_podkategorije</tabstop>
+  <tabstop>btn_izhod</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

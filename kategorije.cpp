@@ -49,6 +49,9 @@ void kategorije::napolni_tabelo_kategorij() {
             stavek = " WHERE aktivnost LIKE '1'";
         }
 
+        // dodamo sortiranje
+        stavek += " ORDER BY indeks ASC";
+
         // clear previous content
         ui->tbl_kategorije->clear();
 

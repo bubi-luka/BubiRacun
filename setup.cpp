@@ -4476,6 +4476,44 @@ void setup::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
+                if ( stevilka_baze_min == 27 ) {
+
+                    // izbrisi opombe v predplacilnih racunih, ki se ne pricnejo in koncajo z ",", saj so le slednji dejanske opombe
+                    update.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '2'");
+                    update.exec();
+                    while ( update.next() ) {
+                        QString id = update.value(update.record().indexOf("id")).toString();
+                        QString opombe = update.value(update.record().indexOf("opombe")).toString();
+                        if ( opombe.left(1) != "," && opombe.right(1) != "," ) {
+                            QSqlQuery spremeni;
+                            spremeni.prepare("UPDATE racuni SET opombe = '' WHERE id LIKE '" + id + "'");
+                            spremeni.exec();
+                            spremeni.clear();
+                        }
+                    }
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.28");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.28");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "12.2.2014");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
 			}
 
 		}

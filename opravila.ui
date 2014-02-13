@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tab_opravila">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -1075,8 +1075,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>913</width>
-            <height>746</height>
+            <width>912</width>
+            <height>678</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2598,7 +2598,9 @@
   <tabstop>txt_sklop</tabstop>
   <tabstop>txt_skupina</tabstop>
   <tabstop>txt_storitev</tabstop>
+  <tabstop>cb_rocni</tabstop>
   <tabstop>txt_rocni_vnos_storitve</tabstop>
+  <tabstop>txt_sifra</tabstop>
   <tabstop>txt_enota</tabstop>
   <tabstop>txt_urna_postavka_brez_ddv</tabstop>
   <tabstop>txt_ddv</tabstop>
@@ -2619,9 +2621,12 @@
   <tabstop>txt_stevilo_opravljenih_ur</tabstop>
   <tabstop>txt_stopnja_ddv</tabstop>
   <tabstop>txt_popusti</tabstop>
-  <tabstop>txt_znesek_brez_ddv_na_racunu</tabstop>
+  <tabstop>cb_podrazitev_hitrost</tabstop>
   <tabstop>txt_znesek_ddv_na_racunu</tabstop>
   <tabstop>txt_znesek_na_racunu</tabstop>
+  <tabstop>btn_izracunaj</tabstop>
+  <tabstop>btn_sprejmi</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>cb_popust_fb1</tabstop>
   <tabstop>txt_popust_fb1</tabstop>
   <tabstop>cb_popust_fb2</tabstop>
@@ -2636,19 +2641,22 @@
   <tabstop>txt_popust_kupon</tabstop>
   <tabstop>cb_popust_akcija</tabstop>
   <tabstop>txt_popust_akcija</tabstop>
+  <tabstop>gb_najvisji_zneski_popustov</tabstop>
   <tabstop>txt_vsi_popusti_facebook_1</tabstop>
-  <tabstop>txt_vsi_popusti_facebook_2</tabstop>
   <tabstop>txt_popusti_skupaj_1</tabstop>
+  <tabstop>txt_vsi_popusti_facebook_2</tabstop>
   <tabstop>txt_popusti_skupaj_2</tabstop>
+  <tabstop>cb_vikend</tabstop>
+  <tabstop>cb_hitrost</tabstop>
+  <tabstop>cb_zapleti</tabstop>
+  <tabstop>gb_urejanje_pribitkov</tabstop>
   <tabstop>cb_podrazitev_vikend</tabstop>
   <tabstop>txt_podrazitev_vikend</tabstop>
-  <tabstop>cb_podrazitev_hitrost</tabstop>
+  <tabstop>txt_znesek_brez_ddv_na_racunu</tabstop>
   <tabstop>txt_podrazitev_hitrost</tabstop>
   <tabstop>cb_podrazitev_zapleti</tabstop>
   <tabstop>txt_podrazitev_zapleti</tabstop>
   <tabstop>tbl_casovnice</tabstop>
-  <tabstop>btn_izracunaj</tabstop>
-  <tabstop>btn_sprejmi</tabstop>
  </tabstops>
  <resources/>
  <connections/>
