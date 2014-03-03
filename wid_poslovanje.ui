@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tab_poslovanje">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_mesec">
       <attribute name="title">
@@ -112,7 +112,7 @@
          <item row="0" column="3">
           <widget class="QLabel" name="label_15">
            <property name="text">
-            <string>Poslovanje</string>
+            <string>Poslovanje (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -150,7 +150,7 @@
          <item row="0" column="2">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Izdatki</string>
+            <string>Izdatki (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -160,7 +160,7 @@
          <item row="0" column="1">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Prihodki</string>
+            <string>Prihodki (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -170,7 +170,7 @@
          <item row="0" column="4">
           <widget class="QLabel" name="label_16">
            <property name="text">
-            <string>Razlika</string>
+            <string>Razlika (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -180,7 +180,7 @@
          <item row="0" column="5">
           <widget class="QLabel" name="label_17">
            <property name="text">
-            <string>Povprečno poslovanje</string>
+            <string>Povprečno poslovanje (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -2149,7 +2149,7 @@
          <item row="0" column="2">
           <widget class="QLabel" name="label_31">
            <property name="text">
-            <string>Izdatki</string>
+            <string>Izdatki (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -2291,7 +2291,7 @@
          <item row="0" column="1">
           <widget class="QLabel" name="label_32">
            <property name="text">
-            <string>Prihodki</string>
+            <string>Prihodki (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -2686,7 +2686,7 @@
          <item row="0" column="3">
           <widget class="QLabel" name="label_26">
            <property name="text">
-            <string>Poslovanje</string>
+            <string>Poslovanje (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -2771,7 +2771,7 @@
          <item row="0" column="4">
           <widget class="QLabel" name="label_34">
            <property name="text">
-            <string>Povprečno poslovanje</string>
+            <string>Povprečno poslovanje (z DDV)</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>

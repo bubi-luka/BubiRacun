@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_prihodki">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_mesec">
       <attribute name="title">
@@ -294,7 +294,7 @@
                 <item row="0" column="1">
                  <widget class="QLabel" name="lbl_zneski">
                   <property name="text">
-                   <string>Zneski</string>
+                   <string>Zneski (z DDV)</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -613,7 +613,7 @@
                   <item row="0" column="1">
                    <widget class="QLabel" name="lbl_zneski_3">
                     <property name="text">
-                     <string>Zneski</string>
+                     <string>Zneski (z DDV)</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -856,7 +856,7 @@
                 <item row="0" column="1">
                  <widget class="QLabel" name="lbl_zneski_4">
                   <property name="text">
-                   <string>Zneski</string>
+                   <string>Zneski (z DDV)</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
