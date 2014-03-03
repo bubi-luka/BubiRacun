@@ -2358,7 +2358,7 @@ void racun::stevilka_racuna() {
 
 			// 2) Zdruzimo podatke in nakljucna stevila
 			QString sklic = "";
-			sklic += ui->txt_stevilka_racuna->text();
+            sklic += ui->txt_stevilka_racuna->text().replace(QRegExp("[^0-9]"), "");
 			sklic += QString::number(cifra_1, 10);
 			sklic += dan;
 			sklic += QString::number(cifra_2, 10);
