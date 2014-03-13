@@ -1,6 +1,14 @@
 Kaj je novega?
 ==========
 
+0.9.29
+----------
+- napaka: sklic vsebuje črko, ki je del številke računa
+- olepšava: bolj jasni napisi, ali gre za vrednosti z ali brez DDV
+- izbris: prihodki glede na storitve (ni več potrebe, ne deluje pravilno)
+- izboljšava: razvrščanje aktivnih strank po prioriteti (osnovni pogled)
+- napaka: ob shranjevanju predračuna se vedno tvori račun, tudi če le-ta že obstaja
+
 0.9.28
 ----------
 - napaka: pri predplačilnem računu ni bilo možno vnesti in natisniti opomb

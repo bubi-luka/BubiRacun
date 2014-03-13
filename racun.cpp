@@ -852,6 +852,7 @@ void racun::on_btn_sprejmi_clicked() {
 
 	izracunaj();
 
+    QString obstaja_racun = "NE";
 	QString napaka = "";
 /*
 	// nastavitev polja za napako
@@ -1084,9 +1085,16 @@ void racun::on_btn_sprejmi_clicked() {
 																		 sql_poisci_otroke.value(sql_poisci_otroke.record().indexOf("stevilka_starsa")).toString() + "'");
 					sql_spremeni_datum.bindValue(0, pretvori(ui->txt_datum_placila_avansa->text()));
 					sql_spremeni_datum.exec();
-					sql_spremeni_datum.clear();
+                    sql_spremeni_datum.clear();
 				} // while ( sql_poisci_otroke.next() )
 			} // if ( ui->rb_predracun->isChecked() && ui->txt_id->text() != "" )
+
+            QSqlQuery sql_preveri_obstoj_racuna;
+            sql_preveri_obstoj_racuna.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("3") + "' AND stevilka_starsa LIKE '" + pretvori(ui->txt_id->text()) + "'");
+            sql_preveri_obstoj_racuna.exec();
+            if ( sql_preveri_obstoj_racuna.next() ) { // predracun ima racun
+               obstaja_racun = "DA";
+            }
 
 		} // else ( base.isOpen() )
 
@@ -1099,10 +1107,10 @@ void racun::on_btn_sprejmi_clicked() {
 		close();
 
 		// ce je status predracuna potrjen (predracun je placan), potem tvori racun (t.i. zacasni racun)
-		if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" && ui->txt_status_predracuna->isEnabled() ) {
+        if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" && ui->txt_status_predracuna->isEnabled() && obstaja_racun == "NE" ) {
 			on_btn_racun_clicked();
 			QMessageBox sporocilo;
-			sporocilo.setText("Tvorim racun");
+            sporocilo.setText("Tvorim racun");
 			sporocilo.exec();
 		}
 
