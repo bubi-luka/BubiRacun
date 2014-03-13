@@ -33,6 +33,7 @@ void setup::start_first_run() {
 	tabela_nastavitve();
 	tabela_avtomobili();
 	tabela_stroski_prehrane();
+    tabela_prioriteta_strank();
 
 	// ustvari tabele sifrantov
 	tabela_skd();
@@ -887,6 +888,36 @@ void setup::tabela_stroski_prehrane() {
 		sql_create_table.exec();
 	}
 	base.close();
+
+}
+
+void setup::tabela_prioriteta_strank() {
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+        QSqlQuery sql_create_table;
+        sql_create_table.prepare("CREATE TABLE IF NOT EXISTS stranke_prioriteta ("
+                                 "id INTEGER PRIMARY KEY, "
+                                 "id_stranke TEXT, "
+                                 "prioriteta TEXT, "
+                                 "aktivnost TEXT)"
+                                 );
+        sql_create_table.exec();
+    }
+    base.close();
 
 }
 
@@ -4512,6 +4543,29 @@ void setup::posodobi_bazo() {
                     update.clear();
 
                     posodobi_bazo();
+
+                }
+                if ( stevilka_baze_min == 28 ) {
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.29");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                //    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.29");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                //    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "9.3.2014");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                //    update.exec();
+                    update.clear();
+
+                //    posodobi_bazo();
 
                 }
 			}

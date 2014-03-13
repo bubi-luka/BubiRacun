@@ -109,16 +109,133 @@ void wid_osnovni_pogled::napolni_projekte() {
 
 }
 
+
+void wid_osnovni_pogled::on_btn_prioriteta_gor_clicked() {
+
+    QString gumb = ui->btn_prioriteta_gor->text();
+    ui->btn_prioriteta_gor->setText("Premikam");
+    ui->btn_prioriteta_gor->setEnabled(false);
+    ui->btn_prioriteta_dol->setEnabled(false);
+    qApp->processEvents();
+
+    if ( ui->tbl_stranke->selectedItems().count() > 0 ) { // preveri, ce sploh imamo izbrano vrstico
+
+        // zapomni si trenutno prioriteto, ce je NULL jo spremeni v zadnjo
+        if ( ui->tbl_stranke->selectedItems().at(3)->text() == "NULL" ) {
+            QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+            vnos_prioritete->setText(QString::number(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 10));
+            ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 3, vnos_prioritete);
+        }
+        int osnovna = ui->tbl_stranke->selectedItems().at(3)->text().toInt();
+
+        if ( osnovna > 1 ) { // lahko jo prestavimo navzgor, prioriteta 1 je namrec najvisja in z njo ne moremo narediti kaj dosti
+            // zamenjaj vrednosti prioritete z naslednjo na seznamu (eno vrstico visje)
+
+            QString id_zacetna = ui->tbl_stranke->selectedItems().at(0)->text();
+            QString ime_zacetna = ui->tbl_stranke->selectedItems().at(1)->text();
+            QString kontakt_zacetna = ui->tbl_stranke->selectedItems().at(2)->text();
+            QString prioriteta_zacetna = QString::number(osnovna - 1, 10);
+
+            ui->tbl_stranke->selectRow(ui->tbl_stranke->selectedItems().at(0)->row() - 1);
+
+            QString id_koncna = ui->tbl_stranke->selectedItems().at(0)->text();
+            QString ime_koncna = ui->tbl_stranke->selectedItems().at(1)->text();
+            QString kontakt_koncna = ui->tbl_stranke->selectedItems().at(2)->text();
+            QString prioriteta_koncna = QString::number(osnovna, 10);
+
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 0)->setText(id_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 1)->setText(ime_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 2)->setText(kontakt_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 3)->setText(prioriteta_koncna);
+
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 0)->setText(id_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 1)->setText(ime_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 2)->setText(kontakt_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(prioriteta_zacetna);
+        }
+
+        shrani_prioriteto();
+    }
+
+    ui->btn_prioriteta_gor->setText(gumb);
+    ui->btn_prioriteta_gor->setEnabled(true);
+    ui->btn_prioriteta_dol->setEnabled(true);
+    qApp->processEvents();
+
+}
+
+void wid_osnovni_pogled::on_btn_prioriteta_dol_clicked() {
+
+    QString gumb = ui->btn_prioriteta_dol->text();
+    ui->btn_prioriteta_dol->setText("Premikam");
+    ui->btn_prioriteta_gor->setEnabled(false);
+    ui->btn_prioriteta_dol->setEnabled(false);
+    qApp->processEvents();
+
+    if ( ui->tbl_stranke->selectedItems().count() > 0 ) { // preveri, ce sploh imamo izbrano vrstico
+
+        // zapomni si trenutno prioriteto, ce je NULL jo spremeni v zadnjo
+        if ( ui->tbl_stranke->selectedItems().at(3)->text() == "NULL" ) {
+            QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+            vnos_prioritete->setText(QString::number(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 10));
+            ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 3, vnos_prioritete);
+        }
+        int osnovna = ui->tbl_stranke->selectedItems().at(3)->text().toInt();
+
+        if ( osnovna < ui->tbl_stranke->rowCount() ) { // lahko jo prestavimo navzdol, ne moremo iti pa nizje kot je stevilo vrstic v tabeli
+            // zamenjaj vrednosti prioritete z naslednjo na seznamu (eno vrstico nizje)
+
+            QString id_zacetna = ui->tbl_stranke->selectedItems().at(0)->text();
+            QString ime_zacetna = ui->tbl_stranke->selectedItems().at(1)->text();
+            QString kontakt_zacetna = ui->tbl_stranke->selectedItems().at(2)->text();
+            QString prioriteta_zacetna = QString::number(osnovna + 1, 10);
+
+            ui->tbl_stranke->selectRow(ui->tbl_stranke->selectedItems().at(0)->row() + 1);
+
+            QString id_koncna = ui->tbl_stranke->selectedItems().at(0)->text();
+            QString ime_koncna = ui->tbl_stranke->selectedItems().at(1)->text();
+            QString kontakt_koncna = ui->tbl_stranke->selectedItems().at(2)->text();
+            QString prioriteta_koncna = QString::number(osnovna, 10);
+
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 0)->setText(id_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 1)->setText(ime_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 2)->setText(kontakt_koncna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 3)->setText(prioriteta_koncna);
+
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 0)->setText(id_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 1)->setText(ime_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 2)->setText(kontakt_zacetna);
+            ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(prioriteta_zacetna);
+        }
+
+        shrani_prioriteto();
+
+    }
+
+    ui->btn_prioriteta_dol->setText(gumb);
+    ui->btn_prioriteta_gor->setEnabled(true);
+    ui->btn_prioriteta_dol->setEnabled(true);
+    qApp->processEvents();
+
+}
+
+
+void wid_osnovni_pogled::on_btn_osvezi_stranke_clicked() {
+
+    napolni_stranke();
+
+}
+
 void wid_osnovni_pogled::napolni_stranke() {
 
     int izbranec = 0;
-    int razvrsti = 0;
+    int razvrsti = 3;
 
     if ( ui->tbl_stranke->selectedItems().count() > 0 ) {
         izbranec = ui->tbl_stranke->selectedItems().takeAt(0)->row();
     }
 
-    razvrsti = ui->tbl_stranke->horizontalHeader()->sortIndicatorSection();
+//    razvrsti = ui->tbl_stranke->horizontalHeader()->sortIndicatorSection();
 
     QString app_path = QApplication::applicationDirPath();
     QString dbase_path = app_path + "/base.bz";
@@ -138,7 +255,7 @@ void wid_osnovni_pogled::napolni_stranke() {
 
         ui->tbl_stranke->clear();
 
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 0; i <= 4; i++) {
             ui->tbl_stranke->removeColumn(0);
         }
 
@@ -153,18 +270,21 @@ void wid_osnovni_pogled::napolni_stranke() {
         ui->tbl_stranke->insertColumn(0);
         ui->tbl_stranke->insertColumn(1);
         ui->tbl_stranke->insertColumn(2);
+        ui->tbl_stranke->insertColumn(3);
 
         // set proper width to the first four columns
 
         ui->tbl_stranke->setColumnWidth(0, 0);
         ui->tbl_stranke->setColumnWidth(1, 150);
         ui->tbl_stranke->setColumnWidth(2, 130);
+        ui->tbl_stranke->setColumnWidth(3, 35);
 
         // start filling the table
         QStringList naslovi;
         naslovi.append("ID");
         naslovi.append("Ime / Naziv");
         naslovi.append("Kontakt");
+        naslovi.append("Prioriteta");
 
         ui->tbl_stranke->setHorizontalHeaderLabels(naslovi);
 
@@ -244,6 +364,20 @@ void wid_osnovni_pogled::napolni_stranke() {
 
                 }
 
+                QSqlQuery sql_prioriteta;
+                sql_prioriteta.prepare("SELECT * FROM stranke_prioriteta WHERE id_stranke LIKE '" + pretvori(stranke.value(a)) + "'");
+                sql_prioriteta.exec();
+                if ( sql_prioriteta.next() ) {
+                    QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+                    vnos_prioritete->setText(prevedi(sql_prioriteta.value(sql_prioriteta.record().indexOf("prioriteta")).toString()));
+                    ui->tbl_stranke->setItem(row, 3, vnos_prioritete);
+                }
+                else {
+                    QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+                    vnos_prioritete->setText("NULL");
+                    ui->tbl_stranke->setItem(row, 3, vnos_prioritete);
+                }
+
                 row++;
             }
         }
@@ -252,6 +386,48 @@ void wid_osnovni_pogled::napolni_stranke() {
 
     ui->tbl_stranke->selectRow(izbranec);
     ui->tbl_stranke->sortByColumn(razvrsti, Qt::AscendingOrder);
+
+    if ( ui->btn_prioriteta_gor->text() == "Gor" && ui->btn_prioriteta_dol->text() == "Dol" ) { // zagon
+        shrani_prioriteto();
+    }
+
+}
+
+void wid_osnovni_pogled::shrani_prioriteto() {
+
+    int st_strank = ui->tbl_stranke->rowCount();
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prioriteta_stranke");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // izbrisemo celotno tabelo, da ne motijo prejsnji vnosi
+        QSqlQuery sql_zbrisi;
+        sql_zbrisi.prepare("DELETE FROM stranke_prioriteta");
+        sql_zbrisi.exec();
+
+        // zanka skozi vse vrstice, shranimo id stranke in pripadajoco prioriteto
+        for ( int i = 0; i < st_strank; i++ ) {
+            QSqlQuery sql_vnesi;
+            sql_vnesi.prepare("INSERT INTO stranke_prioriteta (id_stranke, prioriteta) VALUES (?, ?)");
+            sql_vnesi.bindValue(0, pretvori(ui->tbl_stranke->item(i, 0)->text()));
+            sql_vnesi.bindValue(1, pretvori(ui->tbl_stranke->item(i, 3)->text()));
+            sql_vnesi.exec();
+        }
+    }
+    base.close();
 
 }
 

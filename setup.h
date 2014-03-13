@@ -32,6 +32,7 @@ private slots:
 	void tabela_nastavitve();
 	void tabela_avtomobili();
 	void tabela_stroski_prehrane();
+    void tabela_prioriteta_strank();
 
 	// ustvari tabele sifrantov
 	void tabela_skd();

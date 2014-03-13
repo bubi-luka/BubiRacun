@@ -18,6 +18,7 @@ public:
 private slots:
     void napolni_projekte();
     void napolni_stranke();
+    void shrani_prioriteto();
     void napolni_potne_naloge();
     void napolni_prejete_racune();
     void napolni_izdane_racune();
@@ -27,6 +28,10 @@ private slots:
     void on_tbl_potni_nalogi_doubleClicked();
     void on_tbl_prejeti_racuni_doubleClicked();
     void on_tbl_predracun_doubleClicked();
+
+    void on_btn_prioriteta_gor_clicked();
+    void on_btn_prioriteta_dol_clicked();
+    void on_btn_osvezi_stranke_clicked();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);
