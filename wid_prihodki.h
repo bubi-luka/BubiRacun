@@ -18,41 +18,19 @@ public:
 private slots:
 	// mesecni pregled
 	void on_txt_leto_currentIndexChanged();
-	void on_txt_mesec_currentIndexChanged();
-
-	void on_txt_sklop_currentIndexChanged();
-	void on_txt_skupina_currentIndexChanged();
-	void on_txt_storitev_currentIndexChanged();
-
-	void on_cb_vsa_opravila_toggled();
+    void on_txt_mesec_currentIndexChanged();
 
 	// letni pregled
-	void on_txt_leto_3_currentIndexChanged();
-
-	void on_txt_sklop_3_currentIndexChanged();
-	void on_txt_skupina_3_currentIndexChanged();
-	void on_txt_storitev_3_currentIndexChanged();
-
-	void on_cb_vsa_opravila_3_toggled();
-
-	// skupni pregled
-	void on_txt_sklop_4_currentIndexChanged();
-	void on_txt_skupina_4_currentIndexChanged();
-	void on_txt_storitev_4_currentIndexChanged();
-
-	void on_cb_vsa_opravila_4_toggled();
+    void on_txt_leto_3_currentIndexChanged();
 
 	// napolni mesecni pregled
-	void napolni_mesec();
-	void napolni_mesec_tabela();
+    void napolni_mesec();
 
 	// napolni letni pregled
-	void napolni_letni();
-	void napolni_letni_tabela();
+    void napolni_letni();
 
 	// napolni skupni pregled
-	void napolni_skupni();
-	void napolni_skupni_tabela();
+    void napolni_skupni();
 
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);

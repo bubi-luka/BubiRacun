@@ -194,7 +194,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="label_17">
               <property name="text">
-               <string>Znesek</string>
+               <string>Znesek (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -290,7 +290,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Preteklo leto</string>
+               <string>Preteklo leto (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -676,7 +676,7 @@
             <item row="0" column="2">
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Tekoče leto</string>
+               <string>Tekoče leto (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1042,7 +1042,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="label_44">
               <property name="text">
-               <string>Znesek</string>
+               <string>Znesek (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1362,7 +1362,7 @@
             <item row="0" column="2">
              <widget class="QLabel" name="label_36">
               <property name="text">
-               <string>Skupni izdatek</string>
+               <string>Skupni izdatek (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1372,7 +1372,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="label_24">
               <property name="text">
-               <string>Povprečni izdatek</string>
+               <string>Povprečni izdatek (z DDV)</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>

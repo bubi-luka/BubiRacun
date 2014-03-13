@@ -1007,7 +1007,25 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		else if ( st_racuna.length() == 2 ) {
 			st_racuna = "0" + st_racuna;
 		}
-		st_racuna = QDate::currentDate().toString("yyyy").right(2) + st_racuna;
+
+        QString predpona = "";
+
+        if ( tip == "1" ) {
+            predpona = "P";
+        }
+        else if ( tip == "2" ) {
+            predpona = "A";
+        }
+        else if ( tip == "3" ) {
+            predpona = "R";
+        }
+        else if ( tip == "4" ) {
+            predpona = "D";
+        }
+        // imamo dovolj podatkov za tvorbo stevilke racuna
+
+        st_racuna = predpona + QDate::currentDate().toString("yyyy").right(2) + st_racuna;
+
 	}
 
 	base.close();
@@ -1157,6 +1175,10 @@ void wid_racuni::on_btn_print_seznam_clicked() {
 
 void wid_racuni::on_btn_prestevilci_clicked() {
 
+    QString gumb = ui->btn_prestevilci->text();
+    ui->btn_prestevilci->setText("Izvajam prestevilcenje racunov.");
+    qApp->processEvents();
+
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
 
@@ -1172,6 +1194,16 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 	}
 	else {
 		// baza je odprta
+
+        int i_vseh_racunov = 0;
+        int i_zaporedna = 0;
+
+        QSqlQuery sql_prestej_racune;
+        sql_prestej_racune.prepare("SELECT * FROM racuni WHERE stevilka_racuna NOT LIKE ''");
+        sql_prestej_racune.exec();
+        while ( sql_prestej_racune.next() ) {
+            i_vseh_racunov++;
+        }
 
 		// naredi prestevilcenje za vse tipe racunov
 		for ( int i_tip_racuna = 1; i_tip_racuna <= 3; i_tip_racuna++ ) {
@@ -1263,6 +1295,8 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 				for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ ) {
 
 					zaporedna_stevilka++;
+                    i_zaporedna++;
+
 					QString zaporedna = "";
 					if ( zaporedna_stevilka < 10 ) {
 						zaporedna = "00" + QString::number(zaporedna_stevilka, 10);
@@ -1274,9 +1308,29 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 						zaporedna = "" + QString::number(zaporedna_stevilka, 10);
 					}
 
-					QSqlQuery sql_prestevilci;
+                    QString predpona = "";
+
+                    if ( i_tip_racuna == 1 ) {
+                        predpona = "P";
+                    }
+                    else if ( i_tip_racuna == 2 ) {
+                        predpona = "A";
+                    }
+                    else if ( i_tip_racuna == 3 ) {
+                        predpona = "R";
+                    }
+                    else if ( i_tip_racuna == 4 ) {
+                        predpona = "D";
+                    }
+
+                    // imamo dovolj podatkov za tvorbo stevilke racuna
+
+                    ui->btn_prestevilci->setText("Shranjujem: " + QString::number(i_zaporedna, 10) + "/" + QString::number(i_vseh_racunov, 10));
+                    qApp->processEvents();
+
+                    QSqlQuery sql_prestevilci;
 					sql_prestevilci.prepare("UPDATE racuni SET stevilka_racuna = ? WHERE id LIKE '" + pretvori(seznam_vnosov.value(i_seznam_vnosov)) + "'");
-					sql_prestevilci.bindValue(0, pretvori(leta.value(i_leta).right(2) + zaporedna));
+                    sql_prestevilci.bindValue(0, pretvori(predpona + leta.value(i_leta).right(2) + zaporedna));
 					sql_prestevilci.exec();
 
 				} // for ( int i_seznam_vnosov = 0; i_seznam_vnosov < seznam_vnosov.count(); i_seznam_vnosov++ )
@@ -1295,6 +1349,9 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 	}
 
 	base.close();
+
+    ui->btn_prestevilci->setText(gumb);
+    qApp->processEvents();
 
 	// sporocilo ob zakljucku prestevilcevanja
 	QMessageBox zakljucek;
