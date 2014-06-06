@@ -907,6 +907,14 @@ void potninalogi::prejem(QString besedilo) {
         ui->txt_registrska_stevilka->setEnabled(true);
     }
     else {
+
+        // preglej, ali je treba odpreti kako polje
+        QString kopiraj = "false";
+        if ( besedilo.left(7) == "kopiraj" ) {
+            besedilo = besedilo.right(besedilo.length() - 7);
+            kopiraj = "true";
+        }
+
         ui->btn_sprejmi->setText("Polnim");
         // besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
         QString app_path = QApplication::applicationDirPath();
@@ -1053,7 +1061,9 @@ void potninalogi::prejem(QString besedilo) {
             ui->btn_izvozi->setEnabled(true);
             ui->wid_pot->setEnabled(true);
             ui->wid_st->setEnabled(true);
-            ui->txt_datum_naloga->setEnabled(false);
+            if ( kopiraj == "false" ) {
+                ui->txt_datum_naloga->setEnabled(false);
+            }
             ui->txt_prejemnik_izbira_osebe->setEnabled(false);
             ui->txt_prevoz->setEnabled(false);
             ui->txt_registrska_stevilka->setEnabled(false);

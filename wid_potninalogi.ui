@@ -107,6 +107,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btn_duplikat">
+       <property name="text">
+        <string>Kopiraj nalog</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btn_refresh">
        <property name="text">
         <string>Osveži</string>
