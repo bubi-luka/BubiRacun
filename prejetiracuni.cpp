@@ -906,6 +906,15 @@ void prejetiracuni::on_btn_dodaj_ddv_clicked() {
 
 }
 
+void prejetiracuni::on_btn_izbrisi_ddv_clicked() {
+
+
+    ui->tbl_ddv->removeRow(ui->tbl_ddv->selectedItems().at(0)->row());
+
+    izracunaj();
+
+}
+
 void prejetiracuni::on_tbl_ddv_itemChanged(QTableWidgetItem *celica) {
 
 	// pridobi podatke o celici
@@ -1009,7 +1018,7 @@ void prejetiracuni::napolni_ddv() {
 		sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
 		sql_fill.exec();
 
-		if (sql_fill.next()) {
+        if ( sql_fill.next() ) {
 			QString ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("ddv_array")).toString());
 			QString znesek_brez_ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("znesek_brez_ddv_array")).toString());
 
@@ -1018,36 +1027,40 @@ void prejetiracuni::napolni_ddv() {
 
 			QStringList seznam_ddv = ddv_array.split(";");
 			QStringList seznam_znesek = ddv_array.split(";");
-			QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
+            QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
 
-			for ( int a = 0; a < seznam_ddv.count(); a++ ) {
-				seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
-				seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
-				seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
-			}
+            if ( seznam_ddv[0] != "" ) {
+                for ( int a = 0; a < seznam_ddv.count(); a++ ) {
+                    seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
+                    seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
+                    seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
+                }
 
-			for ( int i = 0; i < seznam_ddv.count(); i++ ) {
-				ui->tbl_ddv->insertRow(i);
-				ui->tbl_ddv->setRowHeight(i, 20);
+                for ( int i = 0; i < seznam_ddv.count(); i++ ) {
+                    ui->tbl_ddv->insertRow(i);
+                    ui->tbl_ddv->setRowHeight(i, 20);
 
-				for ( int j = 0; j < 3; j++ ) {
+                    for ( int j = 0; j < 3; j++ ) {
 
-					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( j == 0 ) {
-						celica->setText(seznam_ddv[i].replace(".", ",") + " %");
-						celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
-					}
-					else if ( j == 1 ) {
-						celica->setText(seznam_znesek[i].replace(".", ","));
-						celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
-					}
-					else if ( j == 2 ) {
-						celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
-					}
-					ui->tbl_ddv->setItem(i, j, celica);
+                        QTableWidgetItem *celica = new QTableWidgetItem;
+                        if ( j == 0 ) {
+                            celica->setText(seznam_ddv[i].replace(".", ",") + " %");
+                            celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+                        }
+                        else if ( j == 1 ) {
+                            celica->setText(seznam_znesek[i].replace(".", ","));
+                            celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+                        }
+                        else if ( j == 2 ) {
+                            celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
+                        }
+                        ui->tbl_ddv->setItem(i, j, celica);
 
-				}
-			}
+                    }
+                }
+
+            }
+
 		}
 	}
 	base.close();

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
+    <width>1002</width>
     <height>674</height>
    </rect>
   </property>
@@ -475,6 +475,13 @@
                <widget class="QPushButton" name="btn_dodaj_ddv">
                 <property name="text">
                  <string>Dodaj DDV</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_izbrisi_ddv">
+                <property name="text">
+                 <string>Izbrisi DDV</string>
                 </property>
                </widget>
               </item>
