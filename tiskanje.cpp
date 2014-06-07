@@ -3949,12 +3949,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		skupajznesek = skupajbrezddv + znesekddv;
 
 		// nastavi parametre ("Skupaj v EUR: ")
-		painter.setFont(debelo);
+        painter.setFont(malo_debelo);
         besedilo = racun.readLine() + " ";
 		// natisnemo besedilo
         painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 		// natisnemo besedilo
-		painter.setFont(normalno);
+        painter.setFont(malo);
         painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(skupajznesek, 'f', 2).replace(".", ",") + " EUR");
 		// nova vrstica * 2
 		pozicija += visina_vrstice;
@@ -3967,14 +3967,14 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		if ( racun_tip == "1" && racun_avans != "0,0 % " ) {
 			// nastavi parametre ("Skupaj % avans: ")
-			painter.setFont(debelo);
+            painter.setFont(malo_debelo);
 			QString besedilo_skupaj = racun.readLine();
 			QString besedilo_avans = racun.readLine();
 			besedilo = besedilo_skupaj + " " + racun_avans + " " + besedilo_avans;
 			// natisnemo besedilo
             painter.drawText(QRectF(printer.width() * 1 / 2, pozicija,velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 			// natisnemo besedilo
-			painter.setFont(normalno);
+            painter.setFont(malo);
             painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
 			// nova vrstica * 2
 			pozicija += visina_vrstice;
