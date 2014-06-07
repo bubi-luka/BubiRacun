@@ -23,6 +23,9 @@ private slots:
     void keyPressEvent(QKeyEvent *event);
     void on_txt_zaposlen_toggled(bool stanje);
 
+    void on_rb_moski_toggled();
+    void on_rb_zenski_toggled();
+
     void on_txt_posta_currentIndexChanged(QString besedilo);
     void on_txt_postna_stevilka_textChanged(QString besedilo);
 

@@ -2884,7 +2884,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		* v formo za tisk in natisnemo.
 		**/
 
-	// priprava spremenljivk
+    // priprava spremenljivk
 	QString podjetje_logo = "";
 	QString podjetje_kratki = "";
 	QString podjetje_polni = "";
@@ -2925,6 +2925,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString racun_id_starsa = "";
 	QString racun_stevilka_starsa = "";
     QString razlog_stornacije = "";
+    QString racun_avtor = "";
 
 	QString storitev_id = "";
 	QString storitev_ime = "";
@@ -2986,6 +2987,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
 		sql_racun.exec();
 		if ( sql_racun.next() ) {
+            racun_avtor = prevedi(sql_racun.value(sql_racun.record().indexOf("avtor_oseba")).toString());
 			racun_tip = prevedi(sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString());
 			racun_stevilka = prevedi(sql_racun.value(sql_racun.record().indexOf("stara_stevilka_racuna")).toString());
 			if ( racun_stevilka == "" ) {
@@ -3047,7 +3049,17 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(podjetje_oseba_naziv) + "'");
 			sql_naziv.exec();
 			if ( sql_naziv.next() ) {
-				podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv")).toString());
+                QSqlQuery sql_spol;
+                sql_spol.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(racun_avtor) + "'");
+                sql_spol.exec();
+                if ( sql_spol.next() ) {
+                    if ( prevedi(sql_spol.value(sql_spol.record().indexOf("spol")).toString()) == "2" ) {
+                        podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_zenski")).toString());
+                    }
+                    else {
+                        podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_moski")).toString());
+                    }
+                }
 			}
 
 			// napolni podatke o narocniku
@@ -4276,9 +4288,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// naziv
 		painter.setFont(normalno);
-		besedilo = racun.readLine() + " ";
+        //besedilo = racun.readLine() + " ";
+        besedilo = "";
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (naziv podpisnika)
-		velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv.toLower());
+        velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height();
 		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
@@ -4295,7 +4308,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// natisnemo besedilo
 		painter.drawText(QRectF(0, pozicija, printer.width() - velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, besedilo);
-		painter.drawText(QRectF(printer.width() - velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv.toLower());
+        painter.drawText(QRectF(printer.width() - velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
