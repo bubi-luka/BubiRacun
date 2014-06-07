@@ -4288,16 +4288,15 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// naziv
 		painter.setFont(normalno);
-        //besedilo = racun.readLine() + " ";
-        besedilo = "";
+        besedilo = racun.readLine() + " ";
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (naziv podpisnika)
         velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nastavimo parametre
-		visina_vrstice = velikost_besedila.height();
+        visina_vrstice = velikost_besedila.height();
 		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 
 		// preveri, ce je potrebna nova stran
-		if( pozicija + visina_noge + visina_vrstice * 2 + razmik_med_vrsticami * 2 >= printer.height() ) {
+        if( pozicija + visina_noge + visina_vrstice * 4 + razmik_med_vrsticami * 4 >= printer.height() ) { // zahvala + naziv + podpis
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
@@ -4306,8 +4305,11 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			pozicija = visina_glave;
 		}
 
-		// natisnemo besedilo
-		painter.drawText(QRectF(0, pozicija, printer.width() - velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap, besedilo);
+        // natisnemo besedilo // Hvala za zaupanje!
+        painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+
+        pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+
         painter.drawText(QRectF(printer.width() - velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
