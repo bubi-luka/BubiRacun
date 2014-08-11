@@ -2210,19 +2210,19 @@ void racun::stevilka_racuna() {
 				QString tip_racuna = "";
 				if ( ui->rb_predracun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("1") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("1") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_predplacilo->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("2") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("2") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_racun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_dobropis->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
 				}
 
 

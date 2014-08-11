@@ -975,7 +975,7 @@ void wid_racuni::on_btn_dobropis_clicked() {
 
 QString wid_racuni::stevilka_racuna(QString tip) {
 
-	QString st_racuna = "";
+    QString st_racuna = "";
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -990,7 +990,8 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
 		msgbox.exec();
 	}
-	else {
+    else {
+
 		QString leto = QDate::currentDate().toString("yyyy");
 		QString mesec = QDate::currentDate().toString("MM");
 		QString dan = QDate::currentDate().toString("dd");
@@ -1000,18 +1001,21 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		// izracunamo zaporedno stevilko racuna v tekocem letu
 		QSqlQuery sql_stetje_racunov;
 		sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-                                   "' AND tip_racuna LIKE '" + pretvori(tip) + "'' ORDER BY stevilka_racuna ASC");
+                                   "' AND tip_racuna LIKE '" + pretvori(tip) + "' ORDER BY stevilka_racuna ASC");
 		sql_stetje_racunov.exec();
 		while ( sql_stetje_racunov.next() ) {
+            qDebug("test3");
 			int st_racuna = 0;
+            qDebug(QString::number(st_racuna).toUtf8());
 			st_racuna = prevedi(sql_stetje_racunov.value(sql_stetje_racunov.record().indexOf("stevilka_racuna")).toString()).right(3).toInt();
+            qDebug(QString::number(st_racuna).toUtf8());
 			if ( st_racuna > max_st_racuna ) {
 				max_st_racuna = st_racuna;
 			}
-		}
+        }
 
-		max_st_racuna = max_st_racuna + 1;
-		st_racuna = QString::number(max_st_racuna, 10);
+        max_st_racuna = max_st_racuna + 1;
+        st_racuna = QString::number(max_st_racuna, 10);
 
 		// iz stevilke racuna ustvarimo tromestno stevilko, pretvorjeno v besedo
 		if ( st_racuna.length() == 1 ) {
