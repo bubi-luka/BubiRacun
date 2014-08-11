@@ -31,7 +31,8 @@ void sif_delavniki::on_btn_osvezi_clicked() {
     ui->txt_status->setText("Pricetek!");
 
     // nastavi pot do spletnega naslova
-    QString pot = "http://www.racunovodja.com/mdokumenti/delure2002.asp";
+    // QString pot = "http://www.racunovodja.com/mdokumenti/delure2002.asp"; // pre 2014
+    QString pot = "http://www.racunovodja.com/clanki.asp?clanek=6469/%8Atevilo_delovnih_dni_za_leto_2014_%2840-urni_delovni_teden%29";
 
     // nastavi polja iz baze
     QString app_path = QApplication::applicationDirPath();
