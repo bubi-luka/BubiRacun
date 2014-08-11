@@ -759,6 +759,19 @@ void wid_racuni::on_btn_brisi_clicked() {
 	else {
 		QSqlQuery sql_brisi;
 
+        // ob brisanju dobropisa spremeni status dobropisa pri racunu na neobstojec
+        QSqlQuery sql_st_racuna;
+        sql_st_racuna.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+        sql_st_racuna.exec();
+        if ( sql_st_racuna.next() ) {
+            if ( sql_st_racuna.value(sql_st_racuna.record().indexOf("tip_racuna")).toString() == "4" ) { // brisemo dobropis
+                sql_brisi.prepare("UPDATE racuni SET 'dobropis' = '0' WHERE id LIKE '" + sql_st_racuna.value(sql_st_racuna.record().indexOf("stevilka_starsa")).toString()  + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+            }
+        }
+        sql_st_racuna.clear();
+
 		// izbrisi opravila
 		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
