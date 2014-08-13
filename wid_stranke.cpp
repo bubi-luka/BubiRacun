@@ -220,65 +220,112 @@ void wid_stranke::on_btn_brisi_clicked() {
     }
     else {
 
-        QSqlQuery sql_brisi;
+        // ob brisanju stranke najprej preverimo, ali ima le-ta projekt ali racun
+        bool projekt = false;
+        bool racun = false;
+        bool nadaljuj = true;
 
-        // poisci vse projekte, ki jih izbrana stranka ima
-        QSqlQuery sql_projekt;
-        sql_projekt.prepare("SELECT * FROM projekti WHERE stranka LIKE '" + id + "'");
-        sql_projekt.exec();
-        while ( sql_projekt.next() ) {
+        QSqlQuery sql_preveri;
 
-            QString stevilka_projekta = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+        // preveri obstoj projekta
+        sql_preveri.prepare("SELECT * FROM projekti WHERE stranka LIKE '" + id + "'");
+        sql_preveri.exec();
+        if ( sql_preveri.next() ) {
+            projekt = true;
+        }
+        sql_preveri.clear();
 
-            // izbrisi opravila
-            sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-
-            // izbrisi izdane racune
-            sql_brisi.prepare("DELETE FROM racuni WHERE projekt LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-
-            // izbrisi zapise
-            sql_brisi.prepare("DELETE FROM opombe WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-
-            // izbrisi potne naloge
-            QSqlQuery sql_potni_nalog;
-            sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
-            sql_potni_nalog.exec();
-            while ( sql_potni_nalog.next() ) {
-                // izbrisi pot
-                QString st_naloga = sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString();
-                sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + st_naloga + "'");
-                sql_brisi.exec();
-                sql_brisi.clear();
-            }
-            sql_brisi.prepare("DELETE FROM potni_nalogi WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-
-            // izbrisi prejete racune
-            sql_brisi.prepare("DELETE FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-            sql_brisi.clear();
-
-            // izbrisi projekt
-            sql_brisi.prepare("DELETE FROM projekti WHERE id LIKE '" + stevilka_projekta + "'");
-            sql_brisi.exec();
-
+        // preveri obstoj racuna
+        sql_preveri.prepare("SELECT * FROM racuni WHERE stranka LIKE '" + id + "'");
+        sql_preveri.exec();
+        if ( sql_preveri.next() ) {
+            racun = true;
         }
 
-        // izbrisi stranko
-        sql_brisi.prepare("DELETE FROM stranke WHERE id LIKE '" + id + "'");
-        sql_brisi.exec();
+        if ( projekt == true || racun == true ) {
+            QString stavek = "Stranka ima odprt";
+            if ( projekt == true && racun == true ) {
+                stavek.append("a tako projekt kot racun");
+            }
+            else if ( projekt == true ) {
+                stavek.append(" projekt");
+            }
+            else if ( racun == true ) {
+                stavek.append(" racun");
+            }
+            stavek.append(", zato brisanje ni mozno!");
+
+            QMessageBox msgbox;
+            msgbox.setText("Brisanje stranke ni mozno");
+            msgbox.setInformativeText(stavek);
+            msgbox.exec();
+
+            nadaljuj = false;
+        }
+
+        if ( nadaljuj == true )  {
+            QSqlQuery sql_brisi;
+
+            // poisci vse projekte, ki jih izbrana stranka ima
+            QSqlQuery sql_projekt;
+            sql_projekt.prepare("SELECT * FROM projekti WHERE stranka LIKE '" + id + "'");
+            sql_projekt.exec();
+            while ( sql_projekt.next() ) {
+
+                QString stevilka_projekta = sql_projekt.value(sql_projekt.record().indexOf("id")).toString();
+
+                // izbrisi opravila
+                sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+
+                // izbrisi izdane racune
+                sql_brisi.prepare("DELETE FROM racuni WHERE projekt LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+
+                // izbrisi zapise
+                sql_brisi.prepare("DELETE FROM opombe WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+
+                // izbrisi potne naloge
+                QSqlQuery sql_potni_nalog;
+                sql_potni_nalog.prepare("SELECT * FROM potni_nalogi WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
+                sql_potni_nalog.exec();
+                while ( sql_potni_nalog.next() ) {
+                    // izbrisi pot
+                    QString st_naloga = sql_potni_nalog.value(sql_potni_nalog.record().indexOf("stevilka_naloga")).toString();
+                    sql_brisi.prepare("DELETE FROM potovanja WHERE potni_nalog LIKE '" + st_naloga + "'");
+                    sql_brisi.exec();
+                    sql_brisi.clear();
+                }
+                sql_brisi.prepare("DELETE FROM potni_nalogi WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+
+                // izbrisi prejete racune
+                sql_brisi.prepare("DELETE FROM prejeti_racuni WHERE stevilka_projekta LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+
+                // izbrisi projekt
+                sql_brisi.prepare("DELETE FROM projekti WHERE id LIKE '" + stevilka_projekta + "'");
+                sql_brisi.exec();
+
+            }
+
+            // izbrisi stranko
+            sql_brisi.prepare("DELETE FROM stranke WHERE id LIKE '" + id + "'");
+            sql_brisi.exec();
+
+            // odstrani vrstico v tabeli
+            ui->tbl_stranke->removeRow(ui->tbl_stranke->selectedItems().takeAt(0)->row());
+        }
 
     }
     base.close();
 
-    ui->tbl_stranke->removeRow(ui->tbl_stranke->selectedItems().takeAt(0)->row());
     osvezi("stranke");
 
 }

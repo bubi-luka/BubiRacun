@@ -138,6 +138,9 @@ stranke::stranke(QWidget *parent) :
         ui->txt_podrazitev_hitrost->setEnabled(false);
         ui->txt_podrazitev_zapleti->setEnabled(false);
 
+        ui->btn_brisi->setEnabled(false);
+        ui->btn_brisi->setVisible(false);
+
         //set input mask for phone fields
         ui->txt_gsm->setInputMask("+990 (\\0)99/999-999;_");
         ui->txt_telefon->setInputMask("+990 (\\0)9/99-99-999;_");
