@@ -38,6 +38,7 @@ private slots:
     void on_txt_datum_prejema_dateChanged();
 
     void on_btn_dodaj_ddv_clicked();
+    void on_btn_izbrisi_ddv_clicked();
     void on_tbl_ddv_itemChanged(QTableWidgetItem *celica);
     void napolni_ddv();
 

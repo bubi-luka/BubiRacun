@@ -759,6 +759,19 @@ void wid_racuni::on_btn_brisi_clicked() {
 	else {
 		QSqlQuery sql_brisi;
 
+        // ob brisanju dobropisa spremeni status dobropisa pri racunu na neobstojec
+        QSqlQuery sql_st_racuna;
+        sql_st_racuna.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
+        sql_st_racuna.exec();
+        if ( sql_st_racuna.next() ) {
+            if ( sql_st_racuna.value(sql_st_racuna.record().indexOf("tip_racuna")).toString() == "4" ) { // brisemo dobropis
+                sql_brisi.prepare("UPDATE racuni SET 'dobropis' = '0' WHERE id LIKE '" + sql_st_racuna.value(sql_st_racuna.record().indexOf("stevilka_starsa")).toString()  + "'");
+                sql_brisi.exec();
+                sql_brisi.clear();
+            }
+        }
+        sql_st_racuna.clear();
+
 		// izbrisi opravila
 		sql_brisi.prepare("DELETE FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
@@ -932,20 +945,20 @@ void wid_racuni::on_btn_dobropis_clicked() {
             nov_id = prevedi(sql_nov_id.value(sql_nov_id.record().indexOf("id")).toString());
         }
 
-        // kopira opravila iz predracuna v racun
+        // kopira opravila iz racuna v dobropis
         QSqlQuery sql_kopiraj_opravila;
         sql_kopiraj_opravila.prepare("INSERT INTO opravila (stevilka_stranke, stevilka_projekta, stevilka_racuna, tip_racuna, opravilo_skupina, "
                                      "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
                                      "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
                                      "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
                                      "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
-                                     "opravilo_rocno, vrstni_red) "
+                                     "opravilo_rocno, vrstni_red, sifra) "
                                      "SELECT stevilka_stranke, stevilka_projekta, '" + nov_id + "', '4', opravilo_skupina, "
                                      "opravilo_storitev, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, popust_fb2, "
                                      "popust_komb1, popust_komb2, popust_stranka, popust_kupon, popust_akcija, podrazitev_vikend, "
                                      "podrazitev_hitrost, podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, "
                                      "tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, znesek_ddv, znesek_koncni, enota, opravilo_sklop, "
-                                     "opravilo_rocno, vrstni_red FROM opravila "
+                                     "opravilo_rocno, vrstni_red, sifra FROM opravila "
                                      "WHERE stevilka_racuna LIKE '" + pretvori(ui->tbl_racuni->selectedItems().takeAt(0)->text()) + "' AND tip_racuna LIKE '3'");
         sql_kopiraj_opravila.exec();
 
@@ -962,7 +975,7 @@ void wid_racuni::on_btn_dobropis_clicked() {
 
 QString wid_racuni::stevilka_racuna(QString tip) {
 
-	QString st_racuna = "";
+    QString st_racuna = "";
 
 	QString app_path = QApplication::applicationDirPath();
 	QString dbase_path = app_path + "/base.bz";
@@ -977,7 +990,8 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
 		msgbox.exec();
 	}
-	else {
+    else {
+
 		QString leto = QDate::currentDate().toString("yyyy");
 		QString mesec = QDate::currentDate().toString("MM");
 		QString dan = QDate::currentDate().toString("dd");
@@ -987,18 +1001,21 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		// izracunamo zaporedno stevilko racuna v tekocem letu
 		QSqlQuery sql_stetje_racunov;
 		sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-                                   "' AND tip_racuna LIKE '" + pretvori(tip) + "'' ORDER BY stevilka_racuna ASC");
+                                   "' AND tip_racuna LIKE '" + pretvori(tip) + "' ORDER BY stevilka_racuna ASC");
 		sql_stetje_racunov.exec();
 		while ( sql_stetje_racunov.next() ) {
+            qDebug("test3");
 			int st_racuna = 0;
+            qDebug(QString::number(st_racuna).toUtf8());
 			st_racuna = prevedi(sql_stetje_racunov.value(sql_stetje_racunov.record().indexOf("stevilka_racuna")).toString()).right(3).toInt();
+            qDebug(QString::number(st_racuna).toUtf8());
 			if ( st_racuna > max_st_racuna ) {
 				max_st_racuna = st_racuna;
 			}
-		}
+        }
 
-		max_st_racuna = max_st_racuna + 1;
-		st_racuna = QString::number(max_st_racuna, 10);
+        max_st_racuna = max_st_racuna + 1;
+        st_racuna = QString::number(max_st_racuna, 10);
 
 		// iz stevilke racuna ustvarimo tromestno stevilko, pretvorjeno v besedo
 		if ( st_racuna.length() == 1 ) {

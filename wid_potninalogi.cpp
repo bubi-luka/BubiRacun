@@ -994,3 +994,194 @@ void wid_potninalogi::on_btn_kopiraj_clicked() {
     odlozisce->setMimeData(mimeData, QClipboard::Clipboard);
 
 }
+
+void wid_potninalogi::on_btn_duplikat_clicked() {
+
+    QString id = "";
+
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "kopiraj-nalog");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // baza je odprta
+
+        // doloci id naloga, ki ga zelimo kopirati
+        QString zap_st = ui->tbl_potninalogi->selectedItems().takeAt(0)->text();
+
+        // preberi oznacen nalog in ga kopiraj v nov nalog
+        QSqlQuery sql_preberi;
+        sql_preberi.prepare("SELECT * FROM potni_nalogi WHERE id LIKE '" + pretvori(zap_st) + "'");
+        sql_preberi.exec();
+        if ( sql_preberi.next() ) {
+
+            // tvori novo stevilko potnega naloga
+            QString st_naloga = "";
+
+            QString leto = QDate::currentDate().toString("yyyy");
+
+            QSqlQuery sql_stevilka;
+            sql_stevilka.prepare("SELECT * FROM potni_nalogi WHERE stevilka_naloga LIKE '" + pretvori("PN-" + leto) + "%' ORDER BY stevilka_naloga ASC");
+            sql_stevilka.exec();
+            while ( sql_stevilka.next() ) {
+                st_naloga = prevedi(sql_stevilka.value(sql_stevilka.record().indexOf("stevilka_naloga")).toString());
+            }
+
+            int zaporedna = st_naloga.right(3).toInt();
+            zaporedna++;
+
+            if ( zaporedna < 10 ) {
+                st_naloga = "00" + QString::number(zaporedna, 10);
+            }
+            else if ( zaporedna < 100 ) {
+                st_naloga = "0" + QString::number(zaporedna, 10);
+            }
+            else {
+                st_naloga = "" + QString::number(zaporedna, 10);
+            }
+
+            st_naloga ="PN-" + leto + "-" + st_naloga;
+
+            // vnesi kopijo naloga
+            QSqlQuery sql_vnesi;
+            sql_vnesi.prepare("INSERT INTO potni_nalogi (stevilka_naloga, datum_naloga, "
+                              "stevilka_projekta, opombe, cena_prevoza, cena_dnevnic, ostali_stroski, stroski_skupaj, skupaj_kilometri, "
+                              "kilometrina, skupaj_dnevi, skupaj_ure, priznana_dnevnica, cena_dnevnice_6_8, cena_dnevnice_8_12, cena_dnevnice_12_24, dnevnica_6_8, "
+                              "dnevnica_8_12, dnevnica_12_24, zajtrk_8_12, zajtrk_12_24, predlagatelj_podjetje_id, predlagatelj_podjetje_dolgi, "
+                              "predlagatelj_podjetje_kratki, predlagatelj_podjetje_naslov_ulica, predlagatelj_podjetje_naslov_stevilka, "
+                              "predlagatelj_podjetje_naslov_posta, predlagatelj_podjetje_naslov_postna_stevilka, predlagatelj_podjetje_logotip, "
+                              "predlagatelj_oseba_id, predlagatelj_oseba_ime, predlagatelj_oseba_priimek, predlagatelj_oseba_naziv, predlagatelj_oseba_naslov_ulica, "
+                              "predlagatelj_oseba_naslov_stevilka, predlagatelj_oseba_naslov_posta, predlagatelj_oseba_naslov_postna_stevilka, "
+                              "prejemnik_oseba_id, prejemnik_oseba_ime, prejemnik_oseba_priimek, prejemnik_oseba_naziv, prejemnik_oseba_naslov_ulica, "
+                              "prejemnik_oseba_naslov_stevilka, prejemnik_oseba_naslov_posta, prejemnik_oseba_naslov_postna_stevilka, "
+                              "prevozno_sredstvo, proizvajalec, znamka, tip, registrska_stevilka, priloge, stevilka_dokumenta) VALUES "
+                              "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                              "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            sql_vnesi.bindValue(0, pretvori(st_naloga));
+            sql_vnesi.bindValue(1, pretvori(QDate::currentDate().toString("dd.MM.yyyy")));
+            sql_vnesi.bindValue(2, sql_preberi.value(sql_preberi.record().indexOf("stevilka_projekta")).toString());
+            sql_vnesi.bindValue(3, sql_preberi.value(sql_preberi.record().indexOf("opombe")).toString());
+            sql_vnesi.bindValue(4, sql_preberi.value(sql_preberi.record().indexOf("cena_prevoza")).toString());
+            sql_vnesi.bindValue(5, sql_preberi.value(sql_preberi.record().indexOf("cena_dnevnic")).toString());
+            sql_vnesi.bindValue(6, sql_preberi.value(sql_preberi.record().indexOf("ostali_stroski")).toString());
+            sql_vnesi.bindValue(7, sql_preberi.value(sql_preberi.record().indexOf("stroski_skupaj")).toString());
+            sql_vnesi.bindValue(8, sql_preberi.value(sql_preberi.record().indexOf("skupaj_kilometri")).toString());
+            sql_vnesi.bindValue(9, sql_preberi.value(sql_preberi.record().indexOf("kilometrina")).toString());
+            sql_vnesi.bindValue(10, sql_preberi.value(sql_preberi.record().indexOf("skupaj_dnevi")).toString());
+            sql_vnesi.bindValue(11, sql_preberi.value(sql_preberi.record().indexOf("skupaj_ure")).toString());
+            sql_vnesi.bindValue(12, sql_preberi.value(sql_preberi.record().indexOf("priznana_dnevnica")).toString());
+            sql_vnesi.bindValue(13, sql_preberi.value(sql_preberi.record().indexOf("cena_dnevnice_6_8")).toString());
+            sql_vnesi.bindValue(14, sql_preberi.value(sql_preberi.record().indexOf("cena_dnevnice_8_12")).toString());
+            sql_vnesi.bindValue(15, sql_preberi.value(sql_preberi.record().indexOf("cena_dnevnice_12_24")).toString());
+            sql_vnesi.bindValue(16, sql_preberi.value(sql_preberi.record().indexOf("dnevnica_6_8")).toString());
+            sql_vnesi.bindValue(17, sql_preberi.value(sql_preberi.record().indexOf("dnevnica_8_12")).toString());
+            sql_vnesi.bindValue(18, sql_preberi.value(sql_preberi.record().indexOf("dnevnica_12_24")).toString());
+            sql_vnesi.bindValue(19, sql_preberi.value(sql_preberi.record().indexOf("zajtrk_8_12")).toString());
+            sql_vnesi.bindValue(20, sql_preberi.value(sql_preberi.record().indexOf("zajtrk_12_24")).toString());
+            sql_vnesi.bindValue(21, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_id")).toString());
+            sql_vnesi.bindValue(22, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_dolgi")).toString());
+            sql_vnesi.bindValue(23, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_kratki")).toString());
+            sql_vnesi.bindValue(24, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_naslov_ulica")).toString());
+            sql_vnesi.bindValue(25, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_naslov_stevilka")).toString());
+            sql_vnesi.bindValue(26, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_naslov_posta")).toString());
+            sql_vnesi.bindValue(27, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_naslov_postna_stevilka")).toString());
+            sql_vnesi.bindValue(28, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_podjetje_logotip")).toString());
+            sql_vnesi.bindValue(29, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_id")).toString());
+            sql_vnesi.bindValue(30, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_ime")).toString());
+            sql_vnesi.bindValue(31, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_priimek")).toString());
+            sql_vnesi.bindValue(32, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_naziv")).toString());
+            sql_vnesi.bindValue(33, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_naslov_ulica")).toString());
+            sql_vnesi.bindValue(34, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_naslov_stevilka")).toString());
+            sql_vnesi.bindValue(35, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_naslov_posta")).toString());
+            sql_vnesi.bindValue(36, sql_preberi.value(sql_preberi.record().indexOf("predlagatelj_oseba_naslov_postna_stevilka")).toString());
+            sql_vnesi.bindValue(37, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_id")).toString());
+            sql_vnesi.bindValue(38, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_ime")).toString());
+            sql_vnesi.bindValue(39, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_priimek")).toString());
+            sql_vnesi.bindValue(40, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_naziv")).toString());
+            sql_vnesi.bindValue(41, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_naslov_ulica")).toString());
+            sql_vnesi.bindValue(42, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_naslov_stevilka")).toString());
+            sql_vnesi.bindValue(43, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_naslov_posta")).toString());
+            sql_vnesi.bindValue(44, sql_preberi.value(sql_preberi.record().indexOf("prejemnik_oseba_naslov_postna_stevilka")).toString());
+            sql_vnesi.bindValue(45, sql_preberi.value(sql_preberi.record().indexOf("prevozno_sredstvo")).toString());
+            sql_vnesi.bindValue(46, sql_preberi.value(sql_preberi.record().indexOf("proizvajalec")).toString());
+            sql_vnesi.bindValue(47, sql_preberi.value(sql_preberi.record().indexOf("znamka")).toString());
+            sql_vnesi.bindValue(48, sql_preberi.value(sql_preberi.record().indexOf("tip")).toString());
+            sql_vnesi.bindValue(49, sql_preberi.value(sql_preberi.record().indexOf("registrska_stevilka")).toString());
+            sql_vnesi.bindValue(50, sql_preberi.value(sql_preberi.record().indexOf("priloge")).toString());
+            sql_vnesi.bindValue(51, sql_preberi.value(sql_preberi.record().indexOf("stevilka_dokumenta")).toString());
+            sql_vnesi.exec();
+
+            sql_vnesi.clear();
+
+            // dobi id zadnje vnesenega potnega naloga
+            sql_vnesi.prepare("SELECT * FROM potni_nalogi");
+            sql_vnesi.exec();
+            while ( sql_vnesi.next() ) {
+                id = prevedi(sql_vnesi.value(sql_vnesi.record().indexOf("id")).toString());
+            }
+            sql_vnesi.clear();
+
+            // poisci vse vnose v stroskih za star id in jih vnesi kot nov id
+            QSqlQuery sql_stroski;
+            sql_stroski.prepare("SELECT * FROM stroski WHERE potninalog LIKE '" +  pretvori(zap_st) + "'");
+            sql_stroski.exec();
+            while ( sql_stroski.next() ) {
+                sql_vnesi.prepare("INSERT INTO stroski (potninalog, strosek, cena) VALUES (?, ?, ?)");
+                sql_vnesi.bindValue(0, pretvori(id));
+                sql_vnesi.bindValue(1, sql_stroski.value(sql_stroski.record().indexOf("strosek")).toString());
+                sql_vnesi.bindValue(2, sql_stroski.value(sql_stroski.record().indexOf("cena")).toString());
+                sql_vnesi.exec();
+                sql_vnesi.clear();
+            }
+            sql_stroski.clear();
+
+            // poisci vse postanke na poti za star id in jih vnesi za nov id
+            QSqlQuery sql_pot;
+            sql_pot.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" +  pretvori(zap_st) + "'");
+            sql_pot.exec();
+            while ( sql_pot.next() ) {
+                sql_vnesi.prepare("INSERT INTO potovanja (potni_nalog, kraj_odhoda, kraj_prihoda, cas_odhoda, cas_prihoda, kilometri, naslov_ulica, naslov_stevilka, "
+                                  "naslov_postna_stevilka, naslov_posta, naziv_ciljnega_podjetja, namen_potovanja) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql_vnesi.bindValue(0, pretvori(id));
+                sql_vnesi.bindValue(1, sql_pot.value(sql_pot.record().indexOf("kraj_odhoda")).toString());
+                sql_vnesi.bindValue(2, sql_pot.value(sql_pot.record().indexOf("kraj_prihoda")).toString());
+                sql_vnesi.bindValue(3, sql_pot.value(sql_pot.record().indexOf("cas_odhoda")).toString());
+                sql_vnesi.bindValue(4, sql_pot.value(sql_pot.record().indexOf("cas_prihoda")).toString());
+                sql_vnesi.bindValue(5, sql_pot.value(sql_pot.record().indexOf("kilometri")).toString());
+                sql_vnesi.bindValue(6, sql_pot.value(sql_pot.record().indexOf("naslov_ulica")).toString());
+                sql_vnesi.bindValue(7, sql_pot.value(sql_pot.record().indexOf("naslov_stevilka")).toString());
+                sql_vnesi.bindValue(8, sql_pot.value(sql_pot.record().indexOf("naslov_postna_stevilka")).toString());
+                sql_vnesi.bindValue(9, sql_pot.value(sql_pot.record().indexOf("naslov_posta")).toString());
+                sql_vnesi.bindValue(10, sql_pot.value(sql_pot.record().indexOf("naziv_ciljnega_podjetja")).toString());
+                sql_vnesi.bindValue(11, sql_pot.value(sql_pot.record().indexOf("namen_potovanja")).toString());
+                sql_vnesi.exec();
+                sql_vnesi.clear();
+            }
+            sql_stroski.clear();
+        }
+    }
+    base.close();
+
+    osvezi("potninalog");
+
+    potninalogi *uredi = new potninalogi;
+    uredi->show();
+    QObject::connect(this, SIGNAL(prenos(QString)),
+               uredi , SLOT(prejem(QString)));
+    prenos("kopiraj" + id);
+    this->disconnect();
+
+    // receive signal to refresh table
+    QObject::connect(uredi, SIGNAL(poslji(QString)),
+               this , SLOT(osvezi(QString)));
+
+}

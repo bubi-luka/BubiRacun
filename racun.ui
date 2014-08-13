@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1111</width>
-    <height>708</height>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_racuni">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -41,8 +41,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1056</width>
-            <height>800</height>
+            <width>1055</width>
+            <height>737</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -995,7 +995,7 @@
             <x>0</x>
             <y>0</y>
             <width>1069</width>
-            <height>504</height>
+            <height>728</height>
            </rect>
           </property>
          </widget>

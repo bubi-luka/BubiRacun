@@ -2210,19 +2210,19 @@ void racun::stevilka_racuna() {
 				QString tip_racuna = "";
 				if ( ui->rb_predracun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("1") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("1") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_predplacilo->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("2") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("2") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_racun->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("3") + "' ORDER BY stevilka_racuna ASC");
 				}
 				else if ( ui->rb_dobropis->isChecked() ) {
 					sql_stetje_racunov.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%." + pretvori(leto) +
-											   "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
+                                               "' AND tip_racuna LIKE '" + pretvori("4") + "' ORDER BY stevilka_racuna ASC");
 				}
 
 
@@ -2408,7 +2408,9 @@ void racun::stevilka_racuna() {
 void racun::on_txt_datum_izdaje_racuna_dateChanged() {
 
 	if ( ui->txt_status_oddaje_racuna->currentText() != "" ) {
-		stevilka_racuna();
+        if ( ui->txt_stevilka_racuna->text() == "" ) {
+            stevilka_racuna();
+        }
 	}
 
 }
@@ -2445,24 +2447,71 @@ void racun::on_txt_status_oddaje_racuna_currentIndexChanged() {
 
 void racun::on_txt_status_predracuna_currentIndexChanged() {
 
-	if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) { // obvestimo o mozni tvorbi racuna
-		ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
-		// ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvori racun
-		if ( ui->txt_status_predracuna->isEnabled() ) {
-			QMessageBox sporocilo;
-			sporocilo.setText("Ob pritisku na gumb Shrani bo predracun zaprt, \n"
-							  "tvoril se bo nov t.i. zacasni racun, ki bo osnova \n"
-							  "za koncni racun. Omogoceno bo vnasanje casovnic in komentarjev!");
-			sporocilo.exec();
-		}
-	}
-	else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) { // status racunovodstva
-		ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText("Ni za oddajo"));
-	}
-// ce omogocimo, vpliva tudi na polnenje polj, kjer pa to ni zazeleno
-//    else {
-//        ui->txt_status_racunovodstva->setCurrentIndex(0);
-//    }
+    // preveriti, ali racun ze obstaja!!!
+
+    QString nas_id = "";
+    QString status = "Ne obstaja";
+
+    // ali smo na predracunu?
+    if ( ui->rb_predracun->isChecked() ) {
+        // ali ima predracun ze dodeljeno stevilko predracuna?
+        if ( ui->txt_stevilka_racuna->text() != "" ) {
+            // odpremo bazo in preverimo, ali obstaja racun, ki ima za stevilko starsa stevilko nasega predracuna
+            QString app_path = QApplication::applicationDirPath();
+            QString dbase_path = app_path + "/base.bz";
+
+            QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "stevilka_racuna");
+            base.setDatabaseName(dbase_path);
+            base.database();
+            base.open();
+            if(base.isOpen() != true){
+                QMessageBox msgbox;
+                msgbox.setText("Baze ni bilo moc odpreti");
+                msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+                msgbox.exec();
+            }
+            else {
+
+                // pridobimo nas id
+                QSqlQuery sql_nas_id;
+                sql_nas_id.prepare("SELECT * FROM racuni WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_stevilka_racuna->text()) + "'");
+                sql_nas_id.exec();
+                if ( sql_nas_id.next() ) { // stevilka nasega racuna je vpisana v bazi
+                    nas_id = prevedi(sql_nas_id.value(sql_nas_id.record().indexOf("id")).toString());
+                }
+
+                // preverimo, ali obstaja racun z nasim id-jem kot starsem
+                QSqlQuery sql_racun;
+                sql_racun.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '" + pretvori("3") + "' AND stevilka_starsa LIKE '" + pretvori(nas_id) + "'");
+                sql_racun.exec();
+                if ( sql_racun.next() ) {
+                    status = "Obstaja";
+                }
+            }
+            base.close();
+        }
+    }
+
+    if ( status == "Ne obstaja" ) { // nas predracun se nima racuna
+        if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Potrjen" ) { // obvestimo o mozni tvorbi racuna
+            ui->txt_status_placila->setCurrentIndex(ui->txt_status_placila->findText("Pla", Qt::MatchStartsWith));
+            // ce je spustni seznam omogocen in ima status potrjen, potem obvesti, da ob shranjevanju tvori racun
+            if ( ui->txt_status_predracuna->isEnabled() ) {
+                QMessageBox sporocilo;
+                sporocilo.setText("Ob pritisku na gumb Shrani bo predracun zaprt, \n"
+                                  "tvoril se bo nov t.i. zacasni racun, ki bo osnova \n"
+                                  "za koncni racun. Omogoceno bo vnasanje casovnic in komentarjev!");
+                sporocilo.exec();
+            }
+        }
+        else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) { // status racunovodstva
+            ui->txt_status_racunovodstva->setCurrentIndex(ui->txt_status_racunovodstva->findText("Ni za oddajo"));
+        }
+    // ce omogocimo, vpliva tudi na polnenje polj, kjer pa to ni zazeleno
+    //    else {
+    //        ui->txt_status_racunovodstva->setCurrentIndex(0);
+    //    }
+    }
 
 }
 
