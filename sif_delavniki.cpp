@@ -12,7 +12,7 @@ sif_delavniki::sif_delavniki(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->txt_status->setText("");
+    ui->txt_status->clear();
 }
 
 sif_delavniki::~sif_delavniki()
@@ -28,128 +28,143 @@ void sif_delavniki::on_btn_izhod_clicked() {
 
 void sif_delavniki::on_btn_osvezi_clicked() {
 
-    ui->txt_status->setText("Pricetek!");
+    ui->txt_status->appendPlainText("Pričenjam");
 
     // nastavi pot do spletnega naslova
-    // QString pot = "http://www.racunovodja.com/mdokumenti/delure2002.asp"; // pre 2014
-    QString pot = "http://www.racunovodja.com/clanki.asp?clanek=6469/%8Atevilo_delovnih_dni_za_leto_2014_%2840-urni_delovni_teden%29";
+    QString pot;
 
-    // nastavi polja iz baze
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
-
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        // the database is opened
-        QSqlQuery sql_napolni;
-        sql_napolni.prepare("SELECT * FROM nastavitve");
-        sql_napolni.exec();
-        while ( sql_napolni.next() ) {
-            if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("naziv")).toString()) == "delavniki" ) {
-                pot = prevedi(sql_napolni.value(sql_napolni.record().indexOf("vrednost")).toString());
-                ui->txt_status->setText("Poznan URL!");
-            }
-        }
-    }
-    base.close();
+    pot = "http://www.bubi.si/bubiracun/delavniki.html";
 
     // povezi s spletnim naslovom in pocakaj na odziv
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(konec_odziva(QNetworkReply*)));
 
-    ui->txt_status->setText("Pricenjam povezovanje");
+    ui->txt_status->appendPlainText("Pricenjam povezovanje");
     manager->get(QNetworkRequest(QUrl(pot)));
 
 }
 
 void sif_delavniki::konec_odziva(QNetworkReply *odgovor) {
 
-    if ( odgovor->readAll().contains("tevilo delovnih dni za leto") ) {
-        ui->txt_status->setText("Podatki pridobljeni!");
+    if ( odgovor->error() == 0 ) {
+        ui->txt_status->appendPlainText("Podatki pridobljeni!");
         QString celotna_stran = odgovor->readAll();
 
-        // pridobimo odsek s podatki za nase leto
-        celotna_stran = celotna_stran.right(celotna_stran.length() - celotna_stran.indexOf("tevilo delovnih dni za leto " + QDate::currentDate().toString("yyyy")));
-        celotna_stran = celotna_stran.left(celotna_stran.indexOf("tevilo delovnih dni za leto " + QDate::currentDate().addYears(-1).toString("yyyy")));
+        int polozaj = 0;
 
-        // izrezemo vse pred <table in za </table>
-        celotna_stran = celotna_stran.left(celotna_stran.indexOf("</table>"));
-        celotna_stran = celotna_stran.right(celotna_stran.length() - celotna_stran.indexOf("<table"));
+        // v bazo zabelezimo vsa leta, za katera imamo podatke in jih se ni v bazi
+        for ( int i = 0; i < celotna_stran.count("<h2>"); i++ ) {
+            QString besedilo = "";
 
-        celotna_stran.replace(QRegExp("<table(.)[^>]*>"), "");
-        celotna_stran.replace(QRegExp("<(.)[^>]*>"), ";");
-        celotna_stran.replace("\n;;", "");
-        celotna_stran.replace("\t", "");
+            polozaj = celotna_stran.indexOf("<h2>", polozaj + 4);
 
-        ui->txt_status->setText("Podatki razclenjeni!");
+            besedilo = celotna_stran.right(celotna_stran.length() - celotna_stran.indexOf("<h2>", polozaj) - 4);
+            besedilo = besedilo.left(besedilo.indexOf("<h2>"));
 
-        // izbrisemo naslovno vrstico tabele
-        for ( int j = 0; j < 5; j++ ) {
-            celotna_stran = celotna_stran.right(celotna_stran.length() - celotna_stran.indexOf(";;") - 2);
-        }
+            if ( besedilo.contains("<table") ) {
+                QString leto = "";
+                leto = besedilo.left(4);
 
-        // nastavi polja iz baze
-        QString app_path = QApplication::applicationDirPath();
-        QString dbase_path = app_path + "/base.bz";
+                // izrezemo vse pred <table in za </table>
+                besedilo = besedilo.left(besedilo.indexOf("</table>"));
+                besedilo = besedilo.right(besedilo.length() - besedilo.indexOf("<table"));
 
-        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-        base.setDatabaseName(dbase_path);
-        base.database();
-        base.open();
-        if(base.isOpen() != true){
-            QMessageBox msgbox;
-            msgbox.setText("Baze ni bilo moc odpreti");
-            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-            msgbox.exec();
-        }
-        else {
-            // the database is opened
+                besedilo.replace(QRegExp("<table(.)[^>]*>"), "");
+                besedilo.replace(QRegExp("<(.)[^>]*>"), ";");
+                besedilo.replace("\n;;", "");
+                besedilo.replace("\t", "");
 
-            ui->txt_status->setText("Vnasam podatke!");
-            QSqlQuery sql_preveri;
-            sql_preveri.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + pretvori(QDate::currentDate().toString("yyyy")) + "'");
-            sql_preveri.exec();
-            if ( !sql_preveri.next() ) {
+                // odstranimo prvo vrstico
+                besedilo = besedilo.right(besedilo.length() - besedilo.indexOf("\n"));
+
+                //odstranimo prvi stolpec
+                QStringList seznam;
+                seznam = besedilo.split(";;");
+
+                besedilo = "";
+
                 for ( int i = 0; i < 12; i++ ) {
-                    QString izlusceno_besedilo = "";
-                    QSqlQuery sql_vnesi;
-                    sql_vnesi.prepare("INSERT INTO stroski_prehrane (leto, mesec, delavniki, prazniki, skupaj, ure_na_mesec) "
-                                      "VALUES (?, ?, ?, ?, ?, ?)");
-                    sql_vnesi.bindValue(0, pretvori(QDate::currentDate().toString("yyyy")));
-                    for ( int j = 0; j < 5; j++ ) {
-                        izlusceno_besedilo = celotna_stran.left(celotna_stran.indexOf(";;"));
-                        celotna_stran = celotna_stran.right(celotna_stran.length() - celotna_stran.indexOf(";;") - 2);
-                        if ( j == 0 ) {
-                            izlusceno_besedilo = QString::number(i + 1, 10);
-                            if ( izlusceno_besedilo.length() == 1 ) {
-                                izlusceno_besedilo = "0" + izlusceno_besedilo;
-                            }
+                    besedilo = besedilo + ";;";
+                    for ( int j = 0; j < 6; j++ ) {
+                        if ( j != 0 && j != 1 ) {
+                            besedilo = besedilo + seznam.at(0) + ";;";
                         }
-                        sql_vnesi.bindValue(j + 1, pretvori(izlusceno_besedilo));
+                        if ( !seznam.empty() ) {
+                            seznam.removeFirst();
+                        }
+                        if ( j == 5 ) {
+                            besedilo = besedilo + "\n";
+                        }
                     }
-                    sql_vnesi.exec();
-                    sql_vnesi.clear();
-                    ui->txt_status->setText("Podatki vneseni!");
                 }
-            }
-            sql_preveri.clear();
-        }
-        base.close();
+                besedilo.remove(" ");
 
-        ui->txt_status->setText("Podatki osvezeni!");
+                ui->txt_status->appendPlainText("Podatki razclenjeni: " + leto + "!");
+
+                {
+                    // nastavi polja iz baze
+                    QString app_path = QApplication::applicationDirPath();
+                    QString dbase_path = app_path + "/base.bz";
+
+                    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "vnesi-delavnike");
+                    base.setDatabaseName(dbase_path);
+                    base.database();
+                    base.open();
+                    if(base.isOpen() != true){
+                        QMessageBox msgbox;
+                        msgbox.setText("Baze ni bilo moc odpreti");
+                        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+                        msgbox.exec();
+                    }
+                    else {
+                        // the database is opened
+
+                        ui->txt_status->appendPlainText("Vnasam podatke: " + leto + "!");
+                        QSqlQuery sql_preveri;
+                        sql_preveri.prepare("SELECT * FROM stroski_prehrane WHERE leto LIKE '" + pretvori(leto) + "'");
+                        sql_preveri.exec();
+                        if ( !sql_preveri.next() ) {
+                            for ( int i = 0; i < 12; i++ ) {
+                                QString izlusceno_besedilo = "";
+                                QSqlQuery sql_vnesi;
+                                sql_vnesi.prepare("INSERT INTO stroski_prehrane (leto, mesec, delavniki, prazniki, skupaj, ure_na_mesec) "
+                                                  "VALUES (?, ?, ?, ?, ?, ?)");
+                                sql_vnesi.bindValue(0, pretvori(leto));
+                                for ( int j = 0; j < 5; j++ ) {
+                                    izlusceno_besedilo = besedilo.left(besedilo.indexOf(";;"));
+                                    besedilo = besedilo.right(besedilo.length() - besedilo.indexOf(";;") - 2);
+                                    if ( j == 0 ) {
+                                        izlusceno_besedilo = QString::number(i + 1, 10);
+                                        if ( izlusceno_besedilo.length() == 1 ) {
+                                            izlusceno_besedilo = "0" + izlusceno_besedilo;
+                                        }
+                                    }
+                                    sql_vnesi.bindValue(j + 1, izlusceno_besedilo);
+                                    QCoreApplication::processEvents();
+                                }
+                                sql_vnesi.exec();
+                                sql_vnesi.clear();
+                            }
+                            ui->txt_status->appendPlainText("Podatki za leto " + leto + " so vneseni!");
+                        }
+                        else {
+                            ui->txt_status->appendPlainText("Podatki za leto " + leto + " obstajajo!");
+                        }
+                        sql_preveri.clear();
+
+                    }
+                    base.close();
+                }
+                QSqlDatabase::removeDatabase("vnesi-delavnike");
+
+            }
+
+        }
+        ui->txt_status->appendPlainText("Podatki osvezeni!");
     }
     else {
-        ui->txt_status->setText("Napaka pri prenosu!");
+        ui->txt_status->appendPlainText("Napaka pri prenosu!");
     }
 
 }
