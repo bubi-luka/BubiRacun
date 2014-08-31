@@ -3838,7 +3838,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		skupaj_brez_ddv = QString::number(skupajbrezddv, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_znesek = QString::number(skupajznesek, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_znesek_avansa = racun_znesek_avansa.replace(".", ",") + " EUR";
-		racun_avans = racun_avans.replace(".", ",") + " % ";
+        racun_avans = racun_avans.replace(".", ",") + " %";
 		//skupajddvavansa = 16.66667 / 100 * pretvori_v_double(racun_znesek_avansa).toDouble();
 		skupajddvavansa = 12345.00;
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
@@ -3970,7 +3970,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
             painter.setFont(malo_debelo);
 			QString besedilo_skupaj = racun.readLine();
 			QString besedilo_avans = racun.readLine();
-			besedilo = besedilo_skupaj + " " + racun_avans + " " + besedilo_avans;
+            besedilo = besedilo_skupaj + " " + racun_avans + besedilo_avans;
 			// natisnemo besedilo
             painter.drawText(QRectF(printer.width() * 1 / 2, pozicija,velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 			// natisnemo besedilo
@@ -3995,6 +3995,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                     painter.setFont(malo_debelo);
 					besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
 					// natisnemo besedilo
+                    painter.setFont(malo);
                     painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 					// natisnemo besedilo
                     painter.setFont(malo);
@@ -4051,10 +4052,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 						// nastavi parametre (XX,X % DDV)
                         painter.setFont(malo_debelo);
 						besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
-						// natisnemo besedilo
-                        painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
-						// natisnemo besedilo
+                        // natisnemo besedilo
                         painter.setFont(malo);
+                        painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+                        // natisnemo besedilo
                         painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * pretvori_v_double(racun_avans).toDouble() / 100, 'f', 2).replace(".", ",") + " EUR");
 						// nova vrstica * 2
 						pozicija += visina_vrstice;
@@ -4108,6 +4109,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
                     painter.setFont(malo_debelo);
 					besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
 					// natisnemo besedilo
+                    painter.setFont(malo);
                     painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 					// natisnemo besedilo
                     painter.setFont(malo);
