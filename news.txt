@@ -1,5 +1,16 @@
-Kaj je novega?
+﻿Kaj je novega?
 ==========
+0.9.30
+----------
+- napaka: pri brisanju stranke se izbrišejo tudi že obstoječi računi in projekti
+- posodobitev: program ima svoj lasten seznam delavnih dni po letih, ki ga zna poiskati, dešifrirati in shraniti
+- olepšava: manjši velikost pisave v računih
+- olepšava: poudarjeni zneski za plačilo
+- napaka: šifra storitve v dobropisu ponovno vidna
+- napaka: po izbrisu dobropisa se statusi računov ne obnovijo
+- izboljšava: možnost brisanja stopnje ddv pri prejetih računih
+- napaka: pri spremembi statusa oddaje računa v računovodstvo se podvoji tvorba računa
+- izboljšava: podni nalog lahko enostavno skopirate na novo
 
 0.9.29
 ----------
