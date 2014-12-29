@@ -1,5 +1,11 @@
 ﻿Kaj je novega?
 ==========
+0.9.31
+----------
+- manjši popravki
+- uskladitev kode med različnimi vejami razvoja
+- testna izdaja za ocenitev (ne)obstoja popravkov
+
 0.9.30
 ----------
 - napaka: pri brisanju stranke se izbrišejo tudi že obstoječi računi in projekti
