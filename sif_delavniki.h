@@ -20,7 +20,9 @@ public:
 private slots:
     void on_btn_izhod_clicked();
     void on_btn_osvezi_clicked();
+    void on_btn_brisi_clicked();
     void konec_odziva(QNetworkReply *odgovor);
+    void napolni_leta();
 
     QString pretvori(QString besedilo);
     QString prevedi(QString besedilo);

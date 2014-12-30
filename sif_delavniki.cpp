@@ -13,6 +13,8 @@ sif_delavniki::sif_delavniki(QWidget *parent) :
     ui->setupUi(this);
 
     ui->txt_status->clear();
+    napolni_leta();
+
 }
 
 sif_delavniki::~sif_delavniki()
@@ -23,6 +25,86 @@ sif_delavniki::~sif_delavniki()
 void sif_delavniki::on_btn_izhod_clicked() {
 
     close();
+
+}
+
+void sif_delavniki::on_btn_brisi_clicked() {
+
+    if ( ui->txt_leto->currentText() != "" ) {
+        // nastavi polja iz baze
+        QString app_path = QApplication::applicationDirPath();
+        QString dbase_path = app_path + "/base.bz";
+
+        QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "brisi_leto");
+        base.setDatabaseName(dbase_path);
+        base.database();
+        base.open();
+        if(base.isOpen() != true){
+            QMessageBox msgbox;
+            msgbox.setText("Baze ni bilo moc odpreti");
+            msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+            msgbox.exec();
+        }
+        else {
+            // the database is opened
+
+            QSqlQuery sql_napolni;
+            sql_napolni.prepare("DELETE FROM stroski_prehrane WHERE leto = '" + pretvori(ui->txt_leto->currentText()) + "'");
+            sql_napolni.exec();
+
+            QMessageBox msgbox;
+            msgbox.setText("Operacija koncana");
+            msgbox.setInformativeText("Podatki za leto " + ui->txt_leto->currentText() + " so izbrisani!");
+            msgbox.exec();
+
+            base.close();
+
+        }
+    }
+    napolni_leta();
+
+}
+
+void sif_delavniki::napolni_leta() {
+
+    ui->txt_leto->clear();
+    ui->txt_leto->addItem("");
+
+    // nastavi polja iz baze
+    QString app_path = QApplication::applicationDirPath();
+    QString dbase_path = app_path + "/base.bz";
+
+    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "vnesi-leta");
+    base.setDatabaseName(dbase_path);
+    base.database();
+    base.open();
+    if(base.isOpen() != true){
+        QMessageBox msgbox;
+        msgbox.setText("Baze ni bilo moc odpreti");
+        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
+        msgbox.exec();
+    }
+    else {
+        // the database is opened
+
+        QSqlQuery sql_leta;
+        sql_leta.prepare("SELECT * FROM stroski_prehrane");
+        sql_leta.exec();
+        while ( sql_leta.next() ) {
+            QString leto = prevedi(sql_leta.value(sql_leta.record().indexOf("leto")).toString());
+            if ( ui->txt_leto->findText(leto) == -1 ) {
+                ui->txt_leto->addItem(leto);
+            }
+        }
+        base.close();
+    }
+
+    // urejevanje vrstenga reda zapisov
+    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->txt_leto);
+    proxy->setSourceModel(ui->txt_leto->model());
+    ui->txt_leto->model()->setParent(proxy);
+    ui->txt_leto->setModel(proxy);
+    ui->txt_leto->model()->sort(0, Qt::DescendingOrder);
 
 }
 
@@ -166,6 +248,8 @@ void sif_delavniki::konec_odziva(QNetworkReply *odgovor) {
     else {
         ui->txt_status->appendPlainText("Napaka pri prenosu!");
     }
+
+    napolni_leta();
 
 }
 
