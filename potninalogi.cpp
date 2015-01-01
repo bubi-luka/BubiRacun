@@ -387,7 +387,12 @@ void potninalogi::on_txt_prejemnik_izbira_osebe_currentIndexChanged() {
             sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + sql_fill_ime.value(sql_fill_ime.record().indexOf("naziv")).toString() + "'");
             sql_naziv.exec();
             if ( sql_naziv.next() ) {
-                ui->txt_prejemnik_naziv->setText(prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv")).toString()));
+                if ( prevedi(sql_fill_ime.value(sql_fill_ime.record().indexOf("spol")).toString()) == "1" ) { // moski
+                    ui->txt_prejemnik_naziv->setText(prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_moski")).toString()));
+                }
+                else {
+                    ui->txt_prejemnik_naziv->setText(prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_zenski")).toString()));
+                }
             }
             ui->txt_prejemnik_naslov->setText(prevedi(sql_fill_ime.value(sql_fill_ime.record().indexOf("naslov")).toString()));
             ui->txt_prejemnik_naslov_st->setText(prevedi(sql_fill_ime.value(sql_fill_ime.record().indexOf("naslov_stevilka")).toString()));
