@@ -105,6 +105,10 @@ void tiskanje::on_btn_izhod_clicked() {
 
 void tiskanje::on_btn_natisni_clicked() {
 
+    QString staro_besedilo = ui->btn_natisni->text();
+    ui->btn_natisni->setEnabled(false);
+    ui->btn_natisni->setText("");
+
 	int stevilo_dokumentov = 0;
 	if ( ui->txt_stevilke_dokumentov->text() != "" ) {
 		stevilo_dokumentov = ui->txt_stevilke_dokumentov->text().count(",");
@@ -116,6 +120,9 @@ void tiskanje::on_btn_natisni_clicked() {
 		QString stevilke_dokumentov = ui->txt_stevilke_dokumentov->text();
 
 		for ( int i = 1; i <= stevilo_dokumentov; i++ ) {
+
+            ui->btn_natisni->setText(QString::number(i, 10) + " od " + QString::number(stevilo_dokumentov));
+
 			QString id = stevilke_dokumentov.left(stevilke_dokumentov.indexOf(",", 0));
 			stevilke_dokumentov = stevilke_dokumentov.right(stevilke_dokumentov.length() - stevilke_dokumentov.indexOf(",", 0) - 1);
 
@@ -147,6 +154,9 @@ void tiskanje::on_btn_natisni_clicked() {
 	}
 
 	close();
+
+    ui->btn_natisni->setText(staro_besedilo);
+    ui->btn_natisni->setEnabled(true);
 
 }
 
