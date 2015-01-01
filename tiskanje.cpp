@@ -122,6 +122,7 @@ void tiskanje::on_btn_natisni_clicked() {
 		for ( int i = 1; i <= stevilo_dokumentov; i++ ) {
 
             ui->btn_natisni->setText(QString::number(i, 10) + " od " + QString::number(stevilo_dokumentov));
+            qApp->processEvents();
 
 			QString id = stevilke_dokumentov.left(stevilke_dokumentov.indexOf(",", 0));
 			stevilke_dokumentov = stevilke_dokumentov.right(stevilke_dokumentov.length() - stevilke_dokumentov.indexOf(",", 0) - 1);
@@ -477,13 +478,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
 					stroski += prevedi(sql_stroski.value(sql_stroski.record().indexOf("cena")).toString()).toDouble();
 				}
 				znesek_drugih_stroskov = QString::number(stroski, 'f', 2);
-
-				QSqlQuery sql_prejemnik_naziv;
-				sql_prejemnik_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(prejemnik_naziv) + "'");
-				sql_prejemnik_naziv.exec();
-				if ( sql_prejemnik_naziv.next() ) {
-					prejemnik_naziv = prevedi(sql_prejemnik_naziv.value(sql_prejemnik_naziv.record().indexOf("naziv")).toString());
-				}
 
 				QSqlQuery sql_naloga;
 				sql_naloga.prepare("SELECT * FROM sif_namen_potnega_naloga WHERE id LIKE '" + pretvori(namen_potnega_naloga) + "'");

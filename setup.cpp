@@ -4631,6 +4631,69 @@ void setup::posodobi_bazo() {
                     posodobi_bazo();
 
                 }
+                if ( stevilka_baze_min == 31 ) {
+
+                    QSqlQuery posodobi;
+
+                    // posodobi nazive prejemnika potnega naloga, kjer ga ni
+                    posodobi.prepare("SELECT * from potni_nalogi");
+                    posodobi.exec();
+                    while ( posodobi.next() ) {
+
+                        QString txt_naziv = "";
+
+                        // pridobi id prejemnika naloga, da iz tega dobis spol in naziv
+                        QSqlQuery sql_prejemnik;
+                        sql_prejemnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" +
+                                              pretvori(posodobi.value(posodobi.record().indexOf("prejemnik_oseba_id")).toString()) + "'");
+                        sql_prejemnik.exec();
+                        if ( sql_prejemnik.next() ) {
+                            QSqlQuery sql_naziv;
+                            sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" +
+                                              pretvori(sql_prejemnik.value(sql_prejemnik.record().indexOf("naziv")).toString()) + "'");
+                            sql_naziv.exec();
+                            if ( sql_naziv.next() ) {
+                                if ( pretvori(sql_prejemnik.value(sql_prejemnik.record().indexOf("spol")).toString()) == "1" ) { // moski
+                                    txt_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_moski")).toString());
+                                }
+                                else {
+                                    txt_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_zenski")).toString());
+                                }
+                            }
+                        }
+                        qDebug(txt_naziv.toUtf8() + ": " + pretvori(sql_prejemnik.value(sql_prejemnik.record().indexOf("spol")).toString()).toUtf8());
+
+                        // posodobi profile
+                        update.prepare("UPDATE potni_nalogi SET prejemnik_oseba_naziv = ? WHERE id LIKE '" +
+                                       prevedi(posodobi.value(posodobi.record().indexOf("id")).toString()) + "'");
+                        update.bindValue(0, pretvori(txt_naziv));
+                        update.exec();
+                        update.clear();
+
+                        qApp->processEvents();
+                    }
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+                    update.bindValue(0, "0.9.32");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+                    update.bindValue(0, "0.9.32");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+                    update.bindValue(0, "01.01.2014");
+                    update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+                    update.exec();
+                    update.clear();
+
+                    posodobi_bazo();
+
+                }
 			}
 
 		}

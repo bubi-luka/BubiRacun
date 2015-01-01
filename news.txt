@@ -1,5 +1,12 @@
 ﻿Kaj je novega?
 ==========
+
+0.9.32
+----------
+- napaka: popravljen manjkajoči naziv prejemnika potnega naloga
+- izboljšava: popravljena baza, ki ima vnešene različne nazive potnega naloga
+- izboljšava: pri tiskanju ne išče več naziva prejemnika potnega naloga po nazivu ampak samo iz besedila
+
 0.9.31
 ----------
 - manjši popravki
