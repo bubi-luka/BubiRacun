@@ -17,10 +17,7 @@ wid_stroskiprehrane::wid_stroskiprehrane(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    izbrisi_tabelo();
-    izbrisi_leta();
-
-    napolni_leta();
+    on_btn_osvezi_clicked();
 
 }
 
@@ -52,6 +49,7 @@ void wid_stroskiprehrane::izbrisi_tabelo() {
 void wid_stroskiprehrane::napolni_leta() {
 
     // filtriraj po letu
+    ui->cb_leto->clear();
     ui->cb_leto->addItem("");
 
     QString app_path = QApplication::applicationDirPath();
@@ -81,21 +79,20 @@ void wid_stroskiprehrane::napolni_leta() {
         }
         sql_napolni.clear();
 
-        if ( ui->cb_leto->findText(QDate::currentDate().toString("yyyy")) == -1 ) {
-            ui->cb_leto->addItem(QDate::currentDate().toString("yyyy"));
-        }
-
         // razvrscanje let po vrsti
+
+        // urejevanje vrstenga reda zapisov
         QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->cb_leto);
         proxy->setSourceModel(ui->cb_leto->model());
         // spustni seznam prepisemo
         ui->cb_leto->model()->setParent(proxy);
         ui->cb_leto->setModel(proxy);
         // razvrsti
-        ui->cb_leto->model()->sort(0);
+        ui->cb_leto->model()->sort(0, Qt::DescendingOrder);
 
         // privzeto izberi trenutno leto
         ui->cb_leto->setCurrentIndex(ui->cb_leto->findText(QDate::currentDate().toString("yyyy")));
+
     }
     base.close();
 
@@ -420,8 +417,9 @@ void wid_stroskiprehrane::on_tbl_stroski_prehrane_itemChanged(QTableWidgetItem *
 
 void wid_stroskiprehrane::on_btn_osvezi_clicked() {
 
-    izbrisi_leta();
+
     izbrisi_tabelo();
+    izbrisi_leta();
     napolni_leta();
 
 }
