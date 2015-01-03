@@ -391,8 +391,8 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				predlagatelj_oseba_priimek = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_priimek")).toString());
 				predlagatelj_oseba_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_ulica")).toString());
 				predlagatelj_oseba_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_stevilka")).toString());
-				predlagatelj_oseba_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_postna_stevilka")).toString());
-				predlagatelj_oseba_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_posta")).toString());
+                predlagatelj_oseba_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_postna_stevilka")).toString());
+                predlagatelj_oseba_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_posta")).toString());
 
 				// podatki o prejemniku
 				prejemnik_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_ime")).toString());
@@ -400,8 +400,8 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				prejemnik_naziv = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naziv")).toString());
 				prejemnik_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_ulica")).toString());
 				prejemnik_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_stevilka")).toString());
-				prejemnik_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_postna_stevilka")).toString());
-				prejemnik_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_posta")).toString());
+                prejemnik_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_postna_stevilka")).toString());
+                prejemnik_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_posta")).toString());
 				prejemnik_znamka_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("proizvajalec")).toString());
 				prejemnik_model_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("znamka")).toString());
 				prejemnik_registrska_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("registrska_stevilka")).toString());
@@ -1253,7 +1253,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
 		// nastavimo besedilo
-		besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_posta + " " + predlagatelj_oseba_postna_stevilka;
+        besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_postna_stevilka + " " + predlagatelj_oseba_posta;
 		// nastavimo tip pisave
 		painter.setFont(vstavljeno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
