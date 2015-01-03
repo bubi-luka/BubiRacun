@@ -1,6 +1,12 @@
 ﻿Kaj je novega?
 ==========
 
+0.9.34
+----------
+- napaka: dodana poštna številka in pošta pri prejemniku in predlagatelja poštnega naloga
+- izboljšava: izbris predloge Sandy
+
+
 0.9.33
 ----------
 - napaka: odpravljen hrošč, ki je povzročil zrušitev programa v pregledu delovnih, dopustniških in bolniških dni
