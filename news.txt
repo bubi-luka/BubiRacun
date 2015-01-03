@@ -1,6 +1,10 @@
 ﻿Kaj je novega?
 ==========
 
+0.9.33
+----------
+- napaka: odpravljen hrošč, ki je povzročil zrušitev programa v pregledu delovnih, dopustniških in bolniških dni
+
 0.9.32
 ----------
 - napaka: popravljen manjkajoči naziv prejemnika potnega naloga
