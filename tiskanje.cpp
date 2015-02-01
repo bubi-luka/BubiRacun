@@ -20,12 +20,12 @@ tiskanje::tiskanje(QWidget *parent) :
 
 		// izpraznimo polja
 		ui->txt_vrsta_tiskanja->setText("");
-		ui->txt_stevilke_dokumentov->setText("");
-		ui->txt_format_tiskanja->setText("");
+        ui->txt_stevilke_dokumentov->setText("");
+        ui->txt_format_tiskanja->setText("");
 
 		ui->txt_druzina_pisave->clear();
-		ui->txt_velikost_naslova->setText("12");
-		ui->txt_velikost_vecja->setText("10");
+        ui->txt_velikost_naslova->setText("9");
+        ui->txt_velikost_vecja->setText("9");
 		ui->txt_velikost_manjsa->setText("8");
 
 		ui->txt_crta_debela->setText("2");
@@ -39,6 +39,7 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_stevilo_kopij->setText("1");
 		ui->txt_uporaba_barv->clear();
 		ui->txt_lega_lista->clear();
+        ui->txt_duplex->clear();
 
 		ui->cb_opombe->setText("Natisnem tudi opombe?");
 
@@ -70,12 +71,17 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_lega_lista->addItem("Lezece");
 		ui->txt_lega_lista->addItem("Pokoncno");
 
+        ui->txt_duplex->addItem("");
+        ui->txt_duplex->addItem("DA");
+        ui->txt_duplex->addItem("NE");
+
 		// izberemo privzete vrednosti v spustnih seznamih
 		ui->txt_druzina_pisave->setCurrentIndex(1);
 		ui->txt_velikost_papirja->setCurrentIndex(1);
 		ui->txt_kvaliteta_tiska->setCurrentIndex(2);
-		ui->txt_uporaba_barv->setCurrentIndex(2);
-		ui->txt_lega_lista->setCurrentIndex(2);
+        ui->txt_uporaba_barv->setCurrentIndex(2);
+        ui->txt_lega_lista->setCurrentIndex(2);
+        ui->txt_duplex->setCurrentIndex(1);
 
 		// prikazemo lbl_list kot bel list pravilnih dimenzij
 		ui->lbl_list->setAutoFillBackground(true);
@@ -158,6 +164,34 @@ void tiskanje::on_btn_natisni_clicked() {
 
     ui->btn_natisni->setText(staro_besedilo);
     ui->btn_natisni->setEnabled(true);
+
+}
+
+void tiskanje::on_btn_nastavitve_racuni_clicked() {
+
+    ui->txt_velikost_naslova->setText("10");
+    ui->txt_velikost_vecja->setText("9");
+    ui->txt_velikost_manjsa->setText("8");
+
+    ui->txt_crta_debela->setText("2");
+    ui->txt_crta_tanka->setText("1");
+
+    ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
+    ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
+
+}
+
+void tiskanje::on_btn_nastavitve_potni_nalogi_clicked(){
+
+    ui->txt_velikost_naslova->setText("9");
+    ui->txt_velikost_vecja->setText("9");
+    ui->txt_velikost_manjsa->setText("8");
+
+    ui->txt_crta_debela->setText("0");
+    ui->txt_crta_tanka->setText("0");
+
+    ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
+    ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
 
 }
 
@@ -250,17 +284,14 @@ void tiskanje::prejem(QString vrsta, QString stevilke, QString format) {
 	ui->txt_vrsta_tiskanja->setText(vrsta);
 	ui->txt_stevilke_dokumentov->setText(stevilke);
 	ui->txt_format_tiskanja->setText(format);
+    ui->gb_ostalo->setHidden(false);
 
-	if ( vrsta == "potni-nalogi" ) {
-		ui->txt_crta_debela->setText("1");
-		ui->txt_velikost_vecja->setText("9");
-		ui->gb_ostalo->setHidden(false);
-	}
-	else {
-		ui->txt_crta_debela->setText("2");
-		ui->txt_velikost_vecja->setText("10");
-		ui->gb_ostalo->setHidden(true);
-	}
+    if ( vrsta == "potni-nalogi" ) {
+        on_btn_nastavitve_potni_nalogi_clicked();
+    }
+    else {
+        on_btn_nastavitve_racuni_clicked();
+    }
 
 }
 
@@ -624,6 +655,16 @@ void tiskanje::natisni_potni_nalog(QString id) {
 	else if ( ui->txt_uporaba_barv->currentText() == "Crnobelo" ) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
+
+    if ( ui->txt_duplex->currentText() == "DA" ) {
+        printer.setDuplex(QPrinter::DuplexLongSide);
+    }
+    else if ( ui->txt_duplex->currentText() == "NE" ) {
+        printer.setDuplex(QPrinter::DuplexNone);
+    }
+    else {
+        printer.setDuplex(QPrinter::DuplexAuto);
+    }
 
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 
@@ -2563,6 +2604,16 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
 
+    if ( ui->txt_duplex->currentText() == "DA" ) {
+        printer.setDuplex(QPrinter::DuplexLongSide);
+    }
+    else if ( ui->txt_duplex->currentText() == "NE" ) {
+        printer.setDuplex(QPrinter::DuplexNone);
+    }
+    else {
+        printer.setDuplex(QPrinter::DuplexAuto);
+    }
+
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 
 	printer.setPageMargins(pretvori_v_double(ui->txt_rob_lista_levo->text()).toDouble(),
@@ -3185,6 +3236,16 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	else if ( ui->txt_uporaba_barv->currentText() == "Crnobelo" ) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
+
+    if ( ui->txt_duplex->currentText() == "DA" ) {
+        printer.setDuplex(QPrinter::DuplexLongSide);
+    }
+    else if ( ui->txt_duplex->currentText() == "NE" ) {
+        printer.setDuplex(QPrinter::DuplexNone);
+    }
+    else {
+        printer.setDuplex(QPrinter::DuplexAuto);
+    }
 
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 

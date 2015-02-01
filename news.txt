@@ -1,6 +1,12 @@
 ﻿Kaj je novega?
 ==========
 
+0.9.35
+----------
+- napaka: privzete nastavitve tiskanaj niso enake tisti, ki so bile do sedaj vgrajene v program, zato so bili rezultati tiskanja drugačni od dosedanjih
+- izboljšava: dodana možnost tiskanja v dvostranskem načinu
+- izboljšava: prehodi med različnimi privzetimi vrednostmi tiskanja
+
 0.9.34
 ----------
 - napaka: dodana poštna številka in pošta pri prejemniku in predlagatelja poštnega naloga

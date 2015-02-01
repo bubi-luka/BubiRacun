@@ -16,8 +16,10 @@ public:
     ~tiskanje();
 
 public slots:
-	void on_btn_izhod_clicked();
-	void on_btn_natisni_clicked();
+    void on_btn_izhod_clicked();
+    void on_btn_natisni_clicked();
+    void on_btn_nastavitve_racuni_clicked();
+    void on_btn_nastavitve_potni_nalogi_clicked();
 
 	void keyPressEvent(QKeyEvent *event);
 

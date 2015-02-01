@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>382</width>
-    <height>608</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
    <item>
     <widget class="QTabWidget" name="tab_tiskanje">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_izpis">
       <attribute name="title">
@@ -87,84 +87,119 @@
          <property name="title">
           <string>Pisava</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <layout class="QFormLayout" name="formLayout_2">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lbl_druzina_pisave">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QPushButton" name="btn_nastavitve_racuni">
               <property name="text">
-               <string>Družina pisave</string>
+               <string>Nastavitve računi</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="txt_druzina_pisave">
-              <item>
-               <property name="text">
-                <string>txt_druzina_pisave</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lbl_velikost_naslova">
+            <item>
+             <widget class="QPushButton" name="btn_nastavitve_potni_nalogi">
               <property name="text">
-               <string>Velikost naslova</string>
+               <string>Nastavitve potni nalogi</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="txt_velikost_naslova">
-              <property name="text">
-               <string>txt_velikost_naslova</string>
+            <item>
+             <spacer name="horizontalSpacer_16">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="txt_velikost_vecja">
-              <property name="text">
-               <string>txt_velikost_vecja</string>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="lbl_velikost_manjsa">
-              <property name="text">
-               <string>Velikost opombe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="txt_velikost_manjsa">
-              <property name="text">
-               <string>txt_velikost_manjsa</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lbl_velikost_vecja">
-              <property name="text">
-               <string>Velikost normalna</string>
-              </property>
-             </widget>
+             </spacer>
             </item>
            </layout>
           </item>
           <item>
-           <spacer name="horizontalSpacer_10">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>71</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <layout class="QFormLayout" name="formLayout_2">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lbl_druzina_pisave">
+                <property name="text">
+                 <string>Družina pisave</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="txt_druzina_pisave">
+                <item>
+                 <property name="text">
+                  <string>txt_druzina_pisave</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="lbl_velikost_naslova">
+                <property name="text">
+                 <string>Velikost naslova</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="txt_velikost_naslova">
+                <property name="text">
+                 <string>txt_velikost_naslova</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="txt_velikost_vecja">
+                <property name="text">
+                 <string>txt_velikost_vecja</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="lbl_velikost_manjsa">
+                <property name="text">
+                 <string>Velikost opombe</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="txt_velikost_manjsa">
+                <property name="text">
+                 <string>txt_velikost_manjsa</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lbl_velikost_vecja">
+                <property name="text">
+                 <string>Velikost normalna</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>71</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -372,28 +407,28 @@
            </item>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="lbl_stevilo_kopij">
            <property name="text">
             <string>Število kopij</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="txt_stevilo_kopij">
            <property name="text">
             <string>txt_stevilo_kopij</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="lbl_uporaba_barv">
            <property name="text">
             <string>Uporaba barv</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QComboBox" name="txt_uporaba_barv">
            <item>
             <property name="text">
@@ -402,14 +437,14 @@
            </item>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="lbl_lega_lista">
            <property name="text">
             <string>Lega lista</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QComboBox" name="txt_lega_lista">
            <item>
             <property name="text">
@@ -418,7 +453,7 @@
            </item>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <layout class="QGridLayout" name="gridLayout">
            <item row="2" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -698,7 +733,7 @@
            </item>
           </layout>
          </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -711,7 +746,7 @@
            </property>
           </spacer>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <spacer name="verticalSpacer_4">
@@ -747,6 +782,22 @@
             </spacer>
            </item>
           </layout>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="txt_duplex">
+           <item>
+            <property name="text">
+             <string>txt_duplex</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Dvostranski tisk</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
