@@ -84,9 +84,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-424</y>
             <width>684</width>
-            <height>988</height>
+            <height>1043</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -638,6 +638,19 @@
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
+                   <spacer name="verticalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
                    <widget class="QPushButton" name="btn_logotip">
                     <property name="text">
                      <string>Naloži logotip</string>
@@ -645,21 +658,77 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="txt_logotip">
-                    <property name="enabled">
-                     <bool>false</bool>
+                   <spacer name="verticalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
                     </property>
-                    <property name="text">
-                     <string>txt_logotip</string>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
                     </property>
-                   </widget>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
                 <item>
+                 <spacer name="horizontalSpacer_12">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
                  <widget class="QLabel" name="img_logotip">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>70</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>img_logotip</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_logotip">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>70</horstretch>
+                    <verstretch>70</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>lbl_logotip</string>
                   </property>
                  </widget>
                 </item>
@@ -680,6 +749,19 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item>
             <spacer name="verticalSpacer">
@@ -755,7 +837,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>590</height>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1008,7 +1090,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>590</height>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1261,7 +1343,7 @@
             <x>0</x>
             <y>0</y>
             <width>697</width>
-            <height>590</height>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1484,7 +1566,6 @@
   <tabstop>txt_telefon</tabstop>
   <tabstop>txt_gsm</tabstop>
   <tabstop>btn_logotip</tabstop>
-  <tabstop>txt_logotip</tabstop>
   <tabstop>txt_lastnik</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>txt_lastnik_ime</tabstop>

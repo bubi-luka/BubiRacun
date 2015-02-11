@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>382</width>
+    <width>386</width>
     <height>646</height>
    </rect>
   </property>
@@ -75,7 +75,7 @@
    <item>
     <widget class="QTabWidget" name="tab_tiskanje">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_izpis">
       <attribute name="title">

@@ -20,12 +20,12 @@ tiskanje::tiskanje(QWidget *parent) :
 
 		// izpraznimo polja
 		ui->txt_vrsta_tiskanja->setText("");
-        ui->txt_stevilke_dokumentov->setText("");
-        ui->txt_format_tiskanja->setText("");
+		ui->txt_stevilke_dokumentov->setText("");
+		ui->txt_format_tiskanja->setText("");
 
 		ui->txt_druzina_pisave->clear();
-        ui->txt_velikost_naslova->setText("9");
-        ui->txt_velikost_vecja->setText("9");
+		ui->txt_velikost_naslova->setText("9");
+		ui->txt_velikost_vecja->setText("9");
 		ui->txt_velikost_manjsa->setText("8");
 
 		ui->txt_crta_debela->setText("2");
@@ -39,7 +39,7 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_stevilo_kopij->setText("1");
 		ui->txt_uporaba_barv->clear();
 		ui->txt_lega_lista->clear();
-        ui->txt_duplex->clear();
+		ui->txt_duplex->clear();
 
 		ui->cb_opombe->setText("Natisnem tudi opombe?");
 
@@ -71,17 +71,17 @@ tiskanje::tiskanje(QWidget *parent) :
 		ui->txt_lega_lista->addItem("Lezece");
 		ui->txt_lega_lista->addItem("Pokoncno");
 
-        ui->txt_duplex->addItem("");
-        ui->txt_duplex->addItem("DA");
-        ui->txt_duplex->addItem("NE");
+		ui->txt_duplex->addItem("");
+		ui->txt_duplex->addItem("DA");
+		ui->txt_duplex->addItem("NE");
 
 		// izberemo privzete vrednosti v spustnih seznamih
 		ui->txt_druzina_pisave->setCurrentIndex(1);
 		ui->txt_velikost_papirja->setCurrentIndex(1);
 		ui->txt_kvaliteta_tiska->setCurrentIndex(2);
-        ui->txt_uporaba_barv->setCurrentIndex(2);
-        ui->txt_lega_lista->setCurrentIndex(2);
-        ui->txt_duplex->setCurrentIndex(1);
+		ui->txt_uporaba_barv->setCurrentIndex(2);
+		ui->txt_lega_lista->setCurrentIndex(2);
+		ui->txt_duplex->setCurrentIndex(1);
 
 		// prikazemo lbl_list kot bel list pravilnih dimenzij
 		ui->lbl_list->setAutoFillBackground(true);
@@ -111,9 +111,9 @@ void tiskanje::on_btn_izhod_clicked() {
 
 void tiskanje::on_btn_natisni_clicked() {
 
-    QString staro_besedilo = ui->btn_natisni->text();
-    ui->btn_natisni->setEnabled(false);
-    ui->btn_natisni->setText("");
+	QString staro_besedilo = ui->btn_natisni->text();
+	ui->btn_natisni->setEnabled(false);
+	ui->btn_natisni->setText("");
 
 	int stevilo_dokumentov = 0;
 	if ( ui->txt_stevilke_dokumentov->text() != "" ) {
@@ -127,8 +127,8 @@ void tiskanje::on_btn_natisni_clicked() {
 
 		for ( int i = 1; i <= stevilo_dokumentov; i++ ) {
 
-            ui->btn_natisni->setText(QString::number(i, 10) + " od " + QString::number(stevilo_dokumentov));
-            qApp->processEvents();
+			ui->btn_natisni->setText(QString::number(i, 10) + " od " + QString::number(stevilo_dokumentov));
+			qApp->processEvents();
 
 			QString id = stevilke_dokumentov.left(stevilke_dokumentov.indexOf(",", 0));
 			stevilke_dokumentov = stevilke_dokumentov.right(stevilke_dokumentov.length() - stevilke_dokumentov.indexOf(",", 0) - 1);
@@ -162,36 +162,36 @@ void tiskanje::on_btn_natisni_clicked() {
 
 	close();
 
-    ui->btn_natisni->setText(staro_besedilo);
-    ui->btn_natisni->setEnabled(true);
+	ui->btn_natisni->setText(staro_besedilo);
+	ui->btn_natisni->setEnabled(true);
 
 }
 
 void tiskanje::on_btn_nastavitve_racuni_clicked() {
 
-    ui->txt_velikost_naslova->setText("10");
-    ui->txt_velikost_vecja->setText("9");
-    ui->txt_velikost_manjsa->setText("8");
+	ui->txt_velikost_naslova->setText("10");
+	ui->txt_velikost_vecja->setText("9");
+	ui->txt_velikost_manjsa->setText("8");
 
-    ui->txt_crta_debela->setText("2");
-    ui->txt_crta_tanka->setText("1");
+	ui->txt_crta_debela->setText("2");
+	ui->txt_crta_tanka->setText("1");
 
-    ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
-    ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
+	ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
+	ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
 
 }
 
 void tiskanje::on_btn_nastavitve_potni_nalogi_clicked(){
 
-    ui->txt_velikost_naslova->setText("9");
-    ui->txt_velikost_vecja->setText("9");
-    ui->txt_velikost_manjsa->setText("8");
+	ui->txt_velikost_naslova->setText("9");
+	ui->txt_velikost_vecja->setText("9");
+	ui->txt_velikost_manjsa->setText("8");
 
-    ui->txt_crta_debela->setText("0");
-    ui->txt_crta_tanka->setText("0");
+	ui->txt_crta_debela->setText("0");
+	ui->txt_crta_tanka->setText("0");
 
-    ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
-    ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
+	ui->txt_presledek_med_vrsticami_tabela->setText("0,3");
+	ui->txt_presledek_med_vrsticami_besedilo->setText("0,1");
 
 }
 
@@ -284,14 +284,14 @@ void tiskanje::prejem(QString vrsta, QString stevilke, QString format) {
 	ui->txt_vrsta_tiskanja->setText(vrsta);
 	ui->txt_stevilke_dokumentov->setText(stevilke);
 	ui->txt_format_tiskanja->setText(format);
-    ui->gb_ostalo->setHidden(false);
+	ui->gb_ostalo->setHidden(false);
 
-    if ( vrsta == "potni-nalogi" ) {
-        on_btn_nastavitve_potni_nalogi_clicked();
-    }
-    else {
-        on_btn_nastavitve_racuni_clicked();
-    }
+	if ( vrsta == "potni-nalogi" ) {
+		on_btn_nastavitve_potni_nalogi_clicked();
+	}
+	else {
+		on_btn_nastavitve_racuni_clicked();
+	}
 
 }
 
@@ -422,8 +422,8 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				predlagatelj_oseba_priimek = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_priimek")).toString());
 				predlagatelj_oseba_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_ulica")).toString());
 				predlagatelj_oseba_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_stevilka")).toString());
-                predlagatelj_oseba_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_postna_stevilka")).toString());
-                predlagatelj_oseba_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_posta")).toString());
+				predlagatelj_oseba_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_postna_stevilka")).toString());
+				predlagatelj_oseba_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_oseba_naslov_posta")).toString());
 
 				// podatki o prejemniku
 				prejemnik_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_ime")).toString());
@@ -431,8 +431,8 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				prejemnik_naziv = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naziv")).toString());
 				prejemnik_naslov = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_ulica")).toString());
 				prejemnik_naslov_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_stevilka")).toString());
-                prejemnik_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_postna_stevilka")).toString());
-                prejemnik_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_posta")).toString());
+				prejemnik_postna_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_postna_stevilka")).toString());
+				prejemnik_posta = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("prejemnik_oseba_naslov_posta")).toString());
 				prejemnik_znamka_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("proizvajalec")).toString());
 				prejemnik_model_avtomobila = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("znamka")).toString());
 				prejemnik_registrska_stevilka = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("registrska_stevilka")).toString());
@@ -656,15 +656,15 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
 
-    if ( ui->txt_duplex->currentText() == "DA" ) {
-        printer.setDuplex(QPrinter::DuplexLongSide);
-    }
-    else if ( ui->txt_duplex->currentText() == "NE" ) {
-        printer.setDuplex(QPrinter::DuplexNone);
-    }
-    else {
-        printer.setDuplex(QPrinter::DuplexAuto);
-    }
+	if ( ui->txt_duplex->currentText() == "DA" ) {
+		printer.setDuplex(QPrinter::DuplexLongSide);
+	}
+	else if ( ui->txt_duplex->currentText() == "NE" ) {
+		printer.setDuplex(QPrinter::DuplexNone);
+	}
+	else {
+		printer.setDuplex(QPrinter::DuplexAuto);
+	}
 
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 
@@ -1294,7 +1294,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		painter.drawText(sirina_besedila, pozicija, painter.window().width(), velikost_besedila.height(), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		sirina_besedila += velikost_besedila.width() + razmik_med_vrsticami;
 		// nastavimo besedilo
-        besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_postna_stevilka + " " + predlagatelj_oseba_posta;
+		besedilo = predlagatelj_oseba_naslov + " " + predlagatelj_oseba_naslov_stevilka + ", " + predlagatelj_oseba_postna_stevilka + " " + predlagatelj_oseba_posta;
 		// nastavimo tip pisave
 		painter.setFont(vstavljeno_besedilo);
 		// nastavimo polozaj na listu, kjer zapisemo besedilo
@@ -2604,15 +2604,15 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
 
-    if ( ui->txt_duplex->currentText() == "DA" ) {
-        printer.setDuplex(QPrinter::DuplexLongSide);
-    }
-    else if ( ui->txt_duplex->currentText() == "NE" ) {
-        printer.setDuplex(QPrinter::DuplexNone);
-    }
-    else {
-        printer.setDuplex(QPrinter::DuplexAuto);
-    }
+	if ( ui->txt_duplex->currentText() == "DA" ) {
+		printer.setDuplex(QPrinter::DuplexLongSide);
+	}
+	else if ( ui->txt_duplex->currentText() == "NE" ) {
+		printer.setDuplex(QPrinter::DuplexNone);
+	}
+	else {
+		printer.setDuplex(QPrinter::DuplexAuto);
+	}
 
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 
@@ -2933,13 +2933,13 @@ int tiskanje::natisni_nogo_prejeti_racun(QPainter &painter, QString id, int &ste
 
 void tiskanje::natisni_izdani_racun(QString id) {
 
-    /**
+	/**
 		* Izberemo spremenljivke in jim iz baze dodamo ustrezne vrednosti. Pri
 		* tem ne smemo pozabiti na šifrantne tabele. Spremenljivke nato vstavimo
 		* v formo za tisk in natisnemo.
 		**/
 
-    // priprava spremenljivk
+	// priprava spremenljivk
 	QString podjetje_logo = "";
 	QString podjetje_kratki = "";
 	QString podjetje_polni = "";
@@ -2962,9 +2962,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString narocnik_naslov = "";
 	QString narocnik_posta = "";
 	QString narocnik_davcna = "";
-    QString narocnik_banka = "";
-    QString narocnik_bic = "";
-    QString narocnik_trr = "";
+	QString narocnik_banka = "";
+	QString narocnik_bic = "";
+	QString narocnik_trr = "";
 
 	QString racun_tip = "";
 	QString racun_stevilka = "";
@@ -2979,8 +2979,8 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	QString racun_opombe = "";
 	QString racun_id_starsa = "";
 	QString racun_stevilka_starsa = "";
-    QString razlog_stornacije = "";
-    QString racun_avtor = "";
+	QString razlog_stornacije = "";
+	QString racun_avtor = "";
 
 	QString storitev_id = "";
 	QString storitev_ime = "";
@@ -3042,7 +3042,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		sql_racun.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
 		sql_racun.exec();
 		if ( sql_racun.next() ) {
-            racun_avtor = prevedi(sql_racun.value(sql_racun.record().indexOf("avtor_oseba")).toString());
+			racun_avtor = prevedi(sql_racun.value(sql_racun.record().indexOf("avtor_oseba")).toString());
 			racun_tip = prevedi(sql_racun.value(sql_racun.record().indexOf("tip_racuna")).toString());
 			racun_stevilka = prevedi(sql_racun.value(sql_racun.record().indexOf("stara_stevilka_racuna")).toString());
 			if ( racun_stevilka == "" ) {
@@ -3104,33 +3104,33 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			sql_naziv.prepare("SELECT * FROM sif_naziv WHERE id LIKE '" + pretvori(podjetje_oseba_naziv) + "'");
 			sql_naziv.exec();
 			if ( sql_naziv.next() ) {
-                QSqlQuery sql_spol;
-                sql_spol.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(racun_avtor) + "'");
-                sql_spol.exec();
-                if ( sql_spol.next() ) {
-                    if ( prevedi(sql_spol.value(sql_spol.record().indexOf("spol")).toString()) == "2" ) {
-                        podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_zenski")).toString());
-                    }
-                    else {
-                        podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_moski")).toString());
-                    }
-                }
+				QSqlQuery sql_spol;
+				sql_spol.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(racun_avtor) + "'");
+				sql_spol.exec();
+				if ( sql_spol.next() ) {
+					if ( prevedi(sql_spol.value(sql_spol.record().indexOf("spol")).toString()) == "2" ) {
+						podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_zenski")).toString());
+					}
+					else {
+						podjetje_oseba_naziv = prevedi(sql_naziv.value(sql_naziv.record().indexOf("naziv_moski")).toString());
+					}
+				}
 			}
 
 			// napolni podatke o narocniku
 			narocnik_naziv = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_naziv")).toString());
 			narocnik_naslov = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_naslov")).toString());
-            narocnik_posta = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_posta")).toString());
-            narocnik_davcna = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_davcna")).toString());
+			narocnik_posta = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_posta")).toString());
+			narocnik_davcna = prevedi(sql_racun.value(sql_racun.record().indexOf("narocnik_davcna")).toString());
 
-            QSqlQuery sql_stranka;
-            sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("narocnik_id")).toString() + "'");
-            sql_stranka.exec();
-            if ( sql_stranka.next() ) {
-                narocnik_banka = prevedi(sql_stranka.value(sql_stranka.record().indexOf("banka")).toString());
-                narocnik_bic = prevedi(sql_stranka.value(sql_stranka.record().indexOf("bic_banke")).toString());
-                narocnik_trr = prevedi(sql_stranka.value(sql_stranka.record().indexOf("trr")).toString());
-            }
+			QSqlQuery sql_stranka;
+			sql_stranka.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_racun.value(sql_racun.record().indexOf("narocnik_id")).toString() + "'");
+			sql_stranka.exec();
+			if ( sql_stranka.next() ) {
+				narocnik_banka = prevedi(sql_stranka.value(sql_stranka.record().indexOf("banka")).toString());
+				narocnik_bic = prevedi(sql_stranka.value(sql_stranka.record().indexOf("bic_banke")).toString());
+				narocnik_trr = prevedi(sql_stranka.value(sql_stranka.record().indexOf("trr")).toString());
+			}
 		}
 		if ( racun_id_starsa != "" ) {
 			QSqlQuery sql_stars;
@@ -3162,18 +3162,18 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	}
 	else if ( racun_tip == "2" ) {
 		datoteka.setFileName(app_path + "/racun-besedilo-predplacilo.csv");
-    }
-    else if ( racun_tip == "3" ) {
-        datoteka.setFileName(app_path + "/racun-besedilo-racun.csv");
-    }
-    else if ( racun_tip == "4" ) {
-        datoteka.setFileName(app_path + "/racun-besedilo-dobropis.csv");
-    }
+	}
+	else if ( racun_tip == "3" ) {
+		datoteka.setFileName(app_path + "/racun-besedilo-racun.csv");
+	}
+	else if ( racun_tip == "4" ) {
+		datoteka.setFileName(app_path + "/racun-besedilo-dobropis.csv");
+	}
 
 	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return;
 	}
-    QTextStream racun(&datoteka);
+	QTextStream racun(&datoteka);
 
 	// tiskanje
 	QString besedilo = "";
@@ -3204,9 +3204,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		ime_datoteke = "izdani-racun";
 	}
 	else if ( racun_tip == "4" ) {
-        mapa.mkdir("04-dobropisi");
-        mapa.cd("04-dobropisi");
-        ime_datoteke = "izdani-dobropisi";
+		mapa.mkdir("04-dobropisi");
+		mapa.cd("04-dobropisi");
+		ime_datoteke = "izdani-dobropisi";
 	}
 
 	// podatki o printerju
@@ -3237,15 +3237,15 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		printer.setColorMode(QPrinter::GrayScale);
 	}
 
-    if ( ui->txt_duplex->currentText() == "DA" ) {
-        printer.setDuplex(QPrinter::DuplexLongSide);
-    }
-    else if ( ui->txt_duplex->currentText() == "NE" ) {
-        printer.setDuplex(QPrinter::DuplexNone);
-    }
-    else {
-        printer.setDuplex(QPrinter::DuplexAuto);
-    }
+	if ( ui->txt_duplex->currentText() == "DA" ) {
+		printer.setDuplex(QPrinter::DuplexLongSide);
+	}
+	else if ( ui->txt_duplex->currentText() == "NE" ) {
+		printer.setDuplex(QPrinter::DuplexNone);
+	}
+	else {
+		printer.setDuplex(QPrinter::DuplexAuto);
+	}
 
 	printer.setCopyCount(pretvori_v_int(ui->txt_stevilo_kopij->text()).toInt());
 
@@ -3266,15 +3266,15 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		double pozicija = 0;
 		double visina_vrstice = 0;
 		double razmik_med_vrsticami = 0;
-        double faktor_razmika_med_vrsticami_1 = 0.1; // pri tabelah
-        double faktor_razmika_med_vrsticami_2 = 0.05; // pri besedilu
+		double faktor_razmika_med_vrsticami_1 = 0.1; // pri tabelah
+		double faktor_razmika_med_vrsticami_2 = 0.05; // pri besedilu
 
 		// nastravitve
 		QFont normalno("Arial", 10);
 		QFont debelo("Arial", 10, QFont::Bold);
 		QFont veliko("Arial", 14, QFont::Bold);
 		QFont malo("Arial", 8);
-        QFont malo_debelo("Arial", 8, QFont::Bold);
+		QFont malo_debelo("Arial", 8, QFont::Bold);
 
 		QPen *debel_svincnik = new QPen;
 		QPen *tanek_svincnik = new QPen;
@@ -3386,37 +3386,37 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-        if ( racun_tip == "4" ) { // JE dobropis
-            // nastavi parametre
-            painter.setFont(debelo);
-            besedilo = racun.readLine() + " ";
-            // dolocimo velikost kvadrata, ki ga tvori besedilo ("Stevilka racuna: ")
-            velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-            // nastavimo parametre
-            visina_vrstice = velikost_besedila.height();
-            // natisnemo besedilo
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-            // natisnemo besedilo
-            painter.setFont(normalno);
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_starsa);
-            // nova vrstica
-            pozicija += visina_vrstice + razmik_med_vrsticami;
-        }
+		if ( racun_tip == "4" ) { // JE dobropis
+			// nastavi parametre
+			painter.setFont(debelo);
+			besedilo = racun.readLine() + " ";
+			// dolocimo velikost kvadrata, ki ga tvori besedilo ("Stevilka racuna: ")
+			velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// nastavimo parametre
+			visina_vrstice = velikost_besedila.height();
+			// natisnemo besedilo
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+			// natisnemo besedilo
+			painter.setFont(normalno);
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_starsa);
+			// nova vrstica
+			pozicija += visina_vrstice + razmik_med_vrsticami;
+		}
 
-        // nastavi parametre
-        painter.setFont(debelo);
-        besedilo = racun.readLine() + " ";
-        // dolocimo velikost kvadrata, ki ga tvori besedilo ("Datum izdaje: ")
-        velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-        // nastavimo parametre
-        visina_vrstice = velikost_besedila.height();
-        // natisnemo besedilo
-        painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-        // natisnemo besedilo
-        painter.setFont(normalno);
-        painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_izdaje);
-        // nova vrstica
-        pozicija += visina_vrstice + razmik_med_vrsticami;
+		// nastavi parametre
+		painter.setFont(debelo);
+		besedilo = racun.readLine() + " ";
+		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Datum izdaje: ")
+		velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// nastavimo parametre
+		visina_vrstice = velikost_besedila.height();
+		// natisnemo besedilo
+		painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// natisnemo besedilo
+		painter.setFont(normalno);
+		painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_izdaje);
+		// nova vrstica
+		pozicija += visina_vrstice + razmik_med_vrsticami;
 
 		// nastavi parametre
 		painter.setFont(debelo);
@@ -3433,7 +3433,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
-        if ( racun_tip != "3" && racun_tip != "4" ) { // NI racun, NI dobropis
+		if ( racun_tip != "3" && racun_tip != "4" ) { // NI racun, NI dobropis
 			// nastavi parametre
 			painter.setFont(debelo);
 			besedilo = racun.readLine() + " ";
@@ -3449,7 +3449,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
-        else if ( racun_tip == "3" ){ // JE racun, NI dobropis
+		else if ( racun_tip == "3" ){ // JE racun, NI dobropis
 			// nastavi parametre
 			painter.setFont(debelo);
 			besedilo = racun.readLine() + " ";
@@ -3481,45 +3481,45 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
 
-            // nastavi parametre
-            painter.setFont(debelo);
-            besedilo = racun.readLine() + " ";
-            if ( racun_tip == "1" && racun_avans != "0.0" ) {
-                // dolocimo velikost kvadrata, ki ga tvori besedilo ("Rok placila (avansa): ")
-                velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-                // nastavimo parametre
-                visina_vrstice = velikost_besedila.height();
-                // natisnemo besedilo
-                painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-                // natisnemo besedilo
-                painter.setFont(normalno);
-                if ( racun_tip != "2" ) {
-                    painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
-                }
-                else {
-                    painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_placila_avansa);
-                }
-                // nova vrstica
-                pozicija += visina_vrstice + razmik_med_vrsticami;
-            }
-            if ( racun_tip != "1" && racun_avans != "100.0" ) {
-                // dolocimo velikost kvadrata, ki ga tvori besedilo ("Rok placila (avansa): ")
-                velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-                // nastavimo parametre
-                visina_vrstice = velikost_besedila.height();
-                // natisnemo besedilo
-                painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
-                // natisnemo besedilo
-                painter.setFont(normalno);
-                if ( racun_tip != "2" ) {
-                    painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
-                }
-                else {
-                    painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_placila_avansa);
-                }
-                // nova vrstica
-                pozicija += visina_vrstice + razmik_med_vrsticami;
-            }
+			// nastavi parametre
+			painter.setFont(debelo);
+			besedilo = racun.readLine() + " ";
+			if ( racun_tip == "1" && racun_avans != "0.0" ) {
+				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Rok placila (avansa): ")
+				velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// nastavimo parametre
+				visina_vrstice = velikost_besedila.height();
+				// natisnemo besedilo
+				painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// natisnemo besedilo
+				painter.setFont(normalno);
+				if ( racun_tip != "2" ) {
+					painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
+				}
+				else {
+					painter.drawText(QRectF(printer.width() / 2 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_placila_avansa);
+				}
+				// nova vrstica
+				pozicija += visina_vrstice + razmik_med_vrsticami;
+			}
+			if ( racun_tip != "1" && racun_avans != "100.0" ) {
+				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Rok placila (avansa): ")
+				velikost_besedila = painter.boundingRect(( printer.width() / 2 ) + 20, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// nastavimo parametre
+				visina_vrstice = velikost_besedila.height();
+				// natisnemo besedilo
+				painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+				// natisnemo besedilo
+				painter.setFont(normalno);
+				if ( racun_tip != "2" ) {
+					painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_rok_placila);
+				}
+				else {
+					painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_datum_placila_avansa);
+				}
+				// nova vrstica
+				pozicija += visina_vrstice + razmik_med_vrsticami;
+			}
 
 		// nastavi parametre
 		painter.setFont(debelo);
@@ -3547,13 +3547,13 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		// natisnemo besedilo
 		painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
-        painter.setFont(normalno);
-        if ( racun_tip == "4" ) { // JE dobropis
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_bic);
-        }
-        else {
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_bic);
-        }
+		painter.setFont(normalno);
+		if ( racun_tip == "4" ) { // JE dobropis
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_bic);
+		}
+		else {
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_bic);
+		}
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
@@ -3568,12 +3568,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 		// natisnemo besedilo
 		painter.setFont(normalno);
-        if ( racun_tip == "4" ) { // JE dobropis
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_trr);
-        }
-        else {
-            painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_trr);
-        }
+		if ( racun_tip == "4" ) { // JE dobropis
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, narocnik_trr);
+		}
+		else {
+			painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_trr);
+		}
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
@@ -3592,12 +3592,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			if ( racun_tip == "1") { // pri predracunu
 				painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
 			}
-            else if ( racun_tip == "3" ) { // pri racunu
+			else if ( racun_tip == "3" ) { // pri racunu
 				painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_koda_namena);
 			}
-            else if ( racun_tip == "4" ) { // JE dobropis
-                painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "OTHR");
-            }
+			else if ( racun_tip == "4" ) { // JE dobropis
+				painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, "OTHR");
+			}
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
@@ -3614,12 +3614,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			painter.drawText(QRectF(( printer.width() / 2 ) + 20, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 			// natisnemo besedilo
 			painter.setFont(normalno);
-            if ( racun_tip == "4" ) { // JE dobropis
-                painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_sklica);
-            }
-            else {
-                painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_sklica);
-            }
+			if ( racun_tip == "4" ) { // JE dobropis
+				painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_sklica);
+			}
+			else {
+				painter.drawText(QRectF(( printer.width() / 2 ) + 20 + velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, racun_stevilka_sklica);
+			}
 			// nova vrstica
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 		}
@@ -3751,16 +3751,16 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			while ( sql_storitve.next() ) {
 				koncna_pozicija++;
 			}
-            sql_storitve.clear();
+			sql_storitve.clear();
 
-            if ( racun_tip == "4" ) {
-                sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
-                                     "' AND dobropis LIKE '1' ORDER BY vrstni_red ASC");
-            }
-            else {
-                sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
-                                     "' ORDER BY vrstni_red ASC");
-            }
+			if ( racun_tip == "4" ) {
+				sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
+									 "' AND dobropis LIKE '1' ORDER BY vrstni_red ASC");
+			}
+			else {
+				sql_storitve.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(id) + "' AND tip_racuna LIKE '" + pretvori(racun_tip) +
+									 "' ORDER BY vrstni_red ASC");
+			}
 			sql_storitve.exec();
 
 			int i = 1; // za zaporedno stevilko storitve
@@ -3827,7 +3827,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				znesek_ddv[zaporedje] += pretvori_v_double(prevedi(sql_storitve.value(sql_storitve.record().indexOf("znesek_ddv")).toString())).toDouble();
 
 				// tiskanje storitve
-                painter.setFont(malo);
+				painter.setFont(malo);
 				// dolocimo velikost kvadrata, ki ga tvori besedilo ("Storitev")
 				velikost_besedila = painter.boundingRect(crta_2, pozicija, printer.width() - sirina_vecja - sirina_manjsa * 6 - sirina_manjsa / 2, pozicija, Qt::AlignJustify | Qt::TextWordWrap, storitev_ime);
 				// nastavimo parametre
@@ -3841,10 +3841,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
-                }
+				}
 
-                // nastavimo majhno pisavo
-                painter.setFont(malo);
+				// nastavimo majhno pisavo
+				painter.setFont(malo);
 
 				// natisnemo besedilo (Pozicija)
 				painter.drawText(QRectF(crta_0, pozicija, sirina_manjsa / 2, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, storitev_id);
@@ -3886,7 +3886,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			} // while ( sql_storitve.next() )
 
 		} // base.isOpen()
-        base_1.close();
+		base_1.close();
 
 		// crta pod storitvami
 		painter.setPen(*debel_svincnik);
@@ -3903,7 +3903,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		skupaj_brez_ddv = QString::number(skupajbrezddv, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_znesek = QString::number(skupajznesek, 'f', 2).replace(".", ",") + " EUR";
 		skupaj_znesek_avansa = racun_znesek_avansa.replace(".", ",") + " EUR";
-        racun_avans = racun_avans.replace(".", ",") + " %";
+		racun_avans = racun_avans.replace(".", ",") + " %";
 		//skupajddvavansa = 16.66667 / 100 * pretvori_v_double(racun_znesek_avansa).toDouble();
 		skupajddvavansa = 12345.00;
 		skupaj_ddv_avansa = QString::number(skupajddvavansa, 'f', 2).replace(".", ",") + " EUR";
@@ -3920,10 +3920,10 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		}
 
 		// nastavi parametre
-        painter.setFont(malo_debelo);
+		painter.setFont(malo_debelo);
 		besedilo = racun.readLine() + " ";
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Skupaj brez DDV: ")
-        velikost_besedila = painter.boundingRect(printer.width() * 1 / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "DDV 20,0 % od osnove: pa se malo");
+		velikost_besedila = painter.boundingRect(printer.width() * 1 / 2, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, "DDV 20,0 % od osnove: pa se malo");
 		// nastavimo parametre
 		visina_vrstice = velikost_besedila.height() * 2;
 
@@ -3963,16 +3963,16 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		}
 
 		// natisnemo besedilo
-        painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+		painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 		// natisnemo besedilo
-        painter.setFont(malo);
-        painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_brez_ddv);
+		painter.setFont(malo);
+		painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_brez_ddv);
 		// nova vrstica * 2
 		pozicija += visina_vrstice;
 
 		// crta
 		painter.setPen(*tanek_svincnik);
-        painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+		painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 		// nova vrstica
 		pozicija += razmik_med_vrsticami;
 
@@ -3990,19 +3990,19 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		for ( int stevilo_davkov = 0; stevilo_davkov < seznam_ddv.count(); stevilo_davkov++ ) {
 			if ( QString::number(znesek_ddv[stevilo_davkov], 'f', 2) != "0.00" ) {
 				// nastavi parametre (XX,X % DDV)
-                painter.setFont(malo_debelo);
+				painter.setFont(malo_debelo);
 				besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
 				// natisnemo besedilo
-                painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+				painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 				// natisnemo besedilo
-                painter.setFont(malo);
-                painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width() * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov], 'f', 2).replace(".", ",") + " EUR");
+				painter.setFont(malo);
+				painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width() * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov], 'f', 2).replace(".", ",") + " EUR");
 				// nova vrstica * 2
 				pozicija += visina_vrstice;
 
 				// crta pod storitvami
 				painter.setPen(*tanek_svincnik);
-                painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+				painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 				// nova vrstica
 				pozicija += razmik_med_vrsticami;
 
@@ -4014,39 +4014,39 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		skupajznesek = skupajbrezddv + znesekddv;
 
 		// nastavi parametre ("Skupaj v EUR: ")
-        painter.setFont(malo_debelo);
-        besedilo = racun.readLine() + " ";
+		painter.setFont(malo_debelo);
+		besedilo = racun.readLine() + " ";
 		// natisnemo besedilo
-        painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+		painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 		// natisnemo besedilo
-        painter.setFont(malo);
-        painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(skupajznesek, 'f', 2).replace(".", ",") + " EUR");
+		painter.setFont(malo);
+		painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(skupajznesek, 'f', 2).replace(".", ",") + " EUR");
 		// nova vrstica * 2
 		pozicija += visina_vrstice;
 
 		// crta
 		painter.setPen(*debel_svincnik);
-        painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+		painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 		// nova vrstica
 		pozicija += razmik_med_vrsticami;
 
 		if ( racun_tip == "1" && racun_avans != "0,0 % " ) {
 			// nastavi parametre ("Skupaj % avans: ")
-            painter.setFont(malo_debelo);
+			painter.setFont(malo_debelo);
 			QString besedilo_skupaj = racun.readLine();
 			QString besedilo_avans = racun.readLine();
-            besedilo = besedilo_skupaj + " " + racun_avans + besedilo_avans;
+			besedilo = besedilo_skupaj + " " + racun_avans + besedilo_avans;
 			// natisnemo besedilo
-            painter.drawText(QRectF(printer.width() * 1 / 2, pozicija,velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+			painter.drawText(QRectF(printer.width() * 1 / 2, pozicija,velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 			// natisnemo besedilo
-            painter.setFont(malo);
-            painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
+			painter.setFont(malo);
+			painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
 			// nova vrstica * 2
 			pozicija += visina_vrstice;
 
 			// crta pod storitvami
 			painter.setPen(*tanek_svincnik);
-            painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+			painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
 			pozicija += razmik_med_vrsticami;
 
@@ -4057,20 +4057,20 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			for ( int stevilo_davkov = 0; stevilo_davkov < seznam_ddv.count(); stevilo_davkov++ ) {
 				if ( QString::number(znesek_ddv[stevilo_davkov], 'f', 2) != "0.00" ) {
 					// nastavi parametre (XX,X % DDV)
-                    painter.setFont(malo_debelo);
+					painter.setFont(malo_debelo);
 					besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
 					// natisnemo besedilo
-                    painter.setFont(malo);
-                    painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+					painter.setFont(malo);
+					painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 					// natisnemo besedilo
-                    painter.setFont(malo);
-                    painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * pretvori_v_double(racun_avans).toDouble() / 100, 'f', 2).replace(".", ",") + " EUR");
+					painter.setFont(malo);
+					painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * pretvori_v_double(racun_avans).toDouble() / 100, 'f', 2).replace(".", ",") + " EUR");
 					// nova vrstica * 2
 					pozicija += visina_vrstice;
 
 					// crta pod storitvami
 					painter.setPen(*tanek_svincnik);
-                    painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+					painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 					// nova vrstica
 					pozicija += razmik_med_vrsticami;
 
@@ -4081,7 +4081,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 			// crta pod storitvami
 			painter.setPen(*debel_svincnik);
-            painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+			painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
 			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
@@ -4089,22 +4089,22 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			besedilo = racun.readLine() + racun.readLine() + racun.readLine() + racun.readLine();
 		}
 
-        if ( racun_tip != "1" && racun_tip != "4" ) { // predplacilo in racun
+		if ( racun_tip != "1" && racun_tip != "4" ) { // predplacilo in racun
 			if ( racun_avans != "0,0 % " ) {
 				// nastavi parametre ("Placano po predracunu st: ")
-                painter.setFont(malo_debelo);
+				painter.setFont(malo_debelo);
 				besedilo = racun.readLine() + " " + racun_stevilka_starsa + ": ";
 				// natisnemo besedilo
-                painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice * 3 / 2), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+				painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice * 3 / 2), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 				// natisnemo besedilo
-                painter.setFont(malo);
-                painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice * 3 / 2), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
+				painter.setFont(malo);
+				painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice * 3 / 2), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, skupaj_znesek_avansa);
 				// nova vrstica * 2
 				pozicija += visina_vrstice * 3 / 2;
 
 				// crta pod storitvami
 				painter.setPen(*tanek_svincnik);
-                painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+				painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 				// nova vrstica
 				pozicija += razmik_med_vrsticami;
 
@@ -4115,19 +4115,19 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				for ( int stevilo_davkov = 0; stevilo_davkov < seznam_ddv.count(); stevilo_davkov++ ) {
 					if ( QString::number(znesek_ddv[stevilo_davkov], 'f', 2) != "0.00" ) {
 						// nastavi parametre (XX,X % DDV)
-                        painter.setFont(malo_debelo);
+						painter.setFont(malo_debelo);
 						besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
-                        // natisnemo besedilo
-                        painter.setFont(malo);
-                        painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
-                        // natisnemo besedilo
-                        painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * pretvori_v_double(racun_avans).toDouble() / 100, 'f', 2).replace(".", ",") + " EUR");
+						// natisnemo besedilo
+						painter.setFont(malo);
+						painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+						// natisnemo besedilo
+						painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * pretvori_v_double(racun_avans).toDouble() / 100, 'f', 2).replace(".", ",") + " EUR");
 						// nova vrstica * 2
 						pozicija += visina_vrstice;
 
 						// crta pod storitvami
 						painter.setPen(*tanek_svincnik);
-                        painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+						painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 						// nova vrstica
 						pozicija += razmik_med_vrsticami;
 
@@ -4138,7 +4138,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 				// crta pod storitvami
 				painter.setPen(*debel_svincnik);
-                painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+				painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 				// nova vrstica
 				pozicija += razmik_med_vrsticami;
 			}
@@ -4146,21 +4146,21 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				besedilo = racun.readLine() + racun.readLine() + racun.readLine();
 			}
 		}
-        if ( racun_tip == "3" ) { // samo racun
+		if ( racun_tip == "3" ) { // samo racun
 			// nastavi parametre ("Se za placilo: ")
 			painter.setFont(debelo);
 			besedilo = racun.readLine() + " ";
 			// natisnemo besedilo
-            painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+			painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 			// natisnemo besedilo
 			painter.setFont(normalno);
-            painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(skupajznesek - pretvori_v_double(skupaj_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR");
+			painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(skupajznesek - pretvori_v_double(skupaj_znesek_avansa).toDouble(), 'f', 2).replace(".", ",") + " EUR");
 			// nova vrstica
 			pozicija += visina_vrstice;
 
 			// crta pod storitvami
 			painter.setPen(*tanek_svincnik);
-            painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+			painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
 			pozicija += razmik_med_vrsticami;
 
@@ -4171,20 +4171,20 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			for ( int stevilo_davkov = 0; stevilo_davkov < seznam_ddv.count(); stevilo_davkov++ ) {
 				if ( QString::number(znesek_ddv[stevilo_davkov], 'f', 2) != "0.00" ) {
 					// nastavi parametre (XX,X % DDV)
-                    painter.setFont(malo_debelo);
+					painter.setFont(malo_debelo);
 					besedilo = besedilo_ddv + seznam_ddv[stevilo_davkov].replace(".", ",") + " %" + besedilo_od_osnove;
 					// natisnemo besedilo
-                    painter.setFont(malo);
-                    painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
+					painter.setFont(malo);
+					painter.drawText(QRectF(printer.width() * 1 / 2, pozicija, velikost_besedila.width(), visina_vrstice), Qt::AlignRight | Qt::TextWordWrap | Qt::AlignVCenter, besedilo);
 					// natisnemo besedilo
-                    painter.setFont(malo);
-                    painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * ( 1 - pretvori_v_double(racun_avans).toDouble() / 100 ), 'f', 2).replace(".", ",") + " EUR");
+					painter.setFont(malo);
+					painter.drawText(QRectF(printer.width()  * 1 / 2 + velikost_besedila.width() + 10, pozicija, printer.width()  * 1 / 2 - velikost_besedila.width() - 10, visina_vrstice), Qt::AlignCenter | Qt::TextWordWrap | Qt::AlignVCenter, QString::number(znesek_ddv[stevilo_davkov] * ( 1 - pretvori_v_double(racun_avans).toDouble() / 100 ), 'f', 2).replace(".", ",") + " EUR");
 					// nova vrstica * 2
 					pozicija += visina_vrstice;
 
 					// crta pod storitvami
 					painter.setPen(*tanek_svincnik);
-                    painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+					painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 					// nova vrstica
 					pozicija += razmik_med_vrsticami;
 
@@ -4195,7 +4195,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 			// crta pod storitvami
 			painter.setPen(*debel_svincnik);
-            painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
+			painter.drawLine(printer.width()  * 1 / 2 - 10, pozicija, printer.width(), pozicija);
 			// nova vrstica
 			pozicija += razmik_med_vrsticami + visina_vrstice;
 		}
@@ -4205,11 +4205,11 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		}
 
 	// razlog stornacije
-        // opomba morebitne stornacije
-        besedilo = racun.readLine();
-        if ( razlog_stornacije != "" ) {
+		// opomba morebitne stornacije
+		besedilo = racun.readLine();
+		if ( razlog_stornacije != "" ) {
 			// napisemo naslov
-            painter.setFont(malo_debelo);
+			painter.setFont(malo_debelo);
 			// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
 			velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 			// nastavimo parametre
@@ -4232,7 +4232,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			pozicija += visina_vrstice + razmik_med_vrsticami;
 
 			// napisemo razlog stornacije
-            painter.setFont(malo);
+			painter.setFont(malo);
 			besedilo = razlog_stornacije;
 
 			// dolocimo velikost kvadrata, ki ga tvori besedilo (razlog stornacije)
@@ -4359,15 +4359,15 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// naziv
 		painter.setFont(normalno);
-        besedilo = racun.readLine() + " ";
+		besedilo = racun.readLine() + " ";
 		// dolocimo velikost kvadrata, ki ga tvori besedilo (naziv podpisnika)
-        velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
+		velikost_besedila = painter.boundingRect(0, pozicija, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nastavimo parametre
-        visina_vrstice = velikost_besedila.height();
+		visina_vrstice = velikost_besedila.height();
 		razmik_med_vrsticami = velikost_besedila.height() * faktor_razmika_med_vrsticami_2; // razmik med vrsticami, za lazje branje dokumenta
 
 		// preveri, ce je potrebna nova stran
-        if( pozicija + visina_noge + visina_vrstice * 4 + razmik_med_vrsticami * 4 >= printer.height() ) { // zahvala + naziv + podpis
+		if( pozicija + visina_noge + visina_vrstice * 4 + razmik_med_vrsticami * 4 >= printer.height() ) { // zahvala + naziv + podpis
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
@@ -4376,12 +4376,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			pozicija = visina_glave;
 		}
 
-        // natisnemo besedilo // Hvala za zaupanje!
-        painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
+		// natisnemo besedilo // Hvala za zaupanje!
+		painter.drawText(QRectF(0, pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, besedilo);
 
-        pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
+		pozicija += visina_vrstice * 2 + razmik_med_vrsticami * 2;
 
-        painter.drawText(QRectF(printer.width() - velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
+		painter.drawText(QRectF(printer.width() - velikost_besedila.width(), pozicija, printer.width(), visina_vrstice), Qt::AlignJustify | Qt::TextWordWrap, podjetje_oseba_naziv);
 		// nova vrstica
 		pozicija += visina_vrstice + razmik_med_vrsticami;
 
@@ -4461,12 +4461,23 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	base.close();
 
 	// logotip podjetja
-	QImage logotip(podjetje_logo);
-	if ( logotip.height() != 70 ) {
-		painter.drawImage(0, pozicija, QPixmap::fromImage(logotip).scaledToHeight(70).toImage(), 0, 0, 0, 0);
+	// pretvori besedilo slike v bytearray
+	QByteArray slika_array;
+	slika_array.append(podjetje_logo);
+
+	QPixmap *logotip_pixmap = new QPixmap();
+	// pretvorimo iz base64 v normalen bytearray
+	logotip_pixmap->loadFromData(QByteArray::fromBase64(slika_array));
+
+	// iz pixmap-a naredimo sliko, ki jo prenesemo naprej
+	QImage logo(logotip_pixmap->toImage());
+
+	// narisi logotip
+	if ( logo.height() != 70 ) {
+		painter.drawImage(0, pozicija, logotip_pixmap->scaledToHeight(70).toImage(), 0, 0, 0, 0);
 	}
 	else {
-		painter.drawImage(0, pozicija, logotip, 0, 0, 0, 0);
+		painter.drawImage(0, pozicija, logotip_pixmap->toImage(), 0, 0, 0, 0);
 	}
 
 	pozicija = 10; // zaradi velikosti logotipa

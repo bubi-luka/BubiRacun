@@ -1,6 +1,11 @@
 ﻿Kaj je novega?
 ==========
 
+0.9.36
+----------
+- izboljšava: logotip se shrani v bazo podatkov
+- izboljšava: tisk logotip kliče iz baze
+
 0.9.35
 ----------
 - napaka: privzete nastavitve tiskanaj niso enake tisti, ki so bile do sedaj vgrajene v program, zato so bili rezultati tiskanja drugačni od dosedanjih
