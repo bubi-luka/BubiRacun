@@ -697,20 +697,6 @@ void stranke::on_btn_vnesi_clicked() {
 	palette_normal.setBrush(QPalette::Inactive, QPalette::WindowText, brush_normal);
 
 	// preveri polja
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		if (ui->txt_ime->text() == "") {
 			ui->label->setPalette(palette_error);
 			ui->label->setFont(font_error);
@@ -744,8 +730,6 @@ void stranke::on_btn_vnesi_clicked() {
 				ui->label_2->setFont(font_normal);
 			}
 		}
-	}
-	base.close();
 
 	// preveri davcno stevilko
 	if (ui->rb_pravna->isChecked() && ui->txt_davcna->text() != "") {
@@ -831,20 +815,6 @@ void stranke::on_btn_vnesi_clicked() {
 			ui->txt_vir_kupon->setFocus();
 		}
 		else { // kupon je
-			QString app_path = QApplication::applicationDirPath();
-			QString dbase_path = app_path + "/base.bz";
-
-			QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-			base.setDatabaseName(dbase_path);
-			base.database();
-			base.open();
-			if(base.isOpen() != true){
-				QMessageBox msgbox;
-				msgbox.setText("Baze ni bilo moc odpreti");
-				msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-				msgbox.exec();
-			}
-			else {
 				QSqlQuery sql_kupon;
 				sql_kupon.prepare("SELECT * FROM kuponi WHERE kupon LIKE '" + pretvori(ui->txt_vir_kupon->text()) + "'");
 				sql_kupon.exec();
@@ -875,8 +845,6 @@ void stranke::on_btn_vnesi_clicked() {
 					ui->label_19->setFont(font_normal);
 				}
 
-			}
-			base.close();
 			ui->label_19->setPalette(palette_normal);
 			ui->label_19->setFont(font_normal);
 		}

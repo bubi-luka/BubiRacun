@@ -208,20 +208,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 	palette_normal.setBrush(QPalette::Inactive, QPalette::WindowText, brush_normal);
 
 	// preveri obstoj stevilke narocila
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		if ( ui->txt_stvnosa->text() == "") {
 			ui->label_2->setPalette(palette_error);
 			ui->label_2->setFont(font_error);
@@ -248,8 +234,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 				ui->label_2->setPalette(palette_normal);
 				ui->label_2->setFont(font_normal);
 			}
-		}
-		base.close();
 	}
 
 	// ponovno preveri obvezno izpolnjena polja

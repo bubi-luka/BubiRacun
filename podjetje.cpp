@@ -218,20 +218,6 @@ void podjetje::on_btn_potrdi_clicked() {
 		ui->txt_ime->setFocus();
 	}
 	else {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_preveri_podjetje;
 			sql_preveri_podjetje.prepare("SELECT * FROM podjetja WHERE ime LIKE '" + ui->txt_ime->text() + "'");
 			sql_preveri_podjetje.exec();
@@ -251,8 +237,6 @@ void podjetje::on_btn_potrdi_clicked() {
 				ui->label_5->setPalette(palette_normal);
 				ui->label_5->setFont(font_normal);
 			}
-		}
-		base.close();
 	}
 
 	// preveri davcno stevilko

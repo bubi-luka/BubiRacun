@@ -158,20 +158,6 @@ void uporabnik::on_btn_sprejmi_clicked() {
 		ui->txt_uporabnik->setFocus();
 	}
 	else {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_preveri_uporabnika;
 			sql_preveri_uporabnika.prepare("SELECT * FROM uporabniki WHERE user_name LIKE '" + ui->txt_uporabnik->text() + "'");
 			sql_preveri_uporabnika.exec();
@@ -191,8 +177,6 @@ void uporabnik::on_btn_sprejmi_clicked() {
 			ui->label_4->setPalette(palette_normal);
 			ui->label_4->setFont(font_normal);
 			}
-		}
-		base.close();
 	}
 
 	// preveri veljavnost gesla
