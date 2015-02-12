@@ -7,14 +7,19 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QWidget>
+#include <QSettings>
 
 #include "kodiranje.h"
 #include "setup.h"
+#include "baza.h"
 
 setup::setup()
 {
 }
 void setup::start_first_run() {
+
+	// ustvari bazo podatkov
+	baza_podatkov();
 
 	// ustvari tabelo s podatki o programu in bazi
 	glavna_tabela();
@@ -169,6 +174,43 @@ void setup::start_first_run() {
 
 }
 
+// ustvari bazo podatkov
+void setup::baza_podatkov() {
+
+	// uvedi nov objekt
+	baza nova_baza;
+
+	// preglej, ali obstajajo kaksni podatki o legi baze podatkov, drugace jih ustvari
+	QSettings nastavitve("BubiTech", "BubiRacun");
+
+	if ( nastavitve.value("name").toString() != "" && nastavitve.value("path").toString() != "" && nastavitve.value("type").toString() != "" ) {
+		nova_baza.set_name(nastavitve.value("name").toString());
+		nova_baza.set_path(nastavitve.value("path").toString());
+		nova_baza.set_type(nastavitve.value("type").toString());
+	} // if
+	else {
+		QString path = "";
+
+		path = QFileDialog::getOpenFileName(0, "Izberite bazo podatkov", QApplication::applicationDirPath(), "Baza (*.bz);;Arhiv baze (*.bz.bck)");
+
+		if ( path != "" ) {
+			nova_baza.set_name("osnovna-baza");
+			nova_baza.set_path(path);
+			nova_baza.set_type("QSQLITE");
+
+			nastavitve.setValue("name", nova_baza.get_name());
+			nastavitve.setValue("path", nova_baza.get_path());
+			nastavitve.setValue("type", nova_baza.get_type());
+		} // if
+		else {
+			exit(0);
+		} // else
+
+	} // else
+
+	nova_baza.open_database();
+
+}
 
 // ustvari tabelo s podatki o bazi in programu
 void setup::glavna_tabela() {

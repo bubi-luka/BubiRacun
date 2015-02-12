@@ -13,6 +13,8 @@ private slots:
 	QString pretvori(QString besedilo);
 	QString prevedi(QString besedilo);
 
+	// ustvari bazo podatkov
+	void baza_podatkov();
 
 	// ustvari glavno tabelo
 	void glavna_tabela();
@@ -32,7 +34,7 @@ private slots:
 	void tabela_nastavitve();
 	void tabela_avtomobili();
 	void tabela_stroski_prehrane();
-    void tabela_prioriteta_strank();
+	void tabela_prioriteta_strank();
 
 	// ustvari tabele sifrantov
 	void tabela_skd();
