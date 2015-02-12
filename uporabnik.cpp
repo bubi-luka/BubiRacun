@@ -50,7 +50,6 @@ uporabnik::uporabnik(QWidget *parent) :
 			ui->txt_posta->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("posta")).toString()));
 		}
 		sql_fill_combo.clear();
-		 sql_fill_combo;
 		sql_fill_combo.prepare("SELECT * FROM sif_dovoljenja");
 		sql_fill_combo.exec();
 		while (sql_fill_combo.next()) {
@@ -678,7 +677,7 @@ void uporabnik::on_btn_geslo_clicked() {
 
 }
 
-void uporabnik::on_txt_posta_currentIndexChanged(QString besedilo) {
+void uporabnik::on_txt_posta_currentIndexChanged() {
 
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_posta WHERE posta LIKE '" + pretvori(ui->txt_posta->currentText()) + "'");

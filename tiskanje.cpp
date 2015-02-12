@@ -684,7 +684,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 	// narisi glavo
 		visina_glave = natisni_glavo_potni_nalog(painter, id);
-		visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+		visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 
 		pozicija += visina_glave;
 
@@ -854,7 +854,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 					// natisnemo novo glavo in nogo
 					visina_glave = natisni_glavo_potni_nalog(painter, id);
-					visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+					visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 					pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 				}
 
@@ -930,7 +930,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1018,7 +1018,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1195,7 +1195,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1291,7 +1291,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1897,7 +1897,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1934,7 +1934,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1974,7 +1974,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -2355,7 +2355,7 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
 
 }
 
-int tiskanje::natisni_nogo_potni_nalog(QPainter &painter, QString id, int &stevilka_strani) {
+int tiskanje::natisni_nogo_potni_nalog(QPainter &painter, int &stevilka_strani) {
 
 	QString besedilo = "Stran: " + QString::number(stevilka_strani, 10);
 	int visina = 0;
@@ -2586,7 +2586,7 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 
 	// narisi glavo
 	visina_glave = natisni_glavo_prejeti_racun(painter, id);
-	visina_noge = natisni_nogo_prejeti_racun(painter, id, stevilka_strani);
+	visina_noge = natisni_nogo_prejeti_racun(painter, stevilka_strani);
 
 	// pripravimo dokument za tiskanje
 	QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
@@ -2803,7 +2803,7 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
 
 }
 
-int tiskanje::natisni_nogo_prejeti_racun(QPainter &painter, QString id, int &stevilka_strani) {
+int tiskanje::natisni_nogo_prejeti_racun(QPainter &painter, int &stevilka_strani) {
 
 	QString besedilo = "Stran: " + QString::number(stevilka_strani, 10);
 	int visina = 0;
@@ -2927,14 +2927,9 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 	double skupajbrezddv = 0.0;
 	double skupajddvodosnove20 = 0.0;
-	double skupajddvodosnove85 = 0.0;
-	double skupajddvodosnove00 = 0.0;
 	double skupajznesek = 0.0;
-	double skupajznesekavansa = 0.0;
 	double skupajznesekavansabrezddv = 0.0;
 	double skupajddvavansa = 0.0;
-	double skupajsezaplacati = 0.0;
-	double skupajsezaplacatiddv = 0.0;
 
 	int stevilka_strani = 1;
 
@@ -3553,7 +3548,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		double crta_6 = crta_5 + sirina_vecja;									// Cena na enoto brez DDV
 		double crta_7 = crta_6 + sirina_manjsa;									// Popust
 		double crta_8 = crta_7 + sirina_manjsa;									// Stopnja DDV
-		double crta_9 = printer.width();										// Vrednost brez DDV
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Sifra")
@@ -3729,7 +3723,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -3845,7 +3838,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
-			int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 			pozicija = visina_glave;
 		}
@@ -4109,7 +4101,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				printer.newPage();
 
 				int visina_glave = natisni_glavo_izdani_racun(painter, id);
-				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 				pozicija = visina_glave;
 			}
@@ -4134,7 +4125,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				printer.newPage();
 
 				int visina_glave = natisni_glavo_izdani_racun(painter, id);
-				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 				pozicija = visina_glave;
 			}
@@ -4176,7 +4166,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -4214,7 +4203,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -4244,7 +4232,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
-			int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 			pozicija = visina_glave;
 		}
@@ -4279,7 +4266,6 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	painter.resetTransform();
 
 	// priprava podatkov o tiskanju
-	int i = 1;
 	double pozicija = 0;
 	double visina_vrstice = 0;
 	double razmik_med_vrsticami = 0;
@@ -4396,7 +4382,6 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	painter.resetTransform();
 
 	// priprava podatkov o tiskanju
-	int i = 1;
 	double pozicija = 0;
 	double visina_vrstice = 0;
 	double razmik_med_vrsticami = 0;
