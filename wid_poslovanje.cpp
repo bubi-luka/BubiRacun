@@ -199,7 +199,7 @@ void wid_poslovanje::napolni_mesec() {
 			QSqlQuery sql_avans;
 			double znesek_avans = 0.0;
 			double znesek_ostanek = 0.0;
-			double znesek_storno = 0.0;
+//			double znesek_storno = 0.0;
 
 			sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila_avansa LIKE '%." +
 												pretvori("01." + meseci[b] + "." + trenutno_leto).right(7) + "'" +
@@ -919,7 +919,7 @@ void wid_poslovanje::napolni_leto() {
 			// poisci, kateri avansi so bili placani v danem mesecu
 			double znesek_avans = 0.0;
 			double znesek_ostanek = 0.0;
-			double znesek_storno = 0.0;
+//			double znesek_storno = 0.0;
 
 			QSqlQuery sql_avans;
 			sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila LIKE '%." +
@@ -1045,7 +1045,7 @@ void wid_poslovanje::napolni_skupni() {
 			double vrednost = 0.0;
 			double znesek_avans = 0.0;
 			double znesek_ostanek = 0.0;
-			double znesek_storno = 0.0;
+//			double znesek_storno = 0.0;
 
 			// zanka gre skozi vsa leta
 			for ( int c = 0; c < leta.count(); c++ ) {

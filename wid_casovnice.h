@@ -4,16 +4,16 @@
 #include <QWidget>
 
 namespace Ui {
-    class wid_casovnice;
+	class wid_casovnice;
 }
 
 class wid_casovnice : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit wid_casovnice(QWidget *parent = 0);
-    ~wid_casovnice();
+	explicit wid_casovnice(QWidget *parent = 0);
+	~wid_casovnice();
 
 public slots:
 	void on_cb_aktivnost_toggled();
@@ -23,8 +23,6 @@ public slots:
 	void on_txt_stranka_currentIndexChanged();
 	void on_txt_projekt_currentIndexChanged();
 	void on_txt_racun_currentIndexChanged();
-
-	void on_tbl_casovnice_cellChanged(int vrstica, int stolpec);
 
 	void napolni_sezname();
 	void napolni();
@@ -36,7 +34,7 @@ public slots:
 	QString prevedi(QString besedilo);
 
 private:
-    Ui::wid_casovnice *ui;
+	Ui::wid_casovnice *ui;
 };
 
 #endif // WID_CASOVNICE_H
