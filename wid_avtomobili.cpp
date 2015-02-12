@@ -24,26 +24,9 @@ wid_avtomobili::~wid_avtomobili()
 void wid_avtomobili::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_avtomobili->selectedItems().takeAt(0)->text();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "brisi-avtomobil");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_brisi;
 		sql_brisi.prepare("DELETE FROM avtomobili WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
-	}
-	base.close();
 
 	ui->tbl_avtomobili->removeRow(ui->tbl_avtomobili->selectedItems().takeAt(0)->row());
 	osvezi();
@@ -104,22 +87,6 @@ void wid_avtomobili::napolni() {
 	}
 
 	razvrsti = ui->tbl_avtomobili->horizontalHeader()->sortIndicatorSection();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "avto-napolni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
 
 		// clear previous content
 		ui->tbl_avtomobili->clear();
@@ -221,8 +188,6 @@ void wid_avtomobili::napolni() {
 			row++;
 
 		}
-	}
-	base.close();
 
 	ui->tbl_avtomobili->selectRow(izbranec);
 	ui->tbl_avtomobili->sortByColumn(razvrsti, Qt::AscendingOrder);

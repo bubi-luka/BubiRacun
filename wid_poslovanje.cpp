@@ -57,21 +57,6 @@ wid_poslovanje::wid_poslovanje(QWidget *parent) :
 		ui->txt_pp_december_2->setVisible(false);
 
 		// leto
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_poslovanje_spustni_seznami");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			QSqlQuery sql_leta;
 			// najprej pregledamo prejete racune
@@ -92,8 +77,6 @@ wid_poslovanje::wid_poslovanje(QWidget *parent) :
 					ui->txt_leto->addItem(leto);
 				}
 			}
-		}
-		base.close();
 
 		// razvrscanje let po vrsti
 		QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->txt_leto);
@@ -130,21 +113,6 @@ void wid_poslovanje::on_txt_leto_currentIndexChanged() {
 
 void wid_poslovanje::napolni_mesec() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_izdatki_trenutni_mesec");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QString trenutno_leto = ui->txt_leto->currentText();
 
 		QString meseci[12] = {"01", "02", "03", "04", "05", "06",
@@ -768,10 +736,6 @@ void wid_poslovanje::napolni_mesec() {
 			ui->txt_razlika_december->setPalette(nevtralno);
 		}
 
-
-	}
-	base.close();
-
 }
 
 // podatki za letni
@@ -785,22 +749,6 @@ void wid_poslovanje::napolni_leto() {
 	}
 
 	razvrsti = ui->tbl_poslovanje->horizontalHeader()->sortIndicatorSection();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "izdatki-letna-tabela");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
 
 		// dolocimo stevilo let, skozi katere mora aplikacija iti
 		QStringList leta;
@@ -971,9 +919,6 @@ void wid_poslovanje::napolni_leto() {
 
 		} // for ( int i = 0; i < leta.count(); i++ )
 
-	}
-	base.close();
-
 	ui->tbl_poslovanje->selectRow(izbranec);
 	ui->tbl_poslovanje->sortByColumn(razvrsti, Qt::AscendingOrder);
 
@@ -981,22 +926,6 @@ void wid_poslovanje::napolni_leto() {
 
 // podatki za skupni
 void wid_poslovanje::napolni_skupni() {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_izdatki_trenutni_mesec");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		// dolocimo stevilo let, skozi katere mora aplikacija iti
 		QStringList leta;
@@ -1177,8 +1106,6 @@ void wid_poslovanje::napolni_skupni() {
 		ui->txt_pp_oktober_2->setText(pretvori_iz_double(pretvori_v_double(povprecna_vrednost_poslovanja[9])) + " EUR");
 		ui->txt_pp_november_2->setText(pretvori_iz_double(pretvori_v_double(povprecna_vrednost_poslovanja[10])) + " EUR");
 		ui->txt_pp_december_2->setText(pretvori_iz_double(pretvori_v_double(povprecna_vrednost_poslovanja[11])) + " EUR");
-	}
-	base.close();
 
 	// barvanje pri poslovanju
 	QPalette pozitivno;

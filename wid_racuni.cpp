@@ -38,22 +38,6 @@ wid_racuni::wid_racuni(QWidget *parent) :
 		QString gumb = ui->btn_nov->text();
 		ui->btn_nov->setText("");
 
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// the database is opened
-
 			QSqlQuery sql_napolni;
 
 			// filtriraj po tipu racuna
@@ -122,9 +106,6 @@ wid_racuni::wid_racuni(QWidget *parent) :
 				ui->cb_racunovodstvo->addItem(prevedi(sql_napolni.value(sql_napolni.record().indexOf("status")).toString()));
 			}
 			sql_napolni.clear();
-
-		}
-		base.close();
 
 		napolni();
 
@@ -218,22 +199,6 @@ void wid_racuni::napolni() {
 	}
 
 	razvrsti = ui->tbl_racuni->horizontalHeader()->sortIndicatorSection();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_racuni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
 
 		// clear previous content
 		ui->tbl_racuni->clear();
@@ -529,8 +494,6 @@ void wid_racuni::napolni() {
 				row++;
 			}
 		}
-	}
-	base.close();
 
 	ui->tbl_racuni->selectRow(izbranec);
 	ui->tbl_racuni->sortByColumn(razvrsti, Qt::AscendingOrder);
@@ -549,22 +512,6 @@ void wid_racuni::napolni_sorodnike() {
 	}
 
 	razvrsti = ui->tbl_sorodniki->horizontalHeader()->sortIndicatorSection();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_sorodniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
 
 		// clear previous content
 		ui->tbl_sorodniki->clear();
@@ -666,8 +613,6 @@ void wid_racuni::napolni_sorodnike() {
 				row++;
 			}
 		}
-	}
-	base.close();
 
 	ui->tbl_sorodniki->selectRow(izbranec);
 	ui->tbl_sorodniki->sortByColumn(razvrsti, Qt::AscendingOrder);
@@ -743,20 +688,6 @@ void wid_racuni::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_racuni->selectedItems().takeAt(0)->text();
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_brisi;
 
 		// ob brisanju dobropisa spremeni status dobropisa pri racunu na neobstojec
@@ -785,8 +716,6 @@ void wid_racuni::on_btn_brisi_clicked() {
 		// izbrisi racun
 		sql_brisi.prepare("DELETE FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
 		sql_brisi.exec();
-	}
-	base.close();
 
 	ui->tbl_racuni->removeRow(ui->tbl_racuni->selectedItems().takeAt(0)->row());
 	osvezi("racuni");
@@ -848,22 +777,6 @@ void wid_racuni::on_btn_storno_clicked() {
 	else {
 		QString id = ui->tbl_racuni->selectedItems().takeAt(0)->text();
 
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
-
 			// povprasaj za razlog stornacije, sele nato ga izvedi
 			razlog_stornacije *vnesi_razlog = new razlog_stornacije;
 			vnesi_razlog->show();
@@ -876,10 +789,6 @@ void wid_racuni::on_btn_storno_clicked() {
 			QObject::connect(vnesi_razlog, SIGNAL(poslji(QString)),
 					   this , SLOT(osvezi(QString)));
 
-		}
-
-		base.close();
-
 		osvezi("racuni");
 
 		napolni_sorodnike();
@@ -889,23 +798,6 @@ void wid_racuni::on_btn_storno_clicked() {
 
 
 void wid_racuni::on_btn_dobropis_clicked() {
-
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "tvori_dobropis");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		// na novo izracunamo stevilko dobropisa
 		QString stevilka_dobropisa = stevilka_racuna("4");
@@ -962,9 +854,6 @@ void wid_racuni::on_btn_dobropis_clicked() {
 									 "WHERE stevilka_racuna LIKE '" + pretvori(ui->tbl_racuni->selectedItems().takeAt(0)->text()) + "' AND tip_racuna LIKE '3'");
 		sql_kopiraj_opravila.exec();
 
-	}
-	base.close();
-
 	// prestavi tabelo na pravkar tvorjen dobropis
 	ui->cb_racun->setCurrentIndex(ui->cb_racun->findText("4) ", Qt::MatchStartsWith));
 	ui->tbl_racuni->selectRow(ui->tbl_racuni->rowCount() - 1);
@@ -976,21 +865,6 @@ void wid_racuni::on_btn_dobropis_clicked() {
 QString wid_racuni::stevilka_racuna(QString tip) {
 
 	QString st_racuna = "";
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "stevilka_racuna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 
 		QString leto = QDate::currentDate().toString("yyyy");
 		QString mesec = QDate::currentDate().toString("MM");
@@ -1042,10 +916,6 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 		// imamo dovolj podatkov za tvorbo stevilke racuna
 
 		st_racuna = predpona + QDate::currentDate().toString("yyyy").right(2) + st_racuna;
-
-	}
-
-	base.close();
 
 	return st_racuna;
 
@@ -1195,22 +1065,6 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 	QString gumb = ui->btn_prestevilci->text();
 	ui->btn_prestevilci->setText("Izvajam prestevilcenje racunov.");
 	qApp->processEvents();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prestevilci-zapise");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		int i_vseh_racunov = 0;
 		int i_zaporedna = 0;
@@ -1362,10 +1216,6 @@ void wid_racuni::on_btn_prestevilci_clicked() {
 			sql_leta.clear();
 
 		} // for ( int i_tip_racuna = 1; i_tip_racuna <= 3; i_tip_racuna++ )
-
-	}
-
-	base.close();
 
 	ui->btn_prestevilci->setText(gumb);
 	qApp->processEvents();

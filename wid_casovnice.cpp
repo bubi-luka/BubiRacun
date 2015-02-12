@@ -107,22 +107,6 @@ void wid_casovnice::on_txt_avtor_currentIndexChanged() {
 
 void wid_casovnice::on_txt_stranka_currentIndexChanged() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_casovnice_projekte");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
 		// napolni spustni seznam pri projektih
 		ui->txt_projekt->clear();
 		ui->txt_projekt->addItem("");
@@ -135,30 +119,12 @@ void wid_casovnice::on_txt_stranka_currentIndexChanged() {
 			ui->txt_projekt->addItem(prevedi(projekt.value(projekt.record().indexOf("id")).toString()) + ") " +
 															 prevedi(projekt.value(projekt.record().indexOf("naslov_projekta")).toString()));
 		}
-	}
-	base.close();
 
 	napolni();
 
 }
 
 void wid_casovnice::on_txt_projekt_currentIndexChanged() {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_casovnice_projekte");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		// napolni spustni seznam pri racunih
 		ui->txt_racun->clear();
@@ -178,8 +144,6 @@ void wid_casovnice::on_txt_projekt_currentIndexChanged() {
 			ui->txt_racun->addItem(prevedi(racun.value(racun.record().indexOf("id")).toString()) + ") " +
 															 prevedi(racun.value(racun.record().indexOf("stevilka_racuna")).toString()));
 		}
-	}
-	base.close();
 
 	napolni();
 
@@ -219,20 +183,6 @@ void wid_casovnice::napolni_sezname() {
 	ui->txt_leto->addItem("");
 	ui->txt_stranka->addItem("");
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_casovnice_zacetni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery vnesi;
 
 		// napolni usluzbence
@@ -282,8 +232,6 @@ void wid_casovnice::napolni_sezname() {
 				}
 			}
 		}
-	}
-	base.close();
 
 	// razvrsti leta narascajoce
 	QSortFilterProxyModel *proxy = new QSortFilterProxyModel(ui->txt_leto);
@@ -322,21 +270,6 @@ void wid_casovnice::napolni() {
 
 	QString cb_aktivnost_besedilo = ui->cb_aktivnost->text();
 	ui->cb_aktivnost->setText("Vnasam");
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "napolni_casovnice_tabela");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 
 		// clear previous content
 		ui->tbl_casovnice->clear();
@@ -605,8 +538,6 @@ void wid_casovnice::napolni() {
 				row++;
 			}
 		}
-	}
-	base.close();
 
 	ui->cb_aktivnost->setText(cb_aktivnost_besedilo);
 
@@ -616,22 +547,6 @@ void wid_casovnice::napolni() {
 }
 
 void wid_casovnice::preracunaj_casovnice(QString opravilo) {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "preracunaj_casovnice");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		double sestevek_ur = 0.0;
 
@@ -709,7 +624,5 @@ void wid_casovnice::preracunaj_casovnice(QString opravilo) {
 			sql_vnesi.bindValue(3, pretvori(pretvori_v_double(QString::number(znesek_brez_ddv, 'f', 2))));
 			sql_vnesi.exec();
 		}
-	}
-	base.close();
 
 }

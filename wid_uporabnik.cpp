@@ -13,21 +13,6 @@ wid_uporabnik::wid_uporabnik(QWidget *parent) :
 	ui(new Ui::wid_uporabnik)
 {
 	ui->setupUi(this);
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// the database is opened
 
 			// zaradi nepotrebnih filtriranj tabele spremenimo napis na enem od gumbov
 			QString besedilo = ui->btn_nov->text();
@@ -54,8 +39,6 @@ wid_uporabnik::wid_uporabnik(QWidget *parent) :
 			sql_napolni.clear();
 
 			ui->btn_nov->setText(besedilo);
-		}
-		base.close();
 
 	napolni();
 
@@ -101,22 +84,6 @@ void wid_uporabnik::napolni() {
 	if ( ui->cb_mesto->currentText() != "" ) {
 		stavek += " AND naziv LIKE '" + pretvori(ui->cb_mesto->currentText().left(ui->cb_mesto->currentText().indexOf(") ", 0))) + "'";
 	}
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
 
 		// clear previous content
 		ui->tbl_uporabnik->clear();
@@ -229,8 +196,6 @@ void wid_uporabnik::napolni() {
 			row++;
 
 		}
-	}
-	base.close();
 
 	ui->tbl_uporabnik->selectRow(izbranec);
 	ui->tbl_uporabnik->sortByColumn(razvrsti, Qt::AscendingOrder);
@@ -255,26 +220,9 @@ void wid_uporabnik::on_tbl_uporabnik_doubleClicked() {
 void wid_uporabnik::on_btn_brisi_clicked() {
 
 	QString id = ui->tbl_uporabnik->selectedItems().takeAt(0)->text();
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_brisi;
 		sql_brisi.prepare("DELETE FROM uporabniki WHERE id LIKE '" + id + "'");
 		sql_brisi.exec();
-	}
-	base.close();
 
 	ui->tbl_uporabnik->removeRow(ui->tbl_uporabnik->selectedItems().takeAt(0)->row());
 	osvezi();

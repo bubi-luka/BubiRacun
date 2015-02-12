@@ -9,228 +9,194 @@
 #include "datum.h"
 
 wid_potovanja::wid_potovanja(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::wid_potovanja)
+	QWidget(parent),
+	ui(new Ui::wid_potovanja)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
-    // disable and hide
-    ui->txt_stnaloga->setEnabled(false);
-    ui->txt_stnaloga->setVisible(false);
+	// disable and hide
+	ui->txt_stnaloga->setEnabled(false);
+	ui->txt_stnaloga->setVisible(false);
 
-    napolni();
+	napolni();
 
 }
 
 wid_potovanja::~wid_potovanja()
 {
-    delete ui;
+	delete ui;
 }
 
 void wid_potovanja::napolni() {
 
-    int izbranec = 0;
-    int razvrsti = 0;
+	int izbranec = 0;
+	int razvrsti = 0;
 
-    if ( ui->tbl_potovanja->selectedItems().count() > 0 ) {
-        izbranec = ui->tbl_potovanja->selectedItems().takeAt(0)->row();
-    }
+	if ( ui->tbl_potovanja->selectedItems().count() > 0 ) {
+		izbranec = ui->tbl_potovanja->selectedItems().takeAt(0)->row();
+	}
 
-    razvrsti = ui->tbl_potovanja->horizontalHeader()->sortIndicatorSection();
+	razvrsti = ui->tbl_potovanja->horizontalHeader()->sortIndicatorSection();
 
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
+		// clear previous content
+		ui->tbl_potovanja->clear();
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "wid_potovanja");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        // the database is opened
+		for (int i = 0; i <= 5; i++) {
+			ui->tbl_potovanja->removeColumn(0);
+		}
 
-        // clear previous content
-        ui->tbl_potovanja->clear();
+		QSqlQuery sql_clear;
+		sql_clear.prepare("SELECT * FROM potovanja");
+		sql_clear.exec();
+		while (sql_clear.next()) {
+			ui->tbl_potovanja->removeRow(0);
+		}
 
-        for (int i = 0; i <= 5; i++) {
-            ui->tbl_potovanja->removeColumn(0);
-        }
+		// start filling the table
+		ui->tbl_potovanja->insertColumn(0);
+		ui->tbl_potovanja->insertColumn(1);
+		ui->tbl_potovanja->insertColumn(2);
+		ui->tbl_potovanja->insertColumn(3);
+		ui->tbl_potovanja->insertColumn(4);
+		ui->tbl_potovanja->insertColumn(5);
 
-        QSqlQuery sql_clear;
-        sql_clear.prepare("SELECT * FROM potovanja");
-        sql_clear.exec();
-        while (sql_clear.next()) {
-            ui->tbl_potovanja->removeRow(0);
-        }
+		QTableWidgetItem *naslov0 = new QTableWidgetItem;
+		QTableWidgetItem *naslov1 = new QTableWidgetItem;
+		QTableWidgetItem *naslov2 = new QTableWidgetItem;
+		QTableWidgetItem *naslov3 = new QTableWidgetItem;
+		QTableWidgetItem *naslov4 = new QTableWidgetItem;
+		QTableWidgetItem *naslov5 = new QTableWidgetItem;
 
-        // start filling the table
-        ui->tbl_potovanja->insertColumn(0);
-        ui->tbl_potovanja->insertColumn(1);
-        ui->tbl_potovanja->insertColumn(2);
-        ui->tbl_potovanja->insertColumn(3);
-        ui->tbl_potovanja->insertColumn(4);
-        ui->tbl_potovanja->insertColumn(5);
+		naslov0->setText("ID");
+		naslov1->setText("Odhod");
+		naslov2->setText("Prihod");
+		naslov3->setText("Datum odhoda");
+		naslov4->setText("Datum prihoda");
+		naslov5->setText("Kilometri");
 
-        QTableWidgetItem *naslov0 = new QTableWidgetItem;
-        QTableWidgetItem *naslov1 = new QTableWidgetItem;
-        QTableWidgetItem *naslov2 = new QTableWidgetItem;
-        QTableWidgetItem *naslov3 = new QTableWidgetItem;
-        QTableWidgetItem *naslov4 = new QTableWidgetItem;
-        QTableWidgetItem *naslov5 = new QTableWidgetItem;
+		ui->tbl_potovanja->setHorizontalHeaderItem(0, naslov0);
+		ui->tbl_potovanja->setHorizontalHeaderItem(1, naslov1);
+		ui->tbl_potovanja->setHorizontalHeaderItem(2, naslov2);
+		ui->tbl_potovanja->setHorizontalHeaderItem(3, naslov3);
+		ui->tbl_potovanja->setHorizontalHeaderItem(4, naslov4);
+		ui->tbl_potovanja->setHorizontalHeaderItem(5, naslov5);
 
-        naslov0->setText("ID");
-        naslov1->setText("Odhod");
-        naslov2->setText("Prihod");
-        naslov3->setText("Datum odhoda");
-        naslov4->setText("Datum prihoda");
-        naslov5->setText("Kilometri");
+		ui->tbl_potovanja->setColumnWidth(0, 35);
 
-        ui->tbl_potovanja->setHorizontalHeaderItem(0, naslov0);
-        ui->tbl_potovanja->setHorizontalHeaderItem(1, naslov1);
-        ui->tbl_potovanja->setHorizontalHeaderItem(2, naslov2);
-        ui->tbl_potovanja->setHorizontalHeaderItem(3, naslov3);
-        ui->tbl_potovanja->setHorizontalHeaderItem(4, naslov4);
-        ui->tbl_potovanja->setHorizontalHeaderItem(5, naslov5);
+		datum *delegate = new datum(this);
+		ui->tbl_potovanja->setItemDelegateForColumn(3, delegate);
+		ui->tbl_potovanja->setItemDelegateForColumn(4, delegate);
 
-        ui->tbl_potovanja->setColumnWidth(0, 35);
+		QSqlQuery sql_fill;
+		sql_fill.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
+		sql_fill.exec();
 
-        datum *delegate = new datum(this);
-        ui->tbl_potovanja->setItemDelegateForColumn(3, delegate);
-        ui->tbl_potovanja->setItemDelegateForColumn(4, delegate);
+		int row = 0;
+		while (sql_fill.next()) {
+			ui->tbl_potovanja->insertRow(row);
+			ui->tbl_potovanja->setRowHeight(row, 20);
+			int col = 0;
+			int i = 0;
+			QString polja[6] = {"id", "kraj_odhoda", "kraj_prihoda", "cas_odhoda", "cas_prihoda", "kilometri"};
 
-        QSqlQuery sql_fill;
-        sql_fill.prepare("SELECT * FROM potovanja WHERE potni_nalog LIKE '" + pretvori(ui->txt_stnaloga->text()) + "'");
-        sql_fill.exec();
+			while (col <= 5) {
 
-        int row = 0;
-        while (sql_fill.next()) {
-            ui->tbl_potovanja->insertRow(row);
-            ui->tbl_potovanja->setRowHeight(row, 20);
-            int col = 0;
-            int i = 0;
-            QString polja[6] = {"id", "kraj_odhoda", "kraj_prihoda", "cas_odhoda", "cas_prihoda", "kilometri"};
+				QTableWidgetItem *celica = new QTableWidgetItem;
+				if ( polja[i] == "id" ) {
+					celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
+				}
+				else if ( polja[i] == "cas_odhoda" || polja[i] == "cas_prihoda") {
+					celica->setData(Qt::DisplayRole, QDateTime::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy HH':'mm"));
+				}
+				else if ( polja[i] == "kilometri" ) {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " km");
+				}
+				else {
+					celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
+				}
+				ui->tbl_potovanja->setItem(row, col, celica);
 
-            while (col <= 5) {
+				col++;
+				i++;
 
-                QTableWidgetItem *celica = new QTableWidgetItem;
-                if ( polja[i] == "id" ) {
-                    celica->setData(Qt::DisplayRole, prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).toInt());
-                }
-                else if ( polja[i] == "cas_odhoda" || polja[i] == "cas_prihoda") {
-                    celica->setData(Qt::DisplayRole, QDateTime::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()), "dd'.'MM'.'yyyy HH':'mm"));
-                }
-                else if ( polja[i] == "kilometri" ) {
-                    celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()).replace(".", ",") + " km");
-                }
-                else {
-                    celica->setText(prevedi(sql_fill.value(sql_fill.record().indexOf(polja[i])).toString()));
-                }
-                ui->tbl_potovanja->setItem(row, col, celica);
+			}
 
-                col++;
-                i++;
+			row++;
 
-            }
+		}
 
-            row++;
+	prenesi();
 
-        }
-    }
-    base.close();
-
-    prenesi();
-
-    ui->tbl_potovanja->selectRow(izbranec);
-    ui->tbl_potovanja->sortByColumn(razvrsti, Qt::AscendingOrder);
+	ui->tbl_potovanja->selectRow(izbranec);
+	ui->tbl_potovanja->sortByColumn(razvrsti, Qt::AscendingOrder);
 
 }
 
 void wid_potovanja::on_tbl_potovanja_doubleClicked() {
 
-    potovanja *uredi = new potovanja;
-    uredi->show();
-    QObject::connect(this, SIGNAL(prenos(QString)),
-               uredi , SLOT(prejem(QString)));
-    prenos(ui->tbl_potovanja->selectedItems().takeAt(0)->text());
+	potovanja *uredi = new potovanja;
+	uredi->show();
+	QObject::connect(this, SIGNAL(prenos(QString)),
+			   uredi , SLOT(prejem(QString)));
+	prenos(ui->tbl_potovanja->selectedItems().takeAt(0)->text());
 
-    // receive signal to refresh table
-    QObject::connect(uredi, SIGNAL(poslji(QString)),
-               this , SLOT(osvezi(QString)));
+	// receive signal to refresh table
+	QObject::connect(uredi, SIGNAL(poslji(QString)),
+			   this , SLOT(osvezi(QString)));
 
 }
 
 void wid_potovanja::on_btn_brisi_clicked() {
 
-    QString id = ui->tbl_potovanja->selectedItems().takeAt(0)->text();
+	QString id = ui->tbl_potovanja->selectedItems().takeAt(0)->text();
 
-    QString app_path = QApplication::applicationDirPath();
-    QString dbase_path = app_path + "/base.bz";
+		QSqlQuery sql_brisi;
+		sql_brisi.prepare("DELETE FROM potovanja WHERE id LIKE '" + id + "'");
+		sql_brisi.exec();
 
-    QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-    base.setDatabaseName(dbase_path);
-    base.database();
-    base.open();
-    if(base.isOpen() != true){
-        QMessageBox msgbox;
-        msgbox.setText("Baze ni bilo moc odpreti");
-        msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-        msgbox.exec();
-    }
-    else {
-        QSqlQuery sql_brisi;
-        sql_brisi.prepare("DELETE FROM potovanja WHERE id LIKE '" + id + "'");
-        sql_brisi.exec();
-    }
-    base.close();
-
-    ui->tbl_potovanja->removeRow(ui->tbl_potovanja->selectedItems().takeAt(0)->row());
-    osvezi("potovanja");
+	ui->tbl_potovanja->removeRow(ui->tbl_potovanja->selectedItems().takeAt(0)->row());
+	osvezi("potovanja");
 
 }
 
 void wid_potovanja::osvezi(QString beseda) {
 
-    if ( beseda == "potovanja" ) {
-        napolni();
-    }
+	if ( beseda == "potovanja" ) {
+		napolni();
+	}
 
 }
 
 QString wid_potovanja::pretvori(QString besedilo) {
 
-    return kodiranje().zakodiraj(besedilo);
+	return kodiranje().zakodiraj(besedilo);
 
 }
 
 QString wid_potovanja::prevedi(QString besedilo) {
 
-    return kodiranje().odkodiraj(besedilo);
+	return kodiranje().odkodiraj(besedilo);
 
 }
 
 void wid_potovanja::on_btn_nov_clicked() {
 
-    potovanja *uredi = new potovanja;
-    uredi->show();
-    QObject::connect(this, SIGNAL(prenos(QString)),
-               uredi , SLOT(prejem(QString)));
-    prenos("Nova pot" + ui->txt_stnaloga->text());
+	potovanja *uredi = new potovanja;
+	uredi->show();
+	QObject::connect(this, SIGNAL(prenos(QString)),
+			   uredi , SLOT(prejem(QString)));
+	prenos("Nova pot" + ui->txt_stnaloga->text());
 
-    // receive signal to refresh table
-    QObject::connect(uredi, SIGNAL(poslji(QString)),
-               this , SLOT(osvezi(QString)));
+	// receive signal to refresh table
+	QObject::connect(uredi, SIGNAL(poslji(QString)),
+			   this , SLOT(osvezi(QString)));
 
 }
 
 void wid_potovanja::prejem(QString besedilo) {
 
-    ui->txt_stnaloga->setText(besedilo);
+	ui->txt_stnaloga->setText(besedilo);
 
-    napolni();
+	napolni();
 
 }
