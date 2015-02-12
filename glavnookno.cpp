@@ -93,20 +93,6 @@ void GlavnoOkno::zagon() {
 	// has the program been used before (do we have at least one firm and one user)?
 	QString first_use = "";
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zagonska");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_check;
 
 		//check, if we have a valid firm
@@ -187,9 +173,6 @@ void GlavnoOkno::zagon() {
 			QObject::connect(widprijava, SIGNAL(poslji(QString)),
 					 this , SLOT(osvezi(QString)));
 		}
-
-	}
-	base.close();
 
 	zacetek();
 
@@ -564,40 +547,18 @@ void GlavnoOkno::podatki() {
 
 	QString pozdrav = "";
 
-	{
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-pozdrav");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
-
 			QSqlQuery sql_firma;
 			sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
 			sql_firma.exec();
 			if ( sql_firma.next() ) {
 				pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
 			}
-		}
-		base.close();
-	}
-	QSqlDatabase::removeDatabase("uporabniki-pozdrav");
 
 	if ( vApp->id() != "" ) {
 		pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
 		ui->lbl_pozdrav->setText(pozdrav);
 		ui->lbl_pozdrav->update();
 	}
-
 
 	ui->txt_uporabnik->setText(vApp->id());
 	ui->txt_pozicija->setText(prevedi(vApp->state()));

@@ -28,12 +28,12 @@ private slots:
 	void on_txt_kontaktna_currentIndexChanged(QString besedilo);
 	void on_txt_odgovorna_currentIndexChanged(QString besedilo);
 
-	void on_txt_skd_besedilo_currentIndexChanged(QString besedilo);
+	void on_txt_skd_besedilo_currentIndexChanged();
 	void on_txt_skd_textChanged(QString besedilo);
 
 	void on_txt_banka_currentIndexChanged();
 
-	void on_txt_posta_currentIndexChanged(QString besedilo);
+	void on_txt_posta_currentIndexChanged();
 	void on_txt_postna_stevilka_textChanged(QString besedilo);
 
 	void keyPressEvent(QKeyEvent *event);

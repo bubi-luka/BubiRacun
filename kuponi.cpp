@@ -11,10 +11,10 @@
 #include "kodiranje.h"
 
 kuponi::kuponi(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::kuponi)
+	QDialog(parent),
+	ui(new Ui::kuponi)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	// set certain fields as disabled
 	ui->txt_id->setDisabled(true);
@@ -37,21 +37,6 @@ kuponi::kuponi(QWidget *parent) :
 	ui->txt_kupon->setInputMask("KU-" + leto + "-999;_");
 
 	leto = QDate::currentDate().toString("yyyy");
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 
 		// fill combo boxes
 		ui->txt_prejemnik->addItem("");
@@ -92,14 +77,11 @@ kuponi::kuponi(QWidget *parent) :
 		}
 		ui->txt_kupon->setText("KU-" + leto + "-" + stevilka);
 
-	}
-	base.close();
-
 }
 
 kuponi::~kuponi()
 {
-    delete ui;
+	delete ui;
 }
 
 void kuponi::on_btn_izhod_clicked() {
@@ -152,20 +134,6 @@ void kuponi::on_btn_sprejmi_clicked() {
 
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi_kupon;
 			if (ui->btn_sprejmi->text() == "Vnesi kupon") { // vnesi novega uporabnika
 				sql_vnesi_kupon.prepare("INSERT INTO kuponi (kupon, projekt, prejemnik, datumprejema, uporabljen, uporabitelj, datumuporabe) "
@@ -196,8 +164,6 @@ void kuponi::on_btn_sprejmi_clicked() {
 			sql_vnesi_kupon.bindValue(5, uveljavitelj);
 			sql_vnesi_kupon.bindValue(6, datum);
 			sql_vnesi_kupon.exec();
-		}
-		base.close();
 
 		// send signal to reload widget
 		poslji("kuponi");
@@ -237,20 +203,6 @@ void kuponi::prejem(QString besedilo) {
 	else {
 		ui->btn_sprejmi->setText("Popravi kupon");
 		// besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_napolni;
 			sql_napolni.prepare("SELECT * FROM kuponi WHERE id LIKE '" + besedilo + "'");
 			sql_napolni.exec();
@@ -292,8 +244,6 @@ void kuponi::prejem(QString besedilo) {
 					ui->txt_datumuveljavitve->setEnabled(false);
 				}
 			}
-		}
-		base.close();
 	}
 }
 
@@ -351,7 +301,6 @@ void kuponi::on_txt_uporabljen_toggled(bool stanje) {
 void kuponi::on_txt_prejemnik_id_textChanged(QString besedilo) {
 
 	int i = 0;
-	bool *ok;
 
 	while ( i <= ui->txt_prejemnik->count() ) {
 		if ( ui->txt_prejemnik->itemText(i).left(besedilo.length() + 2) == ("(" + besedilo + ")") ) {

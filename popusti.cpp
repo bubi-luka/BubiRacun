@@ -7,8 +7,8 @@
 
 
 popusti::popusti(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::popusti)
+	QDialog(parent),
+	ui(new Ui::popusti)
 {
 	ui->setupUi(this);
 
@@ -43,7 +43,7 @@ popusti::popusti(QWidget *parent) :
 
 popusti::~popusti()
 {
-    delete ui;
+	delete ui;
 }
 
 void popusti::on_btn_zapri_clicked() {
@@ -141,30 +141,12 @@ void popusti::on_btn_vnesi_clicked() {
 	str_vrednost[10] = ui->txt_podrazitev_hitrost->text();
 	str_vrednost[11] = ui->txt_podrazitev_zapleti->text();
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		for ( int i = 0; i <= 11; i++ ) {
 			QSqlQuery sql_vrednost;
 			sql_vrednost.prepare("UPDATE sif_popusti SET vrednost = ? WHERE id LIKE '" + QString::number(i + 1, 10) + "'");
 			sql_vrednost.bindValue(0, pretvori(pretvori_v_double(str_vrednost[i])));
 			sql_vrednost.exec();
 		}
-
-	}
-	base.close();
 
 	napolni();
 
@@ -179,21 +161,6 @@ void popusti::napolni() {
 	QString str_napolni[12];
 	int i = 0;
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM sif_popusti ORDER BY id ASC");
 		sql_napolni.exec();
@@ -213,8 +180,6 @@ void popusti::napolni() {
 		ui->txt_podrazitev_vikend->setText(str_napolni[9]);
 		ui->txt_podrazitev_hitrost->setText(str_napolni[10]);
 		ui->txt_podrazitev_zapleti->setText(str_napolni[11]);
-	}
-	base.close();
 
 }
 

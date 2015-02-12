@@ -94,20 +94,6 @@ podjetje::podjetje(QWidget *parent) :
 			ui->txt_gsm->setInputMask("+990 (\\0)99/999-999;_");
 			ui->txt_telefon->setInputMask("+990 (\\0)9/99-99-999;_");
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		// vnesi podatke v spustne sezname
 		ui->txt_skd_besedilo->addItem("");
 		ui->txt_posta->addItem("");
@@ -176,8 +162,6 @@ podjetje::podjetje(QWidget *parent) :
 			ui->tab_kontaktna_oseba->setHidden(false);
 			ui->tab_odgovorna_oseba->setHidden(false);
 		}
-	}
-	base.close();
 
 	ui->tab_podjetje->setCurrentIndex(0);
 
@@ -348,20 +332,6 @@ void podjetje::on_btn_potrdi_clicked() {
 	}
 */
 	if (napaka == "") {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi;
 			QString zavezanec = "NE";
 			if (ui->txt_zavezanec->isChecked()) {
@@ -404,8 +374,6 @@ void podjetje::on_btn_potrdi_clicked() {
 			sql_vnesi.bindValue(22, pretvori(ui->txt_koda_namena_avans->currentText().left(4)));
 			sql_vnesi.bindValue(23, pretvori(ui->txt_koda_namena->currentText().left(4)));
 			sql_vnesi.exec();
-		}
-		base.close();
 
 		// send signal to reload widget
 		poslji("podjetje");
@@ -484,20 +452,6 @@ void podjetje::prejem(QString besedilo) {
 		ui->tab_odgovorna_oseba->setDisabled(true);
 	}
 	else {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-prejem");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			ui->btn_potrdi->setText("Popravi podjetje");
 			ui->tab_lastnik->setDisabled(false);
 			ui->tab_kontaktna_oseba->setDisabled(false);
@@ -546,7 +500,6 @@ void podjetje::prejem(QString besedilo) {
 				ui->txt_koda_namena_avans->setCurrentIndex(ui->txt_koda_namena_avans->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("koda_namena_avans")).toString()) + " - ", Qt::MatchStartsWith));
 				ui->txt_koda_namena->setCurrentIndex(ui->txt_koda_namena->findText(prevedi(sql_fill.value(sql_fill.record().indexOf("koda_namena")).toString()) + " - ", Qt::MatchStartsWith));
 
-				bool ok;
 				QSqlQuery sql_combo;
 				sql_combo.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + sql_fill.value(sql_fill.record().indexOf("lastnik")).toString() + "'");
 				sql_combo.exec();
@@ -582,29 +535,11 @@ void podjetje::prejem(QString besedilo) {
 				sql_combo.clear();
 
 			}
-		}
-		base.close();
 	}
 
 }
 
 void podjetje::on_txt_lastnik_currentIndexChanged(QString besedilo) {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-lastnik");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
@@ -621,27 +556,9 @@ void podjetje::on_txt_lastnik_currentIndexChanged(QString besedilo) {
 			ui->txt_lastnik_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
 			ui->txt_lastnik_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
 		}
-	}
-	base.close();
 }
 
 void podjetje::on_txt_kontaktna_currentIndexChanged(QString besedilo) {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-kontaktna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
@@ -658,28 +575,10 @@ void podjetje::on_txt_kontaktna_currentIndexChanged(QString besedilo) {
 			ui->txt_kontaktna_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
 			ui->txt_kontaktna_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
 		}
-	}
-	base.close();
 
 }
 
 void podjetje::on_txt_odgovorna_currentIndexChanged(QString besedilo) {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-odgovorna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + pretvori(besedilo.left(besedilo.indexOf(") ", 0))) + "'");
@@ -696,120 +595,50 @@ void podjetje::on_txt_odgovorna_currentIndexChanged(QString besedilo) {
 			ui->txt_odgovorna_gsm->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("gsm")).toString()));
 			ui->txt_odgovorna_telefon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("telefon")).toString()));
 		}
-	}
-	base.close();
 
 }
 
-void podjetje::on_txt_skd_besedilo_currentIndexChanged(QString besedilo) {
+void podjetje::on_txt_skd_besedilo_currentIndexChanged() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-skd");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_skd WHERE skd_naziv LIKE '" + pretvori(ui->txt_skd_besedilo->currentText()) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_skd->setText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("skd_stevilka")).toString()));
 		}
-	}
-	base.close();
 
 }
 
 void podjetje::on_txt_skd_textChanged(QString besedilo) {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-sprememba-skd");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_skd WHERE skd_stevilka LIKE '" + pretvori(besedilo) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_skd_besedilo->setCurrentIndex(ui->txt_skd_besedilo->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("skd_naziv")).toString())));
 		}
-	}
-	base.close();
 
 }
 
-void podjetje::on_txt_posta_currentIndexChanged(QString besedilo) {
+void podjetje::on_txt_posta_currentIndexChanged() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-postna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_posta WHERE posta LIKE '" + pretvori(ui->txt_posta->currentText()) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_postna_stevilka->setText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("postna_stevilka")).toString()));
 		}
-	}
-	base.close();
 
 }
 
 void podjetje::on_txt_postna_stevilka_textChanged(QString besedilo) {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "podjetje-sprememba-postne");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_posta WHERE postna_stevilka LIKE '" + pretvori(besedilo) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_posta->setCurrentIndex(ui->txt_posta->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("posta")).toString())));
 		}
-	}
-	base.close();
 
 }
 
@@ -848,22 +677,6 @@ void podjetje::on_btn_logotip_clicked() {
 
 void podjetje::on_txt_banka_currentIndexChanged() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "banka-bic");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
 		// v bazi poiscemo pot do mesta shranjevanja podatkov
 		QSqlQuery sql_pot;
 		sql_pot.prepare("SELECT * FROM sif_banke WHERE ime_banke LIKE '" + pretvori(ui->txt_banka->currentText()) + "'");
@@ -871,7 +684,5 @@ void podjetje::on_txt_banka_currentIndexChanged() {
 		if ( sql_pot.next() ) {
 			ui->txt_bic->setText(prevedi(sql_pot.value(sql_pot.record().indexOf("bic")).toString()));
 		}
-	}
-	base.close();
 
 }
