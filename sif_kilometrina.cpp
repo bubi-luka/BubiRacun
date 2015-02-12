@@ -9,10 +9,10 @@
 #include "ui_sif_kilometrina.h"
 
 sif_kilometrina::sif_kilometrina(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::sif_kilometrina)
+	QDialog(parent),
+	ui(new Ui::sif_kilometrina)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 		// ponastavi vsa polja
 		ui->txt_datum->setDate(QDate::currentDate());
@@ -28,7 +28,7 @@ sif_kilometrina::sif_kilometrina(QWidget *parent) :
 
 sif_kilometrina::~sif_kilometrina()
 {
-    delete ui;
+	delete ui;
 }
 
 void sif_kilometrina::on_btn_izhod_clicked() {
@@ -45,28 +45,13 @@ void sif_kilometrina::on_btn_sprejmi_clicked() {
 
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
 
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi;
 			sql_vnesi.prepare("INSERT INTO sif_kilometrina (kilometrina, datum, avtor_oseba) VALUES (?, ?, ?)");
 			sql_vnesi.bindValue(0, pretvori(pretvori_v_double(ui->txt_kilometrina->text())));
 			sql_vnesi.bindValue(1, pretvori(ui->txt_datum->text()));
 			sql_vnesi.bindValue(2, pretvori(vApp->id()));
 			sql_vnesi.exec();
-		}
-		base.close();
 
 		// close this window
 		close();
@@ -149,20 +134,6 @@ QString sif_kilometrina::pretvori_iz_double(QString besedilo) {
 
 void sif_kilometrina::prejem() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM sif_kilometrina");
 		sql_napolni.exec();
@@ -171,8 +142,6 @@ void sif_kilometrina::prejem() {
 			QDate datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum")).toString()), "dd.MM.yyyy");
 			ui->txt_datum->setDate(datum);
 		}
-	}
-	base.close();
 
 	// zapri gumb za spreminjanje
 	ui->btn_sprejmi->setEnabled(false);

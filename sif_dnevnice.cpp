@@ -9,10 +9,10 @@
 #include "ui_sif_dnevnice.h"
 
 sif_dnevnice::sif_dnevnice(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::sif_dnevnice)
+	QDialog(parent),
+	ui(new Ui::sif_dnevnice)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 		// pocistimo polja
 		ui->txt_dnevnica_1->setText("");
@@ -30,7 +30,7 @@ sif_dnevnice::sif_dnevnice(QWidget *parent) :
 
 sif_dnevnice::~sif_dnevnice()
 {
-    delete ui;
+	delete ui;
 }
 
 void sif_dnevnice::on_btn_izhod_clicked() {
@@ -47,20 +47,6 @@ void sif_dnevnice::on_btn_sprejmi_clicked() {
 
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi;
 			sql_vnesi.prepare("INSERT INTO sif_dnevnice (dnevnica_1, dnevnica_2, dnevnica_3, datum, avtor_oseba) VALUES (?, ?, ?, ?, ?)");
 			sql_vnesi.bindValue(0, pretvori(pretvori_v_double(ui->txt_dnevnica_1->text())));
@@ -69,8 +55,6 @@ void sif_dnevnice::on_btn_sprejmi_clicked() {
 			sql_vnesi.bindValue(3, pretvori(ui->txt_datum->text()));
 			sql_vnesi.bindValue(4, pretvori(vApp->id()));
 			sql_vnesi.exec();
-		}
-		base.close();
 
 		// close this window
 		close();
@@ -164,20 +148,6 @@ QString sif_dnevnice::pretvori_iz_double(QString besedilo) {
 
 void sif_dnevnice::prejem() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_napolni;
 		sql_napolni.prepare("SELECT * FROM sif_dnevnice");
 		sql_napolni.exec();
@@ -188,8 +158,6 @@ void sif_dnevnice::prejem() {
 			QDate datum = QDate::fromString(prevedi(sql_napolni.value(sql_napolni.record().indexOf("datum")).toString()), "dd.MM.yyyy");
 			ui->txt_datum->setDate(datum);
 		}
-	}
-	base.close();
 
 	// blokiraj gumb za spreminjanje
 	ui->btn_sprejmi->setEnabled(false);

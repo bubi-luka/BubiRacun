@@ -11,8 +11,8 @@
 #include "kodiranje.h"
 
 stroski::stroski(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::stroski)
+	QDialog(parent),
+	ui(new Ui::stroski)
 {
 	ui->setupUi(this);
 
@@ -83,20 +83,6 @@ void stroski::on_btn_sprejmi_clicked() {
 
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi_kupon;
 			if (ui->btn_sprejmi->text() == "Vnesi strosek") { // vnesi novega uporabnika
 				sql_vnesi_kupon.prepare("INSERT INTO stroski (potninalog, strosek, cena) "
@@ -109,8 +95,6 @@ void stroski::on_btn_sprejmi_clicked() {
 			sql_vnesi_kupon.bindValue(1, pretvori(ui->txt_strosek->text()));
 			sql_vnesi_kupon.bindValue(2, pretvori(pretvori_v_double(pretvori_iz_double(pretvori_v_double(ui->txt_cena->text())))));
 			sql_vnesi_kupon.exec();
-		}
-		base.close();
 
 		// send signal to reload widget
 		poslji("stroski");
@@ -149,20 +133,6 @@ void stroski::prejem(QString besedilo) {
 	else {
 		ui->btn_sprejmi->setText("Popravi strosek");
 		// besedilo nosi ID ze obstojecega uporabnika, potrebno je napolniti polja
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_napolni;
 			sql_napolni.prepare("SELECT * FROM stroski WHERE id LIKE '" + besedilo + "'");
 			sql_napolni.exec();
@@ -172,8 +142,6 @@ void stroski::prejem(QString besedilo) {
 				ui->txt_strosek->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("strosek")).toString()));
 				ui->txt_cena->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("cena")).toString())));
 			}
-		}
-		base.close();
 	}
 }
 
