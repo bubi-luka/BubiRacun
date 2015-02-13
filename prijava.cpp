@@ -118,8 +118,20 @@ void prijava::on_btn_prijavi_clicked() {
 
 // ustvari varnostno kopijo
 void prijava::varnostna_kopija() {
-/*
+
 		QString mapa_za_shranjevanje = "";
+
+		baza nova_baza;
+
+		QString ime_baze = "";
+		ime_baze = nova_baza.get_path();
+
+		if ( ime_baze.contains("/") ) {
+			ime_baze = ime_baze.right(ime_baze.length() - ime_baze.lastIndexOf("/") -1 );
+		}
+		if ( ime_baze.contains(".") ) {
+			ime_baze = ime_baze.left(ime_baze.lastIndexOf("."));
+		}
 
 		// v bazi poiscemo pot do mesta shranjevanja podatkov
 		QSqlQuery sql_pot;
@@ -139,7 +151,7 @@ void prijava::varnostna_kopija() {
 				mapa.cd("arhiv");
 				mapa.mkdir("dnevni"); // dnevni back-up
 				mapa.mkdir("mesecni"); // mesecni back-up
-*/
+
 				/**
 					* naredi mesecni arhiv
 					* pogleda, ali ze obstaja arhivska datoteka za tekoci mesec
@@ -149,17 +161,19 @@ void prijava::varnostna_kopija() {
 					* meseca, ki sedaj ni vec aktualen (drugace bomo kmalu imeli nepregledno mnozico baz)
 					* to pa ni smiselno
 					**/
-/*				QFile f_baza_org;
-				f_baza_org.setFileName(dbase_path);
+
+				QFile f_baza_org;
+				f_baza_org.setFileName(nova_baza.get_path());
+
 				QFile f_baza_mesec;
-				f_baza_mesec.setFileName(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+				f_baza_mesec.setFileName(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + ime_baze + "-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
 
 				if ( f_baza_mesec.exists() ) { // ce obstaja, smo v tekocem mesecu in zgolj zbrisemo trenutno bazo in jo nadomestimo z novo
 					f_baza_mesec.remove();
-					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + ime_baze + "-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
 				}
 				else { // gre za nov mesec, baze ne brisemo, brisemo pa vse baze v arhivu za
-					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
+					f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/mesecni/base-" + ime_baze + "-" + QDate::currentDate().toString("yyyy'-'MM") + ".bz.bck");
 
 					// poiscemo vse baze iz dnevnega arhiva
 					mapa.cd("dnevni");
@@ -173,20 +187,20 @@ void prijava::varnostna_kopija() {
 					}
 
 				}
-*/
+
 				/**
 					* naredimo dnevni arhiv tako, da shranimo bazo kot datoteko s tekoco zadnjo
 					* identifikacijsko stevilko
 					* arhiv je samo za tekoci mesec, za prejsnje datoteke izbrisemo
 					**/
-/*				int i = 1;
-				while ( !f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/dnevni/base-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck") ) {
+				int i = 1;
+				while ( !f_baza_org.copy(mapa_za_shranjevanje + "/arhiv/dnevni/base-" + ime_baze + "-" + QDate::currentDate().toString("yyyy'-'MM'-'dd") + "-" + QString::number(i, 10) + ".bz.bck") ) {
 					i++;
 				}
 			}
 
 		}
-*/
+
 }
 
 void prijava::on_btn_baza_clicked() {
