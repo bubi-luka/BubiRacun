@@ -183,6 +183,10 @@ void GlavnoOkno::osvezi(QString besedilo) {
 	if ( besedilo == "loginok" ) {
 		osnovni_pogled();
 	}
+	else if ( besedilo == "prazno" ) {
+		ui->scrollArea->takeWidget();
+		ui->lbl_pozdrav->setText("Poteka posodabljanje baze. To opravilo obicajno zahteva nekaj minut! Hvala za razumevanje!");
+	}
 	else {
 		zagon();
 	}
@@ -491,40 +495,26 @@ void GlavnoOkno::on_actionIzhod_triggered() {
 
 void GlavnoOkno::on_actionNova_baza_triggered() {
 
-}
-
-void GlavnoOkno::on_actionOdpri_bazo_triggered() {
-
+	osvezi("prazno");
+	vApp->processEvents();
 	baza nova_baza;
 	nova_baza.close_database();
-
-	QString path = "";
-
-	path = QFileDialog::getOpenFileName(0, "Izberite bazo podatkov", QApplication::applicationDirPath(), "Baza (*.bz);;Arhiv baze (*.bz.bck)");
-
-	if ( path != "" ) {
-		nova_baza.set_name("osnovna-baza");
-		nova_baza.set_path(path);
-		nova_baza.set_type("QSQLITE");
-
-		QSettings nastavitve("BubiTech", "BubiRacun");
-		nastavitve.setValue("name", nova_baza.get_name());
-		nastavitve.setValue("path", nova_baza.get_path());
-		nastavitve.setValue("type", nova_baza.get_type());
-	} // if
-	else {
-		exit(0);
-	} // else
-
-	nova_baza.open_database();
+	vApp->processEvents();
+	nova_baza.new_database();
+	vApp->processEvents();
 	osvezi("zapri");
 
 }
 
-void GlavnoOkno::on_actionZapri_bazo_triggered() {
+void GlavnoOkno::on_actionOdpri_bazo_triggered() {
 
+	osvezi("prazno");
+	vApp->processEvents();
 	baza nova_baza;
 	nova_baza.close_database();
+	vApp->processEvents();
+	nova_baza.ask_for_database();
+	vApp->processEvents();
 	osvezi("zapri");
 
 }

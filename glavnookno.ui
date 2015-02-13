@@ -256,7 +256,6 @@ border:0;</string>
     </widget>
     <addaction name="actionNova_baza"/>
     <addaction name="actionOdpri_bazo"/>
-    <addaction name="actionZapri_bazo"/>
     <addaction name="separator"/>
     <addaction name="actionNastavitve"/>
     <addaction name="menu_ifranti_2"/>

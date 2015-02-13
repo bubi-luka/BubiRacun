@@ -20,6 +20,8 @@ public:
 	void set_type(QString type);
 
 	// Methods
+	void new_database();
+	void ask_for_database();
 	void open_database();
 	void close_database();
 

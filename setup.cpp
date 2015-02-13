@@ -24,136 +24,142 @@ void setup::start_first_run() {
 	// ustvari tabelo s podatki o programu in bazi
 	glavna_tabela();
 
-	// ustvari tabele
-	tabela_podjetje();
-	tabela_uporabnik();
-	tabela_potni_nalogi();
-	tabela_potovanja();
-	tabela_stroski();
-	tabela_prejeti_racuni();
-	tabela_stranke();
-	tabela_projekti();
-	tabela_racuni();
-	tabela_opravila();
-	tabela_opombe();
-	tabela_nastavitve();
-	tabela_avtomobili();
-	tabela_stroski_prehrane();
-	tabela_prioriteta_strank();
+	QSqlQuery sql_razlicica;
+	sql_razlicica.prepare("SELECT * FROM 'glavna'");
+	sql_razlicica.exec();
+	if ( !sql_razlicica.next() ) {
+		// ustvari tabele
+		tabela_podjetje();
+		tabela_uporabnik();
+		tabela_potni_nalogi();
+		tabela_potovanja();
+		tabela_stroski();
+		tabela_prejeti_racuni();
+		tabela_stranke();
+		tabela_projekti();
+		tabela_racuni();
+		tabela_opravila();
+		tabela_opombe();
+		tabela_nastavitve();
+		tabela_avtomobili();
+		tabela_stroski_prehrane();
+		tabela_prioriteta_strank();
 
-	// ustvari tabele sifrantov
-	tabela_skd();
-	tabela_posta();
-	tabela_nazivi();
-	tabela_pogodbe();
-	tabela_dovoljenja();
-	tabela_status_projekta();
-	tabela_status_racuna();
-	tabela_status_placila();
-	tabela_status_racunovodstva();
-	tabela_popusti();
-	tabela_viri_strank();
-	tabela_namen_potnega_naloga();
-	tabela_prevoz();
-	tabela_predracuni();
-	tabela_kategorije();
-	tabela_podkategorije();
-	tabela_storitev();
-	tabela_oddaje_racuna();
-	tabela_opombe_pri_racunih();
-	tabela_dnevnice();
-	tabela_kilometrina();
-	tabela_cenamalice();
-	tabela_banke();
-	tabela_koda_namena();
-	tabela_ddv();
-	tabela_enote();
+		// ustvari tabele sifrantov
+		tabela_skd();
+		tabela_posta();
+		tabela_nazivi();
+		tabela_pogodbe();
+		tabela_dovoljenja();
+		tabela_status_projekta();
+		tabela_status_racuna();
+		tabela_status_placila();
+		tabela_status_racunovodstva();
+		tabela_popusti();
+		tabela_viri_strank();
+		tabela_namen_potnega_naloga();
+		tabela_prevoz();
+		tabela_predracuni();
+		tabela_kategorije();
+		tabela_podkategorije();
+		tabela_storitev();
+		tabela_oddaje_racuna();
+		tabela_opombe_pri_racunih();
+		tabela_dnevnice();
+		tabela_kilometrina();
+		tabela_cenamalice();
+		tabela_banke();
+		tabela_koda_namena();
+		tabela_ddv();
+		tabela_enote();
 
-	// vnese podatke v tabele
-	vnesi_skd();
-	vnesi_posta();
-	vnesi_nazive();
-	vnesi_pogodbe();
-	vnesi_dovoljenja();
-	vnesi_status_projekta();
-	vnesi_status_racuna();
-	vnesi_status_placila();
-	vnesi_status_racunovodstva();
-	vnesi_popuste();
-	vnesi_vire_strank();
-	vnesi_namen_potnega_naloga();
-	vnesi_prevoz();
-	vnesi_predracune();
-	vnesi_oddaja_racuna();
-	vnesi_nastavitve();
-	vnesi_banke();
-	vnesi_koda_namena();
+		// vnese podatke v tabele
+		vnesi_skd();
+		vnesi_posta();
+		vnesi_nazive();
+		vnesi_pogodbe();
+		vnesi_dovoljenja();
+		vnesi_status_projekta();
+		vnesi_status_racuna();
+		vnesi_status_placila();
+		vnesi_status_racunovodstva();
+		vnesi_popuste();
+		vnesi_vire_strank();
+		vnesi_namen_potnega_naloga();
+		vnesi_prevoz();
+		vnesi_predracune();
+		vnesi_oddaja_racuna();
+		vnesi_nastavitve();
+		vnesi_banke();
+		vnesi_koda_namena();
+
+		// dodaj v stalno obliko
+
+			QSqlQuery sql_create_table_kuponi;
+			sql_create_table_kuponi.prepare("CREATE TABLE IF NOT EXISTS kuponi ("
+											"id INTEGER PRIMARY KEY, "
+											"kupon TEXT, "
+											"projekt TEXT, "
+											"prejemnik TEXT, "
+											"datumprejema TEXT, "
+											"uporabljen TEXT, "
+											"uporabitelj TEXT, "
+											"datumuporabe TEXT)"
+											);
+			sql_create_table_kuponi.exec();
+
+			// kreiranje sifrantov
+			QSqlQuery sql_create_table_projekt;
+			sql_create_table_projekt.prepare("CREATE TABLE IF NOT EXISTS sif_projekt ("
+											"id INTEGER PRIMARY KEY, "
+											"projekt TEXT)"
+											);
+			sql_create_table_projekt.exec();
+
+			QSqlQuery sql_check_projekt;
+			sql_check_projekt.prepare("SELECT * FROM sif_projekt");
+			sql_check_projekt.exec();
+			if (!sql_check_projekt.next()) {
+				QSqlQuery sql_check_projekt;
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Dogovor") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Izdan predracun") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Potrjen predracun") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("V delu") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Izdan racun") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Placano") + "')");
+				sql_check_projekt.exec();
+				sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Zakljuceno") + "')");
+				sql_check_projekt.exec();
+			}
+
+			QSqlQuery sql_create_table_placilo;
+			sql_create_table_placilo.prepare("CREATE TABLE IF NOT EXISTS sif_placilo ("
+											"id INTEGER PRIMARY KEY, "
+											"placilo TEXT)"
+											);
+			sql_create_table_placilo.exec();
+			QSqlQuery sql_check_placilo;
+			sql_check_placilo.prepare("SELECT * FROM sif_placilo");
+			sql_check_placilo.exec();
+			if (!sql_check_placilo.next()) {
+				QSqlQuery sql_insert_placilo;
+				sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Ni placano") + "')");
+				sql_insert_placilo.exec();
+				sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Cakam na placilo") + "')");
+				sql_insert_placilo.exec();
+				sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Placano") + "')");
+				sql_insert_placilo.exec();
+			}
+
+	}
 
 	// posodobitev baze
 	posodobi_bazo();
-
-	// dodaj v stalno obliko
-
-		QSqlQuery sql_create_table_kuponi;
-		sql_create_table_kuponi.prepare("CREATE TABLE IF NOT EXISTS kuponi ("
-										"id INTEGER PRIMARY KEY, "
-										"kupon TEXT, "
-										"projekt TEXT, "
-										"prejemnik TEXT, "
-										"datumprejema TEXT, "
-										"uporabljen TEXT, "
-										"uporabitelj TEXT, "
-										"datumuporabe TEXT)"
-										);
-		sql_create_table_kuponi.exec();
-
-		// kreiranje sifrantov
-		QSqlQuery sql_create_table_projekt;
-		sql_create_table_projekt.prepare("CREATE TABLE IF NOT EXISTS sif_projekt ("
-										"id INTEGER PRIMARY KEY, "
-										"projekt TEXT)"
-										);
-		sql_create_table_projekt.exec();
-
-		QSqlQuery sql_check_projekt;
-		sql_check_projekt.prepare("SELECT * FROM sif_projekt");
-		sql_check_projekt.exec();
-		if (!sql_check_projekt.next()) {
-			QSqlQuery sql_check_projekt;
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Dogovor") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Izdan predracun") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Potrjen predracun") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("V delu") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Izdan racun") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Placano") + "')");
-			sql_check_projekt.exec();
-			sql_check_projekt.prepare("INSERT INTO sif_projekt (projekt) VALUES ('" + pretvori("Zakljuceno") + "')");
-			sql_check_projekt.exec();
-		}
-
-		QSqlQuery sql_create_table_placilo;
-		sql_create_table_placilo.prepare("CREATE TABLE IF NOT EXISTS sif_placilo ("
-										"id INTEGER PRIMARY KEY, "
-										"placilo TEXT)"
-										);
-		sql_create_table_placilo.exec();
-		QSqlQuery sql_check_placilo;
-		sql_check_placilo.prepare("SELECT * FROM sif_placilo");
-		sql_check_placilo.exec();
-		if (!sql_check_placilo.next()) {
-			QSqlQuery sql_insert_placilo;
-			sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Ni placano") + "')");
-			sql_insert_placilo.exec();
-			sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Cakam na placilo") + "')");
-			sql_insert_placilo.exec();
-			sql_insert_placilo.prepare("INSERT INTO sif_placilo (placilo) VALUES ('" + pretvori("Placano") + "')");
-			sql_insert_placilo.exec();
-		}
 
 }
 
@@ -170,28 +176,15 @@ void setup::baza_podatkov() {
 		nova_baza.set_name(nastavitve.value("name").toString());
 		nova_baza.set_path(nastavitve.value("path").toString());
 		nova_baza.set_type(nastavitve.value("type").toString());
+
+		nova_baza.open_database();
+
 	} // if
 	else {
-		QString path = "";
 
-		path = QFileDialog::getOpenFileName(0, "Izberite bazo podatkov", QApplication::applicationDirPath(), "Baza (*.bz);;Arhiv baze (*.bz.bck)");
-
-		if ( path != "" ) {
-			nova_baza.set_name("osnovna-baza");
-			nova_baza.set_path(path);
-			nova_baza.set_type("QSQLITE");
-
-			nastavitve.setValue("name", nova_baza.get_name());
-			nastavitve.setValue("path", nova_baza.get_path());
-			nastavitve.setValue("type", nova_baza.get_type());
-		} // if
-		else {
-			exit(0);
-		} // else
+		nova_baza.ask_for_database();
 
 	} // else
-
-	nova_baza.open_database();
 
 }
 
@@ -1023,8 +1016,8 @@ void setup::vnesi_skd() {
 	}
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1044,7 +1037,7 @@ void setup::vnesi_skd() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1057,8 +1050,8 @@ void setup::vnesi_posta() {
 	}
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1078,7 +1071,7 @@ void setup::vnesi_posta() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1094,8 +1087,8 @@ void setup::vnesi_dovoljenja() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1115,7 +1108,7 @@ void setup::vnesi_dovoljenja() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1130,8 +1123,8 @@ void setup::vnesi_nazive() {
 	}
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1151,7 +1144,7 @@ void setup::vnesi_nazive() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1168,8 +1161,8 @@ void setup::vnesi_pogodbe() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1187,7 +1180,7 @@ void setup::vnesi_pogodbe() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1204,8 +1197,8 @@ void setup::vnesi_status_projekta() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1223,7 +1216,7 @@ void setup::vnesi_status_projekta() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1237,11 +1230,9 @@ void setup::vnesi_status_racuna() {
 		return;
 	}
 
-
-
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1259,7 +1250,7 @@ void setup::vnesi_status_racuna() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1276,8 +1267,8 @@ void setup::vnesi_status_placila() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1295,7 +1286,7 @@ void setup::vnesi_status_placila() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1312,7 +1303,7 @@ void setup::vnesi_status_racunovodstva() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
 		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
@@ -1331,7 +1322,7 @@ void setup::vnesi_status_racunovodstva() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1348,8 +1339,8 @@ void setup::vnesi_popuste() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1369,7 +1360,7 @@ void setup::vnesi_popuste() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1386,8 +1377,8 @@ void setup::vnesi_vire_strank() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1405,7 +1396,7 @@ void setup::vnesi_vire_strank() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1422,8 +1413,8 @@ void setup::vnesi_namen_potnega_naloga() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1441,7 +1432,7 @@ void setup::vnesi_namen_potnega_naloga() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1458,8 +1449,8 @@ void setup::vnesi_prevoz() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1477,7 +1468,7 @@ void setup::vnesi_prevoz() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1494,8 +1485,8 @@ void setup::vnesi_predracune() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1512,7 +1503,7 @@ void setup::vnesi_predracune() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1529,8 +1520,8 @@ void setup::vnesi_oddaja_racuna() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1547,7 +1538,7 @@ void setup::vnesi_oddaja_racuna() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1564,8 +1555,8 @@ void setup::vnesi_nastavitve() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1582,14 +1573,13 @@ void setup::vnesi_nastavitve() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
 void setup::vnesi_banke() {
 
 	QString app_path = QApplication::applicationDirPath();
-
 
 	QFile datoteka(app_path + "/sif_banke.csv");
 	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -1599,7 +1589,7 @@ void setup::vnesi_banke() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
 		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
@@ -1628,7 +1618,7 @@ void setup::vnesi_banke() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -1645,8 +1635,8 @@ void setup::vnesi_koda_namena() {
 
 
 		/*
-		*	prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
-		* prevedi, ali vnosze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
+		* prebere vsako vrstico besedila, iz nje izlusci z vejico locene vrednosti
+		* prevedi, ali vnos ze obstaja v bazi, ce se ne obstaja obe vrednosti vnese v bazo
 		*/
 		QTextStream besedilo(&datoteka);
 		while (!besedilo.atEnd()) {
@@ -1671,7 +1661,7 @@ void setup::vnesi_koda_namena() {
 				sql_insert_data.exec();
 			}
 		}
-	datoteka.remove();
+
 
 }
 
@@ -3757,7 +3747,6 @@ void setup::posodobi_bazo() {
 								}
 							}
 						}
-						qDebug(txt_naziv.toUtf8() + ": " + pretvori(sql_prejemnik.value(sql_prejemnik.record().indexOf("spol")).toString()).toUtf8());
 
 						// posodobi profile
 						update.prepare("UPDATE potni_nalogi SET prejemnik_oseba_naziv = ? WHERE id LIKE '" +

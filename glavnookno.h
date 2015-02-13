@@ -54,7 +54,6 @@ private slots:
 	void on_actionIzhod_triggered();
 	void on_actionNova_baza_triggered();
 	void on_actionOdpri_bazo_triggered();
-	void on_actionZapri_bazo_triggered();
 	void keyPressEvent(QKeyEvent *event);
 
 	void on_btn_home_clicked();

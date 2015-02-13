@@ -12,6 +12,7 @@
 #include "podjetje.h"
 #include "kodiranje.h"
 #include "varnost.h"
+#include "baza.h"
 
 prijava::prijava(QWidget *parent) :
 	QDialog(parent),
@@ -25,6 +26,10 @@ prijava::prijava(QWidget *parent) :
 //    this->activateWindow();
 //    this->setFocus();
 	ui->txt_uporabnik->setFocus();
+
+	// izpisi pot do baze
+	baza nova_baza;
+	ui->txt_baza->setText(nova_baza.get_path());
 
 }
 
@@ -182,6 +187,28 @@ void prijava::varnostna_kopija() {
 
 		}
 */
+}
+
+void prijava::on_btn_baza_clicked() {
+
+	// zapre trenutno bazo in odpre okno za izbiro nove baze
+	baza nova_baza;
+	nova_baza.close_database();
+	nova_baza.ask_for_database();
+
+	poslji("osvezi");
+
+}
+
+void prijava::on_btn_nova_baza_clicked() {
+
+	// zapre trenutno bazo in odpre okno za izbiro nove baze
+	baza nova_baza;
+	nova_baza.close_database();
+	nova_baza.new_database();
+
+	poslji("osvezi");
+
 }
 
 // pretvori v in iz kodirane oblike
