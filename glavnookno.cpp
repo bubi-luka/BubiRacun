@@ -489,6 +489,46 @@ void GlavnoOkno::on_actionIzhod_triggered() {
 
 }
 
+void GlavnoOkno::on_actionNova_baza_triggered() {
+
+}
+
+void GlavnoOkno::on_actionOdpri_bazo_triggered() {
+
+	baza nova_baza;
+	nova_baza.close_database();
+
+	QString path = "";
+
+	path = QFileDialog::getOpenFileName(0, "Izberite bazo podatkov", QApplication::applicationDirPath(), "Baza (*.bz);;Arhiv baze (*.bz.bck)");
+
+	if ( path != "" ) {
+		nova_baza.set_name("osnovna-baza");
+		nova_baza.set_path(path);
+		nova_baza.set_type("QSQLITE");
+
+		QSettings nastavitve("BubiTech", "BubiRacun");
+		nastavitve.setValue("name", nova_baza.get_name());
+		nastavitve.setValue("path", nova_baza.get_path());
+		nastavitve.setValue("type", nova_baza.get_type());
+	} // if
+	else {
+		exit(0);
+	} // else
+
+	nova_baza.open_database();
+	osvezi("zapri");
+
+}
+
+void GlavnoOkno::on_actionZapri_bazo_triggered() {
+
+	baza nova_baza;
+	nova_baza.close_database();
+	osvezi("zapri");
+
+}
+
 void GlavnoOkno::varnost_id_changed() {
 
 	if ( vApp->id() == "" ) {
