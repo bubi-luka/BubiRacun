@@ -158,7 +158,7 @@ border:0;</string>
          <x>0</x>
          <y>0</y>
          <width>796</width>
-         <height>591</height>
+         <height>577</height>
         </rect>
        </property>
       </widget>
@@ -172,7 +172,7 @@ border:0;</string>
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>19</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRa_unovodstvo">
@@ -188,13 +188,15 @@ border:0;</string>
      <addaction name="actionRa_uni"/>
     </widget>
     <addaction name="actionPotni_nalogi"/>
+    <addaction name="separator"/>
     <addaction name="actionPrejeti_ra_uni"/>
+    <addaction name="separator"/>
     <addaction name="menuIzdani_ra_uni"/>
     <addaction name="actionDobropisi"/>
    </widget>
    <widget class="QMenu" name="menuIzpisi">
     <property name="title">
-     <string>Pregledi</string>
+     <string>Pregled poslovanja</string>
     </property>
     <addaction name="actionPrihodek"/>
     <addaction name="actionIzdatek"/>
@@ -208,7 +210,7 @@ border:0;</string>
    </widget>
    <widget class="QMenu" name="menuDelo">
     <property name="title">
-     <string>Delo</string>
+     <string>Stranke in projekti</string>
     </property>
     <addaction name="actionStranke"/>
     <addaction name="separator"/>
@@ -218,11 +220,10 @@ border:0;</string>
     <addaction name="separator"/>
     <addaction name="actionKuponi"/>
     <addaction name="separator"/>
-    <addaction name="actionIzhod"/>
    </widget>
    <widget class="QMenu" name="menuNastavitve">
     <property name="title">
-     <string>Podatki</string>
+     <string>O meni</string>
     </property>
     <addaction name="actionPodjetje"/>
     <addaction name="actionUporabniki"/>
@@ -230,30 +231,40 @@ border:0;</string>
     <addaction name="separator"/>
     <addaction name="actionDopusti_bolni_ke"/>
     <addaction name="separator"/>
-    <addaction name="actionNastavitve"/>
    </widget>
-   <widget class="QMenu" name="menu_ifranti">
+   <widget class="QMenu" name="menuNastavitve_2">
     <property name="title">
-     <string>Šifranti</string>
+     <string>Nastavitve programa</string>
     </property>
-    <addaction name="actionKategorije"/>
-    <addaction name="actionPodkategorije"/>
-    <addaction name="actionStoritve"/>
-    <addaction name="actionEnote"/>
+    <widget class="QMenu" name="menu_ifranti_2">
+     <property name="title">
+      <string>Šifranti</string>
+     </property>
+     <addaction name="actionKategorije"/>
+     <addaction name="actionPodkategorije"/>
+     <addaction name="actionStoritve"/>
+     <addaction name="actionEnote"/>
+     <addaction name="separator"/>
+     <addaction name="actionOpombe_pri_ra_unih"/>
+     <addaction name="separator"/>
+     <addaction name="actionVrednost_DDV"/>
+     <addaction name="separator"/>
+     <addaction name="actionKilometrina"/>
+     <addaction name="actionDnevnice"/>
+     <addaction name="actionCena_malice"/>
+     <addaction name="actionDelavniki"/>
+    </widget>
+    <addaction name="actionNova_baza"/>
+    <addaction name="actionOdpri_bazo"/>
     <addaction name="separator"/>
-    <addaction name="actionOpombe_pri_ra_unih"/>
+    <addaction name="actionNastavitve"/>
+    <addaction name="menu_ifranti_2"/>
     <addaction name="separator"/>
-    <addaction name="actionVrednost_DDV"/>
-    <addaction name="separator"/>
-    <addaction name="actionKilometrina"/>
-    <addaction name="actionDnevnice"/>
-    <addaction name="actionCena_malice"/>
-    <addaction name="actionDelavniki"/>
-    <addaction name="separator"/>
+    <addaction name="actionIzhod"/>
    </widget>
+   <addaction name="menuNastavitve_2"/>
    <addaction name="menuDelo"/>
    <addaction name="menuRa_unovodstvo"/>
-   <addaction name="menu_ifranti"/>
    <addaction name="menuIzpisi"/>
    <addaction name="menuNastavitve"/>
    <addaction name="menuPomo"/>
@@ -324,7 +335,7 @@ border:0;</string>
   </action>
   <action name="action_asovnice">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Časovnice</string>
@@ -428,14 +439,29 @@ border:0;</string>
     <string>Enote</string>
    </property>
   </action>
-  <action name="actionIzhod">
-   <property name="text">
-    <string>Izhod</string>
-   </property>
-  </action>
   <action name="actionDobropisi">
    <property name="text">
     <string>Dobropisi</string>
+   </property>
+  </action>
+  <action name="actionNova_baza">
+   <property name="text">
+    <string>Nova baza</string>
+   </property>
+  </action>
+  <action name="actionOdpri_bazo">
+   <property name="text">
+    <string>Odpri bazo</string>
+   </property>
+  </action>
+  <action name="actionZapri_bazo">
+   <property name="text">
+    <string>Zapri bazo</string>
+   </property>
+  </action>
+  <action name="actionIzhod">
+   <property name="text">
+    <string>Izhod</string>
    </property>
   </action>
  </widget>

@@ -64,13 +64,13 @@ private slots:
 	void on_cb_podrazitev_hitrost_toggled(bool stanje);
 	void on_cb_podrazitev_zapleti_toggled(bool stanje);
 
-	void on_txt_popust_fb1_textChanged(QString besedilo);
-	void on_txt_popust_fb2_textChanged(QString besedilo);
-	void on_txt_popust_komb1_textChanged(QString besedilo);
-	void on_txt_popust_komb2_textChanged(QString besedilo);
-	void on_txt_popust_stalna_stranka_textChanged(QString besedilo);
-	void on_txt_popust_kupon_textChanged(QString besedilo);
-	void on_txt_popust_akcija_textChanged(QString besedilo);
+	void on_txt_popust_fb1_textChanged();
+	void on_txt_popust_fb2_textChanged();
+	void on_txt_popust_komb1_textChanged();
+	void on_txt_popust_komb2_textChanged();
+	void on_txt_popust_stalna_stranka_textChanged();
+	void on_txt_popust_kupon_textChanged();
+	void on_txt_popust_akcija_textChanged();
 
 	void on_txt_popust_fb1_editingFinished();
 	void on_txt_popust_fb2_editingFinished();
@@ -86,7 +86,7 @@ private slots:
 	void on_gb_urejanje_pribitkov_toggled();
 	void on_gb_najvisji_zneski_popustov_toggled();
 
-	void izracunaj_popuste(double vrednost, int polje);
+	void izracunaj_popuste(int polje);
 
 	void izracunaj_urno_postavko_z_ddv();
 	void napolni_polja();

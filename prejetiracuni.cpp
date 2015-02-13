@@ -66,22 +66,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 		ui->txt_status_placila->addItem("");
 		ui->txt_status_racunovodstva->addItem("");
 
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
-
 			// napolni spustne sezname
 			QSqlQuery sql_fill;
 			sql_fill.prepare("SELECT * FROM sif_posta");
@@ -140,9 +124,6 @@ prejetiracuni::prejetiracuni(QWidget *parent) :
 															 prevedi(sql_fill.value(sql_fill.record().indexOf("naslov_projekta")).toString()));
 			}
 			sql_fill.clear();
-
-		}
-		base.close();
 
 		// nastavi stevilko prejetega racuna
 		stevilka_racuna();
@@ -227,20 +208,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 	palette_normal.setBrush(QPalette::Inactive, QPalette::WindowText, brush_normal);
 
 	// preveri obstoj stevilke narocila
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		if ( ui->txt_stvnosa->text() == "") {
 			ui->label_2->setPalette(palette_error);
 			ui->label_2->setFont(font_error);
@@ -267,8 +234,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 				ui->label_2->setPalette(palette_normal);
 				ui->label_2->setFont(font_normal);
 			}
-		}
-		base.close();
 	}
 
 	// ponovno preveri obvezno izpolnjena polja
@@ -336,27 +301,14 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 		QString znesek_brez_ddv_array = "";
 
 		for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
-			if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+			QTableWidgetItem *celica;
+			if ( celica == ui->tbl_ddv->item(row, 2) ) {
 				ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()) + ";";
 				znesek_brez_ddv_array += pretvori_v_double(ui->tbl_ddv->item(row, 0)->text()) + "," + pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()) + ";";
 			  }
 		}
 
 		// shranimo v bazo
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QString podjetje_kratki = "";
 			QString podjetje_polni = "";
 
@@ -432,8 +384,6 @@ void prejetiracuni::on_btn_sprejmi_clicked() {
 			sql_vnesi.bindValue(27, pretvori(znesek_brez_ddv_array));
 
 			sql_vnesi.exec();
-		}
-		base.close();
 
 		// send signal to reload widget
 		poslji("racun");
@@ -459,22 +409,6 @@ void prejetiracuni::on_txt_izberi_osebo_currentIndexChanged(QString besedilo) {
 	ui->txt_izberi_projekt->clear();
 	ui->txt_projekt->setText("");
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
-
 		QSqlQuery sql_fill;
 		sql_fill.prepare("SELECT * FROM projekti WHERE avtor_oseba LIKE '" + pretvori(id) + "'");
 		sql_fill.exec();
@@ -483,9 +417,6 @@ void prejetiracuni::on_txt_izberi_osebo_currentIndexChanged(QString besedilo) {
 																			prevedi(sql_fill.value(sql_fill.record().indexOf("stevilka_projekta")).toString()) + " - " +
 																			prevedi(sql_fill.value(sql_fill.record().indexOf("naslov_projekta")).toString()));
 		}
-
-	}
-	base.close();
 
 	// zgornji ukazi spremenijo aktivni index txt_izberi_projekt, saj ga polnijo, zato se izpolni tudi txt_projekt, ki pa mora ostati prazen
 	if ( !ui->cb_projekt->isChecked() ) {
@@ -554,20 +485,6 @@ void prejetiracuni::prejem(QString besedilo) {
 		ui->btn_izpisi->setEnabled(true);
 		ui->txt_datum_prejema->setEnabled(false);
 		// besedilo nosi ID ze obstojec racun, potrebno je napolniti polja
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_napolni;
 			sql_napolni.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + besedilo + "'");
 			sql_napolni.exec();
@@ -644,8 +561,6 @@ void prejetiracuni::prejem(QString besedilo) {
 				sql_combo.clear();
 			}
 			sql_napolni.clear();
-		}
-		base.close();
 
 		ui->btn_sprejmi->setText("Popravi racun");
 
@@ -716,80 +631,29 @@ QString prejetiracuni::pretvori_iz_double(QString besedilo) {
 
 }
 
-void prejetiracuni::on_txt_posta_currentIndexChanged(QString besedilo) {
+void prejetiracuni::on_txt_posta_currentIndexChanged() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_posta WHERE posta LIKE '" + pretvori(ui->txt_posta->currentText()) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_postna_stevilka->setText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("postna_stevilka")).toString()));
 		}
-	}
-	base.close();
 
 }
 
 void prejetiracuni::on_txt_postna_stevilka_textChanged(QString besedilo) {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 		QSqlQuery sql_najdi;
 		sql_najdi.prepare("SELECT * FROM sif_posta WHERE postna_stevilka LIKE '" + pretvori(besedilo) + "'");
 		sql_najdi.exec();
 		if ( sql_najdi.next() ) {
 			ui->txt_posta->setCurrentIndex(ui->txt_posta->findText(prevedi(sql_najdi.value(sql_najdi.record().indexOf("posta")).toString())));
 		}
-	}
-	base.close();
 
 }
 
 void prejetiracuni::on_txt_naziv_podjetja_kratki_editingFinished() {
-
-	if ( ui->btn_sprejmi->text() == "Vnesi racun" ) {
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			QSqlQuery sql_podjetje;
 			sql_podjetje.prepare("SELECT * FROM prejeti_racuni WHERE izdajatelj_kratki LIKE '" + pretvori(ui->txt_naziv_podjetja_kratki->text()) + "'");
@@ -801,9 +665,6 @@ void prejetiracuni::on_txt_naziv_podjetja_kratki_editingFinished() {
 				ui->txt_postna_stevilka->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("postna_stevilka")).toString()));
 				ui->txt_zadeva->setText(prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("zadeva")).toString()));
 			}
-		}
-		base.close();
-	}
 
 }
 
@@ -818,22 +679,6 @@ void prejetiracuni::stevilka_racuna() {
 	if ( ui->btn_sprejmi->text() != "Polnim" ) {
 		// dobimo tekoce leto za uporabo pri stevilki racuna
 		QString leto = ui->txt_datum_prejema->text().right(4);
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true) {
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			bool tvori = true; // tvorimo stevilko naloga
 			QString stara_stevilka_naloga = "";
@@ -872,9 +717,6 @@ void prejetiracuni::stevilka_racuna() {
 				}
 				ui->txt_stevilka_vnosa->setText("PR-" + leto + "-" + stevilka);
 			}
-
-		}
-		base.close();
 	}
 
 }
@@ -909,9 +751,9 @@ void prejetiracuni::on_btn_dodaj_ddv_clicked() {
 void prejetiracuni::on_btn_izbrisi_ddv_clicked() {
 
 
-    ui->tbl_ddv->removeRow(ui->tbl_ddv->selectedItems().at(0)->row());
+	ui->tbl_ddv->removeRow(ui->tbl_ddv->selectedItems().at(0)->row());
 
-    izracunaj();
+	izracunaj();
 
 }
 
@@ -967,22 +809,6 @@ void prejetiracuni::on_tbl_ddv_itemChanged(QTableWidgetItem *celica) {
 
 void prejetiracuni::napolni_ddv() {
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
-
 		// clear previous content
 		ui->tbl_ddv->clear();
 
@@ -1018,7 +844,7 @@ void prejetiracuni::napolni_ddv() {
 		sql_fill.prepare("SELECT * FROM prejeti_racuni WHERE id LIKE '" + ui->txt_id->text() + "'");
 		sql_fill.exec();
 
-        if ( sql_fill.next() ) {
+		if ( sql_fill.next() ) {
 			QString ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("ddv_array")).toString());
 			QString znesek_brez_ddv_array = prevedi(sql_fill.value(sql_fill.record().indexOf("znesek_brez_ddv_array")).toString());
 
@@ -1027,43 +853,41 @@ void prejetiracuni::napolni_ddv() {
 
 			QStringList seznam_ddv = ddv_array.split(";");
 			QStringList seznam_znesek = ddv_array.split(";");
-            QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
+			QStringList seznam_znesek_brez_ddv = znesek_brez_ddv_array.split(";");
 
-            if ( seznam_ddv[0] != "" ) {
-                for ( int a = 0; a < seznam_ddv.count(); a++ ) {
-                    seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
-                    seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
-                    seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
-                }
+			if ( seznam_ddv[0] != "" ) {
+				for ( int a = 0; a < seznam_ddv.count(); a++ ) {
+					seznam_ddv[a] = seznam_ddv[a].left(seznam_ddv[a].indexOf(","));
+					seznam_znesek[a] = seznam_znesek[a].right(seznam_znesek[a].length() - seznam_znesek[a].indexOf(",") - 1);
+					seznam_znesek_brez_ddv[a] = seznam_znesek_brez_ddv[a].right(seznam_znesek_brez_ddv[a].length() - seznam_znesek_brez_ddv[a].indexOf(",") - 1);
+				}
 
-                for ( int i = 0; i < seznam_ddv.count(); i++ ) {
-                    ui->tbl_ddv->insertRow(i);
-                    ui->tbl_ddv->setRowHeight(i, 20);
+				for ( int i = 0; i < seznam_ddv.count(); i++ ) {
+					ui->tbl_ddv->insertRow(i);
+					ui->tbl_ddv->setRowHeight(i, 20);
 
-                    for ( int j = 0; j < 3; j++ ) {
+					for ( int j = 0; j < 3; j++ ) {
 
-                        QTableWidgetItem *celica = new QTableWidgetItem;
-                        if ( j == 0 ) {
-                            celica->setText(seznam_ddv[i].replace(".", ",") + " %");
-                            celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
-                        }
-                        else if ( j == 1 ) {
-                            celica->setText(seznam_znesek[i].replace(".", ","));
-                            celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
-                        }
-                        else if ( j == 2 ) {
-                            celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
-                        }
-                        ui->tbl_ddv->setItem(i, j, celica);
+						QTableWidgetItem *celica = new QTableWidgetItem;
+						if ( j == 0 ) {
+							celica->setText(seznam_ddv[i].replace(".", ",") + " %");
+							celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+						}
+						else if ( j == 1 ) {
+							celica->setText(seznam_znesek[i].replace(".", ","));
+							celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
+						}
+						else if ( j == 2 ) {
+							celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
+						}
+						ui->tbl_ddv->setItem(i, j, celica);
 
-                    }
-                }
+					}
+				}
 
-            }
+			}
 
 		}
-	}
-	base.close();
 
 }
 
@@ -1092,8 +916,10 @@ void prejetiracuni::izracunaj() {
 	double znesek_brez_ddv = 0.0;
 
 	for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
-		if ( QTableWidgetItem *polje = ui->tbl_ddv->item(row, 1) ) {
-			if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
+		QTableWidgetItem *polje;
+		if ( polje == ui->tbl_ddv->item(row, 1) ) {
+			QTableWidgetItem *celica;
+			if ( celica == ui->tbl_ddv->item(row, 2) ) {
 				znesek_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()).toDouble();
 				znesek_brez_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()).toDouble();
 			}

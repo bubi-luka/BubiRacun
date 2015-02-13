@@ -41,7 +41,7 @@ wid_prihodki::wid_prihodki(QWidget *parent) :
 		ui->txt_pravne_osebe_znesek_4->setText("");
 		ui->txt_pravne_osebe_odstotek_4->setText("");
 
-        // napolni spustne sezname
+		// napolni spustne sezname
 		QStringList seznam_mesecev;
 		seznam_mesecev << ""
 									 << "01) Januar"
@@ -59,23 +59,7 @@ wid_prihodki::wid_prihodki(QWidget *parent) :
 		ui->txt_mesec->addItems(seznam_mesecev);
 
 		ui->txt_leto->addItem("");
-        ui->txt_leto_3->addItem("");
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prihodki-polnenje-seznamov");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// the database is opened
+		ui->txt_leto_3->addItem("");
 
 			QSqlQuery sql_leto;
 			sql_leto.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '3' AND status_oddaje_racuna NOT LIKE ''"
@@ -88,9 +72,6 @@ wid_prihodki::wid_prihodki(QWidget *parent) :
 					ui->txt_leto_3->addItem(leto);
 				}
 			}
-
-		}
-		base.close();
 
 		// razvrscanje let po vrsti
 		QSortFilterProxyModel* proxy = new QSortFilterProxyModel(ui->txt_leto);
@@ -157,26 +138,11 @@ void wid_prihodki::napolni_mesec() {
 	double znesek_ostanek = 0.0;
 	double znesek_ostanek_fizicne = 0.0;
 	double znesek_ostanek_pravne = 0.0;
-
+/*
 	double znesek_storno = 0.0;
 	double znesek_storno_fizicne = 0.0;
 	double znesek_storno_pravne = 0.0;
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prihodki-polnenje-podatkov-mesecni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
+*/
 
 		// poisci, kateri avansi so bili placani v danem mesecu (1==predracun)
 		QSqlQuery sql_avans;
@@ -248,9 +214,6 @@ void wid_prihodki::napolni_mesec() {
 			}
 		}
 
-	}
-	base.close();
-
 	double znesek_skupaj = znesek_avans + znesek_ostanek;
 	double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
 	double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
@@ -268,7 +231,7 @@ void wid_prihodki::napolni_mesec() {
 		ui->txt_skupaj_odstotek->setText("");
 		ui->txt_fizicne_osebe_odstotek->setText("");
 		ui->txt_pravne_osebe_odstotek->setText("");
-    }
+	}
 
 }
 
@@ -283,26 +246,11 @@ void wid_prihodki::napolni_letni() {
 	double znesek_ostanek = 0.0;
 	double znesek_ostanek_fizicne = 0.0;
 	double znesek_ostanek_pravne = 0.0;
-
+/*
 	double znesek_storno = 0.0;
 	double znesek_storno_fizicne = 0.0;
 	double znesek_storno_pravne = 0.0;
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prihodki-polnenje-podatkov-letni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
+*/
 
 		// poisci, kateri avansi so bili placani v danem mesecu
 		QSqlQuery sql_avans;
@@ -376,9 +324,6 @@ void wid_prihodki::napolni_letni() {
 			}
 		}
 
-	}
-	base.close();
-
 	double znesek_skupaj = znesek_avans + znesek_ostanek;
 	double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
 	double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
@@ -396,7 +341,7 @@ void wid_prihodki::napolni_letni() {
 		ui->txt_skupaj_odstotek_3->setText("");
 		ui->txt_fizicne_osebe_odstotek_3->setText("");
 		ui->txt_pravne_osebe_odstotek_3->setText("");
-    }
+	}
 
 }
 
@@ -410,26 +355,11 @@ void wid_prihodki::napolni_skupni() {
 	double znesek_ostanek = 0.0;
 	double znesek_ostanek_fizicne = 0.0;
 	double znesek_ostanek_pravne = 0.0;
-
+/*
 	double znesek_storno = 0.0;
 	double znesek_storno_fizicne = 0.0;
 	double znesek_storno_pravne = 0.0;
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prihodki-polnenje-podatkov-skupni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// the database is opened
+*/
 
 		// poisci, kateri avansi so bili placani v danem mesecu
 		QSqlQuery sql_avans;
@@ -500,9 +430,6 @@ void wid_prihodki::napolni_skupni() {
 			}
 		}
 
-	}
-	base.close();
-
 	double znesek_skupaj = znesek_avans + znesek_ostanek;
 	double znesek_skupaj_fizicne = znesek_avans_fizicne + znesek_ostanek_fizicne;
 	double znesek_skupaj_pravne = znesek_avans_pravne + znesek_ostanek_pravne;
@@ -520,7 +447,7 @@ void wid_prihodki::napolni_skupni() {
 		ui->txt_skupaj_odstotek_4->setText("");
 		ui->txt_fizicne_osebe_odstotek_4->setText("");
 		ui->txt_pravne_osebe_odstotek_4->setText("");
-    }
+	}
 
 }
 

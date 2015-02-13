@@ -54,7 +54,8 @@ HEADERS += \
                 podkategorije.h \
                 sif_enote.h \
                 razlog_stornacije.h \
-                wid_dobropis.h
+                wid_dobropis.h \
+    baza.h
 
 SOURCES += \
 		main.cpp \
@@ -111,7 +112,8 @@ SOURCES += \
                 podkategorije.cpp \
                 sif_enote.cpp \
                 razlog_stornacije.cpp \
-                wid_dobropis.cpp
+                wid_dobropis.cpp \
+    baza.cpp
 
 FORMS += \
 		glavnookno.ui \

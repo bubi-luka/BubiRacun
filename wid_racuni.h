@@ -21,11 +21,11 @@ private slots:
 	void on_btn_print_pdf_clicked();
 	void on_btn_print_seznam_clicked();
 
-	void on_cb_racun_currentIndexChanged(int indeks);
-	void on_cb_mesec_currentIndexChanged(int indeks);
-	void on_cb_leto_currentIndexChanged(int indeks);
-	void on_cb_placilo_currentIndexChanged(int indeks);
-	void on_cb_racunovodstvo_currentIndexChanged(int indeks);
+	void on_cb_racun_currentIndexChanged();
+	void on_cb_mesec_currentIndexChanged();
+	void on_cb_leto_currentIndexChanged();
+	void on_cb_placilo_currentIndexChanged();
+	void on_cb_racunovodstvo_currentIndexChanged();
 
 	void on_tbl_racuni_doubleClicked();
 	void on_tbl_racuni_itemSelectionChanged();
@@ -41,7 +41,7 @@ private slots:
 	void tip(QString besedilo);
 	void napolni();
 	void napolni_sorodnike();
-    QString stevilka_racuna(QString tip);
+	QString stevilka_racuna(QString tip);
 
 	void on_btn_prestevilci_clicked();
 

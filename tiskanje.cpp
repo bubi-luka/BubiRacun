@@ -377,21 +377,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
 	QString mapa_za_shranjevanje = "";
 
 	// odpri podatke o potnem nalogu, prejemniku, stroskih...
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "potni-nalog-zacetek");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 		/**
 			* na zacetku zberemo podatke o potnem nalogu, izdajatelju potnega naloga
 			* (podjetje, oseba), prejemniku potnega naloga ter opravljeni poti.
@@ -601,14 +586,12 @@ void tiskanje::natisni_potni_nalog(QString id) {
 				mapa_za_shranjevanje = prevedi(sql_pot.value(sql_pot.record().indexOf("vrednost")).toString());
 			}
 
-		}
-		base.close();
-
 	/**
 		* Odpremo sifrant z besedilom potnega naloga
 		* Besedilo bomo vztavljali z readLine
 		**/
 
+		QString app_path = QApplication::applicationDirPath();
 		QFile datoteka(app_path + "/potni-nalog-besedilo.csv");
 		if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			return;
@@ -701,7 +684,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 	// narisi glavo
 		visina_glave = natisni_glavo_potni_nalog(painter, id);
-		visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+		visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 
 		pozicija += visina_glave;
 
@@ -855,18 +838,6 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		pozicija += velikost_besedila.height() + razmik_med_vrsticami;
 
 		// naslov vmesnih in koncnih destinacij ter posameznih nalog
-		QSqlDatabase base_cilj = QSqlDatabase::addDatabase("QSQLITE", "potni-nalog-cilj");
-		base_cilj.setDatabaseName(dbase_path);
-		base_cilj.database();
-		base_cilj.open();
-		if(base_cilj.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			// nastavimo besedilo
 			QString besedilo_naslov = potni_nalog.readLine() + " ";
@@ -883,7 +854,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 					// natisnemo novo glavo in nogo
 					visina_glave = natisni_glavo_potni_nalog(painter, id);
-					visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+					visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 					pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 				}
 
@@ -953,16 +924,13 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			}
 
-		}
-		base_cilj.close();
-
 		// morebitni preskok na novo stran ( 2 vrstici )
 		if ( ( pozicija + visina_glave + visina_noge + velikost_besedila.height() * 2 + razmik_med_vrsticami * 2 ) >= painter.window().height() ) { // prelom na novo stran
 			printer.newPage();
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1050,7 +1018,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1227,7 +1195,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1323,7 +1291,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1929,7 +1897,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -1966,7 +1934,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -2006,7 +1974,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 
 			// natisnemo novo glavo in nogo
 			visina_glave = natisni_glavo_potni_nalog(painter, id);
-			visina_noge = natisni_nogo_potni_nalog(painter, id, stevilka_strani);
+			visina_noge = natisni_nogo_potni_nalog(painter, stevilka_strani);
 			pozicija = visina_glave + velikost_besedila.height() / 2 + razmik_med_vrsticami;;
 		}
 
@@ -2246,21 +2214,6 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
 	double faktor_razmika_med_vrsticami_1 = pretvori_v_double(ui->txt_presledek_med_vrsticami_tabela->text()).toDouble(); // pri tabelah
 
 	// odpri podatke o potnem nalogu, prejemniku, stroskih...
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "glava-potnega-naloga");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 	/**
 		* na zacetku zberemo podatke o potnem nalogu, izdajatelju potnega naloga
@@ -2276,10 +2229,9 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
 			datum_naloga = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("datum_naloga")).toString());
 			predlagatelj_podjetje_polno_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("predlagatelj_podjetje_dolgi")).toString());
 		}
-	}
-	base.close();
 
 	// pridobimo staticno besedilo potnega naloga
+	QString app_path = QApplication::applicationDirPath();
 	QFile datoteka1(app_path + "/potni-nalog-besedilo-glava.csv");
 	if (!datoteka1.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return 0;
@@ -2403,7 +2355,7 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
 
 }
 
-int tiskanje::natisni_nogo_potni_nalog(QPainter &painter, QString id, int &stevilka_strani) {
+int tiskanje::natisni_nogo_potni_nalog(QPainter &painter, int &stevilka_strani) {
 
 	QString besedilo = "Stran: " + QString::number(stevilka_strani, 10);
 	int visina = 0;
@@ -2488,21 +2440,6 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 	QString mapa_za_shranjevanje = "";
 
 	// odpremo bazo in napolnimo spremenljivke
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "prejeti-racuni");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 	/**
 		* na zacetku zberemo podatke o potnem nalogu, izdajatelju potnega naloga
@@ -2566,8 +2503,6 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 		if ( sql_pot.next() ) {
 			mapa_za_shranjevanje = prevedi(sql_pot.value(sql_pot.record().indexOf("vrednost")).toString());
 		}
-	}
-	base.close();
 
 	// ustvariti pot do ustrezne mape
 	QDir mapa(mapa_za_shranjevanje);
@@ -2651,7 +2586,7 @@ void tiskanje::natisni_prejeti_racun(QString id) {
 
 	// narisi glavo
 	visina_glave = natisni_glavo_prejeti_racun(painter, id);
-	visina_noge = natisni_nogo_prejeti_racun(painter, id, stevilka_strani);
+	visina_noge = natisni_nogo_prejeti_racun(painter, stevilka_strani);
 
 	// pripravimo dokument za tiskanje
 	QRect velikost_besedila = painter.boundingRect(0, 0, printer.width(), 0, Qt::AlignJustify | Qt::TextWordWrap, stevilka_vnosa);
@@ -2725,21 +2660,6 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
 	double faktor_razmika_med_vrsticami_1 = pretvori_v_double(ui->txt_presledek_med_vrsticami_tabela->text()).toDouble(); // pri tabelah
 
 	// odpri podatke o potnem nalogu, prejemniku, stroskih...
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "glava-prejetega-racuna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 	/**
 		* na zacetku zberemo podatke o potnem nalogu, izdajatelju potnega naloga
@@ -2756,10 +2676,9 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
 			predlagatelj_podjetje_polno_ime = prevedi(sql_potni_nalog.value(sql_potni_nalog.record().indexOf("placnik_podjetje_polni")).toString());
 
 		}
-	}
-	base.close();
 
 	// pridobimo staticno besedilo potnega naloga
+	QString app_path = QApplication::applicationDirPath();
 	QFile datoteka1(app_path + "/potni-nalog-besedilo-glava.csv");
 	if (!datoteka1.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return 0;
@@ -2884,7 +2803,7 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
 
 }
 
-int tiskanje::natisni_nogo_prejeti_racun(QPainter &painter, QString id, int &stevilka_strani) {
+int tiskanje::natisni_nogo_prejeti_racun(QPainter &painter, int &stevilka_strani) {
 
 	QString besedilo = "Stran: " + QString::number(stevilka_strani, 10);
 	int visina = 0;
@@ -3008,34 +2927,15 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 	double skupajbrezddv = 0.0;
 	double skupajddvodosnove20 = 0.0;
-	double skupajddvodosnove85 = 0.0;
-	double skupajddvodosnove00 = 0.0;
 	double skupajznesek = 0.0;
-	double skupajznesekavansa = 0.0;
 	double skupajznesekavansabrezddv = 0.0;
 	double skupajddvavansa = 0.0;
-	double skupajsezaplacati = 0.0;
-	double skupajsezaplacatiddv = 0.0;
 
 	int stevilka_strani = 1;
 
 	QString mapa_za_shranjevanje = "";
 
 	// priprava baze in polnenje spremenljivk (razen storitve)
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "tiskanje-izdanih-racunov");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 
 		// napolni vrednosti racuna
 		QSqlQuery sql_racun;
@@ -3148,14 +3048,12 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			mapa_za_shranjevanje = prevedi(sql_pot.value(sql_pot.record().indexOf("vrednost")).toString());
 		}
 
-	}
-	base.close();
-
 	/**
 		* Odpremo sifrant z besedilom potnega naloga
 		* Besedilo bomo vztavljali z readLine
 		**/
 
+	QString app_path = QApplication::applicationDirPath();
 	QFile datoteka;
 	if ( racun_tip == "1" ) {
 		datoteka.setFileName(app_path + "/racun-besedilo-predracun.csv");
@@ -3650,7 +3548,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		double crta_6 = crta_5 + sirina_vecja;									// Cena na enoto brez DDV
 		double crta_7 = crta_6 + sirina_manjsa;									// Popust
 		double crta_8 = crta_7 + sirina_manjsa;									// Stopnja DDV
-		double crta_9 = printer.width();										// Vrednost brez DDV
 
 		besedilo = racun.readLine();
 		// dolocimo velikost kvadrata, ki ga tvori besedilo ("Sifra")
@@ -3722,18 +3619,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 		pozicija += razmik_med_vrsticami / 2;
 
 		// priprava baze in polnenje storitve
-		QSqlDatabase base_1 = QSqlDatabase::addDatabase("QSQLITE");
-		base_1.setDatabaseName(dbase_path);
-		base_1.database();
-		base_1.open();
-		if(base_1.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			QSqlQuery sql_ddv;
 			sql_ddv.prepare("SELECT * FROM sif_ddv ORDER BY id DESC");
@@ -3763,7 +3648,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			}
 			sql_storitve.exec();
 
-			int i = 1; // za zaporedno stevilko storitve
+			i = 1; // za zaporedno stevilko storitve
 
 			while ( sql_storitve.next() ) {
 				storitev_sifra = prevedi(sql_storitve.value(sql_storitve.record().indexOf("sifra")).toString());
@@ -3838,7 +3723,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -3884,9 +3768,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				}
 
 			} // while ( sql_storitve.next() )
-
-		} // base.isOpen()
-		base_1.close();
 
 		// crta pod storitvami
 		painter.setPen(*debel_svincnik);
@@ -3957,7 +3838,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
-			int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 			pozicija = visina_glave;
 		}
@@ -4221,7 +4101,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				printer.newPage();
 
 				int visina_glave = natisni_glavo_izdani_racun(painter, id);
-				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 				pozicija = visina_glave;
 			}
@@ -4246,7 +4125,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				printer.newPage();
 
 				int visina_glave = natisni_glavo_izdani_racun(painter, id);
-				int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 				pozicija = visina_glave;
 			}
@@ -4259,18 +4137,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 	// opombe
 		// priprava baze in polnenje storitve
-		QSqlDatabase base_2 = QSqlDatabase::addDatabase("QSQLITE");
-		base_2.setDatabaseName(dbase_path);
-		base_2.database();
-		base_2.open();
-		if(base_2.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			QString opombe = "";
 			QString preostanek_opombe = "";
@@ -4300,7 +4166,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -4338,7 +4203,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 					printer.newPage();
 
 					int visina_glave = natisni_glavo_izdani_racun(painter, id);
-					int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 					pozicija = visina_glave;
 				}
@@ -4349,9 +4213,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 				pozicija += visina_vrstice + razmik_med_vrsticami;
 
 			}
-
-		}
-		base_2.close();
 
 		pozicija += visina_vrstice + 2 * razmik_med_vrsticami;
 
@@ -4371,7 +4232,6 @@ void tiskanje::natisni_izdani_racun(QString id) {
 			printer.newPage();
 
 			int visina_glave = natisni_glavo_izdani_racun(painter, id);
-			int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
 
 			pozicija = visina_glave;
 		}
@@ -4406,7 +4266,6 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	painter.resetTransform();
 
 	// priprava podatkov o tiskanju
-	int i = 1;
 	double pozicija = 0;
 	double visina_vrstice = 0;
 	double razmik_med_vrsticami = 0;
@@ -4428,21 +4287,6 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 	QString podjetje_naslov_posta = "";
 
 	// priprava baze in polnenje spremenljivk (razen storitve)
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "glava-izdanega-racuna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		// podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
 		QSqlQuery sql_podjetje;
@@ -4457,8 +4301,6 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 			podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
 			podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_posta")).toString());
 		}
-	}
-	base.close();
 
 	// logotip podjetja
 	// pretvori besedilo slike v bytearray
@@ -4540,7 +4382,6 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	painter.resetTransform();
 
 	// priprava podatkov o tiskanju
-	int i = 1;
 	double pozicija = 0;
 	double visina_vrstice = 0;
 	double razmik_med_vrsticami = 0;
@@ -4568,20 +4409,6 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	QString podjetje_telefon = "";
 
 	// priprava baze in polnenje spremenljivk (razen storitve)
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "noga-izdanega-racuna");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		// podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
 		QSqlQuery sql_podjetje;
 		sql_podjetje.prepare("SELECT * FROM racuni WHERE id LIKE '" + pretvori(id) + "'");
@@ -4599,8 +4426,6 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 			podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_telefon")).toString());
 		}
 		sql_podjetje.clear();
-	}
-	base.close();
 
 	// risati pricnemo na spodnjem robu lista
 

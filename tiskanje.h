@@ -4,22 +4,22 @@
 #include <QDialog>
 
 namespace Ui {
-    class tiskanje;
+	class tiskanje;
 }
 
 class tiskanje : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit tiskanje(QWidget *parent = 0);
-    ~tiskanje();
+	explicit tiskanje(QWidget *parent = 0);
+	~tiskanje();
 
 public slots:
-    void on_btn_izhod_clicked();
-    void on_btn_natisni_clicked();
-    void on_btn_nastavitve_racuni_clicked();
-    void on_btn_nastavitve_potni_nalogi_clicked();
+	void on_btn_izhod_clicked();
+	void on_btn_natisni_clicked();
+	void on_btn_nastavitve_racuni_clicked();
+	void on_btn_nastavitve_potni_nalogi_clicked();
 
 	void keyPressEvent(QKeyEvent *event);
 
@@ -36,16 +36,16 @@ public slots:
 	void natisni_izdani_racun(QString id);
 
 	int natisni_glavo_potni_nalog(QPainter &painter, QString id);
-	int natisni_nogo_potni_nalog(QPainter &painter, QString id, int &stevilka_strani);
+	int natisni_nogo_potni_nalog(QPainter &painter, int &stevilka_strani);
 
 	int natisni_glavo_prejeti_racun(QPainter &painter, QString id);
-	int natisni_nogo_prejeti_racun(QPainter &painter, QString id, int &stevilka_strani);
+	int natisni_nogo_prejeti_racun(QPainter &painter, int &stevilka_strani);
 
 	int natisni_glavo_izdani_racun(QPainter &painter, QString id);
 	int natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stevilka_strani, QString besedilo_noga);
 
 private:
-    Ui::tiskanje *ui;
+	Ui::tiskanje *ui;
 };
 
 #endif // TISKANJE_H

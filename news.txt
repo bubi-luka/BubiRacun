@@ -5,6 +5,12 @@
 ----------
 - izboljšava: logotip se shrani v bazo podatkov
 - izboljšava: tisk logotip kliče iz baze
+- izboljšava: baza podatkov se kliče le ob zagonu programa in je odprta dokler je odprt program
+- izboljšava: baza ni več kodirana v programu ampak jo lahko uporabnik izbere ob prvem zagonu programa
+- izboljšava: uporabnik lahko med delom zapre ali zamenja bazo podatkov
+- izboljšava: uporabnik lahko kreira novo bazo podatkov
+- izboljšava: pri vnosu baze podatkov se šifranti ne brišejo več
+- izboljšava: pri odpiranju program ne spremlja več vseh tabel, ampak samo še novosti
 
 0.9.35
 ----------

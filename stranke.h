@@ -4,16 +4,16 @@
 #include <QDialog>
 
 namespace Ui {
-    class stranke;
+	class stranke;
 }
 
 class stranke : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit stranke(QWidget *parent = 0);
-    ~stranke();
+	explicit stranke(QWidget *parent = 0);
+	~stranke();
 
 private slots:
 	void on_btn_izhod_clicked();
@@ -41,12 +41,12 @@ private slots:
 	void on_cb_podrazitev_hitrost_toggled(bool stanje);
 	void on_cb_podrazitev_zapleti_toggled(bool stanje);
 
-	void on_txt_popust_fb1_textChanged(QString besedilo);
-	void on_txt_popust_fb2_textChanged(QString besedilo);
-	void on_txt_popust_komb1_textChanged(QString besedilo);
-	void on_txt_popust_komb2_textChanged(QString besedilo);
-	void on_txt_popust_stalna_stranka_textChanged(QString besedilo);
-	void on_txt_popust_kupon_textChanged(QString besedilo);
+	void on_txt_popust_fb1_textChanged();
+	void on_txt_popust_fb2_textChanged();
+	void on_txt_popust_komb1_textChanged();
+	void on_txt_popust_komb2_textChanged();
+	void on_txt_popust_stalna_stranka_textChanged();
+	void on_txt_popust_kupon_textChanged();
 
 	void on_txt_popust_fb1_editingFinished();
 	void on_txt_popust_fb2_editingFinished();
@@ -63,7 +63,7 @@ private slots:
 	void on_cb_leto_currentIndexChanged();
 	void on_cb_projekt_currentIndexChanged();
 
-    void on_txt_banka_currentIndexChanged();
+	void on_txt_banka_currentIndexChanged();
 
 	void on_tbl_projekti_doubleClicked();
 	void on_tbl_kuponi_doubleClicked();
@@ -71,7 +71,7 @@ private slots:
 	void prejem(QString besedilo);
 	void osvezi(QString beseda);
 
-	void izracunaj_popuste(double vrednost, int polje);
+	void izracunaj_popuste(int polje);
 
 	QString pretvori_v_double(QString besedilo);
 	QString pretvori_iz_double(QString besedilo);
@@ -86,7 +86,7 @@ signals:
 	void poslji(QString beseda);
 
 private:
-    Ui::stranke *ui;
+	Ui::stranke *ui;
 };
 
 #endif // STRANKE_H

@@ -32,21 +32,6 @@ void razlog_stornacije::on_btn_brisi_clicked() {
 void razlog_stornacije::on_btn_shrani_clicked() {
 
 	if ( ui->txt_razlog->toPlainText() != "" ) { // razlog je vpisan
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
 
 			// spremenimo status racuna na storinirano
 			QSqlQuery sql_vnesi;
@@ -71,9 +56,6 @@ void razlog_stornacije::on_btn_shrani_clicked() {
 			sql_vnesi.prepare("UPDATE racuni SET status_racuna = '' WHERE id LIKE '" + pretvori(stars_id) + "' AND tip_racuna LIKE '" + pretvori("1") + "'");
 			sql_vnesi.exec();
 			sql_vnesi.clear();
-
-		}
-		base.close();
 
 		// send signal to reload widget
 		poslji("racuni");

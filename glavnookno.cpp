@@ -45,6 +45,7 @@
 #include "podjetje.h"
 #include "uporabnik.h"
 #include "setup.h"
+#include "baza.h"
 
 GlavnoOkno::GlavnoOkno(QWidget *parent) :
 	QMainWindow(parent),
@@ -52,7 +53,7 @@ GlavnoOkno::GlavnoOkno(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-    ui->menubar->setEnabled(false);
+	ui->menubar->setEnabled(false);
 
 	vApp->processEvents();
 
@@ -92,20 +93,6 @@ void GlavnoOkno::zagon() {
 	// has the program been used before (do we have at least one firm and one user)?
 	QString first_use = "";
 
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "zagonska");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
 		QSqlQuery sql_check;
 
 		//check, if we have a valid firm
@@ -187,9 +174,6 @@ void GlavnoOkno::zagon() {
 					 this , SLOT(osvezi(QString)));
 		}
 
-	}
-	base.close();
-
 	zacetek();
 
 }
@@ -198,6 +182,10 @@ void GlavnoOkno::osvezi(QString besedilo) {
 
 	if ( besedilo == "loginok" ) {
 		osnovni_pogled();
+	}
+	else if ( besedilo == "prazno" ) {
+		ui->scrollArea->takeWidget();
+		ui->lbl_pozdrav->setText("Poteka posodabljanje baze. To opravilo obicajno zahteva nekaj minut! Hvala za razumevanje!");
 	}
 	else {
 		zagon();
@@ -308,8 +296,8 @@ void GlavnoOkno::on_actionVizitka_triggered() {
 
 void GlavnoOkno::on_action_asovnice_triggered() {
 
-    wid_casovnice *widcas = new wid_casovnice;
-    ui->scrollArea->setWidget(widcas);
+	wid_casovnice *widcas = new wid_casovnice;
+	ui->scrollArea->setWidget(widcas);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Casovnice!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Casovnice");
 
@@ -505,6 +493,32 @@ void GlavnoOkno::on_actionIzhod_triggered() {
 
 }
 
+void GlavnoOkno::on_actionNova_baza_triggered() {
+
+	osvezi("prazno");
+	vApp->processEvents();
+	baza nova_baza;
+	nova_baza.close_database();
+	vApp->processEvents();
+	nova_baza.new_database();
+	vApp->processEvents();
+	osvezi("zapri");
+
+}
+
+void GlavnoOkno::on_actionOdpri_bazo_triggered() {
+
+	osvezi("prazno");
+	vApp->processEvents();
+	baza nova_baza;
+	nova_baza.close_database();
+	vApp->processEvents();
+	nova_baza.ask_for_database();
+	vApp->processEvents();
+	osvezi("zapri");
+
+}
+
 void GlavnoOkno::varnost_id_changed() {
 
 	if ( vApp->id() == "" ) {
@@ -563,40 +577,18 @@ void GlavnoOkno::podatki() {
 
 	QString pozdrav = "";
 
-	{
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki-pozdrav");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
-			// baza je odprta
-
 			QSqlQuery sql_firma;
 			sql_firma.prepare("SELECT * FROM podjetje WHERE id LIKE '" + vApp->firm() + "'");
 			sql_firma.exec();
 			if ( sql_firma.next() ) {
 				pozdrav = prevedi(sql_firma.value(sql_firma.record().indexOf("ime")).toString());
 			}
-		}
-		base.close();
-	}
-	QSqlDatabase::removeDatabase("uporabniki-pozdrav");
 
 	if ( vApp->id() != "" ) {
 		pozdrav = "Pozdravljeni " + prevedi(vApp->name()) + " "  + prevedi(vApp->surname()) + " (" +  prevedi(vApp->permission()) + "), v podjetju " + pozdrav + "!";
 		ui->lbl_pozdrav->setText(pozdrav);
 		ui->lbl_pozdrav->update();
 	}
-
 
 	ui->txt_uporabnik->setText(vApp->id());
 	ui->txt_pozicija->setText(prevedi(vApp->state()));

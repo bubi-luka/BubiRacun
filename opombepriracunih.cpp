@@ -8,10 +8,10 @@
 #include "ui_opombepriracunih.h"
 
 opombepriracunih::opombepriracunih(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::opombepriracunih)
+	QDialog(parent),
+	ui(new Ui::opombepriracunih)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 		// izbrisi vnosna polja
 		ui->txt_id->setText("");
@@ -22,7 +22,7 @@ opombepriracunih::opombepriracunih(QWidget *parent) :
 
 opombepriracunih::~opombepriracunih()
 {
-    delete ui;
+	delete ui;
 }
 
 void opombepriracunih::on_btn_izhod_clicked() {
@@ -32,22 +32,6 @@ void opombepriracunih::on_btn_izhod_clicked() {
 }
 
 void opombepriracunih::on_btn_sprejmi_clicked() {
-
-	QString app_path = QApplication::applicationDirPath();
-	QString dbase_path = app_path + "/base.bz";
-
-	QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE");
-	base.setDatabaseName(dbase_path);
-	base.database();
-	base.open();
-	if(base.isOpen() != true){
-		QMessageBox msgbox;
-		msgbox.setText("Baze ni bilo moc odpreti");
-		msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-		msgbox.exec();
-	}
-	else {
-		// baza je odprta
 
 		QSqlQuery sql_vnesi;
 
@@ -61,8 +45,6 @@ void opombepriracunih::on_btn_sprejmi_clicked() {
 		sql_vnesi.bindValue(0, pretvori(ui->txt_naslov->text()));
 		sql_vnesi.bindValue(1, pretvori(ui->txt_besedilo->toPlainText()));
 		sql_vnesi.exec();
-	}
-	base.close();
 
 	// vrni signal
 	poslji("opombe");
@@ -104,21 +86,6 @@ void opombepriracunih::prejem(QString besedilo) {
 	}
 	else {
 		ui->btn_sprejmi->setText("Popravi opombo");
-
-		QString app_path = QApplication::applicationDirPath();
-		QString dbase_path = app_path + "/base.bz";
-
-		QSqlDatabase base = QSqlDatabase::addDatabase("QSQLITE", "uporabniki");
-		base.setDatabaseName(dbase_path);
-		base.database();
-		base.open();
-		if(base.isOpen() != true){
-			QMessageBox msgbox;
-			msgbox.setText("Baze ni bilo moc odpreti");
-			msgbox.setInformativeText("Zaradi neznanega vzroka baza ni odprta. Do napake je prislo pri uvodnem preverjanju baze.");
-			msgbox.exec();
-		}
-		else {
 			QSqlQuery sql_vnesi;
 			sql_vnesi.prepare("SELECT * FROM sif_opombe_pri_racunih WHERE id LIKE '" + pretvori(besedilo) + "'");
 			sql_vnesi.exec();
@@ -127,8 +94,6 @@ void opombepriracunih::prejem(QString besedilo) {
 				ui->txt_naslov->setText(prevedi(sql_vnesi.value(sql_vnesi.record().indexOf("naslov")).toString()));
 				ui->txt_besedilo->setPlainText(prevedi(sql_vnesi.value(sql_vnesi.record().indexOf("besedilo")).toString()));
 			}
-		}
-		base.close();
 
 	}
 
