@@ -222,7 +222,6 @@ void storitve::tvori_sifro() {
 		QString stara_sifra = sifra;
 		for ( int i = 1; i <= 99; i++ ) {
 			sifra = stara_sifra;
-			qDebug("Zanka for i");
 			if ( i << 10 ) {
 				sifra += "0" + QString::number(i, 10);
 			}
@@ -230,14 +229,11 @@ void storitve::tvori_sifro() {
 				sifra += QString::number(i, 10);
 			}
 
-			qDebug(sifra.toUtf8());
 			if ( nova_sifra == "" ) {
-				qDebug("Nova sifra je prazna");
 				QSqlQuery sql_check;
 				sql_check.prepare("SELECT * FROM sif_storitve WHERE sifra LIKE '" + pretvori(sifra) + "'");
 				sql_check.exec();
 				if ( !sql_check.next() ) {
-					qDebug("Dobimo novo sifro");
 					nova_sifra = sifra;
 				}
 			}

@@ -878,11 +878,8 @@ QString wid_racuni::stevilka_racuna(QString tip) {
 								   "' AND tip_racuna LIKE '" + pretvori(tip) + "' ORDER BY stevilka_racuna ASC");
 		sql_stetje_racunov.exec();
 		while ( sql_stetje_racunov.next() ) {
-			qDebug("test3");
 			int st_racuna = 0;
-			qDebug(QString::number(st_racuna).toUtf8());
 			st_racuna = prevedi(sql_stetje_racunov.value(sql_stetje_racunov.record().indexOf("stevilka_racuna")).toString()).right(3).toInt();
-			qDebug(QString::number(st_racuna).toUtf8());
 			if ( st_racuna > max_st_racuna ) {
 				max_st_racuna = st_racuna;
 			}
