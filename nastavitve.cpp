@@ -5,6 +5,7 @@
 #include "popusti.h"
 #include "kodiranje.h"
 #include "prijava.h"
+#include "baza.h"
 
 #include "nastavitve.h"
 #include "ui_nastavitve.h"
@@ -106,48 +107,35 @@ void nastavitve::on_btn_shrani_clicked() {
 
 }
 
-// import and export of whole database
-void nastavitve::on_btn_import_clicked() {
-
-	// nastavi pot do baze, ki je arhivirana
-	QString baza_stara = QFileDialog::getOpenFileName(this,
-															"Izberite datoteko za uvoz v program",
-															QDir::homePath(), "Baza (*.bac.bz)");
-
-	// nastavi pot do baze, kot jo uporablja aplikacija
-	QString app_path = QApplication::applicationDirPath();
-	QString baza_nova = app_path + "/base.bz";
-
-	// zamenjaj trenutno bazo z novo
-	if ( baza_stara != "" ) {
-		QFile::remove(baza_nova);
-		QFile::copy(baza_stara, baza_nova);
-
-		// odjavi uporabnika, da se baza ponovno nalozi
-		prijava *okno_prijava = new prijava;
-		okno_prijava->show();
-
-		this->close();
-	}
-
-}
-
 void nastavitve::on_btn_export_clicked() {
 
 	// nastavi pot do baze, ki je arhivirana
 	QString mapa_za_shranjevanje = QFileDialog::getExistingDirectory(this,
 																	 "Izberite mapo za shranjevanje dokumentov",
 																	 QDir::homePath(), QFileDialog::ShowDirsOnly);
-	QString baza_nova = mapa_za_shranjevanje + "/base-" + QDate::currentDate().toString("yyyy-MM-dd") + ".bac.bz";
 
 	// nastavi pot do baze, kot jo arhiviramo
-	QString app_path = QApplication::applicationDirPath();
-	QString baza_stara = app_path + "/base.bz";
+	baza nova_baza;
+	QString baza_stara = nova_baza.get_path();
+	QString baza_nova = nova_baza.get_path();
+
+	if ( baza_nova.contains("/") ) {
+		baza_nova = baza_nova.right(baza_nova.length() - baza_nova.lastIndexOf("/") -1 );
+	}
+	if ( baza_nova.contains(".") ) {
+		baza_nova = baza_nova.left(baza_nova.lastIndexOf("."));
+	}
+
+	baza_nova = mapa_za_shranjevanje + "/" + baza_nova + ".bz";
 
 	// zamenjaj trenutno bazo z novo
 	if ( mapa_za_shranjevanje != "" ) {
 		QFile::copy(baza_stara, baza_nova);
 	}
+
+	QMessageBox sporocilo;
+	sporocilo.setText("Baza je uspešno izvozena na lokaciji: " + baza_nova + "!");
+	sporocilo.exec();
 
 }
 

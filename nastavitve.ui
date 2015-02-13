@@ -153,13 +153,6 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QPushButton" name="btn_import">
-          <property name="text">
-           <string>Uvozi</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="btn_export">
           <property name="text">
            <string>Izvozi</string>
