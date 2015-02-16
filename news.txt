@@ -11,6 +11,8 @@
 - izboljšava: uporabnik lahko kreira novo bazo podatkov
 - izboljšava: pri vnosu baze podatkov se šifranti ne brišejo več
 - izboljšava: pri odpiranju program ne spremlja več vseh tabel, ampak samo še novosti
+- izboljšava: na osnovnem prikazu stranke prikaže projekt v teku skupaj z datumom predvidenega zaključka projekta
+- izboljšava: ko je predračun potrjen, se spremeni status projekta na "V delu", stranka in projekt se pojavita na osnovnem prikazu strank
 
 0.9.35
 ----------

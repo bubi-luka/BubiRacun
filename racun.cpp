@@ -2255,6 +2255,12 @@ void racun::on_txt_status_predracuna_currentIndexChanged() {
 								  "tvoril se bo nov t.i. zacasni racun, ki bo osnova \n"
 								  "za koncni racun. Omogoceno bo vnasanje casovnic in komentarjev!");
 				sporocilo.exec();
+
+				// spremeni status pripadajocega projekta na "V delu", st.2
+				QSqlQuery sql_status_projekta;
+				sql_status_projekta.prepare("UPDATE projekti SET status_projekta = ? WHERE id LIKE '" + pretvori(ui->txt_projekt_id->text()) + "'");
+				sql_status_projekta.bindValue(0, pretvori("2"));
+				sql_status_projekta.exec();
 			}
 		}
 		else if ( ui->rb_predracun->isChecked() && ui->txt_status_predracuna->currentText() == "Zavrnjen" ) { // status racunovodstva
