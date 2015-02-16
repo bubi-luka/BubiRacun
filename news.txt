@@ -13,6 +13,7 @@
 - izboljšava: pri odpiranju program ne spremlja več vseh tabel, ampak samo še novosti
 - izboljšava: na osnovnem prikazu stranke prikaže projekt v teku skupaj z datumom predvidenega zaključka projekta
 - izboljšava: ko je predračun potrjen, se spremeni status projekta na "V delu", stranka in projekt se pojavita na osnovnem prikazu strank
+- izboljšava: iz programa so dokončno izločeni kuponi, ki nikoli niso zares zaživeli, niti zares delovali
 
 0.9.35
 ----------
