@@ -7,7 +7,7 @@
 #include "kodiranje.h"
 #include "varnost.h"
 #include "datum.h"
-#include "stranke.h"
+#include "projekti.h"
 #include "potninalogi.h"
 #include "prejetiracuni.h"
 #include "racun.h"
@@ -103,12 +103,12 @@ void wid_osnovni_pogled::on_btn_prioriteta_gor_clicked() {
 	if ( ui->tbl_stranke->selectedItems().count() > 0 ) { // preveri, ce sploh imamo izbrano vrstico
 
 		// zapomni si trenutno prioriteto, ce je NULL jo spremeni v zadnjo
-		if ( ui->tbl_stranke->selectedItems().at(3)->text() == "NULL" ) {
+		if ( ui->tbl_stranke->selectedItems().at(5)->text() == "NULL" ) {
 			QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
 			vnos_prioritete->setText(QString::number(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 10));
-			ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 3, vnos_prioritete);
+			ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 5, vnos_prioritete);
 		}
-		int osnovna = ui->tbl_stranke->selectedItems().at(3)->text().toInt();
+		int osnovna = ui->tbl_stranke->selectedItems().at(5)->text().toInt();
 
 		if ( osnovna > 1 ) { // lahko jo prestavimo navzgor, prioriteta 1 je namrec najvisja in z njo ne moremo narediti kaj dosti
 			// zamenjaj vrednosti prioritete z naslednjo na seznamu (eno vrstico visje)
@@ -116,6 +116,8 @@ void wid_osnovni_pogled::on_btn_prioriteta_gor_clicked() {
 			QString id_zacetna = ui->tbl_stranke->selectedItems().at(0)->text();
 			QString ime_zacetna = ui->tbl_stranke->selectedItems().at(1)->text();
 			QString kontakt_zacetna = ui->tbl_stranke->selectedItems().at(2)->text();
+			QString projekt_zacetna = ui->tbl_stranke->selectedItems().at(3)->text();
+			QString datum_zacetna = ui->tbl_stranke->selectedItems().at(4)->text();
 			QString prioriteta_zacetna = QString::number(osnovna - 1, 10);
 
 			ui->tbl_stranke->selectRow(ui->tbl_stranke->selectedItems().at(0)->row() - 1);
@@ -123,17 +125,23 @@ void wid_osnovni_pogled::on_btn_prioriteta_gor_clicked() {
 			QString id_koncna = ui->tbl_stranke->selectedItems().at(0)->text();
 			QString ime_koncna = ui->tbl_stranke->selectedItems().at(1)->text();
 			QString kontakt_koncna = ui->tbl_stranke->selectedItems().at(2)->text();
+			QString projekt_koncna = ui->tbl_stranke->selectedItems().at(3)->text();
+			QString datum_koncna = ui->tbl_stranke->selectedItems().at(4)->text();
 			QString prioriteta_koncna = QString::number(osnovna, 10);
 
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 0)->setText(id_koncna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 1)->setText(ime_koncna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 2)->setText(kontakt_koncna);
-			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 3)->setText(prioriteta_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 3)->setText(projekt_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 4)->setText(datum_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 5)->setText(prioriteta_koncna);
 
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 0)->setText(id_zacetna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 1)->setText(ime_zacetna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 2)->setText(kontakt_zacetna);
-			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(prioriteta_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(projekt_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 4)->setText(datum_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 5)->setText(prioriteta_zacetna);
 		}
 
 		shrani_prioriteto();
@@ -157,12 +165,12 @@ void wid_osnovni_pogled::on_btn_prioriteta_dol_clicked() {
 	if ( ui->tbl_stranke->selectedItems().count() > 0 ) { // preveri, ce sploh imamo izbrano vrstico
 
 		// zapomni si trenutno prioriteto, ce je NULL jo spremeni v zadnjo
-		if ( ui->tbl_stranke->selectedItems().at(3)->text() == "NULL" ) {
+		if ( ui->tbl_stranke->selectedItems().at(5)->text() == "NULL" ) {
 			QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
 			vnos_prioritete->setText(QString::number(ui->tbl_stranke->selectedItems().at(0)->row() + 1, 10));
-			ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 3, vnos_prioritete);
+			ui->tbl_stranke->setItem(ui->tbl_stranke->selectedItems().at(0)->row(), 5, vnos_prioritete);
 		}
-		int osnovna = ui->tbl_stranke->selectedItems().at(3)->text().toInt();
+		int osnovna = ui->tbl_stranke->selectedItems().at(5)->text().toInt();
 
 		if ( osnovna < ui->tbl_stranke->rowCount() ) { // lahko jo prestavimo navzdol, ne moremo iti pa nizje kot je stevilo vrstic v tabeli
 			// zamenjaj vrednosti prioritete z naslednjo na seznamu (eno vrstico nizje)
@@ -170,6 +178,8 @@ void wid_osnovni_pogled::on_btn_prioriteta_dol_clicked() {
 			QString id_zacetna = ui->tbl_stranke->selectedItems().at(0)->text();
 			QString ime_zacetna = ui->tbl_stranke->selectedItems().at(1)->text();
 			QString kontakt_zacetna = ui->tbl_stranke->selectedItems().at(2)->text();
+			QString projekt_zacetna = ui->tbl_stranke->selectedItems().at(3)->text();
+			QString datum_zacetna = ui->tbl_stranke->selectedItems().at(4)->text();
 			QString prioriteta_zacetna = QString::number(osnovna + 1, 10);
 
 			ui->tbl_stranke->selectRow(ui->tbl_stranke->selectedItems().at(0)->row() + 1);
@@ -177,17 +187,23 @@ void wid_osnovni_pogled::on_btn_prioriteta_dol_clicked() {
 			QString id_koncna = ui->tbl_stranke->selectedItems().at(0)->text();
 			QString ime_koncna = ui->tbl_stranke->selectedItems().at(1)->text();
 			QString kontakt_koncna = ui->tbl_stranke->selectedItems().at(2)->text();
+			QString projekt_koncna = ui->tbl_stranke->selectedItems().at(3)->text();
+			QString datum_koncna = ui->tbl_stranke->selectedItems().at(4)->text();
 			QString prioriteta_koncna = QString::number(osnovna, 10);
 
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 0)->setText(id_koncna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 1)->setText(ime_koncna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 2)->setText(kontakt_koncna);
-			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 3)->setText(prioriteta_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 3)->setText(projekt_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 4)->setText(datum_koncna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row() - 1, 5)->setText(prioriteta_koncna);
 
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 0)->setText(id_zacetna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 1)->setText(ime_zacetna);
 			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 2)->setText(kontakt_zacetna);
-			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(prioriteta_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 3)->setText(projekt_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 4)->setText(datum_zacetna);
+			ui->tbl_stranke->item(ui->tbl_stranke->selectedItems().at(0)->row(), 5)->setText(prioriteta_zacetna);
 		}
 
 		shrani_prioriteto();
@@ -211,7 +227,7 @@ void wid_osnovni_pogled::on_btn_osvezi_stranke_clicked() {
 void wid_osnovni_pogled::napolni_stranke() {
 
 	int izbranec = 0;
-	int razvrsti = 3;
+	int razvrsti = 5;
 
 	if ( ui->tbl_stranke->selectedItems().count() > 0 ) {
 		izbranec = ui->tbl_stranke->selectedItems().takeAt(0)->row();
@@ -219,134 +235,163 @@ void wid_osnovni_pogled::napolni_stranke() {
 
 //    razvrsti = ui->tbl_stranke->horizontalHeader()->sortIndicatorSection();
 
-		ui->tbl_stranke->clear();
+	ui->tbl_stranke->clear();
 
-		for (int i = 0; i <= 4; i++) {
-			ui->tbl_stranke->removeColumn(0);
-		}
+	for (int i = 0; i <= 6; i++) {
+		ui->tbl_stranke->removeColumn(0);
+	}
 
-		QSqlQuery sql_clear;
-		sql_clear.prepare("SELECT * FROM stranke");
-		sql_clear.exec();
-		while (sql_clear.next()) {
-			ui->tbl_stranke->removeRow(0);
-		}
+	QSqlQuery sql_clear;
+	sql_clear.prepare("SELECT * FROM stranke");
+	sql_clear.exec();
+	while (sql_clear.next()) {
+		ui->tbl_stranke->removeRow(0);
+	}
 
-		// start filling the table
-		ui->tbl_stranke->insertColumn(0);
-		ui->tbl_stranke->insertColumn(1);
-		ui->tbl_stranke->insertColumn(2);
-		ui->tbl_stranke->insertColumn(3);
+	// start filling the table
+	ui->tbl_stranke->insertColumn(0);
+	ui->tbl_stranke->insertColumn(1);
+	ui->tbl_stranke->insertColumn(2);
+	ui->tbl_stranke->insertColumn(3);
+	ui->tbl_stranke->insertColumn(4);
+	ui->tbl_stranke->insertColumn(5);
 
-		// set proper width to the first four columns
+	// set proper width to the first four columns
+	ui->tbl_stranke->setColumnWidth(0, 0);
+	ui->tbl_stranke->setColumnWidth(1, 150);
+	ui->tbl_stranke->setColumnWidth(2, 150);
+	ui->tbl_stranke->setColumnWidth(3, 100);
+	ui->tbl_stranke->setColumnWidth(4, 100);
+	ui->tbl_stranke->setColumnWidth(5, 0);
 
-		ui->tbl_stranke->setColumnWidth(0, 0);
-		ui->tbl_stranke->setColumnWidth(1, 150);
-		ui->tbl_stranke->setColumnWidth(2, 130);
-		ui->tbl_stranke->setColumnWidth(3, 35);
+	// start filling the table
+	QStringList naslovi;
+	naslovi.append("ID");
+	naslovi.append("Ime / Naziv");
+	naslovi.append("Kontakt");
+	naslovi.append("Projekt");
+	naslovi.append("Datum");
+	naslovi.append("Prioriteta");
 
-		// start filling the table
-		QStringList naslovi;
-		naslovi.append("ID");
-		naslovi.append("Ime / Naziv");
-		naslovi.append("Kontakt");
-		naslovi.append("Prioriteta");
+	ui->tbl_stranke->setHorizontalHeaderLabels(naslovi);
 
-		ui->tbl_stranke->setHorizontalHeaderLabels(naslovi);
+	// select open projects (status '2')
+	int row = 0;
 
-		// set list of custumers, that have open projects
-		QStringList stranke;
-		stranke.clear();
+	QSqlQuery sql_projekti;
+	sql_projekti.prepare("SELECT * FROM projekti WHERE status_projekta LIKE '" + pretvori("2") + "'"); // projekt je v teku
+	sql_projekti.exec();
+	while ( sql_projekti.next() ) {
 
-		// search for the project, that are currently open
-		QSqlQuery sql_projekti;
-		sql_projekti.prepare("SELECT * FROM projekti WHERE status_projekta LIKE '" + pretvori("2") + "'"); // projekt je v teku
-		sql_projekti.exec();
-		while ( sql_projekti.next() ) {
-			if ( !stranke.contains(prevedi(sql_projekti.value(sql_projekti.record().indexOf("stranka")).toString())) ) {
-				stranke.append(prevedi(sql_projekti.value(sql_projekti.record().indexOf("stranka")).toString()));
+		QString stranka = "";
+		QString telefon = "";
+		QString project = "";
+		QString end_date = "";
+
+		// get custumers id from open projects
+		QSqlQuery sql_custumer;
+		sql_custumer.prepare("SELECT * FROM stranke WHERE id LIKE '" + sql_projekti.value(sql_projekti.record().indexOf("stranka")).toString() + "'");
+		sql_custumer.exec();
+		if ( sql_custumer.next() ) {
+			// get custumers name, surname or bussiness name from that id
+			if ( prevedi(sql_custumer.value(sql_custumer.record().indexOf("tip")).toString()) == "1" ) { // fizicna
+				stranka = prevedi(sql_custumer.value(sql_custumer.record().indexOf("priimek")).toString()) + " " +
+						  prevedi(sql_custumer.value(sql_custumer.record().indexOf("ime")).toString());
 			}
-		}
-
-		// for each of the customer add a line in the table
-		int row = 0;
-
-		for ( int a = 0; a < stranke.count(); a++ ) {
-			QSqlQuery sql_stranke;
-			sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(stranke.value(a)) + "'");
-			sql_stranke.exec();
-			if ( sql_stranke.next() ) {
-
-				// insert new row
-				ui->tbl_stranke->insertRow(row);
-				ui->tbl_stranke->setRowHeight(row, 20);
-
-				int col = 0;
-				int i = 0;
-
-				QString polja[3] = {"id", "ime", "telefon"};
-
-				// fill columns
-				while ( col < 3 ) {
-
-					QTableWidgetItem *celica = new QTableWidgetItem;
-					if ( polja[i] == "id" ) {
-						celica->setData(Qt::DisplayRole, prevedi(sql_stranke.value(sql_stranke.record().indexOf(polja[i])).toString()).toInt());
-					}
-					else if ( polja[i] == "ime" ) {
-						QString stranka = "";
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("tip")).toString()) == "1" ) { // fizicna
-							stranka = prevedi(sql_stranke.value(sql_stranke.record().indexOf("priimek")).toString()) + " " +
-									  prevedi(sql_stranke.value(sql_stranke.record().indexOf("ime")).toString());
-						}
-						else { // pravna
-							stranka = prevedi(sql_stranke.value(sql_stranke.record().indexOf("ime")).toString());
-						}
-						celica->setText(stranka);
-					}
-					else if ( polja[i] == "telefon" ) {
-						QString telefon = "";
-						if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("gsm")).toString()) != "+(0)/--" ) {
-							telefon = prevedi(sql_stranke.value(sql_stranke.record().indexOf("gsm")).toString());
-						}
-						else if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("telefon")).toString()) != "+(0)/--" ) {
-							telefon = prevedi(sql_stranke.value(sql_stranke.record().indexOf("telefon")).toString());
-						}
-						else {
-							telefon = prevedi(sql_stranke.value(sql_stranke.record().indexOf("email")).toString());
-						}
-						celica->setText(telefon);
-					}
-					else {
-						celica->setText(sql_stranke.value(sql_stranke.record().indexOf(polja[i])).toString());
-					}
-
-					if ( celica->text() != "" ) {
-						ui->tbl_stranke->setItem(row, col, celica);
-					}
-
-					col++;
-					i++;
-
-				}
-
-				QSqlQuery sql_prioriteta;
-				sql_prioriteta.prepare("SELECT * FROM stranke_prioriteta WHERE id_stranke LIKE '" + pretvori(stranke.value(a)) + "'");
-				sql_prioriteta.exec();
-				if ( sql_prioriteta.next() ) {
-					QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
-					vnos_prioritete->setText(prevedi(sql_prioriteta.value(sql_prioriteta.record().indexOf("prioriteta")).toString()));
-					ui->tbl_stranke->setItem(row, 3, vnos_prioritete);
-				}
-				else {
-					QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
-					vnos_prioritete->setText("NULL");
-					ui->tbl_stranke->setItem(row, 3, vnos_prioritete);
-				}
-
-				row++;
+			else { // pravna
+				stranka = prevedi(sql_custumer.value(sql_custumer.record().indexOf("ime")).toString());
 			}
+
+			// get custumers phone number
+			if ( prevedi(sql_custumer.value(sql_custumer.record().indexOf("gsm")).toString()) != "+(0)/--" ) {
+				telefon = prevedi(sql_custumer.value(sql_custumer.record().indexOf("gsm")).toString());
+			}
+			else if ( prevedi(sql_custumer.value(sql_custumer.record().indexOf("telefon")).toString()) != "+(0)/--" ) {
+				telefon = prevedi(sql_custumer.value(sql_custumer.record().indexOf("telefon")).toString());
+			}
+			else {
+				telefon = prevedi(sql_custumer.value(sql_custumer.record().indexOf("email")).toString());
+			}
+
+			// get project number
+			project = prevedi(sql_projekti.value(sql_projekti.record().indexOf("stevilka_projekta")).toString());
+
+			// get bill id from open projects
+			QDate old_date;
+			old_date = QDate::fromString("1.1.2000", "d.M.yyyy");
+			QSqlQuery sql_bill;
+			sql_bill.prepare("SELECT * FROM racuni WHERE projekt LIKE '" + sql_projekti.value(sql_projekti.record().indexOf("id")).toString() +
+							 "' AND tip_racuna LIKE '3'");
+			sql_bill.exec();
+			while ( sql_bill.next() ) {
+				QDate new_date;
+				new_date = QDate::fromString(prevedi(sql_bill.value(sql_bill.record().indexOf("datum_konca")).toString()), "dd.MM.yyyy");
+				// compare which date from bills of an open project and display the last one
+				if ( new_date > old_date ) {
+					old_date = new_date;
+				}
+			}
+			end_date = old_date.toString("dd.MM.yyyy");
 		}
+
+		// insert new row
+		ui->tbl_stranke->insertRow(row);
+		ui->tbl_stranke->setRowHeight(row, 20);
+
+		int col = 0;
+		int i = 0;
+
+		QString polja[5] = {"id", "ime", "telefon", "projekt", "zakljucek"};
+
+		// fill columns
+		while ( col < 5 ) {
+
+			QTableWidgetItem *celica = new QTableWidgetItem;
+			if ( polja[i] == "id" ) {
+				celica->setData(Qt::DisplayRole, prevedi(sql_projekti.value(sql_projekti.record().indexOf(polja[i])).toString()).toInt());
+			}
+			else if ( polja[i] == "ime" ) {
+				celica->setText(stranka);
+			}
+			else if ( polja[i] == "telefon" ) {
+				celica->setText(telefon);
+			}
+			else if ( polja[i] == "projekt" ) {
+				celica->setText(project);
+			}
+			else if ( polja[i] == "zakljucek" ) {
+				celica->setText(end_date);
+			}
+			else {
+				celica->setText("");
+			}
+
+			if ( celica->text() != "" ) {
+				ui->tbl_stranke->setItem(row, col, celica);
+			}
+
+			col++;
+			i++;
+
+		}
+
+		QSqlQuery sql_prioriteta;
+		sql_prioriteta.prepare("SELECT * FROM stranke_prioriteta WHERE id_stranke LIKE '" + pretvori(ui->tbl_stranke->item(row, 0)->text()) + "'");
+		sql_prioriteta.exec();
+		if ( sql_prioriteta.next() ) {
+			QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+			vnos_prioritete->setText(prevedi(sql_prioriteta.value(sql_prioriteta.record().indexOf("prioriteta")).toString()));
+			ui->tbl_stranke->setItem(row, 5, vnos_prioritete);
+		}
+		else {
+			QTableWidgetItem *vnos_prioritete = new QTableWidgetItem;
+			vnos_prioritete->setText("NULL");
+			ui->tbl_stranke->setItem(row, 5, vnos_prioritete);
+		}
+
+		row++;
+	}
+	sql_projekti.clear();
 
 	ui->tbl_stranke->selectRow(izbranec);
 	ui->tbl_stranke->sortByColumn(razvrsti, Qt::AscendingOrder);
@@ -361,19 +406,19 @@ void wid_osnovni_pogled::shrani_prioriteto() {
 
 	int st_strank = ui->tbl_stranke->rowCount();
 
-		// izbrisemo celotno tabelo, da ne motijo prejsnji vnosi
-		QSqlQuery sql_zbrisi;
-		sql_zbrisi.prepare("DELETE FROM stranke_prioriteta");
-		sql_zbrisi.exec();
+	// izbrisemo celotno tabelo, da ne motijo prejsnji vnosi
+	QSqlQuery sql_zbrisi;
+	sql_zbrisi.prepare("DELETE FROM stranke_prioriteta");
+	sql_zbrisi.exec();
 
-		// zanka skozi vse vrstice, shranimo id stranke in pripadajoco prioriteto
-		for ( int i = 0; i < st_strank; i++ ) {
-			QSqlQuery sql_vnesi;
-			sql_vnesi.prepare("INSERT INTO stranke_prioriteta (id_stranke, prioriteta) VALUES (?, ?)");
-			sql_vnesi.bindValue(0, pretvori(ui->tbl_stranke->item(i, 0)->text()));
-			sql_vnesi.bindValue(1, pretvori(ui->tbl_stranke->item(i, 3)->text()));
-			sql_vnesi.exec();
-		}
+	// zanka skozi vse vrstice, shranimo id stranke in pripadajoco prioriteto
+	for ( int i = 0; i < st_strank; i++ ) {
+		QSqlQuery sql_vnesi;
+		sql_vnesi.prepare("INSERT INTO stranke_prioriteta (id_stranke, prioriteta) VALUES (?, ?)");
+		sql_vnesi.bindValue(0, pretvori(ui->tbl_stranke->item(i, 0)->text()));
+		sql_vnesi.bindValue(1, pretvori(ui->tbl_stranke->item(i, 5)->text()));
+		sql_vnesi.exec();
+	}
 
 }
 
@@ -670,11 +715,11 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
 void wid_osnovni_pogled::on_tbl_stranke_doubleClicked() {
 
-	stranke *uredi = new stranke;
+	projekti *uredi = new projekti;
 	uredi->show();
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
-	prenos(ui->tbl_stranke->selectedItems().takeAt(0)->text());
+	prenos(ui->tbl_stranke->selectedItems().takeAt(3)->text());
 	this->disconnect();
 
 	// receive signal to refresh table
@@ -764,7 +809,10 @@ void wid_osnovni_pogled::napolni_predracune() {
 		ui->tbl_predracun->setHorizontalHeaderItem(2, naslov2);
 		ui->tbl_predracun->setHorizontalHeaderItem(3, naslov3);
 
-		ui->tbl_predracun->setColumnWidth(0, 35);
+		ui->tbl_predracun->setColumnWidth(0, 0);
+		ui->tbl_predracun->setColumnWidth(1, 150);
+		ui->tbl_predracun->setColumnWidth(2, 100);
+		ui->tbl_predracun->setColumnWidth(3, 100);
 
 		datum *delegate = new datum(this);
 		ui->tbl_predracun->setItemDelegateForColumn(3, delegate);
