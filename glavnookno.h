@@ -27,7 +27,6 @@ private slots:
 	void on_actionPrejeti_ra_uni_triggered();
 	void on_actionStranke_triggered();
 	void on_actionProjekti_triggered();
-	void on_actionKuponi_triggered();
 	void on_actionVizitka_triggered();
 	void on_action_asovnice_triggered();
 	void on_actionOpombe_pri_ra_unih_triggered();

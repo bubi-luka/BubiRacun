@@ -19,7 +19,6 @@
 #include "wid_stranke.h"
 #include "wid_projekti.h"
 #include "prijava.h"
-#include "wid_kuponi.h"
 #include "wid_racuni.h"
 #include "wid_opombepriracunih.h"
 #include "vizitka.h"
@@ -276,13 +275,6 @@ void GlavnoOkno::on_actionProjekti_triggered() {
 	ui->scrollArea->setWidget(widpr);
 	ui->lbl_pozicija->setText("Nahajate se na tabeli Projekti!");
 	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Projekti");
-}
-
-void GlavnoOkno::on_actionKuponi_triggered() {
-	wid_kuponi *widkup = new wid_kuponi;
-	ui->scrollArea->setWidget(widkup);
-	ui->lbl_pozicija->setText("Nahajate se na tabeli Kuponi!");
-	setWindowTitle(windowTitle().left(windowTitle().indexOf(" - ", 0)) + " - Kuponi");
 }
 
 void GlavnoOkno::on_actionVizitka_triggered() {

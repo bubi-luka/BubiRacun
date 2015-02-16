@@ -218,7 +218,6 @@ border:0;</string>
     <addaction name="separator"/>
     <addaction name="action_asovnice"/>
     <addaction name="separator"/>
-    <addaction name="actionKuponi"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuNastavitve">

@@ -15,8 +15,6 @@ HEADERS += \
 		wid_projekti.h \
 		projekti.h \
 		opravila.h \
-		wid_kuponi.h \
-		kuponi.h \
 		kodiranje.h \
 		wid_stroski.h \
 		wid_potovanja.h \
@@ -74,8 +72,6 @@ SOURCES += \
 		wid_projekti.cpp \
 		projekti.cpp \
 		opravila.cpp \
-		wid_kuponi.cpp \
-		kuponi.cpp \
 		kodiranje.cpp \
 		wid_stroski.cpp \
 		wid_potovanja.cpp \
@@ -131,8 +127,6 @@ FORMS += \
 		wid_projekti.ui \
 		projekti.ui \
 		opravila.ui \
-		wid_kuponi.ui \
-		kuponi.ui \
 		wid_stroski.ui \
 		wid_potovanja.ui \
 		potovanja.ui \
