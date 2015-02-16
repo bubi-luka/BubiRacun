@@ -26,7 +26,6 @@ popusti::popusti(QWidget *parent) :
 		ui->txt_popust_komb1->setValidator(v_procent);
 		ui->txt_popust_komb2->setValidator(v_procent);
 		ui->txt_popust_stalna_stranka->setValidator(v_procent);
-		ui->txt_popust_kupon->setValidator(v_procent);
 		ui->txt_popust_akcija->setValidator(v_procent);
 
 		ui->txt_vsi_popusti_facebook->setValidator(v_procent);
@@ -82,12 +81,6 @@ void popusti::on_txt_popust_stalna_stranka_editingFinished() {
 
 }
 
-void popusti::on_txt_popust_kupon_editingFinished() {
-
-	ui->txt_popust_kupon->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_kupon->text())));
-
-}
-
 void popusti::on_txt_popust_akcija_editingFinished() {
 
 	ui->txt_popust_akcija->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_akcija->text())));
@@ -133,7 +126,6 @@ void popusti::on_btn_vnesi_clicked() {
 	str_vrednost[2] = ui->txt_popust_komb1->text();
 	str_vrednost[3] = ui->txt_popust_komb2->text();
 	str_vrednost[4] = ui->txt_popust_stalna_stranka->text();
-	str_vrednost[5] = ui->txt_popust_kupon->text();
 	str_vrednost[6] = ui->txt_popust_akcija->text();
 	str_vrednost[7] = ui->txt_vsi_popusti_facebook->text();
 	str_vrednost[8] = ui->txt_popusti_skupaj->text();
@@ -173,13 +165,12 @@ void popusti::napolni() {
 		ui->txt_popust_komb1->setText(str_napolni[2]);
 		ui->txt_popust_komb2->setText(str_napolni[3]);
 		ui->txt_popust_stalna_stranka->setText(str_napolni[4]);
-		ui->txt_popust_kupon->setText(str_napolni[5]);
-		ui->txt_popust_akcija->setText(str_napolni[6]);
-		ui->txt_vsi_popusti_facebook->setText(str_napolni[7]);
-		ui->txt_popusti_skupaj->setText(str_napolni[8]);
-		ui->txt_podrazitev_vikend->setText(str_napolni[9]);
-		ui->txt_podrazitev_hitrost->setText(str_napolni[10]);
-		ui->txt_podrazitev_zapleti->setText(str_napolni[11]);
+		ui->txt_popust_akcija->setText(str_napolni[5]);
+		ui->txt_vsi_popusti_facebook->setText(str_napolni[6]);
+		ui->txt_popusti_skupaj->setText(str_napolni[7]);
+		ui->txt_podrazitev_vikend->setText(str_napolni[8]);
+		ui->txt_podrazitev_hitrost->setText(str_napolni[9]);
+		ui->txt_podrazitev_zapleti->setText(str_napolni[10]);
 
 }
 

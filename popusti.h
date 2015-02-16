@@ -4,16 +4,16 @@
 #include <QDialog>
 
 namespace Ui {
-    class popusti;
+	class popusti;
 }
 
 class popusti : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit popusti(QWidget *parent = 0);
-    ~popusti();
+	explicit popusti(QWidget *parent = 0);
+	~popusti();
 
 private slots:
 	void on_btn_zapri_clicked();
@@ -24,7 +24,6 @@ private slots:
 	void on_txt_popust_komb1_editingFinished();
 	void on_txt_popust_komb2_editingFinished();
 	void on_txt_popust_stalna_stranka_editingFinished();
-	void on_txt_popust_kupon_editingFinished();
 	void on_txt_popust_akcija_editingFinished();
 	void on_txt_vsi_popusti_facebook_editingFinished();
 	void on_txt_popusti_skupaj_editingFinished();
@@ -41,7 +40,7 @@ private slots:
 	void napolni();
 
 private:
-    Ui::popusti *ui;
+	Ui::popusti *ui;
 };
 
 #endif // POPUSTI_H

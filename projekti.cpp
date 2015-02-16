@@ -57,7 +57,6 @@ projekti::projekti(QWidget *parent) :
 		ui->cb_popust_komb1->setText("");
 		ui->cb_popust_komb2->setText("");
 		ui->cb_popust_stalna->setText("");
-		ui->cb_popust_kupon->setText("");
 		ui->cb_popust_akcija->setText("");
 		ui->cb_podrazitev_vikend->setText("");
 		ui->cb_podrazitev_hitrost->setText("");
@@ -67,7 +66,6 @@ projekti::projekti(QWidget *parent) :
 		ui->txt_popust_komb1->setText(pretvori_iz_double("0"));
 		ui->txt_popust_komb2->setText(pretvori_iz_double("0"));
 		ui->txt_popust_stalna_stranka->setText(pretvori_iz_double("0"));
-		ui->txt_popust_kupon->setText(pretvori_iz_double("0"));
 		ui->txt_popust_akcija->setText(pretvori_iz_double("0"));
 		ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double("0"));
 		ui->txt_popusti_skupaj_2->setText(pretvori_iz_double("0"));
@@ -88,7 +86,6 @@ projekti::projekti(QWidget *parent) :
 		ui->txt_popust_komb1->setEnabled(false);
 		ui->txt_popust_komb2->setEnabled(false);
 		ui->txt_popust_stalna_stranka->setEnabled(false);
-		ui->txt_popust_kupon->setEnabled(false);
 		ui->txt_popust_akcija->setEnabled(false);
 		ui->txt_vsi_popusti_facebook_1->setEnabled(false);
 		ui->txt_vsi_popusti_facebook_2->setEnabled(false);
@@ -289,14 +286,14 @@ void projekti::on_btn_sprejmi_clicked() {
 			QSqlQuery sql_vnesi_projekt;
 			if (ui->btn_sprejmi->text() == "Vnesi projekt") {
 				sql_vnesi_projekt.prepare("INSERT INTO projekti (stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
-																	"status_projekta, popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_kupon, "
+																	"status_projekta, popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, "
 																	"popust_akcija, podrazitev_vikend, podrazitev_hitrost, podrazitev_zapleti) "
-																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+																	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else {
 				sql_vnesi_projekt.prepare("UPDATE projekti SET stevilka_projekta = ?, naslov_projekta = ?, stranka = ?, avtor_oseba = ?, pricetek_dela = ?, "
 																	"konec_dela = ?, status_projekta = ?, popust_fb1 = ?, popust_fb2 = ?, popust_komb1 = ?, "
-																	"popust_komb2 = ?, popust_stranka = ?, popust_kupon = ?, popust_akcija = ?, podrazitev_vikend = ?, "
+																	"popust_komb2 = ?, popust_stranka = ?, popust_akcija = ?, podrazitev_vikend = ?, "
 																	"podrazitev_hitrost = ?, podrazitev_zapleti = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
 			sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_projekta->text()));
@@ -311,11 +308,10 @@ void projekti::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(9, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
 			sql_vnesi_projekt.bindValue(10, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
 			sql_vnesi_projekt.bindValue(11, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
-			sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_popust_kupon->text())));
-			sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
-			sql_vnesi_projekt.bindValue(14, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
-			sql_vnesi_projekt.bindValue(15, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
-			sql_vnesi_projekt.bindValue(16, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+			sql_vnesi_projekt.bindValue(12, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
+			sql_vnesi_projekt.bindValue(13, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+			sql_vnesi_projekt.bindValue(14, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+			sql_vnesi_projekt.bindValue(15, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
 
 			sql_vnesi_projekt.exec();
 
@@ -420,16 +416,6 @@ void projekti::prejem(QString besedilo) {
 					ui->txt_popust_stalna_stranka->setEnabled(false);
 				}
 				ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_stranka")).toString())));
-
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_kupon")).toString()) != "0.0") {
-					ui->cb_popust_kupon->setCheckState(Qt::Checked);
-					ui->txt_popust_kupon->setEnabled(true);
-				}
-				else {
-					ui->cb_popust_kupon->setCheckState(Qt::Unchecked);
-					ui->txt_popust_kupon->setEnabled(false);
-				}
-				ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_kupon")).toString())));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("popust_akcija")).toString()) != "0.0") {
 					ui->cb_popust_akcija->setCheckState(Qt::Checked);
@@ -624,17 +610,15 @@ void projekti::izracunaj_popuste(int polje) {
 	* polje == 2 => komb1
 	* polje == 3 => komb2
 	* polje == 4 => stranka
-	* polje == 5 => kupon
 	*/
 
 	// vsa vnosna polja s popustom pretvorimo v vrednost double, da bo mozno racunanje
-	double popust[6];
+	double popust[5];
 	popust[0] = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
 	popust[1] = pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
 	popust[2] = pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
 	popust[3] = pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
 	popust[4] = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
-	popust[5] = pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
 
 	// maksimalne vrednosti sestevka popustov
 	double max_fb = pretvori_v_double(ui->txt_vsi_popusti_facebook_1->text()).toDouble();
@@ -663,7 +647,7 @@ void projekti::izracunaj_popuste(int polje) {
 	ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 5; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	if ( sestevek > max_vsi ) {
@@ -687,10 +671,6 @@ void projekti::izracunaj_popuste(int polje) {
 			popust[4] = max_vsi - sestevek + popust[4];
 			ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust[4], 'f', 1)));
 		}
-		else if ( polje == 5 ) {
-			popust[5] = max_vsi - sestevek + popust[5];
-			ui->txt_popust_kupon->setText(pretvori_iz_double(QString::number(popust[5], 'f', 1)));
-		}
 		QMessageBox msg_napaka;
 		msg_napaka.setText("Vnesli ste previsoko vrednost. Vrednost je avtomatsko "
 											 "popravljena na najvisjo dovoljena vrednost za to polje!");
@@ -699,7 +679,7 @@ void projekti::izracunaj_popuste(int polje) {
 	}
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 5; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	ui->txt_popusti_skupaj_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
@@ -1018,50 +998,6 @@ void projekti::on_cb_popust_stalna_toggled(bool stanje) {
 
 }
 
-void projekti::on_cb_popust_kupon_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_popust_kupon->setEnabled(true);
-			QString nipopusta = "true";
-
-			QSqlQuery sql_projekti;
-			sql_projekti.prepare("SELECT * FROM projekti WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_projekti.exec();
-			if ( sql_projekti.next() ) {
-				if ( prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString()) != "0.0" ) { // projekt ima popust
-					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_projekti.value(sql_projekti.record().indexOf("popust_kupon")).toString())));
-					nipopusta = "false";
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_stranke;
-				sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_stranka_id->text()) + "'");
-				sql_stranke.exec();
-				if ( sql_stranke.next() ) {
-					if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString()) != "0.0" ) { // stranka ima popust
-						ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString())));
-						nipopusta = "false";
-					}
-				}
-			}
-
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kupon") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
-				}
-			}
-	}
-	else {
-		ui->txt_popust_kupon->setText(pretvori_iz_double("0.0"));
-		ui->txt_popust_kupon->setEnabled(false);
-	}
-
-}
-
 void projekti::on_cb_popust_akcija_toggled(bool stanje) {
 
 	if ( stanje == true ) {
@@ -1170,12 +1106,6 @@ void projekti::on_txt_popust_stalna_stranka_textChanged() {
 
 }
 
-void projekti::on_txt_popust_kupon_textChanged() {
-
-	izracunaj_popuste(5);
-
-}
-
 void projekti::on_txt_popust_fb1_editingFinished() {
 
 	double popust = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
@@ -1248,21 +1178,6 @@ void projekti::on_txt_popust_stalna_stranka_editingFinished() {
 	}
 
 	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
-
-}
-
-void projekti::on_txt_popust_kupon_editingFinished() {
-
-	double popust = pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
-
-	if ( popust > 100.0 ) {
-		popust = 100.0;
-	}
-	if ( popust < 0.0 ) {
-		popust = 0.0;
-	}
-
-	ui->txt_popust_kupon->setText(pretvori_iz_double(QString::number(popust, 'f', 1)));
 
 }
 
@@ -2022,7 +1937,6 @@ void projekti::osvezi_opravilo(QString opravilo) {
 			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb1")).toString()).toDouble();
 			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_komb2")).toString()).toDouble();
 			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_stranka")).toString()).toDouble();
-			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_kupon")).toString()).toDouble();
 			popusti_skupaj += pretvori_v_double(sql_opravilo.value(sql_opravilo.record().indexOf("popust_akcija")).toString()).toDouble();
 
 			// pribitki

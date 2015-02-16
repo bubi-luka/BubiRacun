@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>690</height>
+    <height>721</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -1135,7 +1135,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>489</height>
+               <height>513</height>
               </rect>
              </property>
             </widget>
@@ -1276,7 +1276,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>489</height>
+               <height>513</height>
               </rect>
              </property>
             </widget>
@@ -1400,7 +1400,7 @@
                <x>0</x>
                <y>0</y>
                <width>701</width>
-               <height>549</height>
+               <height>577</height>
               </rect>
              </property>
             </widget>
@@ -1484,7 +1484,7 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="2">
+            <item row="6" column="2">
              <widget class="QLineEdit" name="txt_popust_akcija">
               <property name="minimumSize">
                <size>
@@ -1541,32 +1541,6 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_26">
-              <property name="text">
-               <string>Stranka vnovči kupon</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLineEdit" name="txt_popust_kupon">
-              <property name="minimumSize">
-               <size>
-                <width>74</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>75</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>txt_popust_kupon</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLabel" name="label_23">
               <property name="text">
@@ -1574,10 +1548,17 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="label_27">
               <property name="text">
                <string>Akcijski popust</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Facebook - všeč mi je (vsi prijatelji)</string>
               </property>
              </widget>
             </item>
@@ -1619,7 +1600,7 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="6" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_28">
               <item>
                <spacer name="horizontalSpacer_32">
@@ -1656,13 +1637,6 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_20">
-              <property name="text">
-               <string>Facebook - všeč mi je (vsi prijatelji)</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <widget class="QLabel" name="label_30">
               <property name="minimumSize">
@@ -1678,43 +1652,6 @@
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
-            </item>
-            <item row="6" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_27">
-              <item>
-               <spacer name="horizontalSpacer_30">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cb_popust_kupon">
-                <property name="text">
-                 <string>cb_popust_kupon</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_31">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
             </item>
             <item row="5" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2503,8 +2440,6 @@
   <tabstop>txt_popust_komb2</tabstop>
   <tabstop>cb_popust_stalna</tabstop>
   <tabstop>txt_popust_stalna_stranka</tabstop>
-  <tabstop>cb_popust_kupon</tabstop>
-  <tabstop>txt_popust_kupon</tabstop>
   <tabstop>cb_popust_akcija</tabstop>
   <tabstop>txt_popust_akcija</tabstop>
   <tabstop>txt_vsi_popusti_facebook_1</tabstop>

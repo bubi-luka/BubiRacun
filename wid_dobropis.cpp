@@ -276,7 +276,6 @@ void wid_dobropis::on_btn_potrdi_clicked() {
 				popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_komb1")).toString())).toDouble();
 				popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_komb1")).toString())).toDouble();
 				popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_stranka")).toString())).toDouble();
-				popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_kupon")).toString())).toDouble();
 				popusti += pretvori_v_double(prevedi(sql_pridobi.value(sql_pridobi.record().indexOf("popust_akcija")).toString())).toDouble();
 
 				// preracunaj podrazitve

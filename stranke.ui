@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>737</width>
-    <height>706</height>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_stranka">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_podatki">
       <attribute name="title">
@@ -84,9 +84,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-329</y>
+            <y>0</y>
             <width>682</width>
-            <height>1030</height>
+            <height>1051</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -814,217 +814,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_omrezje">
-      <attribute name="title">
-       <string>Omrežje stranke</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QScrollArea" name="scrollArea_3">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_3">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>695</width>
-            <height>600</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_16">
-           <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox_14">
-             <property name="title">
-              <string>Kupon</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_5">
-              <item>
-               <widget class="QLabel" name="label_43">
-                <property name="text">
-                 <string>Tej stranki pripada naslednji kupon</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="txt_kupon">
-                <property name="text">
-                 <string>txt_kupon</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>195</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="groupBox_7">
-             <property name="title">
-              <string>Omrežje strank</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLabel" name="label_18">
-                  <property name="text">
-                   <string>Vir</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="txt_vir">
-                  <property name="minimumSize">
-                   <size>
-                    <width>150</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>txt_vir</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_4">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QGridLayout" name="gridLayout_6">
-                <item row="0" column="1">
-                 <widget class="QLabel" name="label_19">
-                  <property name="text">
-                   <string>Kupon</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_20">
-                  <property name="text">
-                   <string>Ime in priimek</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLineEdit" name="txt_vir_ime">
-                  <property name="text">
-                   <string>txt_vir_ime</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="txt_vir_kupon">
-                  <property name="text">
-                   <string>txt_vir_kupon</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLineEdit" name="txt_vir_id">
-                  <property name="text">
-                   <string>txt_vir_id</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <spacer name="horizontalSpacer_5">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Ime in priimek</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="txt_vir_besedilo">
-                <property name="text">
-                 <string>txt_vir_besedilo</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_21">
-                <property name="text">
-                 <string>Pridobljene stranke</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btn_novkupon">
-                <property name="text">
-                 <string>Nov kupon</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTableWidget" name="tbl_kuponi">
-                <property name="editTriggers">
-                 <set>QAbstractItemView::NoEditTriggers</set>
-                </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>true</bool>
-                </property>
-                <column>
-                 <property name="text">
-                  <string>tbl_kuponi</string>
-                 </property>
-                </column>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tab_popusti">
       <attribute name="title">
        <string>Popusti, akcije in podražitve</string>
@@ -1098,7 +887,7 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="2">
+            <item row="6" column="2">
              <widget class="QLineEdit" name="txt_popust_akcija">
               <property name="minimumSize">
                <size>
@@ -1155,32 +944,6 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_26">
-              <property name="text">
-               <string>Stranka vnovči kupon</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLineEdit" name="txt_popust_kupon">
-              <property name="minimumSize">
-               <size>
-                <width>74</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>75</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>txt_popust_kupon</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLabel" name="label_23">
               <property name="text">
@@ -1188,10 +951,17 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="label_27">
               <property name="text">
                <string>Akcijski popust</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_17">
+              <property name="text">
+               <string>Facebook - všeč mi je (vsi prijatelji)</string>
               </property>
              </widget>
             </item>
@@ -1233,7 +1003,7 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="6" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_28">
               <item>
                <spacer name="horizontalSpacer_32">
@@ -1270,13 +1040,6 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_17">
-              <property name="text">
-               <string>Facebook - všeč mi je (vsi prijatelji)</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <widget class="QLabel" name="label_30">
               <property name="minimumSize">
@@ -1292,43 +1055,6 @@
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
-            </item>
-            <item row="6" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_27">
-              <item>
-               <spacer name="horizontalSpacer_30">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cb_popust_kupon">
-                <property name="text">
-                 <string>cb_popust_kupon</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_31">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
             </item>
             <item row="5" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2035,7 +1761,7 @@
             <x>0</x>
             <y>0</y>
             <width>695</width>
-            <height>600</height>
+            <height>579</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2177,15 +1903,6 @@
   <tabstop>txt_spletna_stran</tabstop>
   <tabstop>txt_ustanova</tabstop>
   <tabstop>txt_opomba</tabstop>
-  <tabstop>scrollArea_3</tabstop>
-  <tabstop>txt_kupon</tabstop>
-  <tabstop>txt_vir</tabstop>
-  <tabstop>txt_vir_id</tabstop>
-  <tabstop>txt_vir_kupon</tabstop>
-  <tabstop>txt_vir_ime</tabstop>
-  <tabstop>txt_vir_besedilo</tabstop>
-  <tabstop>btn_novkupon</tabstop>
-  <tabstop>tbl_kuponi</tabstop>
   <tabstop>cb_popust_fb1</tabstop>
   <tabstop>txt_popust_fb1</tabstop>
   <tabstop>cb_popust_fb2</tabstop>
@@ -2196,8 +1913,6 @@
   <tabstop>txt_popust_komb2</tabstop>
   <tabstop>cb_popust_stalna</tabstop>
   <tabstop>txt_popust_stalna_stranka</tabstop>
-  <tabstop>cb_popust_kupon</tabstop>
-  <tabstop>txt_popust_kupon</tabstop>
   <tabstop>cb_popust_akcija</tabstop>
   <tabstop>txt_popust_akcija</tabstop>
   <tabstop>txt_vsi_popusti_facebook_1</tabstop>

@@ -8,7 +8,6 @@
 #include "stranke.h"
 #include "ui_stranke.h"
 #include "projekti.h"
-#include "kuponi.h"
 #include "kodiranje.h"
 #include "varnost.h"
 
@@ -36,20 +35,11 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_ustanova->setText("");
 		ui->txt_opomba->clear();
 
-		ui->txt_kupon->setText("");
-		ui->txt_vir->clear();
-		ui->txt_vir_id->setText("");
-		ui->txt_vir_ime->setText("");
-		ui->txt_vir_kupon->setText("");
-		ui->txt_vir_besedilo->setText("");
-		ui->tbl_kuponi->clear();
-
 		ui->cb_popust_fb1->setText("");
 		ui->cb_popust_fb2->setText("");
 		ui->cb_popust_komb1->setText("");
 		ui->cb_popust_komb2->setText("");
 		ui->cb_popust_stalna->setText("");
-		ui->cb_popust_kupon->setText("");
 		ui->cb_popust_akcija->setText("");
 		ui->cb_podrazitev_vikend->setText("");
 		ui->cb_podrazitev_hitrost->setText("");
@@ -59,7 +49,6 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_popust_komb1->setText("");
 		ui->txt_popust_komb2->setText("");
 		ui->txt_popust_stalna_stranka->setText("");
-		ui->txt_popust_kupon->setText("");
 		ui->txt_popust_akcija->setText("");
 		ui->txt_vsi_popusti_facebook_1->setText("");
 		ui->txt_vsi_popusti_facebook_2->setText("");
@@ -88,7 +77,6 @@ stranke::stranke(QWidget *parent) :
 			ui->txt_popust_komb1->setValidator(v_procent);
 			ui->txt_popust_komb2->setValidator(v_procent);
 			ui->txt_popust_stalna_stranka->setValidator(v_procent);
-			ui->txt_popust_kupon->setValidator(v_procent);
 			ui->txt_popust_akcija->setValidator(v_procent);
 
 			ui->txt_vsi_popusti_facebook_1->setValidator(v_procent);
@@ -112,12 +100,6 @@ stranke::stranke(QWidget *parent) :
 		ui->cb_davcni_zavezanec->setVisible(false);
 		ui->txt_davcna->setVisible(false);
 		ui->label_4->setVisible(false);
-		ui->txt_vir_kupon->setVisible(false);
-		ui->label_19->setVisible(false);
-		ui->txt_vir_ime->setVisible(false);
-		ui->label_20->setVisible(false);
-		ui->txt_vir_id->setVisible(false);
-		ui->txt_vir_besedilo->setVisible(false);
 		ui->label_11->setVisible(true);
 		ui->txt_ustanova->setVisible(true);
 		ui->txt_vsi_popusti_facebook_1->setDisabled(true);
@@ -130,7 +112,6 @@ stranke::stranke(QWidget *parent) :
 		ui->txt_popust_komb1->setDisabled(true);
 		ui->txt_popust_komb2->setDisabled(true);
 		ui->txt_popust_stalna_stranka->setDisabled(true);
-		ui->txt_popust_kupon->setDisabled(true);
 		ui->txt_popust_akcija->setDisabled(true);
 		ui->cb_podrazitev_hitrost->setChecked(false);
 		ui->cb_podrazitev_zapleti->setChecked(false);
@@ -149,14 +130,6 @@ stranke::stranke(QWidget *parent) :
 
 			// fill combo box
 			QSqlQuery sql_fill_combo;
-			sql_fill_combo.prepare("SELECT * FROM sif_viri_strank");
-			sql_fill_combo.exec();
-			ui->txt_vir->addItem("");
-			while (sql_fill_combo.next()) {
-				ui->txt_vir->addItem(prevedi(sql_fill_combo.value(sql_fill_combo.record().indexOf("vir")).toString()));
-			}
-			sql_fill_combo.clear();
-
 			sql_fill_combo.prepare("SELECT * FROM sif_posta");
 			sql_fill_combo.exec();
 			ui->txt_posta->addItem("");
@@ -204,28 +177,6 @@ stranke::stranke(QWidget *parent) :
 			}
 			sql_fill_combo.clear();
 
-			// fill cupon numbers
-			int i = 1;
-			QString leto = QDate::currentDate().toString("yyyy");
-			QSqlQuery sql_insert_stkupona;
-			sql_insert_stkupona.prepare("SELECT * FROM kuponi WHERE kupon LIKE '" + pretvori("KU-" + leto) + "%'");
-			sql_insert_stkupona.exec();
-			while (sql_insert_stkupona.next()) {
-				i++;
-			}
-
-			QString stevilka = 0;
-			if ( i < 10 ) {
-				stevilka = "00" + QString::number(i, 10);
-			}
-			else if ( i < 100 ) {
-				stevilka = "0" + QString::number(i, 10);
-			}
-			else {
-				stevilka = "" + QString::number(i, 10);
-			}
-			ui->txt_kupon->setText("KU-" + leto + "-" + stevilka);
-
 			// napolni spustne sezname pri projektih - filtriranje
 			// zaradi nepotrebnih filtriranj tabele spremenimo napis na enem od gumbov
 			QString besedilo = ui->btn_novprojekt->text();
@@ -257,7 +208,6 @@ stranke::stranke(QWidget *parent) :
 			ui->btn_novprojekt->setText(besedilo);
 
 		napolni_projekte();
-		napolni_kupone();
 
 		ui->tab_stranka->setCurrentIndex(0);
 
@@ -412,72 +362,6 @@ void stranke::napolni_projekte() {
 
 }
 
-void stranke::napolni_kupone() {
-
-	// fill combo box and tables
-
-		napolni_projekte();
-
-		// fill table kuponi
-		// clear previous content
-		ui->tbl_kuponi->clear();
-
-		for (int i = 0; i <= 3; i++) {
-			ui->tbl_kuponi->removeColumn(0);
-		}
-
-		QSqlQuery sql_clear;
-		sql_clear.clear();
-		sql_clear.prepare("SELECT * FROM kuponi");
-		sql_clear.exec();
-		while (sql_clear.next()) {
-			ui->tbl_kuponi->removeRow(0);
-		}
-
-		// start filling the table
-		ui->tbl_kuponi->insertColumn(0);
-		ui->tbl_kuponi->insertColumn(1);
-		ui->tbl_kuponi->insertColumn(2);
-		ui->tbl_kuponi->insertColumn(3);
-
-		QTableWidgetItem *naslov0 = new QTableWidgetItem;
-		QTableWidgetItem *naslov1 = new QTableWidgetItem;
-		QTableWidgetItem *naslov2 = new QTableWidgetItem;
-		QTableWidgetItem *naslov3 = new QTableWidgetItem;
-		naslov0->setText("ID");
-		naslov1->setText("Kupon");
-		naslov2->setText("Izdajatelj");
-		naslov3->setText("Koristnik");
-		ui->tbl_kuponi->setHorizontalHeaderItem(0, naslov0);
-		ui->tbl_kuponi->setHorizontalHeaderItem(1, naslov1);
-		ui->tbl_kuponi->setHorizontalHeaderItem(2, naslov2);
-		ui->tbl_kuponi->setHorizontalHeaderItem(3, naslov3);
-
-		QSqlQuery sql_fill;
-		sql_fill.prepare("SELECT * FROM kuponi WHERE prejemnik LIKE '" + ui->txt_id->text() + "'");
-		sql_fill.exec();
-
-		int row = 0;
-		while (sql_fill.next()) {
-			ui->tbl_kuponi->insertRow(row);
-			ui->tbl_kuponi->setRowHeight(row, 20);
-			int col = 0;
-			while (col <= 3) {
-
-				QTableWidgetItem *celica = new QTableWidgetItem;
-				celica->setText(prevedi(sql_fill.value(col).toString()));
-				ui->tbl_kuponi->setItem(row, col, celica);
-
-				col++;
-
-			}
-
-			row++;
-
-		}
-
-}
-
 void stranke::keyPressEvent(QKeyEvent *event) {
 	if (event->key() == Qt::Key_Return)
 	{
@@ -533,48 +417,6 @@ void stranke::on_rb_stalna_toggled(bool stanje)  {
 
 }
 
-void stranke::on_txt_vir_currentIndexChanged(int stanje) {
-
-	if (stanje == 0) {
-		ui->label_19->setHidden(true);
-		ui->label_20->setHidden(true);
-		ui->txt_vir_id->setHidden(true);
-		ui->txt_vir_ime->setHidden(true);
-		ui->txt_vir_kupon->setHidden(true);
-		ui->txt_vir_besedilo->setHidden(true);
-	}
-	else if (ui->txt_vir->currentText() == "Stranka") {
-		ui->label_19->setHidden(false);
-		ui->label_20->setHidden(false);
-		ui->label_12->setHidden(true);
-		ui->txt_vir_id->setHidden(true);
-		ui->txt_vir_ime->setHidden(false);
-		ui->txt_vir_kupon->setHidden(false);
-		ui->txt_vir_besedilo->setHidden(true);
-	}
-	else {
-		ui->label_19->setHidden(true);
-		ui->label_20->setHidden(true);
-		ui->label_12->setHidden(false);
-		ui->txt_vir_id->setHidden(true);
-		ui->txt_vir_ime->setHidden(true);
-		ui->txt_vir_kupon->setHidden(true);
-		ui->txt_vir_besedilo->setHidden(false);
-		if ( ui->txt_vir->currentText() == "Oseba" ) {
-			ui->label_12->setText("Ime in priimek");
-		}
-		else if ( ui->txt_vir->currentText() == "Splet" ) {
-			ui->label_12->setText("Spletna stran");
-		}
-		else if ( ui->txt_vir->currentText() == "Forum" ) {
-			ui->label_12->setText("Ime foruma");
-		}
-		else if ( ui->txt_vir->currentText() == "Blog")  {
-			ui->label_12->setText("Ime bloga");
-		}
-	}
-}
-
 void stranke::on_tbl_projekti_doubleClicked() {
 
 	projekti *uredi = new projekti;
@@ -582,36 +424,6 @@ void stranke::on_tbl_projekti_doubleClicked() {
 	QObject::connect(this, SIGNAL(prenos(QString)),
 			   uredi , SLOT(prejem(QString)));
 	prenos(ui->tbl_projekti->selectedItems().takeAt(1)->text()); // ce projekt obstaja, poslji naprej st. projekta
-	this->disconnect();
-
-	// receive signal to refresh table
-	QObject::connect(uredi, SIGNAL(poslji(QString)),
-			   this , SLOT(osvezi(QString)));
-
-}
-
-void stranke::on_tbl_kuponi_doubleClicked() {
-
-	kuponi *uredi = new kuponi;
-	uredi->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-			   uredi , SLOT(prejem(QString)));
-	prenos(ui->tbl_kuponi->selectedItems().takeAt(0)->text());
-	this->disconnect();
-
-	// receive signal to refresh table
-	QObject::connect(uredi, SIGNAL(poslji(QString)),
-			   this , SLOT(osvezi(QString)));
-
-}
-
-void stranke::on_btn_novkupon_clicked() {
-
-	kuponi *uredi = new kuponi;
-	uredi->show();
-	QObject::connect(this, SIGNAL(prenos(QString)),
-			   uredi , SLOT(prejem(QString)));
-	prenos("Nov kupon" + ui->txt_id->text());
 	this->disconnect();
 
 	// receive signal to refresh table
@@ -668,7 +480,7 @@ void stranke::on_btn_izhod_clicked() {
 
 }
 
-// ne preverja vnesenih polj, ne ureja kuponov
+// ne preverja vnesenih polj
 void stranke::on_btn_vnesi_clicked() {
 
 	QString napaka = "";
@@ -806,50 +618,6 @@ void stranke::on_btn_vnesi_clicked() {
 		}
 	}
 
-	// kupon
-	if ( ui->txt_vir->currentText() == "Stranka" ) {
-		if ( ui->txt_vir_kupon->text() == "" ) { // kupona ni
-			ui->label_19->setPalette(palette_error);
-			ui->label_19->setFont(font_error);
-			napaka = "true";
-			ui->txt_vir_kupon->setFocus();
-		}
-		else { // kupon je
-				QSqlQuery sql_kupon;
-				sql_kupon.prepare("SELECT * FROM kuponi WHERE kupon LIKE '" + pretvori(ui->txt_vir_kupon->text()) + "'");
-				sql_kupon.exec();
-				if ( !sql_kupon.next() ) { // kupon ne obstaja
-					ui->label_19->setPalette(palette_error);
-					ui->label_19->setFont(font_error);
-					napaka = "true";
-					ui->txt_vir_kupon->setFocus();
-				}
-				else if ( prevedi(sql_kupon.value(sql_kupon.record().indexOf("uporabnik")).toString()) != "" ) { // kupon ima dolocenega uporabnika
-					if ( prevedi(sql_kupon.value(sql_kupon.record().indexOf("uporabnik")).toString()) != ui->txt_id->text() ) { // uporabnik ni isti
-						ui->label_19->setPalette(palette_error);
-						ui->label_19->setFont(font_error);
-						napaka = "true";
-						ui->txt_vir_kupon->setFocus();
-					}
-					else { // uporabnik je isti
-						ui->txt_vir_id->setText(sql_kupon.value(sql_kupon.record().indexOf("id")).toString());
-						ui->txt_vir_ime->setText(prevedi(sql_kupon.value(sql_kupon.record().indexOf("lastnik")).toString()));
-						ui->label_19->setPalette(palette_normal);
-						ui->label_19->setFont(font_normal);
-					}
-				}
-				else {
-					ui->txt_vir_id->setText(sql_kupon.value(sql_kupon.record().indexOf("id")).toString());
-					ui->txt_vir_ime->setText(prevedi(sql_kupon.value(sql_kupon.record().indexOf("lastnik")).toString()));
-					ui->label_19->setPalette(palette_normal);
-					ui->label_19->setFont(font_normal);
-				}
-
-			ui->label_19->setPalette(palette_normal);
-			ui->label_19->setFont(font_normal);
-		}
-	}
-
 	// ponovno preveri obvezno izpolnjena polja
 	if (ui->txt_ime->text() == "") {
 		napaka = "true";
@@ -887,30 +655,21 @@ void stranke::on_btn_vnesi_clicked() {
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
 
-			QString vir;
-			QSqlQuery sql_vir;
-			sql_vir.prepare("SELECT * FROM sif_viri_strank WHERE vir LIKE '" + pretvori(ui->txt_vir->currentText()) + "'");
-			sql_vir.exec();
-			if ( sql_vir.next() ) {
-				vir = prevedi(sql_vir.value(sql_vir.record().indexOf("id")).toString());
-			}
-
 			QSqlQuery sql_vnesi_stranko;
 			if (ui->btn_vnesi->text() == "Vnesi stranko") { // vnesi novega uporabnika
 				sql_vnesi_stranko.prepare("INSERT INTO stranke (ime, priimek, naslov, naslov_st, posta, postna_stevilka, davcna, "
 																	"kontakt, telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, "
-																	"placilnost, vir, vir_id, vir_kupon, vir_ime, vir_besedilo, pop_facebook_1, pop_facebook_2, "
-																	"pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_kupon, pop_akcija, pop_vsi_facebook, "
+																	"placilnost, pop_facebook_1, pop_facebook_2, "
+																	"pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_akcija, pop_vsi_facebook, "
 																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba, davcni_zavezanec, "
-																	"banka, bic_banke, trr) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+																	"banka, bic_banke, trr) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_stranko.prepare("UPDATE stranke SET ime = ?, priimek = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
 																	"davcna = ?, kontakt = ?, telefon = ?, gsm = ?, email = ?, spletna_stran = ?, ustanova = ?, "
-																	"opomba = ?, tip = ?, stalnost = ?, aktivnost = ?, placilnost = ?, vir = ?, vir_id = ?, "
-																	"vir_kupon = ?, vir_ime = ?, vir_besedilo = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
-																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_kupon = ?, pop_akcija = ?, "
+																	"opomba = ?, tip = ?, stalnost = ?, aktivnost = ?, placilnost = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
+																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_akcija = ?, "
 																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
 																	"avtor_podjetje = ?, avtor_oseba = ?, davcni_zavezanec = ?, banka = ?, bic_banke = ?, trr = ? "
 																	"WHERE id LIKE '" + ui->txt_id->text() + "'");
@@ -965,62 +724,32 @@ void stranke::on_btn_vnesi_clicked() {
 			sql_vnesi_stranko.bindValue(17, pretvori(vrednost));
 			vrednost = "";
 
-			sql_vnesi_stranko.bindValue(18, pretvori(vir));
-			sql_vnesi_stranko.bindValue(19, pretvori(ui->txt_vir_id->text()));
-			sql_vnesi_stranko.bindValue(20, pretvori(ui->txt_vir_kupon->text()));
-			sql_vnesi_stranko.bindValue(21, pretvori(ui->txt_vir_ime->text()));
-			sql_vnesi_stranko.bindValue(22, pretvori(ui->txt_vir_besedilo->text()));
+			sql_vnesi_stranko.bindValue(18, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
+			sql_vnesi_stranko.bindValue(19, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
+			sql_vnesi_stranko.bindValue(20, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
+			sql_vnesi_stranko.bindValue(21, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
+			sql_vnesi_stranko.bindValue(22, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+			sql_vnesi_stranko.bindValue(23, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
 
-			sql_vnesi_stranko.bindValue(23, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
-			sql_vnesi_stranko.bindValue(24, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
-			sql_vnesi_stranko.bindValue(25, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
-			sql_vnesi_stranko.bindValue(26, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
-			sql_vnesi_stranko.bindValue(27, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
-			sql_vnesi_stranko.bindValue(28, pretvori(pretvori_v_double(ui->txt_popust_kupon->text())));
-			sql_vnesi_stranko.bindValue(29, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
+			sql_vnesi_stranko.bindValue(24, pretvori(pretvori_v_double(ui->txt_vsi_popusti_facebook_2->text())));
+			sql_vnesi_stranko.bindValue(25, pretvori(pretvori_v_double(ui->txt_popusti_skupaj_2->text())));
 
-			sql_vnesi_stranko.bindValue(30, pretvori(pretvori_v_double(ui->txt_vsi_popusti_facebook_2->text())));
-			sql_vnesi_stranko.bindValue(31, pretvori(pretvori_v_double(ui->txt_popusti_skupaj_2->text())));
+			sql_vnesi_stranko.bindValue(26, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+			sql_vnesi_stranko.bindValue(27, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+			sql_vnesi_stranko.bindValue(28, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
 
-			sql_vnesi_stranko.bindValue(32, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
-			sql_vnesi_stranko.bindValue(33, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
-			sql_vnesi_stranko.bindValue(34, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
-
-			sql_vnesi_stranko.bindValue(35, pretvori(vApp->firm()));
-			sql_vnesi_stranko.bindValue(36, pretvori(vApp->id()));
+			sql_vnesi_stranko.bindValue(29, pretvori(vApp->firm()));
+			sql_vnesi_stranko.bindValue(30, pretvori(vApp->id()));
 			if ( ui->cb_davcni_zavezanec->isChecked() ) {
-				sql_vnesi_stranko.bindValue(37, pretvori("1"));
+				sql_vnesi_stranko.bindValue(31, pretvori("1"));
 			}
 			else {
-				sql_vnesi_stranko.bindValue(37, pretvori("0"));
+				sql_vnesi_stranko.bindValue(31, pretvori("0"));
 			}
-			sql_vnesi_stranko.bindValue(38, pretvori(ui->txt_banka->currentText()));
-			sql_vnesi_stranko.bindValue(39, pretvori(ui->txt_bic->text()));
-			sql_vnesi_stranko.bindValue(40, pretvori(ui->txt_trr->text()));
+			sql_vnesi_stranko.bindValue(32, pretvori(ui->txt_banka->currentText()));
+			sql_vnesi_stranko.bindValue(33, pretvori(ui->txt_bic->text()));
+			sql_vnesi_stranko.bindValue(34, pretvori(ui->txt_trr->text()));
 			sql_vnesi_stranko.exec();
-
-/*			// delo s kuponi
-			if ( ui->txt_vir->currentText() == "Stranka" ) {
-
-				// pridobi ID stranke - vlagalca kupona
-				QString stranka_id = "";
-				if (ui->btn_vnesi->text() == "Vnesi stranko" && ui->txt_vir->currentText() == "Stranka" ) { // posodobi kupon
-					QSqlQuery sql_rowid;
-					sql_rowid.prepare("select last_insert_rowid()");
-					sql_rowid.exec();
-					sql_rowid.next();
-
-					stranka_id = sql_rowid.value(0).toString();
-				}
-				else {
-					stranka_id = ui->txt_id->text();
-				}
-
-				QSqlQuery sql_update_kuponi;
-				sql_update_kuponi.prepare("UPDATE kuponi SET uporabitelj = ? WHERE kupon LIKE '" + pretvori(ui->txt_vir_kupon->text()) + "'");
-				sql_update_kuponi.bindValue(0, stranka_id);
-				sql_update_kuponi.exec();
-			}*/
 
 		// send signal to reload widget
 		poslji("stranke");
@@ -1039,12 +768,10 @@ void stranke::prejem(QString besedilo) {
 
 	if (besedilo == "Nova stranka") {
 		ui->btn_vnesi->setText("Vnesi stranko");
-		ui->tab_omrezje->setDisabled(true);
 		ui->tab_projekti->setDisabled(true);
 	}
 	else {
 		ui->btn_vnesi->setText("Popravi vnos");
-		ui->tab_omrezje->setDisabled(false);
 		ui->tab_projekti->setDisabled(false);
 		// besedilo nosi ID ze obstojeco stranko, potrebno je napolniti polja
 			QSqlQuery sql_napolni;
@@ -1084,18 +811,6 @@ void stranke::prejem(QString besedilo) {
 				else {
 					ui->rb_neredna->setChecked(true);
 				}
-
-				QSqlQuery sql_combo;
-				sql_combo.prepare("SELECT * FROM sif_viri_strank WHERE id LIKE '" + sql_napolni.value(sql_napolni.record().indexOf("vir")).toString() + "'");
-				sql_combo.exec();
-				if ( sql_combo.next() ) {
-					ui->txt_vir->setCurrentIndex(ui->txt_vir->findText(prevedi(sql_combo.value(sql_combo.record().indexOf("vir")).toString())));
-				}
-
-				ui->txt_vir_id->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vir_id")).toString()));
-				ui->txt_vir_kupon->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vir_kupon")).toString()));
-				ui->txt_vir_ime->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vir_ime")).toString()));
-				ui->txt_vir_besedilo->setText(prevedi(sql_napolni.value(sql_napolni.record().indexOf("vir_besedilo")).toString()));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_facebook_1")).toString()) != "0.0") {
 					ui->cb_popust_fb1->setCheckState(Qt::Checked);
@@ -1146,16 +861,6 @@ void stranke::prejem(QString besedilo) {
 					ui->txt_popust_stalna_stranka->setEnabled(false);
 				}
 				ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_stranka")).toString())));
-
-				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kupon")).toString()) != "0.0") {
-					ui->cb_popust_kupon->setCheckState(Qt::Checked);
-					ui->txt_popust_kupon->setEnabled(true);
-				}
-				else {
-					ui->cb_popust_kupon->setCheckState(Qt::Unchecked);
-					ui->txt_popust_kupon->setEnabled(false);
-				}
-				ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kupon")).toString())));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_akcija")).toString()) != "0.0") {
 					ui->cb_popust_akcija->setCheckState(Qt::Checked);
@@ -1221,7 +926,6 @@ void stranke::prejem(QString besedilo) {
 			}
 
 		napolni_projekte();
-		napolni_kupone();
 
 	}
 }
@@ -1245,17 +949,15 @@ void stranke::izracunaj_popuste(int polje) {
 	* polje == 2 => komb1
 	* polje == 3 => komb2
 	* polje == 4 => stranka
-	* polje == 5 => kupon
 	*/
 
 	// vsa vnosna polja s popustom pretvorimo v vrednost double, da bo mozno racunanje
-	double popust[6];
+	double popust[5];
 	popust[0] = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
 	popust[1] = pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
 	popust[2] = pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
 	popust[3] = pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
 	popust[4] = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
-	popust[5] = pretvori_v_double(ui->txt_popust_kupon->text()).toDouble();
 
 	// maksimalne vrednosti sestevka popustov
 	double max_fb = pretvori_v_double(ui->txt_vsi_popusti_facebook_1->text()).toDouble();
@@ -1284,7 +986,7 @@ void stranke::izracunaj_popuste(int polje) {
 	ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 5; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	if ( sestevek > max_vsi ) {
@@ -1308,10 +1010,6 @@ void stranke::izracunaj_popuste(int polje) {
 			popust[4] = max_vsi - sestevek + popust[4];
 			ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust[4], 'f', 1)));
 		}
-		else if ( polje == 5 ) {
-			popust[5] = max_vsi - sestevek + popust[5];
-			ui->txt_popust_kupon->setText(pretvori_iz_double(QString::number(popust[5], 'f', 1)));
-		}
 		QMessageBox msg_napaka;
 		msg_napaka.setText("Vnesli ste previsoko vrednost. Vrednost je avtomatsko "
 											 "popravljena na najvisjo dovoljena vrednost za to polje!");
@@ -1320,7 +1018,7 @@ void stranke::izracunaj_popuste(int polje) {
 	}
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 5; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	ui->txt_popusti_skupaj_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
@@ -1377,9 +1075,6 @@ void stranke::osvezi(QString beseda) {
 
 	if ( beseda == "projekti" ) {
 		napolni_projekte();
-	}
-	if ( beseda == "kuponi" ) {
-		napolni_kupone();
 	}
 
 }
@@ -1551,38 +1246,6 @@ void stranke::on_cb_popust_stalna_toggled(bool stanje) {
 
 }
 
-void stranke::on_cb_popust_kupon_toggled(bool stanje) {
-
-	if ( stanje == true ) {
-		ui->txt_popust_kupon->setEnabled(true);
-
-			QString nipopusta = "true";
-
-			QSqlQuery sql_stranke;
-			sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
-			sql_stranke.exec();
-			if ( sql_stranke.next() ) {
-				if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString()) != "0.0" ) { // stranka ima popust
-					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kupon")).toString())));
-					nipopusta = "false";
-				}
-			}
-			if ( nipopusta == "true" ) {
-				QSqlQuery sql_osnova;
-				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kupon") + "'");
-				sql_osnova.exec();
-				if ( sql_osnova.next() ) {
-					ui->txt_popust_kupon->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
-				}
-			}
-	}
-	else {
-		ui->txt_popust_kupon->setText(pretvori_iz_double("0.0"));
-		ui->txt_popust_kupon->setEnabled(false);
-	}
-
-}
-
 void stranke::on_cb_popust_akcija_toggled(bool stanje) {
 
 	if ( stanje == true ) {
@@ -1678,12 +1341,6 @@ void stranke::on_txt_popust_stalna_stranka_textChanged() {
 
 }
 
-void stranke::on_txt_popust_kupon_textChanged() {
-
-	izracunaj_popuste(5);
-
-}
-
 void stranke::on_txt_popust_fb1_editingFinished() {
 
 	ui->txt_popust_fb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_fb1->text())));
@@ -1711,12 +1368,6 @@ void stranke::on_txt_popust_komb2_editingFinished() {
 void stranke::on_txt_popust_stalna_stranka_editingFinished() {
 
 	ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
-
-}
-
-void stranke::on_txt_popust_kupon_editingFinished() {
-
-	ui->txt_popust_kupon->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_kupon->text())));
 
 }
 

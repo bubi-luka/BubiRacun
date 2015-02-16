@@ -19,12 +19,10 @@ private slots:
 	void on_btn_izhod_clicked();
 	void on_btn_brisi_clicked();
 	void on_btn_vnesi_clicked();
-	void on_btn_novkupon_clicked();
 	void on_btn_novprojekt_clicked();
 
 	void on_rb_fizicna_toggled(bool stanje);
 	void on_rb_stalna_toggled(bool stanje);
-	void on_txt_vir_currentIndexChanged(int stanje);
 	void on_txt_posta_currentIndexChanged(QString besedilo);
 	void on_txt_postna_stevilka_textChanged(QString besedilo);
 	void keyPressEvent(QKeyEvent *event);
@@ -34,7 +32,6 @@ private slots:
 	void on_cb_popust_komb1_toggled(bool stanje);
 	void on_cb_popust_komb2_toggled(bool stanje);
 	void on_cb_popust_stalna_toggled(bool stanje);
-	void on_cb_popust_kupon_toggled(bool stanje);
 	void on_cb_popust_akcija_toggled(bool stanje);
 
 	void on_cb_podrazitev_vikend_toggled(bool stanje);
@@ -46,14 +43,12 @@ private slots:
 	void on_txt_popust_komb1_textChanged();
 	void on_txt_popust_komb2_textChanged();
 	void on_txt_popust_stalna_stranka_textChanged();
-	void on_txt_popust_kupon_textChanged();
 
 	void on_txt_popust_fb1_editingFinished();
 	void on_txt_popust_fb2_editingFinished();
 	void on_txt_popust_komb1_editingFinished();
 	void on_txt_popust_komb2_editingFinished();
 	void on_txt_popust_stalna_stranka_editingFinished();
-	void on_txt_popust_kupon_editingFinished();
 	void on_txt_popust_akcija_editingFinished();
 	void on_txt_podrazitev_vikend_editingFinished();
 	void on_txt_podrazitev_hitrost_editingFinished();
@@ -66,7 +61,6 @@ private slots:
 	void on_txt_banka_currentIndexChanged();
 
 	void on_tbl_projekti_doubleClicked();
-	void on_tbl_kuponi_doubleClicked();
 
 	void prejem(QString besedilo);
 	void osvezi(QString beseda);
@@ -79,7 +73,6 @@ private slots:
 	QString prevedi(QString besedilo);
 
 	void napolni_projekte();
-	void napolni_kupone();
 
 signals:
 	void prenos(QString beseda);

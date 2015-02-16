@@ -83,18 +83,18 @@ void stroski::on_btn_sprejmi_clicked() {
 
 	// javi napake, ce ni napak vnesi v bazo
 	if (napaka == "") {
-			QSqlQuery sql_vnesi_kupon;
+			QSqlQuery sql_vnesi_strosek;
 			if (ui->btn_sprejmi->text() == "Vnesi strosek") { // vnesi novega uporabnika
-				sql_vnesi_kupon.prepare("INSERT INTO stroski (potninalog, strosek, cena) "
+				sql_vnesi_strosek.prepare("INSERT INTO stroski (potninalog, strosek, cena) "
 											 "VALUES (?, ?, ?) ");
 			}
 			else { // popravi ze obstojeci vnos
-				sql_vnesi_kupon.prepare("UPDATE stroski SET potninalog = ?, strosek = ?, cena = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
+				sql_vnesi_strosek.prepare("UPDATE stroski SET potninalog = ?, strosek = ?, cena = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 			}
-			sql_vnesi_kupon.bindValue(0, pretvori(ui->txt_nalog->text()));
-			sql_vnesi_kupon.bindValue(1, pretvori(ui->txt_strosek->text()));
-			sql_vnesi_kupon.bindValue(2, pretvori(pretvori_v_double(pretvori_iz_double(pretvori_v_double(ui->txt_cena->text())))));
-			sql_vnesi_kupon.exec();
+			sql_vnesi_strosek.bindValue(0, pretvori(ui->txt_nalog->text()));
+			sql_vnesi_strosek.bindValue(1, pretvori(ui->txt_strosek->text()));
+			sql_vnesi_strosek.bindValue(2, pretvori(pretvori_v_double(pretvori_iz_double(pretvori_v_double(ui->txt_cena->text())))));
+			sql_vnesi_strosek.exec();
 
 		// send signal to reload widget
 		poslji("stroski");
