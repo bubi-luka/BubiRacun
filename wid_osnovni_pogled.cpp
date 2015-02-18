@@ -866,6 +866,16 @@ void wid_osnovni_pogled::napolni_predracune() {
 			QDate danes = QDate::currentDate();
 			QDate rok_placila = QDate::fromString(prevedi(sql_fill.value(sql_fill.record().indexOf("rok_placila")).toString()), "dd.MM.yyyy");
 
+			// spremenimo stranko v neplacnika
+			if ( danes > rok_placila ) {
+				QSqlQuery sql_placnik;
+				sql_placnik.prepare("UPDATE stranke SET placilnost = 2 WHERE id LIKE '" +
+									prevedi(sql_fill.value(sql_fill.record().indexOf("stranka")).toString()) + "'");
+				sql_placnik.exec();
+				sql_placnik.clear();
+				sql_placnik.finish();
+			}
+
 			if ( filter == "pozitivno" ) {
 				ui->tbl_predracun->insertRow(row);
 				ui->tbl_predracun->setRowHeight(row, 20);
