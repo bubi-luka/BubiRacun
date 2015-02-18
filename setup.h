@@ -47,7 +47,6 @@ private slots:
 	void tabela_status_placila();
 	void tabela_status_racunovodstva();
 	void tabela_popusti();
-	void tabela_viri_strank();
 	void tabela_namen_potnega_naloga();
 	void tabela_prevoz();
 	void tabela_predracuni();
@@ -75,7 +74,6 @@ private slots:
 	void vnesi_status_placila();
 	void vnesi_status_racunovodstva();
 	void vnesi_popuste();
-	void vnesi_vire_strank();
 	void vnesi_namen_potnega_naloga();
 	void vnesi_prevoz();
 	void vnesi_predracune();
