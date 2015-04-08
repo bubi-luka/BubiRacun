@@ -195,7 +195,8 @@ OTHER_FILES += \
                 srcek.ico \
                 bubi.svg \
                 racun-besedilo-dobropis.csv \
-                ikona.rc
+                ikona.rc \
+    delavniki.html
 
 QT	+= widgets
 QT	+= sql
