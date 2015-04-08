@@ -662,6 +662,10 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 		int st_racunov = 0;
 		double znesek_racunov = 0.0;
 
+		double ddv_predplacilni = 0.0;
+		double ddv_racun = 0.0;
+		double ddv_predracun = 0.0;
+
 		QSqlQuery sql_racuni;
 		sql_racuni.prepare("SELECT * FROM racuni WHERE datum_izdaje LIKE '%" + datum + "%'");
 		sql_racuni.exec();
@@ -669,6 +673,8 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
 			double znesek = 0.0;
 			double avans = 0.0;
+			double znesek_ddv = 0.0;
+			double znesek_ddv_avans = 0.0;
 
 			QSqlQuery sql_opravila;
 			sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + sql_racuni.value(sql_racuni.record().indexOf("id")).toString() + "'");
@@ -676,28 +682,30 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 			while ( sql_opravila.next() ) {
 				// znesek brez DDV - zelja narocnika
 				znesek += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_koncni")).toString()).toDouble();
+				znesek_ddv += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_ddv")).toString()).toDouble();
 			}
 			avans = prevedi(sql_racuni.value(sql_racuni.record().indexOf("avans")).toString()).toDouble();
+			znesek_ddv_avans = prevedi(sql_racuni.value(sql_racuni.record().indexOf("avans_ddv")).toString()).toDouble();
 
 			// predracuni
 			if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "1" ) {
 				if ( sql_racuni.value(sql_racuni.record().indexOf("status_racuna")).toString() != pretvori("Potrjen") ) {
 					st_predracunov++;
 					znesek_predracunov += znesek;
-					znesek_avansa_predracunov += avans;
+					ddv_predracun += znesek_ddv_avans;
 				}
 			}
 			// predplacilni racuni
 			else if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "2" ) {
 				st_predplacilnih_racunov++;
 				znesek_predplacilnih_racunov += avans;
-
+				ddv_predplacilni += znesek_ddv_avans;
 			}
 			// racuni
 			else if ( prevedi(sql_racuni.value(sql_racuni.record().indexOf("tip_racuna")).toString()) == "3" ) {
 				st_racunov++;
 				znesek_racunov += znesek;
-
+				ddv_racun += znesek_ddv;
 			}
 		}
 
@@ -710,6 +718,10 @@ void wid_osnovni_pogled::napolni_izdane_racune() {
 
 		ui->txt_racuni->setText(QString::number(st_racunov, 10));
 		ui->txt_znesek_racunov->setText(QString::number(znesek_racunov, 'f', 2).replace(".", ",") + " EUR");
+
+		ui->txt_ddv_predracun->setText(QString::number(ddv_predracun, 'f', 2).replace(".", ",") + " EUR");
+		ui->txt_ddv_predplacilni->setText(QString::number(ddv_predplacilni, 'f', 2).replace(".", ",") + " EUR");
+		ui->txt_ddv_racun->setText(QString::number(ddv_racun, 'f', 2).replace(".", ",") + " EUR");
 
 }
 
