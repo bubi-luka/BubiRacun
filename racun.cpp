@@ -436,6 +436,24 @@ void racun::on_btn_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(31, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("sifra")).toString());
 			sql_kopiraj_opravila.exec();
 		}
+		// izracunamo ddv avansa in ga vnesemo v novo nastali racun
+		double znesek_ddv = 0.0;
+		QSqlQuery sql_opravila;
+		sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(nov_id) + "'");
+		sql_opravila.exec();
+		while ( sql_opravila.next() ) {
+			znesek_ddv += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_ddv")).toString()).toDouble();
+		}
+
+		znesek_ddv = znesek_ddv * pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100;
+
+		QSqlQuery sql_posodobi;
+		sql_posodobi.prepare("UPDATE racuni SET avans_ddv = ? WHERE id LIKE '" + pretvori(nov_id) + "'");
+		sql_posodobi.bindValue(0, pretvori(QString::number(znesek_ddv, 'f', 2)));
+		sql_posodobi.exec();
+
+		sql_posodobi.clear();
+		sql_opravila.clear();
 
 	// ponastavimo na predracun
 	ui->rb_predracun->setChecked(true);
@@ -658,6 +676,25 @@ void racun::on_btn_predplacilni_racun_clicked() {
 			sql_kopiraj_opravila.bindValue(31, sql_poisci_opravila.value(sql_poisci_opravila.record().indexOf("sifra")).toString());
 			sql_kopiraj_opravila.exec();
 		}
+
+		// izracunamo ddv avansa in ga vnesemo v novo nastali racun
+		double znesek_ddv = 0.0;
+		QSqlQuery sql_opravila;
+		sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(nov_id) + "'");
+		sql_opravila.exec();
+		while ( sql_opravila.next() ) {
+			znesek_ddv += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_ddv")).toString()).toDouble();
+		}
+
+		znesek_ddv = znesek_ddv * pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100;
+
+		QSqlQuery sql_posodobi;
+		sql_posodobi.prepare("UPDATE racuni SET avans_ddv = ? WHERE id LIKE '" + pretvori(nov_id) + "'");
+		sql_posodobi.bindValue(0, pretvori(QString::number(znesek_ddv, 'f', 2)));
+		sql_posodobi.exec();
+
+		sql_posodobi.clear();
+		sql_opravila.clear();
 
 	// ponastavimo na predracun
 	ui->rb_predracun->setChecked(true);
@@ -889,6 +926,28 @@ void racun::on_btn_sprejmi_clicked() {
 										  "izdajatelj_id = ?, izdajatelj_ime = ?, izdajatelj_priimek = ?, izdajatelj_naziv = ?, narocnik_id = ?, "
 										  "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ?, stevilka_starsa = ? "
 										  "WHERE id LIKE '" + ui->txt_id->text() + "'");
+
+				// izracunamo ddv avansa in ga vnesemo v novo nastali racun, a le na predracunu
+				if ( ui->rb_predracun->isChecked() ) {
+					double znesek_ddv = 0.0;
+					QSqlQuery sql_opravila;
+					sql_opravila.prepare("SELECT * FROM opravila WHERE stevilka_racuna LIKE '" + pretvori(ui->txt_id->text()) + "'");
+					sql_opravila.exec();
+					while ( sql_opravila.next() ) {
+						znesek_ddv += prevedi(sql_opravila.value(sql_opravila.record().indexOf("znesek_ddv")).toString()).toDouble();
+					}
+
+					znesek_ddv = znesek_ddv * pretvori_v_double(ui->txt_odstotek_avansa->text()).toDouble() / 100;
+
+					QSqlQuery sql_posodobi;
+					sql_posodobi.prepare("UPDATE racuni SET avans_ddv = ? WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+					sql_posodobi.bindValue(0, pretvori(QString::number(znesek_ddv, 'f', 2)));
+					sql_posodobi.exec();
+
+					sql_posodobi.clear();
+					sql_opravila.clear();
+				}
+
 			}
 
 		   sql_vnesi_projekt.bindValue(0, pretvori(ui->txt_stevilka_racuna->text()));

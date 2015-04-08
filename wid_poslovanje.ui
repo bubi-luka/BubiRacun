@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>807</width>
+    <width>993</width>
     <height>694</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tab_poslovanje">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_mesec">
       <attribute name="title">
@@ -88,10 +88,10 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label_9">
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Julij</string>
+            <string>Maj</string>
            </property>
           </widget>
          </item>
@@ -102,20 +102,10 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_7">
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_9">
            <property name="text">
-            <string>Maj</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>Poslovanje (z DDV)</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Julij</string>
            </property>
           </widget>
          </item>
@@ -133,10 +123,45 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>Poslovanje (z DDV)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
          <item row="11" column="0">
           <widget class="QLabel" name="label_13">
            <property name="text">
             <string>November</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLineEdit" name="txt_ti_januar">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -167,39 +192,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="4">
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>Razlika (z DDV)</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="5">
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>Povprečno poslovanje (z DDV)</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="6">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="txt_tp_januar">
            <property name="enabled">
@@ -222,6 +214,16 @@
              <width>150</width>
              <height>16777215</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>Razlika (z DDV)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -249,6 +251,29 @@
             </size>
            </property>
           </widget>
+         </item>
+         <item row="0" column="5">
+          <widget class="QLabel" name="label_17">
+           <property name="text">
+            <string>Povprečno poslovanje (z DDV)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="7">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item row="3" column="1">
           <widget class="QLineEdit" name="txt_tp_marec">
@@ -500,8 +525,8 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLineEdit" name="txt_ti_januar">
+         <item row="3" column="2">
+          <widget class="QLineEdit" name="txt_ti_marec">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -527,31 +552,6 @@
          </item>
          <item row="2" column="2">
           <widget class="QLineEdit" name="txt_ti_februar">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>150</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLineEdit" name="txt_ti_marec">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -1325,8 +1325,8 @@
            </property>
           </widget>
          </item>
-         <item row="10" column="4">
-          <widget class="QLineEdit" name="txt_razlika_oktober">
+         <item row="11" column="4">
+          <widget class="QLineEdit" name="txt_razlika_november">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -1350,8 +1350,8 @@
            </property>
           </widget>
          </item>
-         <item row="11" column="4">
-          <widget class="QLineEdit" name="txt_razlika_november">
+         <item row="10" column="4">
+          <widget class="QLineEdit" name="txt_razlika_oktober">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -1691,6 +1691,169 @@
              <width>0</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="6">
+          <widget class="QLabel" name="label_35">
+           <property name="text">
+            <string>DDV prihodkov</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="6">
+          <widget class="QLineEdit" name="txt_tddv_januar">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="6">
+          <widget class="QLineEdit" name="txt_tddv_februar">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="6">
+          <widget class="QLineEdit" name="txt_tddv_marec">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="6">
+          <widget class="QLineEdit" name="txt_tddv_april">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="6">
+          <widget class="QLineEdit" name="txt_tddv_maj">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="6">
+          <widget class="QLineEdit" name="txt_tddv_junij">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="6">
+          <widget class="QLineEdit" name="txt_tddv_julij">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="6">
+          <widget class="QLineEdit" name="txt_tddv_avgust">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="6">
+          <widget class="QLineEdit" name="txt_tddv_september">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="6">
+          <widget class="QLineEdit" name="txt_tddv_oktober">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="6">
+          <widget class="QLineEdit" name="txt_tddv_november">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="6">
+          <widget class="QLineEdit" name="txt_tddv_december">
+           <property name="enabled">
+            <bool>false</bool>
            </property>
            <property name="maximumSize">
             <size>

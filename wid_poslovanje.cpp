@@ -121,6 +121,7 @@ void wid_poslovanje::napolni_mesec() {
 		QString vrednost_izdanih[12];
 		QString vrednost_prejetih[12];
 		QString vrednost_poslovanja[12];
+		QString vrednost_ddv[12];
 
 		for ( int b = 0; b < 12; b++ ) {
 
@@ -167,6 +168,8 @@ void wid_poslovanje::napolni_mesec() {
 			QSqlQuery sql_avans;
 			double znesek_avans = 0.0;
 			double znesek_ostanek = 0.0;
+			double znesek_ddv_avans = 0.0;
+			double znesek_ddv_ostanek = 0.0;
 //			double znesek_storno = 0.0;
 
 			sql_avans.prepare("SELECT * FROM racuni WHERE tip_racuna LIKE '1' AND datum_placila_avansa LIKE '%." +
@@ -175,6 +178,7 @@ void wid_poslovanje::napolni_mesec() {
 			sql_avans.exec();
 			while ( sql_avans.next() ) {
 				znesek_avans += pretvori_v_double(prevedi(sql_avans.value(sql_avans.record().indexOf("avans")).toString())).toDouble();
+				znesek_ddv_avans += pretvori_v_double(prevedi(sql_avans.value(sql_avans.record().indexOf("avans_ddv")).toString())).toDouble();
 			}
 
 			// poisci preostanek placila
@@ -191,16 +195,21 @@ void wid_poslovanje::napolni_mesec() {
 				while ( sql_opravilo.next() ) {
 					znesek_ostanek += pretvori_v_double(prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_koncni")).toString())).toDouble() +
 														pretvori_v_double(prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_ddv")).toString())).toDouble();
+					znesek_ddv_ostanek += pretvori_v_double(prevedi(sql_opravilo.value(sql_opravilo.record().indexOf("znesek_ddv")).toString())).toDouble();
 				}
 				sql_opravilo.clear();
 				// odstejemo ze placan avans
 				znesek_ostanek -= pretvori_v_double(prevedi(sql_preostanek.value(sql_preostanek.record().indexOf("avans")).toString())).toDouble();
+				znesek_ddv_ostanek -= pretvori_v_double(prevedi(sql_preostanek.value(sql_preostanek.record().indexOf("avans_ddv")).toString())).toDouble();
 			}
 
 			vrednost_prejetih[b] = QString::number(znesek_avans + znesek_ostanek, 'f', 2);
 
 			// poslovanje
 			vrednost_poslovanja[b] = QString::number(znesek_avans + znesek_ostanek - vrednost, 'f', 2);
+
+			// ddv prihodkov
+			vrednost_ddv[b] = QString::number(znesek_ddv_avans + znesek_ddv_ostanek, 'f', 2);
 
 		} // for ( int b = 0; b < 12; b++ )
 
@@ -256,6 +265,19 @@ void wid_poslovanje::napolni_mesec() {
 		ui->txt_pp_oktober->setText(ui->txt_pp_oktober_2->text());
 		ui->txt_pp_november->setText(ui->txt_pp_november_2->text());
 		ui->txt_pp_december->setText(ui->txt_pp_december_2->text());
+		// ddv prihodka
+		ui->txt_tddv_januar->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[0])) + " EUR");
+		ui->txt_tddv_februar->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[1])) + " EUR");
+		ui->txt_tddv_marec->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[2])) + " EUR");
+		ui->txt_tddv_april->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[3])) + " EUR");
+		ui->txt_tddv_maj->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[4])) + " EUR");
+		ui->txt_tddv_junij->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[5])) + " EUR");
+		ui->txt_tddv_julij->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[6])) + " EUR");
+		ui->txt_tddv_avgust->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[7])) + " EUR");
+		ui->txt_tddv_september->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[8])) + " EUR");
+		ui->txt_tddv_oktober->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[9])) + " EUR");
+		ui->txt_tddv_november->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[10])) + " EUR");
+		ui->txt_tddv_december->setText(pretvori_iz_double(pretvori_v_double(vrednost_ddv[11])) + " EUR");
 
 		QPalette pozitivno;
 		QPalette negativno;
