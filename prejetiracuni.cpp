@@ -9,6 +9,7 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QPainter>
+#include <QTableWidgetItem>
 
 #include "prejetiracuni.h"
 #include "ui_prejetiracuni.h"
@@ -750,7 +751,6 @@ void prejetiracuni::on_btn_dodaj_ddv_clicked() {
 
 void prejetiracuni::on_btn_izbrisi_ddv_clicked() {
 
-
 	ui->tbl_ddv->removeRow(ui->tbl_ddv->selectedItems().at(0)->row());
 
 	izracunaj();
@@ -874,11 +874,11 @@ void prejetiracuni::napolni_ddv() {
 							celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
 						}
 						else if ( j == 1 ) {
-							celica->setText(seznam_znesek[i].replace(".", ","));
+							celica->setText(seznam_znesek[i].replace(".", ",") + " EUR");
 							celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
 						}
 						else if ( j == 2 ) {
-							celica->setText(seznam_znesek_brez_ddv[i].replace(".", ","));
+							celica->setText(seznam_znesek_brez_ddv[i].replace(".", ",") + " EUR");
 						}
 						ui->tbl_ddv->setItem(i, j, celica);
 
@@ -896,8 +896,7 @@ void prejetiracuni::dodaj(QString besedilo) {
 	ui->tbl_ddv->insertRow(ui->tbl_ddv->rowCount());
 	ui->tbl_ddv->setRowHeight(ui->tbl_ddv->rowCount() - 1, 20);
 
-	QTableWidgetItem *celica;
-	celica = new QTableWidgetItem;
+	QTableWidgetItem *celica = new QTableWidgetItem;
 	celica->setText(pretvori_v_double(besedilo).replace(".", ",") + " %");
 	celica->setFlags(celica->flags() ^ Qt::ItemIsEditable);
 	ui->tbl_ddv->setItem(ui->tbl_ddv->rowCount() - 1, 0, celica);
@@ -916,10 +915,8 @@ void prejetiracuni::izracunaj() {
 	double znesek_brez_ddv = 0.0;
 
 	for ( int row = 0; row < ui->tbl_ddv->rowCount(); row++ ) {
-		QTableWidgetItem *polje;
-		if ( polje == ui->tbl_ddv->item(row, 1) ) {
-			QTableWidgetItem *celica;
-			if ( celica == ui->tbl_ddv->item(row, 2) ) {
+		if ( QTableWidgetItem *polje = ui->tbl_ddv->item(row, 1) ) {
+			if ( QTableWidgetItem *celica = ui->tbl_ddv->item(row, 2) ) {
 				znesek_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 1)->text()).toDouble();
 				znesek_brez_ddv += pretvori_v_double(ui->tbl_ddv->item(row, 2)->text()).toDouble();
 			}
