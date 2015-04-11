@@ -27,7 +27,7 @@
    <item>
     <widget class="QTabWidget" name="tab_projekti">
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -1424,6 +1424,43 @@
          <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayout_13">
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_24">
+              <item>
+               <spacer name="horizontalSpacer_24">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cb_popust_priporocilo">
+                <property name="text">
+                 <string>cb_popust_priporocilo</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_25">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_29">
               <property name="text">
@@ -1434,7 +1471,7 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="label_25">
               <property name="text">
                <string>Stalna stranka</string>
@@ -1451,13 +1488,6 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_24">
-              <property name="text">
-               <string>Naročilo BenVPRAŠALNIK + BenANALITIK + BenOBLIKOVALEC</string>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_28">
               <property name="text">
@@ -1465,7 +1495,7 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="2">
+            <item row="4" column="2">
              <widget class="QLineEdit" name="txt_popust_stalna_stranka">
               <property name="minimumSize">
                <size>
@@ -1484,7 +1514,7 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="2">
+            <item row="5" column="2">
              <widget class="QLineEdit" name="txt_popust_akcija">
               <property name="minimumSize">
                <size>
@@ -1503,27 +1533,22 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QLineEdit" name="txt_popust_komb2">
-              <property name="minimumSize">
-               <size>
-                <width>74</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>75</width>
-                <height>16777215</height>
-               </size>
-              </property>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_23">
               <property name="text">
-               <string>txt_popust_komb2</string>
+               <string>Po priporočilu stranke</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>Akcijski popust</string>
               </property>
              </widget>
             </item>
             <item row="3" column="2">
-             <widget class="QLineEdit" name="txt_popust_komb1">
+             <widget class="QLineEdit" name="txt_popust_priporocilo">
               <property name="minimumSize">
                <size>
                 <width>74</width>
@@ -1537,21 +1562,7 @@
                </size>
               </property>
               <property name="text">
-               <string>txt_popust_komb1</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_23">
-              <property name="text">
-               <string>Naročilo BenOBLIKOVALEC + BenTISKAR</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_27">
-              <property name="text">
-               <string>Akcijski popust</string>
+               <string>txt_popust_priporocilo</string>
               </property>
              </widget>
             </item>
@@ -1600,7 +1611,7 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="5" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_28">
               <item>
                <spacer name="horizontalSpacer_32">
@@ -1653,7 +1664,7 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="4" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_26">
               <item>
                <spacer name="horizontalSpacer_28">
@@ -1677,80 +1688,6 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_29">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item row="4" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_25">
-              <item>
-               <spacer name="horizontalSpacer_26">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cb_popust_komb2">
-                <property name="text">
-                 <string>cb_popust_komb2</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_27">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item row="3" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_24">
-              <item>
-               <spacer name="horizontalSpacer_24">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cb_popust_komb1">
-                <property name="text">
-                 <string>cb_popust_komb1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_25">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -2434,10 +2371,8 @@
   <tabstop>txt_popust_fb1</tabstop>
   <tabstop>cb_popust_fb2</tabstop>
   <tabstop>txt_popust_fb2</tabstop>
-  <tabstop>cb_popust_komb1</tabstop>
-  <tabstop>txt_popust_komb1</tabstop>
-  <tabstop>cb_popust_komb2</tabstop>
-  <tabstop>txt_popust_komb2</tabstop>
+  <tabstop>cb_popust_priporocilo</tabstop>
+  <tabstop>txt_popust_priporocilo</tabstop>
   <tabstop>cb_popust_stalna</tabstop>
   <tabstop>txt_popust_stalna_stranka</tabstop>
   <tabstop>cb_popust_akcija</tabstop>
