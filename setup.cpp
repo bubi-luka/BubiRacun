@@ -428,8 +428,7 @@ void setup::tabela_stranke() {
 														 "placilnost TEXT, "
 														 "pop_facebook_1 TEXT, "
 														 "pop_facebook_2 TEXT, "
-														 "pop_kombinacija_1 TEXT, "
-														 "pop_kombinacija_2 TEXT, "
+														 "pop_priporocilo TEXT, "
 														 "pop_stranka TEXT, "
 														 "pop_akcija TEXT, "
 														 "pop_vsi_facebook TEXT, "
@@ -462,8 +461,7 @@ void setup::tabela_projekti() {
 														 "status_projekta TEXT, "
 														 "popust_fb1 TEXT, "
 														 "popust_fb2 TEXT, "
-														 "popust_komb1 TEXT, "
-														 "popust_komb2 TEXT, "
+														 "popust_priporocilo TEXT, "
 														 "popust_stranka TEXT, "
 														 "popust_akcija TEXT, "
 														 "podrazitev_vikend TEXT, "
@@ -557,8 +555,7 @@ void setup::tabela_opravila() {
 														 "ddv TEXT, "
 														 "popust_fb1 TEXT, "
 														 "popust_fb2 TEXT, "
-														 "popust_komb1 TEXT, "
-														 "popust_komb2 TEXT, "
+														 "popust_priporocilo TEXT, "
 														 "popust_stranka TEXT, "
 														 "popust_akcija TEXT, "
 														 "podrazitev_vikend TEXT, "
@@ -3832,8 +3829,7 @@ void setup::posodobi_bazo() {
 								   "ddv TEXT, "
 								   "popust_fb1 TEXT, "
 								   "popust_fb2 TEXT, "
-								   "popust_komb1 TEXT, "
-								   "popust_komb2 TEXT, "
+								   "popust_priporocilo TEXT, "
 								   "popust_stranka TEXT, "
 								   "popust_akcija TEXT, "
 								   "podrazitev_vikend TEXT, "
@@ -3861,7 +3857,7 @@ void setup::posodobi_bazo() {
 
 					update.prepare("INSERT INTO opravila SELECT id, stevilka_stranke, stevilka_projekta, stevilka_racuna, vrstni_red, tip_racuna, enota, "
 								   "opravilo_sklop, opravilo_skupina, opravilo_storitev, opravilo_rocno, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, "
-								   "popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
+								   "popust_fb2, popust_priporocilo, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
 								   "podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, "
 								   "znesek_ddv, znesek_koncni, dobropis, dobropis_st_ur, dobropis_znesek, dobropis_ddv, dobropis_koncni, casovnice, sifra "
 								   "FROM opravila_old");
@@ -3884,8 +3880,7 @@ void setup::posodobi_bazo() {
 								   "status_projekta TEXT, "
 								   "popust_fb1 TEXT, "
 								   "popust_fb2 TEXT, "
-								   "popust_komb1 TEXT, "
-								   "popust_komb2 TEXT, "
+								   "popust_priporocilo TEXT, "
 								   "popust_stranka TEXT, "
 								   "popust_akcija TEXT, "
 								   "podrazitev_vikend TEXT, "
@@ -3896,7 +3891,7 @@ void setup::posodobi_bazo() {
 					update.clear();
 
 					update.prepare("INSERT INTO projekti SELECT id, stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
-								   "status_projekta, popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_akcija, podrazitev_vikend, "
+								   "status_projekta, popust_fb1, popust_fb2, popust_priporocilo, popust_stranka, popust_akcija, podrazitev_vikend, "
 								   "podrazitev_hitrost, podrazitev_zapleti FROM projekti_old");
 					update.exec();
 					update.clear();
@@ -4065,6 +4060,231 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 37 ) {
+
+					// odstranitev kombinacijskih popustov iz baze
+
+					// izbrisemo posamezne stolpce, ki se nanasajo na kombinacije tipa komb1 in komb2
+					// opravila
+					update.prepare("ALTER TABLE opravila RENAME TO opravila_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("CREATE TABLE IF NOT EXISTS opravila ("
+								   "id INTEGER PRIMARY KEY, "
+								   "stevilka_stranke TEXT, "
+								   "stevilka_projekta TEXT, "
+								   "stevilka_racuna TEXT, "
+								   "vrstni_red TEXT, "
+								   "tip_racuna TEXT, "
+								   "enota TEXT, "
+								   "opravilo_sklop TEXT, "
+								   "opravilo_skupina TEXT, "
+								   "opravilo_storitev TEXT, "
+								   "opravilo_rocno TEXT, "
+								   "urna_postavka_brez_ddv TEXT, "
+								   "urna_postavka_z_ddv TEXT, "
+								   "ddv TEXT, "
+								   "popust_fb1 TEXT, "
+								   "popust_fb2 TEXT, "
+								   "popust_priporocilo TEXT, "
+								   "popust_stranka TEXT, "
+								   "popust_akcija TEXT, "
+								   "podrazitev_vikend TEXT, "
+								   "podrazitev_hitrost TEXT, "
+								   "podrazitev_zapleti TEXT, "
+								   "pribitek_vikend TEXT, "
+								   "pribitek_hitrost TEXT, "
+								   "pribitek_zapleti TEXT, "
+								   "tip_ur TEXT, "
+								   "ur_dela TEXT, "
+								   "rocni_vnos_ur TEXT, "
+								   "znesek_popustov TEXT, "
+								   "znesek_ddv TEXT, "
+								   "znesek_koncni TEXT, "
+								   "dobropis TEXT, "
+								   "dobropis_st_ur TEXT, "
+								   "dobropis_znesek TEXT, "
+								   "dobropis_ddv TEXT, "
+								   "dobropis_koncni TEXT, "
+								   "casovnice TEXT, "
+								   "sifra TEXT)"
+								   );
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("INSERT INTO opravila (id, stevilka_stranke, stevilka_projekta, stevilka_racuna, vrstni_red, tip_racuna, enota, "
+								   "opravilo_sklop, opravilo_skupina, opravilo_storitev, opravilo_rocno, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, "
+								   "popust_fb1, popust_fb2, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
+								   "podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, "
+								   "znesek_ddv, znesek_koncni, dobropis, dobropis_st_ur, dobropis_znesek, dobropis_ddv, dobropis_koncni, casovnice, sifra) "
+								   "SELECT id, stevilka_stranke, stevilka_projekta, stevilka_racuna, vrstni_red, tip_racuna, enota, "
+								   "opravilo_sklop, opravilo_skupina, opravilo_storitev, opravilo_rocno, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, "
+								   "popust_fb1, popust_fb2, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
+								   "podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, "
+								   "znesek_ddv, znesek_koncni, dobropis, dobropis_st_ur, dobropis_znesek, dobropis_ddv, dobropis_koncni, casovnice, sifra "
+								   "FROM opravila_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					// projekti
+					update.prepare("ALTER TABLE projekti RENAME TO projekti_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("CREATE TABLE IF NOT EXISTS projekti ("
+								   "id INTEGER PRIMARY KEY, "
+								   "stevilka_projekta TEXT, "
+								   "naslov_projekta TEXT, "
+								   "stranka TEXT, "
+								   "avtor_oseba TEXT, "
+								   "pricetek_dela TEXT, "
+								   "konec_dela TEXT, "
+								   "status_projekta TEXT, "
+								   "popust_fb1 TEXT, "
+								   "popust_fb2 TEXT, "
+								   "popust_priporocilo TEXT, "
+								   "popust_stranka TEXT, "
+								   "popust_akcija TEXT, "
+								   "podrazitev_vikend TEXT, "
+								   "podrazitev_hitrost TEXT, "
+								   "podrazitev_zapleti TEXT)"
+								   );
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("INSERT INTO projekti (id, stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
+								   "status_projekta, popust_fb1, popust_fb2, popust_stranka, popust_akcija, podrazitev_vikend, "
+								   "podrazitev_hitrost, podrazitev_zapleti) "
+								   "SELECT id, stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
+								   "status_projekta, popust_fb1, popust_fb2, popust_stranka, popust_akcija, podrazitev_vikend, "
+								   "podrazitev_hitrost, podrazitev_zapleti FROM projekti_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					// stranke
+					update.prepare("ALTER TABLE stranke RENAME TO stranke_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("CREATE TABLE IF NOT EXISTS stranke ("
+								   "id INTEGER PRIMARY KEY, "
+								   "ime TEXT, "
+								   "priimek TEXT, "
+								   "naslov TEXT, "
+								   "naslov_st TEXT, "
+								   "posta TEXT, "
+								   "postna_stevilka TEXT, "
+								   "davcni_zavezanec TEXT, "
+								   "davcna TEXT, "
+								   "kontakt TEXT, "
+								   "telefon TEXT, "
+								   "gsm TEXT, "
+								   "email TEXT, "
+								   "spletna_stran TEXT, "
+								   "ustanova TEXT, "
+								   "opomba TEXT, "
+								   "tip TEXT, "
+								   "stalnost TEXT, "
+								   "aktivnost TEXT, "
+								   "placilnost TEXT, "
+								   "pop_facebook_1 TEXT, "
+								   "pop_facebook_2 TEXT, "
+								   "pop_priporocilo TEXT, "
+								   "pop_stranka TEXT, "
+								   "pop_akcija TEXT, "
+								   "pop_vsi_facebook TEXT, "
+								   "pop_vsi TEXT, "
+								   "pod_vikend TEXT, "
+								   "pod_hitrost TEXT, "
+								   "pod_zapleti TEXT, "
+								   "avtor_podjetje TEXT, "
+								   "avtor_oseba TEXT, "
+								   "banka TEXT, "
+								   "bic_banke TEXT, "
+								   "trr TEXT)"
+								   );
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					update.prepare("INSERT INTO stranke (id, ime, priimek, naslov, naslov_st, posta, postna_stevilka, davcni_zavezanec, davcna, kontakt, "
+								   "telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, placilnost, pop_facebook_1, pop_facebook_2, "
+								   "pop_stranka, pop_akcija, pop_vsi_facebook, pop_vsi, pod_vikend, pod_hitrost, "
+								   "pod_zapleti, avtor_podjetje, avtor_oseba, banka, bic_banke, trr) "
+								   "SELECT id, ime, priimek, naslov, naslov_st, posta, postna_stevilka, davcni_zavezanec, davcna, kontakt, "
+								   "telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, placilnost, pop_facebook_1, pop_facebook_2, "
+								   "pop_stranka, pop_akcija, pop_vsi_facebook, pop_vsi, pod_vikend, pod_hitrost, "
+								   "pod_zapleti, avtor_podjetje, avtor_oseba, banka, bic_banke, trr FROM stranke_old");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					// odstrani vnos za pop_komb* iz sif_popusti
+					update.prepare("DELETE FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_komb") + "%'");
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					// vnesi nov popust v bazo
+					update.prepare("INSERT INTO sif_popusti (popust, vrednost) VALUES (?, ?)");
+					update.bindValue(0, pretvori("pop_priporocilo"));
+					update.bindValue(1, pretvori("5.0"));
+					update.exec();
+					update.clear();
+					qApp->processEvents();
+
+					// izbrisemo stare tabele
+					baza nova_baza;
+					nova_baza.close_database();
+					nova_baza.open_database();
+
+					QSqlQuery sql_update;
+					sql_update.prepare("DROP TABLE IF EXISTS opravila_old");
+					sql_update.exec();
+					sql_update.clear();
+					qApp->processEvents();
+
+					sql_update.prepare("DROP TABLE IF EXISTS projekti_old");
+					sql_update.exec();
+					sql_update.clear();
+					qApp->processEvents();
+
+					sql_update.prepare("DROP TABLE IF EXISTS stranke_old");
+					sql_update.exec();
+					sql_update.clear();
+					qApp->processEvents();
+
+					// update database with new parm.
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					sql_update.bindValue(0, "0.9.38");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					sql_update.bindValue(0, "0.9.38");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					sql_update.bindValue(0, "12.04.2015");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					posodobi_bazo();
+
+				}
+
 			}
 
 		}
