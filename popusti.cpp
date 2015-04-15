@@ -142,7 +142,7 @@ void popusti::on_btn_vnesi_clicked() {
 
 void popusti::napolni() {
 
-	QString str_napolni[10];
+	QString str_napolni[12];
 	int i = 0;
 
 		QSqlQuery sql_napolni;

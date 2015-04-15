@@ -428,7 +428,8 @@ void setup::tabela_stranke() {
 														 "placilnost TEXT, "
 														 "pop_facebook_1 TEXT, "
 														 "pop_facebook_2 TEXT, "
-														 "pop_priporocilo TEXT, "
+														 "pop_kombinacija_1 TEXT, "
+														 "pop_kombinacija_2 TEXT, "
 														 "pop_stranka TEXT, "
 														 "pop_akcija TEXT, "
 														 "pop_vsi_facebook TEXT, "
@@ -461,7 +462,8 @@ void setup::tabela_projekti() {
 														 "status_projekta TEXT, "
 														 "popust_fb1 TEXT, "
 														 "popust_fb2 TEXT, "
-														 "popust_priporocilo TEXT, "
+														 "popust_komb1 TEXT, "
+														 "popust_komb2 TEXT, "
 														 "popust_stranka TEXT, "
 														 "popust_akcija TEXT, "
 														 "podrazitev_vikend TEXT, "
@@ -555,7 +557,8 @@ void setup::tabela_opravila() {
 														 "ddv TEXT, "
 														 "popust_fb1 TEXT, "
 														 "popust_fb2 TEXT, "
-														 "popust_priporocilo TEXT, "
+														 "popust_komb1 TEXT, "
+														 "popust_komb2 TEXT, "
 														 "popust_stranka TEXT, "
 														 "popust_akcija TEXT, "
 														 "podrazitev_vikend TEXT, "
@@ -3829,7 +3832,8 @@ void setup::posodobi_bazo() {
 								   "ddv TEXT, "
 								   "popust_fb1 TEXT, "
 								   "popust_fb2 TEXT, "
-								   "popust_priporocilo TEXT, "
+								   "popust_komb1 TEXT, "
+								   "popust_komb2 TEXT, "
 								   "popust_stranka TEXT, "
 								   "popust_akcija TEXT, "
 								   "podrazitev_vikend TEXT, "
@@ -3857,7 +3861,7 @@ void setup::posodobi_bazo() {
 
 					update.prepare("INSERT INTO opravila SELECT id, stevilka_stranke, stevilka_projekta, stevilka_racuna, vrstni_red, tip_racuna, enota, "
 								   "opravilo_sklop, opravilo_skupina, opravilo_storitev, opravilo_rocno, urna_postavka_brez_ddv, urna_postavka_z_ddv, ddv, popust_fb1, "
-								   "popust_fb2, popust_priporocilo, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
+								   "popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_akcija, podrazitev_vikend, podrazitev_hitrost, "
 								   "podrazitev_zapleti, pribitek_vikend, pribitek_hitrost, pribitek_zapleti, tip_ur, ur_dela, rocni_vnos_ur, znesek_popustov, "
 								   "znesek_ddv, znesek_koncni, dobropis, dobropis_st_ur, dobropis_znesek, dobropis_ddv, dobropis_koncni, casovnice, sifra "
 								   "FROM opravila_old");
@@ -3880,7 +3884,8 @@ void setup::posodobi_bazo() {
 								   "status_projekta TEXT, "
 								   "popust_fb1 TEXT, "
 								   "popust_fb2 TEXT, "
-								   "popust_priporocilo TEXT, "
+								   "popust_komb1 TEXT, "
+								   "popust_komb2 TEXT, "
 								   "popust_stranka TEXT, "
 								   "popust_akcija TEXT, "
 								   "podrazitev_vikend TEXT, "
@@ -3891,7 +3896,7 @@ void setup::posodobi_bazo() {
 					update.clear();
 
 					update.prepare("INSERT INTO projekti SELECT id, stevilka_projekta, naslov_projekta, stranka, avtor_oseba, pricetek_dela, konec_dela, "
-								   "status_projekta, popust_fb1, popust_fb2, popust_priporocilo, popust_stranka, popust_akcija, podrazitev_vikend, "
+								   "status_projekta, popust_fb1, popust_fb2, popust_komb1, popust_komb2, popust_stranka, popust_akcija, podrazitev_vikend, "
 								   "podrazitev_hitrost, podrazitev_zapleti FROM projekti_old");
 					update.exec();
 					update.clear();
@@ -4060,6 +4065,7 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+<<<<<<< HEAD
 				if ( stevilka_baze_min == 37 ) {
 
 					// odstranitev kombinacijskih popustov iz baze
@@ -4285,6 +4291,8 @@ void setup::posodobi_bazo() {
 
 				}
 
+=======
+>>>>>>> parent of fa34adb... IZBRIS NEPOTREBNIH POPUSTOV IZ BAZE PODATKOV
 			}
 
 		}
