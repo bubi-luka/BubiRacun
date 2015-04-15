@@ -4276,7 +4276,7 @@ void setup::posodobi_bazo() {
 					sql_update.clear();
 
 					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
-					sql_update.bindValue(0, "12.04.2015");
+					sql_update.bindValue(0, "15.04.2015");
 					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
 					sql_update.exec();
 					sql_update.clear();
