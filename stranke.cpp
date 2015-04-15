@@ -37,7 +37,8 @@ stranke::stranke(QWidget *parent) :
 
 		ui->cb_popust_fb1->setText("");
 		ui->cb_popust_fb2->setText("");
-		ui->cb_popust_priporocilo->setText("");
+		ui->cb_popust_komb1->setText("");
+		ui->cb_popust_komb2->setText("");
 		ui->cb_popust_stalna->setText("");
 		ui->cb_popust_akcija->setText("");
 		ui->cb_podrazitev_vikend->setText("");
@@ -45,7 +46,8 @@ stranke::stranke(QWidget *parent) :
 		ui->cb_podrazitev_zapleti->setText("");
 		ui->txt_popust_fb1->setText("");
 		ui->txt_popust_fb2->setText("");
-		ui->txt_popust_priporocilo->setText("");
+		ui->txt_popust_komb1->setText("");
+		ui->txt_popust_komb2->setText("");
 		ui->txt_popust_stalna_stranka->setText("");
 		ui->txt_popust_akcija->setText("");
 		ui->txt_vsi_popusti_facebook_1->setText("");
@@ -72,7 +74,8 @@ stranke::stranke(QWidget *parent) :
 
 			ui->txt_popust_fb1->setValidator(v_procent);
 			ui->txt_popust_fb2->setValidator(v_procent);
-			ui->txt_popust_priporocilo->setValidator(v_procent);
+			ui->txt_popust_komb1->setValidator(v_procent);
+			ui->txt_popust_komb2->setValidator(v_procent);
 			ui->txt_popust_stalna_stranka->setValidator(v_procent);
 			ui->txt_popust_akcija->setValidator(v_procent);
 
@@ -106,7 +109,8 @@ stranke::stranke(QWidget *parent) :
 		ui->cb_podrazitev_vikend->setChecked(false);
 		ui->txt_popust_fb1->setDisabled(true);
 		ui->txt_popust_fb2->setDisabled(true);
-		ui->txt_popust_priporocilo->setDisabled(true);
+		ui->txt_popust_komb1->setDisabled(true);
+		ui->txt_popust_komb2->setDisabled(true);
 		ui->txt_popust_stalna_stranka->setDisabled(true);
 		ui->txt_popust_akcija->setDisabled(true);
 		ui->cb_podrazitev_hitrost->setChecked(false);
@@ -656,16 +660,16 @@ void stranke::on_btn_vnesi_clicked() {
 				sql_vnesi_stranko.prepare("INSERT INTO stranke (ime, priimek, naslov, naslov_st, posta, postna_stevilka, davcna, "
 																	"kontakt, telefon, gsm, email, spletna_stran, ustanova, opomba, tip, stalnost, aktivnost, "
 																	"placilnost, pop_facebook_1, pop_facebook_2, "
-																	"pop_priporocilo, pop_stranka, pop_akcija, pop_vsi_facebook, "
+																	"pop_kombinacija_1, pop_kombinacija_2, pop_stranka, pop_akcija, pop_vsi_facebook, "
 																	"pop_vsi, pod_vikend, pod_hitrost, pod_zapleti, avtor_podjetje, avtor_oseba, davcni_zavezanec, "
 																	"banka, bic_banke, trr) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+																	"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 			}
 			else { // popravi ze obstojeci vnos
 				sql_vnesi_stranko.prepare("UPDATE stranke SET ime = ?, priimek = ?, naslov = ?, naslov_st = ?, posta = ?, postna_stevilka = ?, "
 																	"davcna = ?, kontakt = ?, telefon = ?, gsm = ?, email = ?, spletna_stran = ?, ustanova = ?, "
 																	"opomba = ?, tip = ?, stalnost = ?, aktivnost = ?, placilnost = ?, pop_facebook_1 = ?, pop_facebook_2 = ?, "
-																	"pop_priporocilo = ?, pop_stranka = ?, pop_akcija = ?, "
+																	"pop_kombinacija_1 = ?, pop_kombinacija_2 = ?, pop_stranka = ?, pop_akcija = ?, "
 																	"pop_vsi_facebook = ?, pop_vsi = ?, pod_vikend = ?, pod_hitrost = ?, pod_zapleti = ? , "
 																	"avtor_podjetje = ?, avtor_oseba = ?, davcni_zavezanec = ?, banka = ?, bic_banke = ?, trr = ? "
 																	"WHERE id LIKE '" + ui->txt_id->text() + "'");
@@ -722,28 +726,29 @@ void stranke::on_btn_vnesi_clicked() {
 
 			sql_vnesi_stranko.bindValue(18, pretvori(pretvori_v_double(ui->txt_popust_fb1->text())));
 			sql_vnesi_stranko.bindValue(19, pretvori(pretvori_v_double(ui->txt_popust_fb2->text())));
-			sql_vnesi_stranko.bindValue(20, pretvori(pretvori_v_double(ui->txt_popust_priporocilo->text())));
-			sql_vnesi_stranko.bindValue(21, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
-			sql_vnesi_stranko.bindValue(22, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
+			sql_vnesi_stranko.bindValue(20, pretvori(pretvori_v_double(ui->txt_popust_komb1->text())));
+			sql_vnesi_stranko.bindValue(21, pretvori(pretvori_v_double(ui->txt_popust_komb2->text())));
+			sql_vnesi_stranko.bindValue(22, pretvori(pretvori_v_double(ui->txt_popust_stalna_stranka->text())));
+			sql_vnesi_stranko.bindValue(23, pretvori(pretvori_v_double(ui->txt_popust_akcija->text())));
 
-			sql_vnesi_stranko.bindValue(23, pretvori(pretvori_v_double(ui->txt_vsi_popusti_facebook_2->text())));
-			sql_vnesi_stranko.bindValue(24, pretvori(pretvori_v_double(ui->txt_popusti_skupaj_2->text())));
+			sql_vnesi_stranko.bindValue(24, pretvori(pretvori_v_double(ui->txt_vsi_popusti_facebook_2->text())));
+			sql_vnesi_stranko.bindValue(25, pretvori(pretvori_v_double(ui->txt_popusti_skupaj_2->text())));
 
-			sql_vnesi_stranko.bindValue(25, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
-			sql_vnesi_stranko.bindValue(26, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
-			sql_vnesi_stranko.bindValue(27, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
+			sql_vnesi_stranko.bindValue(26, pretvori(pretvori_v_double(ui->txt_podrazitev_vikend->text())));
+			sql_vnesi_stranko.bindValue(27, pretvori(pretvori_v_double(ui->txt_podrazitev_hitrost->text())));
+			sql_vnesi_stranko.bindValue(28, pretvori(pretvori_v_double(ui->txt_podrazitev_zapleti->text())));
 
-			sql_vnesi_stranko.bindValue(28, pretvori(vApp->firm()));
-			sql_vnesi_stranko.bindValue(29, pretvori(vApp->id()));
+			sql_vnesi_stranko.bindValue(29, pretvori(vApp->firm()));
+			sql_vnesi_stranko.bindValue(30, pretvori(vApp->id()));
 			if ( ui->cb_davcni_zavezanec->isChecked() ) {
-				sql_vnesi_stranko.bindValue(30, pretvori("1"));
+				sql_vnesi_stranko.bindValue(31, pretvori("1"));
 			}
 			else {
-				sql_vnesi_stranko.bindValue(30, pretvori("0"));
+				sql_vnesi_stranko.bindValue(31, pretvori("0"));
 			}
-			sql_vnesi_stranko.bindValue(31, pretvori(ui->txt_banka->currentText()));
-			sql_vnesi_stranko.bindValue(32, pretvori(ui->txt_bic->text()));
-			sql_vnesi_stranko.bindValue(33, pretvori(ui->txt_trr->text()));
+			sql_vnesi_stranko.bindValue(32, pretvori(ui->txt_banka->currentText()));
+			sql_vnesi_stranko.bindValue(33, pretvori(ui->txt_bic->text()));
+			sql_vnesi_stranko.bindValue(34, pretvori(ui->txt_trr->text()));
 			sql_vnesi_stranko.exec();
 
 		// send signal to reload widget
@@ -828,14 +833,24 @@ void stranke::prejem(QString besedilo) {
 				ui->txt_popust_fb2->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_facebook_2")).toString())));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kombinacija_1")).toString()) != "0.0") {
-					ui->cb_popust_priporocilo->setCheckState(Qt::Checked);
-					ui->txt_popust_priporocilo->setEnabled(true);
+					ui->cb_popust_komb1->setCheckState(Qt::Checked);
+					ui->txt_popust_komb1->setEnabled(true);
 				}
 				else {
-					ui->cb_popust_priporocilo->setCheckState(Qt::Unchecked);
-					ui->txt_popust_priporocilo->setEnabled(false);
+					ui->cb_popust_komb1->setCheckState(Qt::Unchecked);
+					ui->txt_popust_komb1->setEnabled(false);
 				}
-				ui->txt_popust_priporocilo->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kombinacija_1")).toString())));
+				ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kombinacija_1")).toString())));
+
+				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kombinacija_2")).toString()) != "0.0") {
+					ui->cb_popust_komb2->setCheckState(Qt::Checked);
+					ui->txt_popust_komb2->setEnabled(true);
+				}
+				else {
+					ui->cb_popust_komb2->setCheckState(Qt::Unchecked);
+					ui->txt_popust_komb2->setEnabled(false);
+				}
+				ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_kombinacija_2")).toString())));
 
 				if ( prevedi(sql_napolni.value(sql_napolni.record().indexOf("pop_stranka")).toString()) != "0.0") {
 					ui->cb_popust_stalna->setCheckState(Qt::Checked);
@@ -931,16 +946,18 @@ void stranke::izracunaj_popuste(int polje) {
 	/*
 	* polje == 0 => fb1
 	* polje == 1 => fb2
-	* polje == 2 => priporocilo
-	* polje == 3 => stranka
+	* polje == 2 => komb1
+	* polje == 3 => komb2
+	* polje == 4 => stranka
 	*/
 
 	// vsa vnosna polja s popustom pretvorimo v vrednost double, da bo mozno racunanje
-	double popust[4];
+	double popust[5];
 	popust[0] = pretvori_v_double(ui->txt_popust_fb1->text()).toDouble();
 	popust[1] = pretvori_v_double(ui->txt_popust_fb2->text()).toDouble();
-	popust[2] = pretvori_v_double(ui->txt_popust_priporocilo->text()).toDouble();
-	popust[3] = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
+	popust[2] = pretvori_v_double(ui->txt_popust_komb1->text()).toDouble();
+	popust[3] = pretvori_v_double(ui->txt_popust_komb2->text()).toDouble();
+	popust[4] = pretvori_v_double(ui->txt_popust_stalna_stranka->text()).toDouble();
 
 	// maksimalne vrednosti sestevka popustov
 	double max_fb = pretvori_v_double(ui->txt_vsi_popusti_facebook_1->text()).toDouble();
@@ -969,7 +986,7 @@ void stranke::izracunaj_popuste(int polje) {
 	ui->txt_vsi_popusti_facebook_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 3; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	if ( sestevek > max_vsi ) {
@@ -983,11 +1000,15 @@ void stranke::izracunaj_popuste(int polje) {
 		}
 		else if ( polje == 2 ) {
 			popust[2] = max_vsi - sestevek + popust[2];
-			ui->txt_popust_priporocilo->setText(pretvori_iz_double(QString::number(popust[2], 'f', 1)));
+			ui->txt_popust_komb1->setText(pretvori_iz_double(QString::number(popust[2], 'f', 1)));
 		}
 		else if ( polje == 3 ) {
 			popust[3] = max_vsi - sestevek + popust[3];
-			ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust[3], 'f', 1)));
+			ui->txt_popust_komb2->setText(pretvori_iz_double(QString::number(popust[3], 'f', 1)));
+		}
+		else if ( polje == 4 ) {
+			popust[4] = max_vsi - sestevek + popust[4];
+			ui->txt_popust_stalna_stranka->setText(pretvori_iz_double(QString::number(popust[4], 'f', 1)));
 		}
 		QMessageBox msg_napaka;
 		msg_napaka.setText("Vnesli ste previsoko vrednost. Vrednost je avtomatsko "
@@ -997,7 +1018,7 @@ void stranke::izracunaj_popuste(int polje) {
 	}
 
 	sestevek = 0.0;
-	for ( int i = 0; i <= 3; i++ ) {
+	for ( int i = 0; i <= 4; i++ ) {
 		sestevek += popust[i];
 	}
 	ui->txt_popusti_skupaj_2->setText(pretvori_iz_double(QString::number(sestevek, 'f', 1)));
@@ -1123,10 +1144,10 @@ void stranke::on_cb_popust_fb2_toggled(bool stanje) {
 
 }
 
-void stranke::on_cb_popust_priporocilo_toggled(bool stanje) {
+void stranke::on_cb_popust_komb1_toggled(bool stanje) {
 
 	if ( stanje == true ) {
-		ui->txt_popust_priporocilo->setEnabled(true);
+		ui->txt_popust_komb1->setEnabled(true);
 
 			QString nipopusta = "true";
 
@@ -1135,7 +1156,7 @@ void stranke::on_cb_popust_priporocilo_toggled(bool stanje) {
 			sql_stranke.exec();
 			if ( sql_stranke.next() ) {
 				if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_1")).toString()) != "0.0" ) { // stranka ima popust
-					ui->txt_popust_priporocilo->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_1")).toString())));
+					ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_1")).toString())));
 					nipopusta = "false";
 				}
 			}
@@ -1144,13 +1165,44 @@ void stranke::on_cb_popust_priporocilo_toggled(bool stanje) {
 				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kombinacija_1") + "'");
 				sql_osnova.exec();
 				if ( sql_osnova.next() ) {
-					ui->txt_popust_priporocilo->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+					ui->txt_popust_komb1->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
 				}
 			}
 	}
 	else {
-		ui->txt_popust_priporocilo->setText(pretvori_iz_double("0.0"));
-		ui->txt_popust_priporocilo->setEnabled(false);
+		ui->txt_popust_komb1->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_komb1->setEnabled(false);
+	}
+
+}
+
+void stranke::on_cb_popust_komb2_toggled(bool stanje) {
+
+	if ( stanje == true ) {
+
+			QString nipopusta = "true";
+
+			QSqlQuery sql_stranke;
+			sql_stranke.prepare("SELECT * FROM stranke WHERE id LIKE '" + pretvori(ui->txt_id->text()) + "'");
+			sql_stranke.exec();
+			if ( sql_stranke.next() ) {
+				if ( prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_2")).toString()) != "0.0" ) { // stranka ima popust
+					ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_stranke.value(sql_stranke.record().indexOf("pop_kombinacija_2")).toString())));
+					nipopusta = "false";
+				}
+			}
+			if ( nipopusta == "true" ) {
+				QSqlQuery sql_osnova;
+				sql_osnova.prepare("SELECT * FROM sif_popusti WHERE popust LIKE '" + pretvori("pop_kombinacija_2") + "'");
+				sql_osnova.exec();
+				if ( sql_osnova.next() ) {
+					ui->txt_popust_komb2->setText(pretvori_iz_double(prevedi(sql_osnova.value(sql_osnova.record().indexOf("vrednost")).toString())));
+				}
+			}
+	}
+	else {
+		ui->txt_popust_komb2->setText(pretvori_iz_double("0.0"));
+		ui->txt_popust_komb2->setEnabled(false);
 	}
 
 }
@@ -1271,15 +1323,21 @@ void stranke::on_txt_popust_fb2_textChanged() {
 
 }
 
-void stranke::on_txt_popust_priporocilo_textChanged() {
+void stranke::on_txt_popust_komb1_textChanged() {
 
 	izracunaj_popuste(2);
 
 }
 
-void stranke::on_txt_popust_stalna_stranka_textChanged() {
+void stranke::on_txt_popust_komb2_textChanged() {
 
 	izracunaj_popuste(3);
+
+}
+
+void stranke::on_txt_popust_stalna_stranka_textChanged() {
+
+	izracunaj_popuste(4);
 
 }
 
@@ -1295,9 +1353,15 @@ void stranke::on_txt_popust_fb2_editingFinished() {
 
 }
 
-void stranke::on_txt_popust_priporocilo_editingFinished() {
+void stranke::on_txt_popust_komb1_editingFinished() {
 
-	ui->txt_popust_priporocilo->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_priporocilo->text())));
+	ui->txt_popust_komb1->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb1->text())));
+
+}
+
+void stranke::on_txt_popust_komb2_editingFinished() {
+
+	ui->txt_popust_komb2->setText(pretvori_iz_double(pretvori_v_double(ui->txt_popust_komb2->text())));
 
 }
 

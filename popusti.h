@@ -21,7 +21,8 @@ private slots:
 
 	void on_txt_popust_fb1_editingFinished();
 	void on_txt_popust_fb2_editingFinished();
-	void on_txt_popust_priporocilo_editingFinished();
+	void on_txt_popust_komb1_editingFinished();
+	void on_txt_popust_komb2_editingFinished();
 	void on_txt_popust_stalna_stranka_editingFinished();
 	void on_txt_popust_akcija_editingFinished();
 	void on_txt_vsi_popusti_facebook_editingFinished();

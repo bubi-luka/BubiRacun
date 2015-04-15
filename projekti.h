@@ -30,7 +30,8 @@ private slots:
 
 	void on_cb_popust_fb1_toggled(bool stanje);
 	void on_cb_popust_fb2_toggled(bool stanje);
-	void on_cb_popust_priporocilo_toggled(bool stanje);
+	void on_cb_popust_komb1_toggled(bool stanje);
+	void on_cb_popust_komb2_toggled(bool stanje);
 	void on_cb_popust_stalna_toggled(bool stanje);
 	void on_cb_popust_akcija_toggled(bool stanje);
 
@@ -40,12 +41,14 @@ private slots:
 
 	void on_txt_popust_fb1_textChanged();
 	void on_txt_popust_fb2_textChanged();
-	void on_txt_popust_priporocilo_textChanged();
+	void on_txt_popust_komb1_textChanged();
+	void on_txt_popust_komb2_textChanged();
 	void on_txt_popust_stalna_stranka_textChanged();
 
 	void on_txt_popust_fb1_editingFinished();
 	void on_txt_popust_fb2_editingFinished();
-	void on_txt_popust_priporocilo_editingFinished();
+	void on_txt_popust_komb1_editingFinished();
+	void on_txt_popust_komb2_editingFinished();
 	void on_txt_popust_stalna_stranka_editingFinished();
 	void on_txt_popust_akcija_editingFinished();
 	void on_txt_podrazitev_vikend_editingFinished();
