@@ -1,5 +1,8 @@
 ﻿Kaj je novega?
 ==========
+0.9.37
+----------
+- izboljšava: v nogo natisnemo matično številko podjetja (zakonodajna zahteva)
 
 0.9.36
 ----------
