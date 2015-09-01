@@ -4118,6 +4118,65 @@ void setup::posodobi_bazo() {
 					posodobi_bazo();
 
 				}
+				if ( stevilka_baze_min == 38 ) {
+
+					QSqlQuery sql_tabela;
+					sql_tabela.prepare("ALTER TABLE opravila ADD COLUMN 'popust_komb1' TEXT");
+					sql_tabela.exec();
+					sql_tabela.clear();
+					sql_tabela.prepare("ALTER TABLE opravila ADD COLUMN 'popust_komb2' TEXT");
+					sql_tabela.exec();
+					sql_tabela.clear();
+
+					QSqlQuery sql_opravila;
+					sql_opravila.prepare("SELECT * FROM opravila");
+					sql_opravila.exec();
+					while ( sql_opravila.next() ) {
+						qApp->processEvents();
+						if ( sql_opravila.value (sql_opravila.record ().indexOf ("popust_komb1")).toString () == NULL ) {
+							qApp->processEvents();
+							QSqlQuery sql_posodobi;
+							sql_posodobi.prepare("UPDATE opravila SET popust_komb1 = '0.0'' WHERE id LIKE '" + pretvori(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + "'");
+							sql_posodobi.exec();
+							sql_posodobi.clear();
+							qApp->processEvents();
+						}
+						qApp->processEvents();
+						if ( sql_opravila.value (sql_opravila.record ().indexOf ("popust_komb2")).toString () == NULL) {
+							qApp->processEvents();
+							QSqlQuery sql_posodobi;
+							sql_posodobi.prepare("UPDATE opravila SET popust_komb2 = '0.0'' WHERE id LIKE '" + pretvori(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + "'");
+							sql_posodobi.exec();
+							sql_posodobi.clear();
+							qApp->processEvents();
+						}
+						qApp->processEvents();
+					}
+					sql_opravila.clear();
+
+					// update database with new parm.
+					QSqlQuery sql_update;
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					sql_update.bindValue(0, "0.9.39");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					sql_update.bindValue(0, "0.9.39");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					sql_update.bindValue(0, "31.08.2015");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					posodobi_bazo();
+
+				}
 			}
 
 		}
