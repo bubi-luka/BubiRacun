@@ -42,7 +42,7 @@ public slots:
 	int natisni_nogo_prejeti_racun(QPainter &painter, int &stevilka_strani);
 
 	int natisni_glavo_izdani_racun(QPainter &painter, QString id);
-	int natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stevilka_strani, QString besedilo_noga);
+	int natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stevilka_strani, QString besedilo_noga_ddv, QString besedilo_noga_maticna);
 
 private:
 	Ui::tiskanje *ui;

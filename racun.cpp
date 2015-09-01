@@ -830,7 +830,7 @@ void racun::on_btn_sprejmi_clicked() {
 					podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, podjetje_bic,
 					podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip,
 					izdajatelj_id, izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id,
-					narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna;
+					narocnik_naziv, narocnik_naslov, narocnik_posta, narocnik_davcna, podjetje_maticna;
 
 					QSqlQuery sql_uporabnik;
 					sql_uporabnik.prepare("SELECT * FROM uporabniki WHERE id LIKE '" + vApp->id() + "'");
@@ -872,6 +872,7 @@ void racun::on_btn_sprejmi_clicked() {
 								podjetje_koda_namena = "";
 							}
 							podjetje_logotip = sql_podjetje.value(sql_podjetje.record().indexOf("logotip")).toString();
+							podjetje_maticna = sql_podjetje.value(sql_podjetje.record().indexOf("maticna_stevilka")).toString();
 						}
 					}
 
@@ -910,9 +911,9 @@ void racun::on_btn_sprejmi_clicked() {
 										  "podjetje_naslov_posta, podjetje_naslov_postna_stevilka, podjetje_url, podjetje_email, podjetje_telefon, podjetje_ddv, "
 										  "podjetje_bic, podjetje_banka, podjetje_tekoci_racun, podjetje_koda_namena, podjetje_logotip, izdajatelj_id, "
 										  "izdajatelj_ime, izdajatelj_priimek, izdajatelj_naziv, narocnik_id, narocnik_naziv, narocnik_naslov, narocnik_posta, "
-										  "narocnik_davcna, stevilka_starsa"
+										  "narocnik_davcna, stevilka_starsa, podjetje_maticna"
 										  ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-										  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+										  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			}
 			else { // popravi ze obstojec vnos
 				sql_vnesi_projekt.prepare("UPDATE racuni SET stevilka_racuna = ?, tip_racuna = ?, status_racuna = ?, stranka = ?, projekt = ?, "
@@ -924,8 +925,8 @@ void racun::on_btn_sprejmi_clicked() {
 										  "podjetje_url = ?, podjetje_email = ?, podjetje_telefon = ?, podjetje_ddv = ?, podjetje_bic = ?, "
 										  "podjetje_banka = ?, podjetje_tekoci_racun = ?, podjetje_koda_namena = ?, podjetje_logotip = ?, "
 										  "izdajatelj_id = ?, izdajatelj_ime = ?, izdajatelj_priimek = ?, izdajatelj_naziv = ?, narocnik_id = ?, "
-										  "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ?, stevilka_starsa = ? "
-										  "WHERE id LIKE '" + ui->txt_id->text() + "'");
+										  "narocnik_naziv = ?, narocnik_naslov = ?, narocnik_posta = ?, narocnik_davcna = ?, stevilka_starsa = ?, "
+										  "podjetje_maticna = ? WHERE id LIKE '" + ui->txt_id->text() + "'");
 
 				// izracunamo ddv avansa in ga vnesemo v novo nastali racun, a le na predracunu
 				if ( ui->rb_predracun->isChecked() ) {
@@ -1022,6 +1023,7 @@ void racun::on_btn_sprejmi_clicked() {
 			sql_vnesi_projekt.bindValue(44, narocnik_posta);
 			sql_vnesi_projekt.bindValue(45, narocnik_davcna);
 			sql_vnesi_projekt.bindValue(46, ui->txt_stevilka_starsa->text());
+			sql_vnesi_projekt.bindValue(47, podjetje_maticna);
 
 			sql_vnesi_projekt.exec();
 

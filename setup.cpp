@@ -522,6 +522,7 @@ void setup::tabela_racuni() {
 								 "podjetje_tekoci_racun TEXT, "
 								 "podjetje_koda_namena TEXT, "
 								 "podjetje_logotip TEXT, "
+								 "podjetje_maticna TEXT, "
 								 "izdajatelj_id TEXT, "
 								 "izdajatelj_ime TEXT, "
 								 "izdajatelj_priimek TEXT, "
@@ -4058,6 +4059,117 @@ void setup::posodobi_bazo() {
 
 					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
 					sql_update.bindValue(0, "08.04.2015");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					posodobi_bazo();
+
+				}
+				if ( stevilka_baze_min == 37 ) {
+
+					QSqlQuery sql_tabela;
+					sql_tabela.prepare("ALTER TABLE racuni ADD COLUMN 'podjetje_maticna' TEXT");
+					sql_tabela.exec();
+					sql_tabela.clear();
+
+					QSqlQuery sql_racuni;
+					sql_racuni.prepare("SELECT * FROM racuni");
+					sql_racuni.exec();
+					while ( sql_racuni.next() ) {
+						qApp->processEvents();
+						QSqlQuery sql_maticna;
+						sql_maticna.prepare("SELECT * FROM podjetje WHERE id LIKE '" + pretvori(sql_racuni.value(sql_racuni.record().indexOf("podjetje_id")).toString()) + "'");
+						sql_maticna.exec();
+						if ( sql_maticna.next() ) {
+							qApp->processEvents();
+							QSqlQuery sql_posodobi;
+							sql_posodobi.prepare("UPDATE racuni SET podjetje_maticna = ? WHERE id LIKE '" + pretvori(sql_racuni.value(sql_racuni.record().indexOf("id")).toString()) + "'");
+							sql_posodobi.bindValue(0, pretvori(sql_maticna.value(sql_maticna.record().indexOf("maticna_stevilka")).toString()));
+							sql_posodobi.exec();
+							sql_posodobi.clear();
+							qApp->processEvents();
+						}
+						sql_maticna.clear();
+						qApp->processEvents();
+					}
+					sql_racuni.clear();
+
+					// update database with new parm.
+					QSqlQuery sql_update;
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					sql_update.bindValue(0, "0.9.38");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					sql_update.bindValue(0, "0.9.38");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					sql_update.bindValue(0, "31.08.2015");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					posodobi_bazo();
+
+				}
+				if ( stevilka_baze_min == 38 ) {
+
+					QSqlQuery sql_tabela;
+					sql_tabela.prepare("ALTER TABLE opravila ADD COLUMN 'popust_komb1' TEXT");
+					sql_tabela.exec();
+					sql_tabela.clear();
+					sql_tabela.prepare("ALTER TABLE opravila ADD COLUMN 'popust_komb2' TEXT");
+					sql_tabela.exec();
+					sql_tabela.clear();
+
+					QSqlQuery sql_opravila;
+					sql_opravila.prepare("SELECT * FROM opravila");
+					sql_opravila.exec();
+					while ( sql_opravila.next() ) {
+						qApp->processEvents();
+						if ( sql_opravila.value (sql_opravila.record ().indexOf ("popust_komb1")).toString () == NULL ) {
+							qApp->processEvents();
+							QSqlQuery sql_posodobi;
+							sql_posodobi.prepare("UPDATE opravila SET popust_komb1 = '0.0'' WHERE id LIKE '" + pretvori(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + "'");
+							sql_posodobi.exec();
+							sql_posodobi.clear();
+							qApp->processEvents();
+						}
+						qApp->processEvents();
+						if ( sql_opravila.value (sql_opravila.record ().indexOf ("popust_komb2")).toString () == NULL) {
+							qApp->processEvents();
+							QSqlQuery sql_posodobi;
+							sql_posodobi.prepare("UPDATE opravila SET popust_komb2 = '0.0'' WHERE id LIKE '" + pretvori(sql_opravila.value(sql_opravila.record().indexOf("id")).toString()) + "'");
+							sql_posodobi.exec();
+							sql_posodobi.clear();
+							qApp->processEvents();
+						}
+						qApp->processEvents();
+					}
+					sql_opravila.clear();
+
+					// update database with new parm.
+					QSqlQuery sql_update;
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija programa'");
+					sql_update.bindValue(0, "0.9.39");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_programa + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Verzija baze'");
+					sql_update.bindValue(0, "0.9.39");
+					sql_update.bindValue(1, QString::number(zaporedna_stevilka_stevilke_baze + 1, 10));
+					sql_update.exec();
+					sql_update.clear();
+
+					sql_update.prepare("UPDATE glavna SET vrednost = ?, razlicica = ? WHERE parameter LIKE 'Datum spremembe'");
+					sql_update.bindValue(0, "31.08.2015");
 					sql_update.bindValue(1, QString::number(zaporedna_stevilka_datuma_spremembe + 1, 10));
 					sql_update.exec();
 					sql_update.clear();
