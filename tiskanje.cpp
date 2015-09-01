@@ -3075,7 +3075,8 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 	// tiskanje
 	QString besedilo = "";
-	QString besedilo_noga = racun.readLine();
+	QString besedilo_noga_ddv = racun.readLine();
+	QString besedilo_noga_maticna = racun.readLine ();
 
 	// ustvariti pot do ustrezne mape
 	QDir mapa(mapa_za_shranjevanje);
@@ -3185,7 +3186,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 
 		// narisemo glavo in nogo prve strani
 		int visina_glave = natisni_glavo_izdani_racun(painter, id);
-		int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga);
+		int visina_noge = natisni_nogo_izdani_racun(painter, id, stevilka_strani, besedilo_noga_ddv, besedilo_noga_maticna);
 
 		pozicija = visina_glave;
 
@@ -4370,7 +4371,7 @@ int tiskanje::natisni_glavo_izdani_racun(QPainter &painter, QString id) {
 
 }
 
-int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stevilka_strani, QString besedilo_noga) {
+int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stevilka_strani, QString besedilo_noga_ddv, QString besedilo_noga_maticna) {
 
 	// ponastavimo podatke painter-ja
 	painter.save();
@@ -4406,6 +4407,7 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	QString podjetje_naslov_postna_stevilka = "";
 	QString podjetje_naslov_posta = "";
 	QString podjetje_telefon = "";
+	QString podjetje_maticna = "";
 
 	// priprava baze in polnenje spremenljivk (razen storitve)
 		// podjetje izvemo iz stevilke podjetja, ki ji pripada uporabnik, kateri tiska racun
@@ -4423,6 +4425,7 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 			podjetje_naslov_postna_stevilka = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_postna_stevilka")).toString());
 			podjetje_naslov_posta = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_naslov_posta")).toString());
 			podjetje_telefon = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_telefon")).toString());
+			podjetje_maticna = prevedi(sql_podjetje.value(sql_podjetje.record().indexOf("podjetje_maticna")).toString());
 		}
 		sql_podjetje.clear();
 
@@ -4432,7 +4435,8 @@ int tiskanje::natisni_nogo_izdani_racun(QPainter &painter, QString id, int &stev
 	painter.setFont(mala);
 
 	// besedilo (url, telefon, email, DDV)
-	QString besedilo = podjetje_url +	" | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga + " " + podjetje_ddv;
+	QString besedilo = podjetje_url +	" | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga_ddv + " " + podjetje_ddv + " | " + besedilo_noga_maticna + " " + podjetje_maticna;
+//	QString besedilo = podjetje_url +	" | " + podjetje_telefon + " | " + podjetje_email + " | " + besedilo_noga_ddv + " " + podjetje_ddv;
 	// dolocimo velikost kvadrata, ki ga tvori besedilo
 	QRect velikost_besedila = painter.boundingRect(0, 0, painter.window().width(), 0, Qt::AlignCenter | Qt::TextWordWrap, besedilo);
 	// nastavimo parametre
