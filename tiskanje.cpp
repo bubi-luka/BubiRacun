@@ -596,8 +596,7 @@ void tiskanje::natisni_potni_nalog(QString id) {
 		if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			return;
 		}
-		QTextStream potni_nalog(&datoteka);
-        potni_nalog.setCodec("UTF-8");
+        QTextStream potni_nalog(&datoteka);
 
 	/**
 		* Nastavimo podatke o tiskanju. Tu tiskamo v PDF dokument
@@ -2237,8 +2236,7 @@ int tiskanje::natisni_glavo_potni_nalog(QPainter &painter, QString id) {
 	if (!datoteka1.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return 0;
 	}
-	QTextStream potni_nalog(&datoteka1);
-    potni_nalog.setCodec("UTF-8");
+    QTextStream potni_nalog(&datoteka1);
 
 	// ponastavimo podatke painter-ja
 	painter.save();
@@ -2686,7 +2684,6 @@ int tiskanje::natisni_glavo_prejeti_racun(QPainter &painter, QString id) {
 		return 0;
 	}
     QTextStream potni_nalog(&datoteka1);
-    potni_nalog.setCodec("UTF-8");
 
 	// ponastavimo podatke painter-ja
 	painter.save();
@@ -3074,8 +3071,7 @@ void tiskanje::natisni_izdani_racun(QString id) {
 	if (!datoteka.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return;
 	}
-	QTextStream racun(&datoteka);
-    racun.setCodec("UTF-8");
+    QTextStream racun(&datoteka);
 
 	// tiskanje
 	QString besedilo = "";
